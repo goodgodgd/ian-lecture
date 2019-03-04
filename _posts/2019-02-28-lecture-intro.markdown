@@ -27,5 +27,23 @@ categories: 2019-1-systprog
 
 
 
+수업 계획
 
+| Week | Contents                                      |
+| ---- | --------------------------------------------- |
+| 1    | 강의소개, 파이썬 역사, 특징, 설치             |
+| 2    | 숫자형, 문자열, 리스트, 튜플, 딕셔너리        |
+| 3    | if, while, for, 함수, 파일입출력              |
+| 4    | 내외장함수, 클래스                            |
+| 5    | numpy, 프로그래밍 패러다임, SOLID원칙         |
+| 6    | UML 그리기                                    |
+| 7    | 중간고사 (1주 빨리)                           |
+| 8    | PyQt: widget, button                          |
+| 9    | PyQt: signal slot                             |
+| 10   | PyQt                                          |
+| 11   | OpenCV: camera/file IO, image slice, concat   |
+| 12   | OpenCV: filter, edge, threshold, floodfill    |
+| 13   | OpenCV: hough line/circle, marker recognition |
+| 14   | Project                                       |
+| 15   | Project Presentation                          |
 
