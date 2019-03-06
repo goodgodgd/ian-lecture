@@ -23,9 +23,25 @@ categories: 2019-1-systprog
 | 과제 | 진도에 따라 python 실습 숙제 있습니다. |
 | 프로젝트 | Python을 이용한 GUI + 영상처리 프로그램을 구현합니다. |
 | 강의일정 | 수업계획서 참조 |
-| 기타 | 수업시간에 못 한 공지는 순천향톡으로 하겠습니다. 반드시 알람을 켜주세요. <br/>공지를 확인하지 못한 결과는 본인이 책임집니다. <br/>제발 모르면 물어보러 오세요. <br/>연구실로 찾아와도 되고 메일, 플로우, 순천향톡 등으로 연락해도 좋습니다. |
+| 기타 | 수업시간에 못 한 공지는 순천향톡으로 하겠습니다. 반드시 알람을 켜주세요. <br/>공지를 확인하지 못한 결과는 본인이 책임집니다. <br/>수업 듣고 모르겠으면 제말 물어보러 오세요. <br/>연구실로 찾아와도 되고 메일, 플로우, 순천향톡 등으로 연락해도 좋습니다. |
 
+수업 계획
 
-
-
+| Week | Contents                                      |
+| ---- | --------------------------------------------- |
+| 1    | 강의소개, 파이썬 역사, 특징, 설치             |
+| 2    | 숫자형, 문자열, 리스트, 튜플, 딕셔너리        |
+| 3    | if, while, for, 함수, 파일입출력              |
+| 4    | 내외장함수, 클래스                            |
+| 5    | numpy, 프로그래밍 패러다임, SOLID원칙         |
+| 6    | UML 그리기                                    |
+| 7    | 중간고사 (1주 빨리)                           |
+| 8    | PyQt: widget, button                          |
+| 9    | PyQt: signal slot                             |
+| 10   | PyQt                                          |
+| 11   | OpenCV: camera/file IO, image slice, concat   |
+| 12   | OpenCV: filter, edge, threshold, floodfill    |
+| 13   | OpenCV: hough line/circle, marker recognition |
+| 14   | Project                                       |
+| 15   | Project Presentation                          |
 
