@@ -56,3 +56,33 @@ pattern = "class: {:<10}, HP: {:<5}, DPS: {:<10.3f}"
 char_intro = pattern.format(_class, HP, DPS)
 print(char_intro)
 print(pattern.format("healer", 200, 834.79))
+
+
+print("\n" + "="*30)
+print("String formatting 3: f string formatting")
+_class = "warrior"
+HP = 100
+DPS = 1456.23
+# 모두 왼쪽 정렬, 문자열은 10칸, 정수는 5칸, 실수는 10칸에 소수점은 3자리까지 사용
+char_intro = f"class: {_class:<10}, HP: {HP:<5}, DPS: {DPS:<10.3f}"
+print(char_intro)
+char_intro = f"class: {'healer':<10}, HP: {200:<5}, DPS: {834.79:<10.3f}"
+print(char_intro)
+
+
+print("\n" + "="*30)
+print("str class functions")
+# 문자열 함수를 이용하는 두 가지 방법
+# 1. 문자열 자체에서 사용, 2. 문자열 변수에서 사용
+print("날 너무너무너무".count('너무'))
+text = "날 " + ("너무" * 3 + " ")*5  + "좋아하면 그때 말해줘"
+print(text.count('너무'))
+
+text = "For the python, of the python, by the python"
+# 문자열 위치 찾기 (find)
+pyind = text.find("py")
+print(f"'py' occurs at {pyind} in `{text}`")
+pyind = text.find("py", pyind+1)
+print(f"'py' occurs at {pyind} in `{text}`")
+pyind = text.find("py", pyind+1)
+print(f"'py' occurs at {pyind} in `{text}`")
