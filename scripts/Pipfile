@@ -8,6 +8,9 @@ verify_ssl = true
 [packages]
 numpy = "*"
 pandas = "*"
+jupyter = "*"
+matplotlib = "*"
+sympy = "*"
 
 [requires]
 python_version = "3.6"

@@ -270,21 +270,115 @@ class: healer    , HP: 200  , DPS: 834.790
 ```python
 print("\n" + "="*30)
 print("str class functions")
-# 문자열 함수를 이용하는 두 가지 방법 
+# 문자열 함수를 이용하는 두 가지 방법
 # 1. 문자열 자체에서 사용, 2. 문자열 변수에서 사용
-print("날 너무너무너무".count('너무'))
-text = "날 " + ("너무" * 3 + " ")*5  + "좋아하면 그때 말해줘"
-print(text.count('너무'))
+print("count substring")
+print("count '너무':", "날 너무너무너무".count('너무'))
+text = "날 " + ("너무" * 3 + " ")*5 + "좋아하면 그때 말해줘"
+print("count '너무':", text.count('너무'))
 ```
 
 문자열에는 이 외에도 다양한 함수들이 있다. 무엇이 있는지 예시를 통해 익혀두고 필요할 때 찾아쓰도록 하자.
+- `find, index`: 전체 문자열 내부에 입력 받은 문자열이 어디에 있는지 앞에서부터 찾아서 인덱스를 반환한다. `find`와 `index`의 차이는 입력 문자열을 못 찾았을 때의 처리 방법이다. `find`는 -1을 반환하고 `index`는 에러를 낸다. 문자열을 못 찾아도 큰 문제가 없을 때는 `find`를 쓰고 꼭 찾아야 하는 경우엔 `index`를 써서 이후에 오류가 생기지 않도록 하는게 좋다.
+
 ```python
+print("\nfind substring")
 text = "For the python, of the python, by the python"
 # 문자열 위치 찾기 (find)
 pyind = text.find("py")
-print(f"'py' occurs at {pyind} in `{text}`")
+print(f"'py' found at {pyind} in `{text}`")
 pyind = text.find("py", pyind+1)
-print(f"'py' occurs at {pyind} in `{text}`")
+print(f"'py' found at {pyind} in `{text}`")
 pyind = text.find("py", pyind+1)
-print(f"'py' occurs at {pyind} in `{text}`")
+print(f"'py' found at {pyind} in `{text}`")
+pyind = text.find("ruby")
+print(f"'ruby' found at {pyind} in `{text}`")
+
+pyind = text.index("py")
+print(f"'py' indexed at {pyind} in `{text}`")
+pyind = text.index("py", pyind+1)
+print(f"'py' indexed at {pyind} in `{text}`")
+pyind = text.index("py", pyind+1)
+print(f"'py' indexed at {pyind} in `{text}`")
+try:
+    pyind = text.index("ruby")
+    print(f"'ruby' found at {pyind} in `{text}`")
+except ValueError as ve:
+    print("'ruby' not indexed, value error:", ve)
 ```
+
+- `join`: 문자열 연결
+이후에 배우게 될 `list`의 내부 문자열 원소들을 하나의 문자열로 연결해준다. 연결할 때 각 문자열 사이에 `" "` 사이에 들어있는 문자열을 끼워 넣어준다. 아직은 `list`를 배우지 않았기 때문에 일단 이런게 있다는 것만 알아두자.
+```python
+print("\njoin strings")
+path = ["/home", "ian", "work", "ian-lecture"]
+path = "/".join(path)
+print("joined path:", path)
+time = ["13", "20", "30"]
+time = ":".join(time)
+print("joined time:", time)
+```
+
+- `upper, lower`: 대소문자 변경
+문자열들을 쓰다보면 문자열끼리 비교할 경우가 자주 생긴다. 문자열도 `==`을 통해 비교하면 되는데 대소문자가 다르면 다른 문자로 인식한다. 대소문자를 무시하고 비교하고 싶은 경우엔 모두 대문자나 소문자로 통일한 후 비교하면 된다.
+```python
+print("\nuppper and lower case")
+mixed = "PYthon"
+small = "python"
+print(f"compare {mixed} and {small}")
+print(f"{mixed} == {small}:", mixed == small)
+print(f"{mixed}.lower() == {small}:", mixed.lower() == small)
+print(f"{mixed}.upper() == {small}.upper():", mixed.upper() == small.upper())
+print(f"{mixed}.lower() is {small}.lower():", mixed.lower() is small.lower())
+```
+
+> **`is`와 `==`의 차이**
+> python에서 두 객체를 비교하는 연산자는 `is`와 `==` 두 가지가 있다. 둘은 비슷해 보이지만 전혀 다른 연산자다. `is`는 동일한 객체, 즉 같은 주소(메모리)를 공유하는 객체인지를 확인하는 것이고, `==`는 객체의 값(value)이 같은지를 확인하는 것이다. 다음 예시를 통해 확인해보자.
+
+```python
+print("\nWhat is difference between `is` and `==`?")
+print("1 is True:", 1 is True)
+print("1 == True:", 1 == True)
+print("(0 == 1) is False:", (0 == 1) is False)
+```
+
+- `strip, lstrip, rstrip`: 공백이나 불필요한 시작/끝 문자 지우기
+문자열을 다루다 보면 문자열에 불필요한 기호나 공백들이 앞이나 끝에 붙어있을 때가 있다. 대표적으로 공백이나 `\n, ", :`등의 특수문자들이 있다. 이들을 제거해주는 함수가 `strip`이다. 입력인자를 넣지 않으면 자동으로 공백을 없애고 입력 문자열을 넣으면 그 문자열을 삭제한다. 문자열 앞쪽(왼쪽)만 지우고 싶을 때는 `lstrip`을 쓰고 문자열 뒤쪽만 지우고 싶을 때는 `rstrip`을 쓴다.
+```python
+print("\nstrip string")
+wise_saying = ' "Walking on water and developing software ' \
+              'from a specification are easy if both are frozen..." '
+print(wise_saying)
+wise_saying = wise_saying.strip()
+print(wise_saying)
+wise_saying = wise_saying.strip('\"')
+print(wise_saying)
+wise_saying = wise_saying.rstrip('.')
+print(wise_saying)
+```
+
+- `replace`: 문자열 바꾸기
+말 그대로 문자열 안의 특정 문자열을 다른 문자열로 교체하는 함수다. 교체할 문자열을 먼저 쓰고 삽입할 문자열을 뒤에 쓰면 된다. `strip`은 문자열 양 끝에 있는 것만 지울수 있어서 중간에 있는 것을 지울 때는 `replace`를 쓴다.
+```python
+print("\nreplace string")
+Lincoln_said = "for the people, by the people, of the people"
+We_say = Lincoln_said.replace("people", "python")
+Simply_say = We_say.replace("the ", "")
+print("Lincoln said:", Lincoln_said)
+print("We say:", We_say)
+print("Simply say:", Simply_say)
+```
+
+- `split`: 문자열 나누기
+문자열을 특정 문자열을 기준으로 나눠서 문자열의 `list`로 출력하는 함수다.
+```python
+print("\nsplit string into list of substrings")
+print("split by words:", We_say.split(" "))
+print("split by phrase:", We_say.split(","))
+```
+
+### 연습문제
+
+1) 자신이 좋아하는 후크송 가사를 문자열 연산을 통해 만들어 보세오.
+2) 가사에서 반복되는 단어가 몇 번 나오는지, 첫 번째로 나오는 위치는 어디인지 찾아보세요.
+3) 가사에서 반복되는 단어를 다른 단어로 바꾸세오.
