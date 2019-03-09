@@ -157,7 +157,7 @@ print("내가 " + ("자꾸" * 3 + " ")*5 + "떠오르면 그때 불러줘")
 
 `+`를 쓰면 문자열을 이어붙일 수 있고 (concatenation) `*`를 쓰면 문자열을 반복할 수 있다.
 
-### 문자열 인덱싱(Indexing), 슬라이싱(Slicing)
+### 문자열 인덱싱과 슬라이싱
 
 문자열을 배열로보고 특정 인덱스(index)의 문자를 출력하는 것을 인덱싱(indexing), 특정 인덱스 범위의 문자열을 추출하는 것을 슬라이싱(slicing)이라 한다. 슬라이싱은 `시작 인덱스:끝 인덱스`로 인덱스 범위를 지정하면 인덱스 범위 `시작 인덱스 <= i < 끝 인덱스` 범위의 문자열을 가져온다. 예를 들어 `string[2:5]`이면 string이란 변수에서 2~4번째 문자들을 가져오는 것이다. 시작 인덱스가 생략되어 있으면 처음부터 가져오는 것이고 끝 인덱스가 생략되어 있으면 끝까지 가져오는 것이다. 인덱스를 뒤에서부터 셀 경우 음수로 표현한다.
 
@@ -305,18 +305,6 @@ try:
     print(f"'ruby' found at {pyind} in `{text}`")
 except ValueError as ve:
     print("'ruby' not indexed, value error:", ve)
-```
-
-- `join`: 문자열 연결
-이후에 배우게 될 `list`의 내부 문자열 원소들을 하나의 문자열로 연결해준다. 연결할 때 각 문자열 사이에 `" "` 사이에 들어있는 문자열을 끼워 넣어준다. 아직은 `list`를 배우지 않았기 때문에 일단 이런게 있다는 것만 알아두자.
-```python
-print("\njoin strings")
-path = ["/home", "ian", "work", "ian-lecture"]
-path = "/".join(path)
-print("joined path:", path)
-time = ["13", "20", "30"]
-time = ":".join(time)
-print("joined time:", time)
 ```
 
 - `upper, lower`: 대소문자 변경

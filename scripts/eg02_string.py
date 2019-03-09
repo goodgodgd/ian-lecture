@@ -105,15 +105,6 @@ except ValueError as ve:
     print("ruby not indexed, value error:", ve)
 
 
-print("\njoin strings")
-path = ["/home", "ian", "work", "ian-lecture"]
-path = "/".join(path)
-print("joined path:", path)
-time = ["13", "20", "30"]
-time = ":".join(time)
-print("joined time:", time)
-
-
 print("\nuppper and lower case")
 mixed = "PYthon"
 small = "python"
