@@ -31,3 +31,26 @@ h3 = num % 16
 
 print(h1, h2, h3)
 print(hex(num))
+
+print("if statements")
+if 13 ** 3 > 50 **2:
+    print("13**2 > 50**2")
+elif 13 ** 3 != 2197:
+    print("13**2 != 2197")
+elif 13 ** 3 >= 30 **2:
+    print("13**2 >= 30**2")
+else:
+    print("13 ** 3 < 30 **2")
+
+print("\nWhat is difference between `is` and `==`?")
+print("little difference for basic types(int, float, str)")
+print("12 == 12:", 12 == 12)
+print("12 is 12:", 12 is 12)
+print("12 == True:", 12 == True)
+print("12 is True:", 12 is True)
+
+print("big difference for other types")
+foo = [1]
+bar = [1]
+print("foo == bar", foo == bar)
+print("foo is bar", foo is bar)

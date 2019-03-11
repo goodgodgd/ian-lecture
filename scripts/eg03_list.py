@@ -73,21 +73,49 @@ print("joined time:", ":".join(time))
 
 print("\n'in' operator")
 twice = ["나연", "정연", "모모", "사나", "지효", "미나", "다현", "채영", "쯔위"]
-print("check 채영 in twice:", "채영" in twice)
-print("check 채령 in twice:", "채령" in twice)
+if "채영" in twice:
+    print("채영은 트와이스 입니다.")
+if "채령" not in twice:
+    print("채령은 트와이스가 아닙니다.")
 
 print("\nlist functions")
 tottenham = ['Kane', 'Moura', 'Lloris', 'Sissoko', 'Alli', 'Rose']
 print("Tottenham vs Southampton 2019-03-10 starting line up: \n", tottenham)
+# sort(): 원소 알파벳순, 크기순 정렬, in-place 함수기 때문에 아무것도 리턴하지 않는다.
 print("sort() is in-place function:", tottenham.sort())
 print("sort by name:", tottenham)
+# remove(): 입력한 원소를 삭제
 tottenham.remove('Moura')
+# insert(): 원하는 위치에 원소 삽입
 tottenham.insert(1, 'Son')
 print("At 72, Moura out Son in:", tottenham)
+# pop(): 입력이 없으면 마지막 원소를 삭제하고 pop(index)는 index의 원소를 삭제한다.
 print("At 82, pop Alli:", tottenham.pop(0))
-print("At 82, pop Rose:", tottenham.pop(-2))
+del tottenham[-2]
+print("At 82, del Rose")
+# append(): 원소를 마지막에 추가한다. 두 리스트의 원소들을 합칠 때는 +나 extend()를 쓴다.
 tottenham.append('Davies')
 tottenham.append('Llorente')
 print("At 82, Davies and Llorente in:", tottenham)
+# reverse(): 순서를 거꾸로 뒤집는다.
 tottenham.reverse()
 print("reverse order", tottenham)
+
+
+itzy = ["예지", "리아", "류진", "채령", "유나"]
+print("\nconvert to iter object")
+itzy = iter(itzy)
+try:
+    print("next1:", next(itzy))
+    print("next2:", next(itzy))
+    print("next3:", next(itzy))
+    print("next4:", next(itzy))
+    print("next5:", next(itzy))
+    print("next6:", next(itzy))
+except StopIteration:
+    print("error: iterator finished")
+
+print("\nsquare numbers")
+numbers = [1, 2, 3, 4, 5]
+for n in numbers:
+    print("square of {}  is {}".format(n, n*n))

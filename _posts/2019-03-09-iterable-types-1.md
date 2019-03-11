@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Data Structure in Python"
+title:  "Python Data Structure (1): List"
 date:   2019-03-09 09:00:13
 categories: 2019-1-systprog
 ---
@@ -8,7 +8,7 @@ categories: 2019-1-systprog
 
 # 파이썬 데이터 구조
 
-파이썬에는 네 가지 데이터 구조가 존재한다. `List, Dictionary, Tuple, Set` 이다. 이 네 가지 기본 자료구조는 파이썬이 가진 무궁한 잠재력의 원천이다. 파이썬에서 가장 많이 쓰이는 패키지인 `numpy`와 `pandas`도 기본 자료구조로부터 시작하게 되어있으므로 기본 자료 구조를 편안하게 쓸 수 있어야 고급 패키지들도 잘 활용할 수 있다. 네 가지 자료형은 List > Dictionary >> Tuple > Set 순서로 많이 쓰인다. 특히 List와 Dictionary는 많이 쓰이기도 하고 정말 쉽고 유용하기 때문에 잘 알아두도록 하자.
+파이썬에는 네 가지 데이터 구조가 존재한다. `List, Dictionary, Tuple, Set` 이다. 이 네 가지 기본 자료구조는 파이썬이 가진 편리함의 원천이다. 파이썬에서 가장 많이 쓰이는 패키지인 `numpy`와 `pandas`도 기본 자료구조로부터 시작하게 되어있으므로 기본 자료 구조를 익숙하게 쓸 수 있어야 고급 패키지들도 잘 활용할 수 있다. 네 가지 자료형은 List > Dictionary >> Tuple > Set 순서로 많이 쓰인다. 특히 List와 Dictionary는 많이 쓰이기도 하고 정말 쉽고 유용하기 때문에 잘 알아두도록 하자.
 
 ## 1. List
 
@@ -132,61 +132,61 @@ print(second_row)
 
 - `len()`:  파이썬 내장 함수로 여러 원소를 담고 있는 대부분의 객체들은 이 함수로 길이(갯수)를 잴 수 있다. 문자열(str)의 길이, `list, dict, tuple, set` 등의 자료구조의 원소 수를 읽을 수 있다.
 
-  ```python
-  string = "Hello"
-  print("\nlen of {}:".format(string), len(string))
-  # => len of Hello: 5
-  mylist = [1, 2, 3, 4]
-  print("len of {}:".format(mylist), len(mylist))
-  # => len of [1, 2, 3, 4]: 4
-  ```
+```python
+string = "Hello"
+print("\nlen of {}:".format(string), len(string))
+# => len of Hello: 5
+mylist = [1, 2, 3, 4]
+print("len of {}:".format(mylist), len(mylist))
+# => len of [1, 2, 3, 4]: 4
+```
 
-- del: 객체를 삭제하는 함수로 자료 구조에서 특정 원소를 삭제할 때 쓰인다. `del()`이 아님에 유의하자.
+- `del`: 객체를 삭제하는 함수로 자료 구조에서 특정 원소를 삭제할 때 쓰인다. `del()`이 아님에 유의하자.
 
-  ```python
-  mylist = [1, 2, 3, 4, 5]
-  del mylist[2]
-  print("\nafter deleting [2]:", mylist)
-  # => after deleting [2]: [1, 2, 4, 5]
-  del mylist[2:]
-  print("after deleting [2:]:", mylist)
-  # => after deleting [2:]: [1, 2]
-  ```
+```python
+mylist = [1, 2, 3, 4, 5]
+del mylist[2]
+print("\nafter deleting [2]:", mylist)
+# => after deleting [2]: [1, 2, 4, 5]
+del mylist[2:]
+print("after deleting [2:]:", mylist)
+# => after deleting [2:]: [1, 2]
+```
 
-- 원소 변경: 인덱싱이나 슬라이싱으로 잡은 리스트 범위에 `=` operator로 원소들을 수정할 수 있다. 
+- 원소 변경: 인덱싱이나 슬라이싱으로 잡은 리스트 범위에 `=` operator로 원소들을 수정할 수 있다. 참고로 문자열은 `=`를 이용한 문자 수정이 안된다. 대신 `replace()`나 슬라이싱을 이용하자.
 
-  ```python
-  mylist = [1, 2, 3, 4, 5]
-  mylist[0] = "Life"
-  print("\nchange element by indexing:", mylist)
-  # => change element by indexing: ['Life', 2, 3, 4, 5]
-  mylist[1:4] = ["is", "too", "short"]
-  print("\nchange elements by slicing:", mylist)
-  # => change elements by slicing: ['Life', 'is', 'too', 'short', 5]
-  ```
+```python
+mylist = [1, 2, 3, 4, 5]
+mylist[0] = "Life"
+print("\nchange element by indexing:", mylist)
+# => change element by indexing: ['Life', 2, 3, 4, 5]
+mylist[1:4] = ["is", "too", "short"]
+print("\nchange elements by slicing:", mylist)
+# => change elements by slicing: ['Life', 'is', 'too', 'short', 5]
+```
 
 - `join()`: 리스트의 내부 문자열 원소들을 하나의 문자열로 연결해준다. 연결할 때 각 문자열 사이에 `" "` 사이에 들어있는 문자열을 끼워 넣어준다.
 
-  ```python
-  print("\njoin strings")
-  path = ["/home", "ian", "work", "ian-lecture"]
-  print("joined path:", "/".join(path))
-  # => joined path: /home/ian/work/ian-lecture
-  time = ["13", "20", "30"]
-  print("joined time:", ":".join(time))
-  # => joined time: 13:20:30
-  ```
+```python
+print("\njoin strings")
+path = ["/home", "ian", "work", "ian-lecture"]
+print("joined path:", "/".join(path))
+# => joined path: /home/ian/work/ian-lecture
+time = ["13", "20", "30"]
+print("joined time:", ":".join(time))
+# => joined time: 13:20:30
+```
 
 - `in`: `in`은 함수가 아니라 operator다. 리스트에 특정 원소가 들어있는지 확인할 때 쓴다.
 
-  ```python
-  twice = ["나연", "정연", "모모", "사나", "지효", "미나", "다현", "채영", "쯔위"]
-  print("\n'in' operator")
-  print("check 채영 in twice:", "채영" in twice)
-  # => check 채영 in twice: True
-  print("check 채령 in twice:", "채령" in twice)
-  # => check 채령 in twice: False
-  ```
+```python
+print("\n'in' operator")
+twice = ["나연", "정연", "모모", "사나", "지효", "미나", "다현", "채영", "쯔위"]
+if "채영" in twice:
+    print("채영은 트와이스 입니다.")
+if "채령" not in twice:
+    print("채령은 트와이스가 아닙니다.")
+```
 
 ### 1.4 리스트 내장 함수
 
@@ -206,7 +206,7 @@ tottenham.insert(1, 'Son')
 print("At 72, Moura out Son in:", tottenham)
 # pop(): 입력이 없으면 마지막 원소를 삭제하고 pop(index)는 index의 원소를 삭제한다.
 print("At 82, pop Alli:", tottenham.pop(0))
-print("At 82, pop Rose:", tottenham.pop(-2))
+print("At 82, del Rose:", del tottenham[-2])
 # append(): 원소를 마지막에 추가한다. 두 리스트의 원소들을 합칠 때는 +나 extend()를 쓴다.
 tottenham.append('Davies')
 tottenham.append('Llorente')
@@ -217,7 +217,6 @@ print("reverse order", tottenham)
 ```
 
 결과
-
 ```
 list functions
 Tottenham vs Southampton 2019-03-10 starting line up: 
@@ -226,8 +225,51 @@ sort() is in-place function: None
 sort by name: ['Alli', 'Kane', 'Lloris', 'Moura', 'Rose', 'Sissoko']
 At 72, Moura out Son in: ['Alli', 'Son', 'Kane', 'Lloris', 'Rose', 'Sissoko']
 At 82, pop Alli: Alli
-At 82, pop Rose: Rose
+At 82, del Rose
 At 82, Davies and Llorente in: ['Son', 'Kane', 'Lloris', 'Sissoko', 'Davies', 'Llorente']
 reverse order ['Llorente', 'Davies', 'Sissoko', 'Lloris', 'Kane', 'Son']
 ```
 
+#### 연습문제
+
+1) `wdgirls_debut`에서 멤버를 삭제, 추가하여 `wdgirls_final`을 만들어 보세요.
+
+```python
+wdgirls_debut = ["선예", "예은", "소희", "현아", "선미"]
+# => wdgirls_final = ["예은", "선미", "유빈", "혜림"]
+```
+
+### 1.5 반복문(for)과 리스트
+
+`for`문과 리스트는 뗄레야 뗄수 없는 사이기에 리스트와 함께 배우는 것이 좋다. `for`문은 다음과 같이 쓴다.
+```python
+for e in somthing_iteratable:
+    statement1
+    statement2
+```
+
+`if`와 마찬가지로 `for`로 시작하는 줄은 `:`로 끝나고, `for`에 의해 반복되는 블럭은 들여쓰기로 구분한다. `in`을 기준으로 앞에는 원소 변수(`e`)를 쓰고 뒤에는 반복가능한(iterable) 객체를 쓴다. 여기서 iterable 하다는 것은 정확히 말하면 `iter` 객체로 변환할 수 있는 객체고 `iter` 객체는 `next()`함수를 통해 원소를 하나씩 꺼낼 수 있다. 이것이 반복문의 내부 원리다.
+```python
+itzy = ["예지", "리아", "류진", "채령", "유나"]
+print("convert to iter object")
+itzy = iter(itzy)
+try:
+    print("next1:", next(itzy))
+    print("next2:", next(itzy))
+    print("next3:", next(itzy))
+    print("next4:", next(itzy))
+    print("next5:", next(itzy))
+    print("next6:", next(itzy))
+except StopIteration:
+    print("error: iterator finished")
+```
+
+여기서 배우는 `list, dict, tuple, set` 모두 여러 원소를 담고 있는 iterable 객체이기 때문에 `for`문을 통해서 리스트의 원소들을 하나씩 처리할 수 있다.
+```python
+print("square numbers")
+numbers = [1, 2, 3, 4, 5]
+for n in numbers:
+    print("square of {}  is {}".format(n, n*n))
+```
+
+`for`를 사용하는 다양한 기법들은 다음에 더 공부해보기로 하자.

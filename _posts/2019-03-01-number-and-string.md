@@ -107,8 +107,70 @@ integer <class 'int'> 28
 
 1) 위 연산을 이용해서 13의 3승을 16진수로 표현하시오.
 
+## 3. 조건문(if)과 비교 연산자
 
-## 2. 문자열 타입
+파이썬에서도 `>, <, <=, >=, ==, !=` 연산자를 통해 숫자의 크기를 비교할 수 있다. 비교 연산자를 배우는 김에 `if`문까지 배워보자. 파이썬에서 `if`는 다음과 같이 쓴다.
+```python
+if cond1:
+    statement1
+    statement2
+elif cond2:
+    statement3
+    statement4
+else:
+    statement5
+```
+C언어의 if문과 비교해보면, 
+1. 조건문(if) 아래의 코드 블럭에 괄호가 없고 오직 들여쓰기로만 블럭을 구분한다. 
+2. 들여쓰기는 일반적으로 탭(Tab)이 아닌 공백 4칸을 사용한다. 탭은 에디터마다 길이가 다르므로 일정한 공백을 사용하는 것이 좋다. 탭과 공백을 섞어쓰면 에러가 난다. 하지만! PyCharm이나 VScode 같은 파이썬 전문 에디터에서는 탭을 알아서 공백 4칸으로 만들어준다.
+3. 새로운 블럭은 항상 `:`(colon) 기호 아래 들여쓰기 후 시작한다. 
+4. 첫 번째 조건문에는 `if`를 쓰고 두 번째 조건이 있을 시 ~~`else if`가 아닌~~ `elif`를 쓴다. 나머지 조건은 `else`로 처리한다.  
+
+이러한 규칙에 따라 조건문을 작성해보자.
+
+```python
+print("if statements")
+if 13 ** 3 > 50 **2:
+    print("13**2 > 50**2")
+elif 13 ** 3 != 2197:
+    print("13**3 != 2197")
+elif 13 ** 3 >= 30 **2:
+    print("13**3 >= 30**2")
+else:
+    print("13**3 < 30**2")
+```
+
+그런데 파이썬에는 비교 연산자가 하나 더 있다. 바로 `is`다. 파이썬에서 두 객체가 '같음'을 비교하는 연산자는 `is`와 `==` 두 가지가 있다. 둘은 비슷해 보이지만 전혀 다른 연산자다. `is`는 동일한 객체, 즉 같은 주소(메모리)를 공유하는 객체인지를 확인하는 것이고, `==`는 객체의 값(value)이 같은지를 확인하는 것이다. 다음 예시를 통해 확인해보자.
+
+```python
+print("\nWhat is difference between `is` and `==`?")
+print("little difference for basic types(int, float, bool, str)")
+print("12 == 12:", 12 == 12)
+print("12 is 12:", 12 is 12)
+print("12 == True:", 12 == True)
+print("12 is True:", 12 is True)
+
+print("big difference for other types")
+foo = [1]
+bar = [1]
+print("foo == bar", foo == bar)
+print("foo is bar", foo is bar)
+```
+
+결과
+```
+What is difference between `is` and `==`?
+little difference for basic types(int, float, str)
+12 == 12: True
+12 is 12: True
+12 == True: False
+12 is True: False
+big difference for other types
+foo == bar True
+foo is bar False
+```
+
+## 4. 문자열 타입
 
 파이썬에선 문자열을 정말 편리하게 다룰수 있다. 파이썬의 많은 장점 중 하나이다.  문자열은 간단하게 `" "`이나 `' '`사이에 글자를 쓰면 된다.
 
@@ -318,16 +380,6 @@ print(f"{mixed} == {small}:", mixed == small)
 print(f"{mixed}.lower() == {small}:", mixed.lower() == small)
 print(f"{mixed}.upper() == {small}.upper():", mixed.upper() == small.upper())
 print(f"{mixed}.lower() is {small}.lower():", mixed.lower() is small.lower())
-```
-
-> **`is`와 `==`의 차이**
-> python에서 두 객체를 비교하는 연산자는 `is`와 `==` 두 가지가 있다. 둘은 비슷해 보이지만 전혀 다른 연산자다. `is`는 동일한 객체, 즉 같은 주소(메모리)를 공유하는 객체인지를 확인하는 것이고, `==`는 객체의 값(value)이 같은지를 확인하는 것이다. 다음 예시를 통해 확인해보자.
-
-```python
-print("\nWhat is difference between `is` and `==`?")
-print("1 is True:", 1 is True)
-print("1 == True:", 1 == True)
-print("(0 == 1) is False:", (0 == 1) is False)
 ```
 
 - `strip, lstrip, rstrip`: 공백이나 불필요한 시작/끝 문자 지우기
