@@ -166,6 +166,7 @@ print("read tuple", basic_tuple[:3])
 print("\nHow to use set")
 entrance_order = ["k3", "aventador", "k3", "a6", "cayenne", "a6"]
 car_set = set(entrance_order)
+print("car set:", car_set)
 # => car set: {'a6', 'aventador', 'k3', 'cayenne'}
 ```
 
@@ -181,3 +182,16 @@ print("union set by function:", large_comps.union(motor_comps))
 print("difference set by |:", large_comps - motor_comps)
 print("difference set by function:", large_comps.difference(motor_comps))
 ```
+
+결과
+
+```
+set example: companies
+intersection set by &: {'hyundai'}
+intersection set by function: {'hyundai'}
+union set by |: {'lg', 'kia', 'hyundai', 'samsung', 'sk', 'gm'}
+union set by function: {'lg', 'kia', 'hyundai', 'samsung', 'sk', 'gm'}
+difference set by |: {'lg', 'sk', 'samsung'}
+difference set by function: {'lg', 'sk', 'samsung'}
+```
+
