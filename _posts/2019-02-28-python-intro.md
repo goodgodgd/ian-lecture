@@ -52,9 +52,9 @@ categories: 2019-1-systprog
 
 ```python
 if a == 1:
-	print(1)
+    print(1)
 for a in range(10):
-	print(a)
+    print(a)
 ```
 
 ### 2. 인간의 언어와 비슷하다.
@@ -64,12 +64,12 @@ for a in range(10):
 mylist = ['abc', 'bc', 'cde']
 # if 'abc' is in mylist
 if 'abc' in mylist:
-	print("abc is in mylist")
+    print("abc is in mylist")
 # iterate values in mylist as v
 for v in mylist:
-	# if v starts with 'a' and length of v is > 1
-	if v.startswith('a') and len(v) > 1:
-		print(v)
+    # if v starts with 'a' and length of v is > 1
+    if v.startswith('a') and len(v) > 1:
+        print(v)
 ```
 
 ### 3. 인터프리터 언어다.
@@ -96,7 +96,7 @@ print("type:", type(a), "value:", a)
 
 # 함수에서 인자를 받을 때도 타입명을 쓰지 않는다.
 def square(a)
-	return a*a
+    return a*a
 ```
 
 ### 5. 오픈 소스(open-source)다.

@@ -19,14 +19,14 @@ print("pooh's weight is", pooh[2])
 print("tigers's age is", tigger[1])
 ```
 
-첫 줄의 `good_for_list`는 리스트로 저장하기 좋은 자료다. 모두가 이름을 나타내고 있다. 하지만 그 아래를 보라. 자료를 이렇게 저장하면 순서를 똑같이 맞추지 못 할 경우 잘못된 결과를 나타내기 쉽고 코드만 봐서는 왜 [0]이 종이고 [1]이 나이인지 이해하기 어렵다. 이러한 대응관계를 명시적으로 보여줄 수 있는 자료 구조가 딕셔너리(`Dictionary`)다. 사전에서 어떤 단어를 찾으면 그 단어에 대산 설명이 나오듯이 `Dictionary`는 키(Key)를 입력하면 그에 해당하는 값(Value)를 출력해주는 자료 구조다. 리스트는 `[]`(brace)로 만들었지만 딕셔너리는 `{}`(bracket)으로 만든다. `:`(colon)을 사이에 두고 앞에 Key 값을 쓰고 뒤에 Value 값을 쓴다. Key:Value 쌍은 쉼표(,)로 구분한다. 값을 꺼낼때는 리스트, 딕셔너리 모두 `[]`(brace)를 쓰고 리스트는 인덱스 숫자를 쓰지만 딕셔너리는 키 값을 입력한다.
+첫 줄의 `good_for_list`는 리스트로 저장하기 좋은 자료다. 모두가 이름을 나타내고 있다. 하지만 그 아래를 보라. 자료를 이렇게 저장하면 순서를 똑같이 맞추지 못 할 경우 잘못된 결과를 나타내기 쉽고 코드만 봐서는 왜 [0]이 종이고 [1]이 나이인지 이해하기 어렵다. 이러한 대응관계를 명시적으로 보여줄 수 있는 자료 구조가 딕셔너리(`Dictionary`)다. 사전에서 어떤 단어를 찾으면 그 단어에 대산 설명이 나오듯이 `Dictionary`는 키(Key)를 입력하면 그에 해당하는 값(Value)를 출력해주는 자료 구조다. 리스트는 `[]`(bracket)으로 만들었지만 딕셔너리는 `{}`(brace)로 만든다. `:`(colon)을 사이에 두고 앞에 Key 값을 쓰고 뒤에 Value 값을 쓴다. Key:Value 쌍은 쉼표(,)로 구분한다. 값을 꺼낼때는 리스트, 딕셔너리 모두 `[]`(bracket)를 쓰고 리스트는 인덱스 숫자를 쓰지만 딕셔너리는 키 값을 입력한다.
 
 ```python
 mydict = {Key1:Value1, Key2:Value2, ...}
 print("call value from key1", mydict[Key1])
 ```
 
-곰돌이 푸우 예제를 이해하기 쉽게 다시 써보자. 타이핑하는데 손은 더 들지만 코드를 명시적으로 이해할 수 있게 됐다. 특히 여럿이 같이 작업할 때는 남들이 편하게 이해할 수 있게 쓰는 것이 중요하다.
+곰돌이 푸우 예제를 이해하기 쉽게 다시 써보자. 타이핑하는데 손은 더 들지만 코드를 명시적으로 이해할 수 있다. 특히 여럿이 같이 작업할 때는 남들이 편하게 이해할 수 있게 쓰는 것이 중요하다.
 
 ```python
 pooh = {"species": "bear", "age": 5, "weight": 50}
@@ -179,7 +179,7 @@ print("intersection set by &:", large_comps & motor_comps)
 print("intersection set by function:", large_comps.intersection(motor_comps))
 print("union set by |:", large_comps | motor_comps)
 print("union set by function:", large_comps.union(motor_comps))
-print("difference set by |:", large_comps - motor_comps)
+print("difference set by -:", large_comps - motor_comps)
 print("difference set by function:", large_comps.difference(motor_comps))
 ```
 

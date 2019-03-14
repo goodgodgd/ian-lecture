@@ -22,7 +22,7 @@ depth2_list = ["Hello", 1234, [1.234, True]]
 depth3_list = [["Hello"], [1234, [1.234, True]]]
 ```
 
-`empty_list1`, `empty_list2`는 비어있는 리스트를 만드는 두 가지 방법이다. ~~파이썬의 철학은 어디에...~~  `mylist1`은 네 가지 기본 자료형으로 만든 리스트이고 `mylist2`, `mylist3`은 리스트 안에 리스트를 담은 것이다.
+`empty_list1`, `empty_list2`는 비어있는 리스트를 만드는 두 가지 방법이다. ~~파이썬의 철학은 어디에...~~  `basic_list`은 네 가지 기본 자료형으로 만든 리스트이고 `depth2_list`, `depth3_list`은 리스트 안에 리스트를 담은 것이다.
 
 ### 1.1 리스트 인덱싱과 슬라이싱
 
