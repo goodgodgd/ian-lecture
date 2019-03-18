@@ -206,7 +206,8 @@ tottenham.insert(1, 'Son')
 print("At 72, Moura out Son in:", tottenham)
 # pop(): 입력이 없으면 마지막 원소를 삭제하고 pop(index)는 index의 원소를 삭제한다.
 print("At 82, pop Alli:", tottenham.pop(0))
-print("At 82, del Rose:", del tottenham[-2])
+print("At 82, del Rose")
+del tottenham[-2]
 # append(): 원소를 마지막에 추가한다. 두 리스트의 원소들을 합칠 때는 +나 extend()를 쓴다.
 tottenham.append('Davies')
 tottenham.append('Llorente')
