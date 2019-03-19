@@ -145,11 +145,49 @@ print(int_square)
 ```
 
 `list comprehension`은 앞에 간단한 처리과정을 넣어서 다양하게 쓰일 수 있고 다중 `for`문이 들어갈 수도 있다. 이러한 기능을 `list`만 쓸 수 있는 건 아니고 `dictionary`와 `set`에도 적용될 수 있다.
+
 ```python
 print("\ndictionary comprehension")
 abilities = ["suit", "Mjölnir", "physical power", "spider web"]
 heroes = {name: power for name, power in zip(marvel_heroes, abilities)}
 print("hero's ability", heroes)
 ```
+
+
+
+## HW1. 파이썬 자료구조 연습
+
+다음 문장들을 순서대로 구현하는 코드를 작성하시오.
+
+```python
+heroes = ["iron man", "thor", "hulk", "captain america", "hawkeye"]
+print("original heroes:", heroes)
+# 1. 히어로들을 알파벳 순으로 정렬하시오.
+
+print("sorted heroes:", heroes)
+# 2. 1의 결과에서 첫번째와 마지막 히어로를 제거하고 captain marvel과 spider man을 추가하시오.
+
+print("in and out heroes:", heroes)
+# 3. for문을 이용하여 'man'으로 끝나는 히어로 이름에서 'man'을 'woman'으로 바꾼 새 리스트 heroines를 만드시오.
+
+print("transgender heroines:", heroines)
+# 4. list comprehension을 이용하여 'woman'이 들어간 히어로 이름을 'human'으로 바꾼 새 리스트 neutralized_heroes를 만드시오.
+
+print("neutralized heroes:", heroines)
+# 5. 2의 heroes에서 enumerate를 이용하여 홀수번째 히어로만 뽑아낸 새 리스트 odd_heroes를 만드시오.
+
+print("odd heroes", odd_heroes)
+# 6. 히어로 이름과 배우 이름을 딕셔너리로 묶은 hero_actors를 만들어 보시오.
+
+print("hero actors and actresses", hero_actors)
+print("iron man is played by", hero_actors["iron man"])
+print("iron man is played by", hero_actors["iron man"])
+
+```
+
+
+
+
+
 
 
