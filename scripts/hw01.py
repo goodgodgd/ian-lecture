@@ -4,7 +4,7 @@ print("original heroes:", heroes)
 heroes.sort(reverse=True)
 print("1. sorted heroes:", heroes)
 
-# 2. 1의 결과에서 첫번째와 마지막 히어로를 제거하고 captain marvel과 spider man을 추가하시오.
+# 2. 1의 결과에서 captain america와 hawkeye를 제거하고 captain marvel과 spider man을 추가하시오.
 heroes.remove("hawkeye")
 heroes.pop()
 heroes.append("captain marvel")
