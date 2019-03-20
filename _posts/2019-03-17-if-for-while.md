@@ -22,7 +22,7 @@ while condition:
 
 ```python
 marvel_heroes = ["iron man", "thor", "hulk", "spider man", "black widow", "capt. america", "capt. marvel"]
-dc_heroes = ["batman", "superman", "aquaman", "wonder women", "harley quinn"]
+dc_heroes = ["batman", "superman", "aquaman", "wonder woman", "harley quinn"]
 all_heros = marvel_heroes + dc_heroes
 
 myhero = "batman"
@@ -157,37 +157,40 @@ print("hero's ability", heroes)
 
 ## HW1. 파이썬 자료구조 연습
 
-다음 문장들을 순서대로 구현하는 코드를 작성하시오.
+다음 코드의 주석들을 구현하는 코드를 작성하시오.
 
 ```python
 heroes = ["iron man", "thor", "hulk", "captain america", "hawkeye"]
 print("original heroes:", heroes)
-# 1. 히어로들을 알파벳 순으로 정렬하시오.
+# 1. 히어로들을 알파벳 역순으로 정렬하시오.
 
-print("sorted heroes:", heroes)
+print("1. sorted heroes:", heroes)
+
 # 2. 1의 결과에서 첫번째와 마지막 히어로를 제거하고 captain marvel과 spider man을 추가하시오.
 
-print("in and out heroes:", heroes)
+print("2. change heroes:", heroes)
+
 # 3. for문을 이용하여 'man'으로 끝나는 히어로 이름에서 'man'을 'woman'으로 바꾼 새 리스트 heroines를 만드시오.
 
-print("transgender heroines:", heroines)
+print("3. transgender heroines:", heroines)
+
 # 4. list comprehension을 이용하여 'woman'이 들어간 히어로 이름을 'human'으로 바꾼 새 리스트 neutralized_heroes를 만드시오.
 
-print("neutralized heroes:", heroines)
+print("4. neutralized heroes:", neutralized_heroes)
+
 # 5. 2의 heroes에서 enumerate를 이용하여 홀수번째 히어로만 뽑아낸 새 리스트 odd_heroes를 만드시오.
 
-print("odd heroes", odd_heroes)
-# 6. 히어로 이름과 배우 이름을 딕셔너리로 묶은 hero_actors를 만들어 보시오.
+print("5. odd heroes", odd_heroes)
 
-print("hero actors and actresses", hero_actors)
-print("iron man is played by", hero_actors["iron man"])
-print("iron man is played by", hero_actors["iron man"])
+# 6. for문에 zip 함수를 써서 5의 히어로 이름과 배우 이름을 딕셔너리로 묶은 hero_actors를 만들어 보시오.
+
+print("6. hero actors", hero_actors)
+print("6. thor was played by", hero_actors["thor"])
+print("6. spider man was played by", hero_actors["spider man"])
+
+# 7. 2의 heroes를 연기한 배우들의 이름을 6의 hero_actors를 이용해 출력하시오.
+# 이름이 있으면 6번과 같이 이름을 출력하고 없으면 "?? has no name"을 출력하시오.
 
 ```
-
-
-
-
-
 
 
