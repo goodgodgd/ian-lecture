@@ -69,10 +69,17 @@ for name, score in scores.items():
 print("\nHow to use tuple")
 empty_tuple1 = ()
 empty_tuple2 = tuple()
-basic_tuple = ("Hello", 1234, 1.234, True)
+basic_tuple1 = ("Hello", 1234, 1.234, True)
+basic_tuple2 = "Hello", 1234, 1.234, True
 depth2_tuple = ("Hello", 1234, (1.234, True))
-print("read tuple", basic_tuple[0])
-print("read tuple", basic_tuple[:3])
+print("read tuple", basic_tuple1[0])
+print("read tuple", basic_tuple2[1])
+print("read tuple", basic_tuple1[:3])
+
+print("\ndistribute values")
+pooh = "pooh", "bear", 5, 50
+name, species, age, weight = pooh
+print("tupled pooh info:", name, species, age, weight)
 
 print("\nHow to use set")
 entrance_order = ["k3", "aventador", "k3", "a6", "cayenne", "a6"]

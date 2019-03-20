@@ -147,16 +147,27 @@ for name, score in scores.items():
 
 ## 3. Tuple
 
-튜플(Tuple)을 한 마디로 말하면 수정불가능한 리스트다. 리스트는 `[]`, 딕셔너리는 `{}`로 만들었다면 튜플은 `()`(parenthesis)로 만든다. 튜플은 생성만 할 뿐 원소를 수정하거나 삭제할 수 없다. 생성된 튜플에서는 값을 읽을 수만 있는데 리스트와 동일하게 인덱싱과 슬라이싱을 통해 읽을 수 있다.
+튜플(Tuple)을 한 마디로 말하면 수정불가능한 리스트다. 리스트는 `[]`, 딕셔너리는 `{}`로 만들었다면 튜플은 `()`(parenthesis)로 만든다. 혹은 `()`를 생략해도 된다. 튜플은 생성만 할 뿐 원소를 수정하거나 삭제할 수 없다. 생성된 튜플에서는 값을 읽을 수만 있는데 리스트와 동일하게 인덱싱과 슬라이싱을 통해 읽을 수 있다.
 
 ```python
 print("\nHow to use tuple")
 empty_tuple1 = ()
 empty_tuple2 = tuple()
-basic_tuple = ("Hello", 1234, 1.234, True)
+basic_tuple1 = ("Hello", 1234, 1.234, True)
+basic_tuple2 = "Hello", 1234, 1.234, True
 depth2_tuple = ("Hello", 1234, (1.234, True))
-print("read tuple", basic_tuple[0])
+print("read tuple", basic_tuple1[0])
+print("read tuple", basic_tuple2[1])
 print("read tuple", basic_tuple[:3])
+```
+
+튜플은 여러 값을 하나에 담았다가 다시 여러 변수에 나눠줄 수 있어서 경우에 따라 유용하게 쓸 수 있다.
+
+```python
+print("\ndistribute values")
+pooh = "pooh", "bear", 5, 50
+name, species, age, weight = pooh
+print("tupled pooh info:", name, species, age, weight)
 ```
 
 ## 4. Set
