@@ -185,7 +185,7 @@ print("5. odd heroes", odd_heroes)
 # 6. for문에 zip 함수를 써서 5의 히어로 이름과 배우 이름을 딕셔너리로 묶은 hero_actors를 만들어 보시오.
 
 print("6. hero actors", hero_actors)
-print("6. thor was played by", hero_actors["thor"])
+print("6. thor was played by", hero_actors["hawkeye"])
 print("6. spider man was played by", hero_actors["spider man"])
 
 # 7. 2의 heroes를 연기한 배우들의 이름을 6의 hero_actors를 이용해 출력하시오.
