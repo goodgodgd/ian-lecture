@@ -1,4 +1,4 @@
-
+# list_ops.py
 def add(foo, bar):
     out = []
     for f, b in zip(foo, bar):
@@ -6,7 +6,7 @@ def add(foo, bar):
     return out
 
 
-def substitute(foo, bar):
+def subtract(foo, bar):
     out = []
     for f, b in zip(foo, bar):
         out.append(f - b)
@@ -25,3 +25,9 @@ def divide(foo, bar):
     for f, b in zip(foo, bar):
         out.append(f / b)
     return out
+
+
+spam = [51, 23]
+ham = [34, 67]
+if __name__ == '__main__':
+    eggs = add(spam, ham)
