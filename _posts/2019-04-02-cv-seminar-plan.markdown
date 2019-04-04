@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "2019 Spring Seminar Plan"
-date:   2019-04-01 09:00:01
+date:   2019-04-02 09:00:01
 categories: 2019-1-seminar
 ---
 
