@@ -23,7 +23,7 @@ def add(foo, bar):
         out.append(f + b)
     return out
 
-def substitute(foo, bar):
+def subtract(foo, bar):
     out = []
     for f, b in zip(foo, bar):
         out.append(f - b)
@@ -86,7 +86,7 @@ except Exception as e:
 ```python
 import list_ops as lo
 
-goo = lo.substitute(foo, bar)
+goo = lo.subtract(foo, bar)
 print("{} + {} = {}".format(foo, bar, goo))
 goo = lo.divide(bar, foo)
 print("{} * {} = {}".format(bar, foo, goo))
@@ -97,11 +97,11 @@ print("{} * {} = {}".format(bar, foo, goo))
 아예 외부 모듈명을 쓰지 않고 바로 함수나 변수를 사용하고 싶을 때는 `from module import object`를 쓰면 된다. `from`을 써서 가져온 객체는 내부에서 정의한 것과 동일하게 사용가능하다.
 
 ```python
-from list_ops import add, substitute, spam
+from list_ops import add, subtract, spam
 
 goo = add(foo, bar)
 print("{} + {} = {}".format(foo, bar, goo))
-goo = substitute(bar, foo)
+goo = subtract(bar, foo)
 print("{} - {} = {}".format(bar, foo, goo))
 print("spam = {}".format(spam))
 ```
