@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Control statements: if, for and while"
+title:  "[Python] Control statements: if, for and while"
 date:   2019-03-17 09:00:13
 categories: 2019-1-systprog
 ---

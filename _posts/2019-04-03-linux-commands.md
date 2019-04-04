@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Linux Commands"
+title:  "[Seminar] Linux Commands"
 date:   2019-04-03 12:00:01
 categories: 2019-1-seminar
 ---

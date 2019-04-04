@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Linux Installation"
+title:  "[Seminar] Linux Installation"
 date:   2019-04-03 09:00:01
 categories: 2019-1-seminar
 ---

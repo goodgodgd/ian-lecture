@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Number and String in Python"
+title:  "[Python] Number and String in Python"
 date:   2019-03-01 09:00:13
 categories: 2019-1-systprog
 ---

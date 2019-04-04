@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Use Basic Packages"
+title:  "[Python] Use Basic Packages"
 date:   2019-04-02 09:00:13
 categories: 2019-1-systprog
 ---

@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Introduction to Python"
+title:  "[Python] Introduction to Python"
 date:   2019-02-28 09:00:13
 categories: 2019-1-systprog
 ---

@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Data Structure 1: List"
+title:  "[Python] Data Structure 1: List"
 date:   2019-03-09 09:00:13
 categories: 2019-1-systprog
 ---
