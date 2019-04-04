@@ -91,7 +91,7 @@ elif create == 0:
 
 ## 1.3 파일  폴더 존재 확인
 
-위 예제에서처럼 파일이나 폴더가 있는지를 모르고 파일 생성/삭제를 하게되면 에러가 나기 쉽다. 파일이나 폴더가 이미 있는지 확인하는 함수가 필요한데 `os.path.isdir`과 `os.path.isfile`을 이용하면 된다.
+위 예제에서처럼 파일이나 폴더가 있는지를 모르고 파일 생성/삭제를 하게되면 에러가 나기 쉽다. 파일이나 폴더가 이미 있는지 확인하는 함수가 필요한데 `os.path.isdir()`과 `os.path.isfile()`을 이용하면 된다.
 
 ```python
 import os
@@ -115,7 +115,7 @@ else:
 
 ## 1.4 경로명 만들기
 
-폴더경로와 파일명을 합칠 때는 둘 사이에 `//`나 `\`를 넣어주면 된다. 문자열 연산으로 해도 되지만 합치는 방식이 운영체제 별로 조금씩 다르기 때문에 `os.path.join` 함수를 쓰면 좋다. 반대로 전체 경로에서 마지막 파일이나 폴더명을 분리할 때는 `os.path.basename`을 쓰고 그것이 속한 경로명만 추출하고 싶을 때는 `os.path.dirname`을 사용한다.
+폴더경로와 파일명을 합칠 때는 둘 사이에 `//`나 `\`를 넣어주면 된다. 문자열 연산으로 해도 되지만 합치는 방식이 운영체제 별로 조금씩 다르기 때문에 `os.path.join()` 함수를 쓰면 좋다. 반대로 전체 경로에서 마지막 파일이나 폴더명을 분리할 때는 `os.path.basename()`을 쓰고 그것이 속한 경로명만 추출하고 싶을 때는 `os.path.dirname()`을 사용한다.
 
 ```python
 import os
@@ -138,7 +138,7 @@ print([newpath])
 
 ## 1.5 파일목록 출력
 
-다수의 파일이나 폴더들을 자동으로 관리해야 한다고 했을 때 일단 어떤 파일들이 있는지 목록을 만들수 있어야 한다. 파이썬에는 파일 목록을 보는 여러 방법이 있지만 그 중 `os.listdir`과 `glob.glob`이 쓰기 쉬운 편이다. 간단한 예제를 실행해보자.
+다수의 파일이나 폴더들을 자동으로 관리해야 한다고 했을 때 일단 어떤 파일들이 있는지 목록을 만들수 있어야 한다. 파이썬에는 파일 목록을 보는 여러 방법이 있지만 그 중 `os.listdir()`과 `glob.glob()`이 쓰기 쉬운 편이다. 간단한 예제를 실행해보자.
 
 ```python
 import os
@@ -160,7 +160,7 @@ pyfilelist = glob.glob(search_pattern)
 print("python file list:", pyfilelist)
 ```
 
-`os.listdir`은 입력된 폴더 내의 모든 객체들의 이름만 리스트로 출력하고 `glob.glob`은 입력된 패턴과 일치하는 모든 객체를 경로명과 함께 출력한다. `glob`에서는 Regular expression으로 검색 패턴을 받아들이는데 그냥 `*`이 모든 문자열을 대체할 수 있다는 것만 알아도 유용하게 쓸 수 있다. 주의할 점은 파일 목록에 파일명만 나오는 것이 아니라 입력한 경로 아래 폴더명도 나오기 때문에 이들을 구분할 필요가 있다. 이때도 `os.path.isdir` 과 `os.path.isfile`이 유용하게 쓰인다.
+`os.listdir()`은 입력된 폴더 내의 모든 객체들의 이름만 리스트로 출력하고 `glob.glob()`은 입력된 패턴과 일치하는 모든 객체를 경로명과 함께 출력한다. `glob`에서는 Regular expression으로 검색 패턴을 받아들이는데 그냥 `*`이 모든 문자열을 대체할 수 있다는 것만 알아도 유용하게 쓸 수 있다. 주의할 점은 파일 목록에 파일명만 나오는 것이 아니라 입력한 경로 아래 폴더명도 나오기 때문에 이들을 구분할 필요가 있다. 이때도 `os.path.isdir()` 과 `os.path.isfile()`이 유용하게 쓰인다.
 
 ```python
 filelist = [os.path.basename(path) for path in filelist if os.path.isfile(path)]
@@ -188,7 +188,7 @@ def chagne_lyrics_and_save(srcdir, dstdir, change_terms):
     # create dstdir if it does not exist (os.path.isdir)
     # create text file list (os.mkdir)
     # for loop over file list
-        # open and read source file (with open as fr, fr.read)
+        # open and read src text file (with open as fr; fr.read)
         # replace srcterms to dstterms: for src, dst in change_terms.items()
         # create new file name located at dstdir (replace)
         # open and write new file (with open as fw, fw.write)
@@ -205,7 +205,7 @@ if __name__ == "__main__":
 
 # 2. numpy
 
-`numpy`는 배열 객체를 만들고 배열 연산을 할 수 있는 패키지다. `numpy`를 쓰면 `MATLAB`의 행렬 연산과 비슷한 기능을 한다. `numpy`의 다양한 기능과 세부적인 용법은 책 한권 분량이기 때문에 여기서는 기초적인 내용만 다룬다. 이후 배울 영상처리에서도 영상을 `numpy`의 배열로 처리하게 되므로 잘 알아두어야 한다.
+`numpy`는 배열 객체를 만들고 배열 연산을 할 수 있는 패키지다. `numpy`를 쓰면 `MATLAB`의 행렬 연산과 비슷한 기능을 한다. `numpy`의 다양한 기능과 세부적인 용법은 책 한권 분량이기 때문에 여기서는 기초적인 내용만 다룬다. 이후 배울 영상처리에서도 영상을 `numpy`의 배열로 처리하게 되므로 잘 알아두어야 한다. `numpy`에 관한 내용은 점프투파이썬이 아닌 [이곳](http://taewan.kim/post/numpy_cheat_sheet/)을 참고해서 만들었다. 이곳에 더 자세한 내용이 있으니 들어가서 공부해보길 바란다.
 
 ## 2.1 Array vs Matrix
 
@@ -213,7 +213,7 @@ MATLAB과 numpy의 가장 큰 차이는 기본 데이터 형식이 MATLAB은 **�
 
 ## 2.2 Array Creation
 
-배열을 생성하는 가장 기본적인 방법은 리스트를 이용하는 것이다. `list of list`를 이용하면 2차원 배열도 만들 수 있다. `np.array()` 함수에 list를 넣으면 되는데 `dtype`이란 입력인자로 데이터 타입도 정할 수 있다.
+배열을 생성하는 가장 기본적인 방법은 리스트를 이용하는 것이다. 다중 리스트를 이용하면 다차원 배열도 만들 수 있다. `np.array()` 함수에 list를 넣으면 되는데 `dtype`이란 입력인자로 데이터 타입도 정할 수 있다.
 
 ```python
 import numpy as np
@@ -225,7 +225,7 @@ print("array2d\n", np.array(array2d, dtype=float))
 print("array3d\n", np.array(array3d))
 ```
 
-`np.zeros, np.ones, np.identity, np.eye`은 0이나 1로 채워진 배열을 원하는 크기로 만드는 함수다. 일정 간격의 숫자를 만들때는 `np.linspace`나 `np.arange`를 쓰는데 `np.linspace`는 숫자 개수를 기준으로, `np.arange`는 간격을 기준으로 배열을 만든다. `np.permutation(n)`은 `[0, n)` 범위의 정수를 랜덤하게 섞은 배열을 생성해준다. 
+`np.zeros(), np.ones(), np.identity(), np.eye()`는 0이나 1로 채워진 배열을 원하는 크기로 만드는 함수다. 일정 간격의 숫자를 만들때는 `np.linspace()`나 `np.arange()`를 쓰는데 `np.linspace()`는 숫자 개수를 기준으로, `np.arange()`는 간격을 기준으로 배열을 만든다. `np.permutation(n)`은 `[0, n)` 범위의 정수를 랜덤하게 섞은 배열을 생성해준다. 
 
 ```python
 print("ones\n", np.ones((2, 4)))
@@ -237,7 +237,7 @@ print("arange:", np.arange(5, 10, 0.5))
 print("permutation:\n", np.random.permutation(10))
 ```
 
-`np.linspace`와 `np.arange`로 비슷한 배열을 만들었는데 `np.linspace`는 범위가 `[5, 10]`이고 `np.arange`는 `[5, 10)`이라서 마지막 10이 안 들어간다는 것에 유의하자.  
+`np.linspace()`와 `np.arange()`로 비슷한 배열을 만들었는데 `np.linspace()`는 범위가 `[5, 10]`이고 `np.arange`는 `[5, 10)`이라서 마지막 10이 안 들어간다는 것에 유의하자.  
 
 난수로 배열을 생성하는 것도 가능하다. `np.random` 아래의 함수들을 사용한다.
 
@@ -251,9 +251,31 @@ print("normal by N(0, 1)\n", np.random.randn(3, 4))
 print("random int over [0, 5)\n", np.random.randint(0, 5, size=(2, 3)))
 ```
 
-## 2.3 Array Indexing, Slicing
+## 2.3 Array Shape
 
-다차원 `numpy` 배열에서 특정 데이터 값이나 일부 배열을 가져오는 방법은 리스트와 비슷하다. 다차원 배열을 인덱싱, 슬라이싱 할 때는 하나의 `[d0, d1, ...]`안에 모든 차원의 인덱스를 넣는다. 기존에 MATLAB을 써본 사람은 배열에서 인덱스를 정할 때 n번째 인덱스가 가로축인지 세로축인지 깊이축인지 헷갈릴 수 있다. 그럴때는 다차원 리스트 안에 들어있는 값에 접근할 때를 생각해보면 된다. 가장 바깥쪽 리스트가 `d0`에 해당하고 점점 안으로 들어갈 수록 `d1, d2, ...`가 되는 것이다. 가로축, 세로축을 기준으로 생각하면 헷갈리니 개념을 잘 잡아야 한다. 다음 예제를 보면서 익혀보자.
+배열에서 `np.ndarray.shape` 변수는 각 차원의 크기 정보를 튜플로 가지고 있다. 전체 차원수는  `np.ndarray.ndim` 으로 확인할 수 있다.
+
+```python
+foo = np.ones((3, 4, 2))
+print(foo.shape)
+print(foo.ndim)
+```
+
+배열을 다루다 보면 shape을 바꾸고 싶을 때가 있다. 1차원 벡터를 2차원 배열로 바꾼다던지 3차원 배열을 1차원 벡터로 늘여서 표현한다던지 등의 경우가 있다. 이럴때는 `np.ndarray.reshape()`이라는 함수를 쓰면 된다. 아래 예시에서 어떻게 이런 결과가 나오는지 헷갈릴 수 있지만 데이터를 한 줄로 쭉 펴놓고 배열 모양에 순서대로 하나씩 넣는다고 생각하면 이해가 된다.
+
+```python
+foo = np.arange(0, 6)
+print("foo", foo)
+print("foo (2,3)\n", foo.reshape(2, 3))
+foo3d = foo.reshape(2, 3, 1)
+print("foo (2,3,1)\n", foo3d)
+print("foo (3,2)\n", foo3d.reshape(3, 2))
+print("foo (3,2)\n", foo3d.reshape(2, 3))
+```
+
+## 2.4 Array Indexing, Slicing
+
+다차원 `numpy` 배열에서 특정 데이터 값이나 일부 배열을 가져오는 방법은 리스트와 비슷하다. 다차원 배열을 인덱싱, 슬라이싱 할 때는 하나의 `[d0, d1, ...]`안에 모든 인덱스를 넣는다. 기존에 MATLAB을 써본 사람은 배열에서 인덱스를 정할 때 n번째 인덱스가 가로축인지 세로축인지 깊이축인지 헷갈릴 수 있다. 그럴때는 다차원 리스트 안에 들어있는 값에 접근할 때를 생각해보면 된다. 가장 바깥쪽 리스트가 `d0`에 해당하고 점점 안으로 들어갈 수록 `d1, d2, ...`가 되는 것이다. 가로축, 세로축을 기준으로 생각하면 헷갈리니 개념을 잘 잡아야 한다. 다음 예제를 보면서 익혀보자.
 
 ```python
 data_list = [[[5, 6, 2], [3, 4, 9]], [[1, 7, 2], [3, 8, 0]]]
@@ -269,7 +291,7 @@ print("data[0, 1] =", data[0, 1])
 print("data[0, 1, 2] =", data[0, 1, 2])
 ```
 
-인덱싱 하는 순서는 다차원 리스트와 같고 인덱스를 여러 괄호에 따로 쓰느나 한 괄호에 쓰느냐의 차이만 있다. 슬라이싱에서는 더 큰 차이가 있는데 다차원 리스트는 다차원 슬라이싱을 할 수 없지만 `numpy` 배열에서는 가능하다. 배열의 크기를 보고 싶다면 `array.shape`이 배열의 현재 크기를 튜플로 나타내준다.
+인덱싱 하는 순서는 다차원 리스트와 같고 인덱스를 여러 괄호에 따로 쓰느나 한 괄호에 쓰느냐의 차이만 있다. 슬라이싱에서는 더 큰 차이가 있는데 다차원 리스트는 다차원 슬라이싱을 할 수 없지만 `numpy` 배열에서는 가능하다. 
 
 ```python
 print("\ndata: shape={}\n{}".format(data.shape,  data))
@@ -288,7 +310,7 @@ print("6) data[:1, 1:, :]: shape={}\n{}".format(data[:1, 1:, :].shape, data[:1, 
 - 5)에서 나오는 숫자들은 4)와 같지만 `d1`에서 인덱싱이 아닌 슬라이싱을 했기 때문에 길이 1인 차원이 하나 더 생겼다. 리스트에서 인덱싱하면 값이 나오고 슬라이싱하면 리스트가 나온다는 것을 상기하자. 슬라이싱을 하면 크기와 관계없이 그 차원은 배열로 남고 인덱싱을 하면 그 차원은 값만 남기고 사라진다.
 - 6)은 모든 차원을 슬라이싱 했기 때문에 3차원 배열이 된다.
 
-## 2.3 Array Operations
+## 2.5 Array Operations
 
 배열 사이의 연산은 단순히 원소 사이의 연산으로 치환된다. 아래 예시에서 operator와 그에 해당하는 함수도 봐두자.
 
@@ -324,7 +346,7 @@ print("foo[foo % 2 == 0]:", foo[foo % 2 == 0])
 
 `foo > bar`를 프린트해보면 각각의 원소에 대해서 비교 연산을 한 TF 배열이 나온다. 이 TF 배열을 인덱스처럼 넣으면 `True`에 해당하는 원소들만 1차원 배열로 나오게 된다. 
 
-## 2.4 Math Functions
+## 2.6 Math Functions
 
 `numpy`는 `sin, cos, tan, exp, log, sqrt` 등의 기본적인 수학함수들도 제공한다. 배열에 적용하면 배열의 모든 원소에 대해 각각 계산한 결과가 나온다.
 
@@ -363,7 +385,7 @@ print("max", np.max(foo, axis=0))
 print("std", np.std(foo, axis=1))
 ```
 
-## 2.5 Merging Arrays
+## 2.7 Merging Arrays
 
 여러개의 배열이 있는데 이들을 하나의 배열로 합치고 싶을 땐 어떻게 해야할까? `np.stack`이나 `np.concatenate` 함수를 쓰면 된다. 둘 다 배열을 합치는 함수인데 차이는 `np.stack`는 새로운 차원을 추가하며 합친다는 것이고 `np.concatenate`는 기존 배열이 갖고 있는 차원수를 유지하며 합친다는 것이다. 무슨 말인지 예시를 보며 이해해보자.
 
@@ -383,9 +405,9 @@ print("concat axis=1\n", np.concatenate([foo, bar], axis=1))
 
 결과를 보면 `np.stack`의 결과는 모두 차원이 늘어나서 3차원이고 `np.concatenate`의 결과를 차원이 유지가되서 2차원인 것을 볼 수 있다. `np.stack`의 원리는 지정한 차원에서의 원소끼리 `[]`로 한번더 묶어주는 것이다. `stack1`을 만드는 과정을 보면 하위 배열들을 배열로 한번 더 묶는 것이다. 반면에 `np.concatenate`은 두 배열을 배열의 원소로서 묶는게 아니라 하나의 배열로 합친다. 
 
-## 2.6 Iterate by for
+## 2.8 Iterate by for
 
-`numpy` 배열에 대해서도 for문을 돌 수 있는데 단순히 첫 번째 차원(d0)에 대해 인덱싱한 결과가 나온다고 보면 된다. 다음 예시에서 인덱싱한 결과와 배열을 for문에 바로 넣은 결과가 같은 것을 볼 수 있다.
+`numpy` 배열에 대해서도 for문을 돌 수 있는데 단순히 첫 번째 차원(d0)에 대해 순서대로 인덱싱한 결과가 나온다고 보면 된다. 다음 예시에서 인덱싱한 결과와 배열을 for문에 바로 넣은 결과가 같은 것을 볼 수 있다.
 
 ```python
 for i in range(len(foo)):

@@ -4,9 +4,9 @@ print("original heroes:", heroes)
 heroes.sort(reverse=True)
 print("1. sorted heroes:", heroes)
 
-# 2. 1의 결과에서 captain america와 hawkeye를 제거하고 captain marvel과 spider man을 추가하시오.
-heroes.remove("hawkeye")
+# 2. 1의 결과에서 첫번째와 마지막 히어로를 제거하고 captain marvel과 spider man을 추가하시오.
 heroes.pop()
+heroes.pop(0)
 heroes.append("captain marvel")
 heroes.append("spider man")
 print("2. change heroes:", heroes)
@@ -31,12 +31,12 @@ for i, hero in enumerate(heroes):
 print("5. odd heroes", odd_heroes)
 
 # 6. for문에 zip 함수를 써서 5의 히어로 이름과 배우 이름을 딕셔너리로 묶은 hero_actors를 만들어 보시오.
-actors = ["햄식이", "마크 러팔로", "톰 홀랜드"]
+actors = ["로다주", "제레미 레너", "톰 홀랜드"]
 hero_actors = {}
 for hero, actor in zip(odd_heroes, actors):
     hero_actors[hero] = actor
 print("6. hero actors", hero_actors)
-print("6. thor was played by", hero_actors["thor"])
+print("6. thor was played by", hero_actors["hawkeye"])
 print("6. spider man was played by", hero_actors["spider man"])
 
 # 7. 2의 heroes를 연기한 배우들의 이름을 6의 hero_actors를 이용해 출력하시오.

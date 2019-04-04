@@ -105,4 +105,19 @@ for row in foo:
     for value in row:
         print("v:", value)
 
+foo = np.ones((3, 4, 2))
+print("shape:", foo.shape)
+print("ndim:", foo.ndim)
+
+foo = np.arange(0, 6)
+print("foo", foo)
+print("foo (2,3)\n", foo.reshape(2, 3))
+foo3d = foo.reshape(2, 3, 1)
+print("foo (2,3,1)\n", foo3d)
+print("foo (3,2)\n", foo3d.reshape(3, 2))
+print("foo (3,2)\n", foo3d.reshape(2, 3))
+
+
+def find_mean(array, axis=None):
+    pass
 

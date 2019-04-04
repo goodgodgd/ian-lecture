@@ -23,7 +23,7 @@ def add(foo, bar):
         out.append(f + b)
     return out
 
-def substitute(foo, bar):
+def subtract(foo, bar):
     out = []
     for f, b in zip(foo, bar):
         out.append(f - b)
@@ -81,30 +81,30 @@ except Exception as e:
 
 2) 모듈 이름을 바꿔서 가져오는 방법
 
+일반적으로 모듈 이름은 모듈의 기능을 이해하기 쉽게 몇 개의 단어를 이어서 길게 짓는것이 보통이다. 게다가 패키지에서 복잡한 폴더 구조 아래 있는 모듈을 가져올 때는 더욱 import 문이 길어진다. 하지만 모듈의 객체를 불러올 때마다 긴 모듈 이름을 모두 쓰는 것은 번거로우므로 짧은 별명을 지어 가져올 수 있다. `import A as B` 라고 하면 `A` 모듈을 `B`라는 이름으로 가져오겠다는 뜻이다. 아래 코드에서도 `list_ops` 대신 `lo`를 써서 모듈 객체를 불러옴을 볼 수 있다.
+
 ```python
 import list_ops as lo
 
-goo = lo.substitute(foo, bar)
+goo = lo.subtract(foo, bar)
 print("{} + {} = {}".format(foo, bar, goo))
 goo = lo.divide(bar, foo)
 print("{} * {} = {}".format(bar, foo, goo))
 ```
 
-일반적으로 모듈 이름은 모듈의 기능을 이해하기 쉽게 몇 개의 단어를 이어서 길게 짓는것이 보통이다. 게다가 패키지에서 복잡한 폴더 구조 아래 있는 모듈을 가져올 때는 더욱 import 문이 길어진다. 하지만 모듈의 객체를 불러올 때마다 긴 모듈 이름을 모두 쓰는 것은 번거로우므로 짧은 별명을 지어 가져올 수 있다. `import A as B` 라고 하면 `A` 모듈을 `B`라는 이름으로 가져오겠다는 뜻이다. 아래 코드에서도 `list_ops` 대신 `lo`를 써서 모듈 객체를 불러옴을 볼 수 있다.
-
 3) 모듈에서 지정한 객체만 가져오는 방법
 
+아예 외부 모듈명을 쓰지 않고 바로 함수나 변수를 사용하고 싶을 때는 `from module import object`를 쓰면 된다. `from`을 써서 가져온 객체는 내부에서 정의한 것과 동일하게 사용가능하다.
+
 ```python
-from list_ops import add, substitute, spam
+from list_ops import add, subtract, spam
 
 goo = add(foo, bar)
 print("{} + {} = {}".format(foo, bar, goo))
-goo = substitute(bar, foo)
+goo = subtract(bar, foo)
 print("{} - {} = {}".format(bar, foo, goo))
 print("spam = {}".format(spam))
 ```
-
-아예 외부 모듈명을 쓰지 않고 바로 함수나 변수를 사용하고 싶을 때는 `from module import object`를 쓰면 된다. `from`을 써서 가져온 객체는 내부에서 정의한 것과 동일하게 사용가능하다.
 
 ## 3. 패키지 만들기
 
@@ -174,7 +174,7 @@ print("BMI:", bmi)
 
 ### 연습문제
 
-`numeric`이란 패키지 안에 `prime_number`라는 모듈을 만들고 그 안에 입력된 숫자 리스트 중에 어떤 것인 소수인지를 확인하는 `check_prime_number(numbers)`를 구현하시오. 이 함수를 이용하여 임의의 숫자 리스트를 입력하여 각 숫자가 소수인지 확인하시오.   
+`numeric`이란 패키지 안에 `prime_number`라는 모듈을 만들고 그 안에 입력된 숫자 리스트 중에 어떤 것이 소수인지를 확인하는 `check_prime_number(numbers)`를 구현하시오. 이 함수를 이용하여 임의의 숫자 리스트를 입력하여 각 숫자가 소수인지 확인하시오.   
 
 예시: [341, 12, 523, 59] => [False, False, True, True]
 
