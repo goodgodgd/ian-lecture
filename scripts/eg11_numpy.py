@@ -118,6 +118,6 @@ print("foo (3,2)\n", foo3d.reshape(3, 2))
 print("foo (3,2)\n", foo3d.reshape(2, 3))
 
 
-def find_mean(array, axis=None):
+def find_max(array, axis=None):
     pass
 
