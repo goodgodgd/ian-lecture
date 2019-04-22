@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Introduction to PyQt5"
+title:  "[Python] Introduction to PyQt5"
 date:   2019-04-20 09:00:01
 categories: jekyll
 ---
@@ -44,7 +44,7 @@ app.exec_()
 - `label`은 간단한 텍스트를 보여줄 수 있는 GUI 객체다. `label.show()`하면 객체를 화면에 띄운다.
 - `app.exec_()` 가 실행되어야 이벤트 루프가 시작되면서 입력을 받을 수 있는 상태가 된다. 파이썬은 GUI가 실행되는 동안 이 줄에 멈춰있다.
 
-### Design Methods: Python code vs Qt Designer
+### Design Methods: Writing code vs Qt Designer
 
 PyQt를 이용한 GUI 설계 방식은 두 가지가 있다. 위와 같이 직접 파이썬 코드로 GUI 객체를 생성하고 속성을 지정수도 있고 Qt Designer를 통해 GUI를 모두 설계한 뒤 이를 불러오는 방식이 있다. 두 방법이 장단점이 있는데 Qt Designer를 이용하면 그래픽 툴을 이용해 GUI를 쉽게 만들수 있고 실행 전 미리 시각적으로 볼 수 있기 때문에 시행착오가 적다. 하지만 GUI에 어떤 요소가 있는지 파이썬 코드에 드러나지 않기 때문에 GUI 설계가 끝난 뒤에도 Qt Designer를 항상 함께 실행해야 하는 불편함이 있다. Qt Designer를 이용하더라도 어차피 세부 설정이나 이벤트 처리는 파이썬 코드로 만들어야 하기 때문에 두 방식을 다 알아두는 것이 좋다.
 
@@ -73,26 +73,37 @@ class MyWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setupUI()
+        self.count = 0
 
     def setupUI(self):
-        self.setWindowTitle("Basic button event")
-        self.setGeometry(500, 200, 300, 200)
+        self.setWindowTitle("PyQt: Basic button event")
+        self.setGeometry(500, 200, 300, 150)
         print("window geometry:", self.geometry())
         print("window geometry:", self.geometry().x(), self.geometry().y(), self.geometry().width(), self.geometry().height())
-
+        # print button
         btn_print = QPushButton("Hello", self)
         btn_print.move(20, 20)
         btn_print.resize(100, 50)
-        btn_print.clicked.connect(self.hello_slot)
         print("btn_print position:", btn_print.pos(), btn_print.pos().x(), btn_print.pos().y())
         print("btn_print size:", btn_print.size(), btn_print.size().width(), btn_print.size().height())
-
+        btn_print.clicked.connect(self.hello_slot)
+        # close button
         btn_close = QPushButton("닫기", self)
         btn_close.move(20, 100)
         btn_close.clicked.connect(QCoreApplication.instance().quit)
+        # print label
+        self.label_print = QLabel("Hello PyQt", self)
+        self.label_print.move(150, 30)
 
     def hello_slot(self):
-        print("Hello PyQt5")
+        self.count = self.count + 1
+        self.label_print.setText(f"Hello PyQt {self.count}")
+
+def main():
+    app = QApplication(sys.argv)
+    mywindow = MyWindow()
+    mywindow.show()
+    app.exec_()
 
 def main():
     app = QApplication(sys.argv)
@@ -109,11 +120,12 @@ if __name__ == "__main__":
 기본 윈도우를 만들기 위해 `QMainWindow`를 상속받은 `MyWindow` 클래스 객체를 생성하였다. (`mywindow = MyWindow()`) 그리고 생성자 내부의 `setupUI()` 에서 윈도우를 디자인하였다. `setWindowTitle()`은 윈도우 제목을 지정하는 함수다.  `setGeometry(x, y, width, height)` 함수를 이용해 윈도우의 위치와 크기를 지정할 수 있다. `geometry` 함수는 현재 GUI 객체의 위치와 크기를 나타내는 `QRect(x, y, width, height)` 형식의 구조체를 반환한다. 
 
 ```python
-        self.setWindowTitle("PyQt: Basic button event")    
-        self.setGeometry(500, 200, 300, 300)
+        self.setWindowTitle("PyQt: Basic button event")
+        self.setGeometry(500, 200, 300, 150)
         print("window geometry:", self.geometry())
-        wnd_rect = self.geometry()
         print("window geometry:", self.geometry().x(), self.geometry().y(), self.geometry().width(), self.geometry().height())
+        # => window geometry: PyQt5.QtCore.QRect(500, 200, 300, 150)
+        # => window geometry: 500 200 300 150
 ```
 
 MainWindow 내부에 버튼을 추가할 때는 반드시 생성자의 두 번째 인자로 `self`가 들어가야만 윈도우에 버튼이 추가된다. 방금은 `setGeometry`함수로 위치와 크기를 한번에 지정했지만 `move(), resize()` 함수로 위치와 함수를 따로 지정하고 현재 설정된 값을 `pos(), size()`을 통해 읽을 수 있다. 여기서 중요한 것은 마지막 줄의 `connect` 함수다. `btn_print` 객체의 `clicked`라는 Signal을 `self.hello_slot`이라는 Slot 함수와 연결(connet)한 것이다. 이제 `btn_print`를 누르면 `hello_slot`이라는 함수가 실행될 것이다.
@@ -125,6 +137,8 @@ MainWindow 내부에 버튼을 추가할 때는 반드시 생성자의 두 번�
         print("btn_print position:", btn_print.pos(), btn_print.pos().x(), btn_print.pos().y())
         print("btn_print size:", btn_print.size(), btn_print.size().width(), btn_print.size().height())
         btn_print.clicked.connect(self.hello_slot)
+        # => btn_print position: PyQt5.QtCore.QPoint(20, 20) 20 20
+        # => btn_print size: PyQt5.QtCore.QSize(100, 50) 100 50
 ```
 
 두 번째 버튼은 닫기 버튼이므로 종료함수와 연결하였다. `QCoreApplication.instance().quit`은 GUI 이벤트 루프를 종료시켜 `app.exec_()` 다음으로 넘어가게 하는 함수다.
@@ -135,13 +149,21 @@ MainWindow 내부에 버튼을 추가할 때는 반드시 생성자의 두 번�
         btn_close.clicked.connect(QCoreApplication.instance().quit)
 ```
 
+`QLabel`은 화면상에 간단한 텍스트를 보여줄 수 있는 GUI 요소다. `setText()` 함수를 통해 텍스트 내용을 바꿀수 있다.
+
+```python
+        self.label_print = QLabel("Hello PyQt", self)
+        self.label_print.move(150, 30)
+    def hello_slot(self):
+        self.count = self.count + 1
+        self.label_print.setText(f"Hello PyQt {self.count}")
+```
+
+
+
 ### 참고문서 찾기
 
-위 예제를 보면 Signal & Slot 개념은 어느정도 이해할 수 있지만 `setWindowTitle(), setGeometry(), resize()` 같은 함수들은 어디서 나오는지 도통 감을 잡을 수 없다. PyQt가 파이썬 스크립트로 작성된 것이 아니라 속도를 위해 바이너리 라이브러리 형태로 제공되기 때문에 PyCharm에서도 내부 변수나 함수를 자동으로 보여줄 수 없다. [PyQT 공식 홈페이지](https://www.riverbankcomputing.com/software/pyqt/intro)가 있긴 한데 별 도움이 되진 않는다. [Qt Documentation](https://doc.qt.io/) 을 가야 모든 클래스와 함수에 관한 정보를 얻을 수 있다. 이곳은 **C++** 라이브러리를 위한 문서이지만 파이썬과 사용법이 같기 때문에 참고할만 하다. 예를 들어 `QMainWindow` 클래스에 대한 멤버 함수를 찾고 싶다면 구글에서 `qt5 qmainwindow`를 검색하여 [QMainWindow Class](https://doc.qt.io/qt-5/qmainwindow.html) 문서를 보자. 이곳에는 `setGeometry()` 함수가 없다. 이유는 대다수의 함수를 부모클래스인 `QWidget`에서 물려받았기 때문에 `QWidget` 클래스 문서로 들어가야 `setGeometry()` 함수에 대한 설명을 볼 수 있다. 하지만 굳이 부모클래스를 찾아갈 필요없이 첫 화면에 보이는 `List of all members, including inherited members` 라는 링크로 들어가면 상속받은 모든 함수를 볼 수 있으므로 여기서 해당 함수를 검색하면 찾을 수 있다.
+위 예제를 보면 Signal & Slot 개념은 어느정도 이해할 수 있지만 `setWindowTitle(), setGeometry(), resize()` 같은 함수들은 어디서 나오는지 도통 감을 잡을 수 없다. PyQt가 파이썬 스크립트로 작성된 것이 아니라 속도를 위해 바이너리 라이브러리 형태로 제공되기 때문에 PyCharm에서도 내부 변수나 함수를 자동으로 보여줄 수 없다. [PyQt 공식 홈페이지](https://www.riverbankcomputing.com/software/pyqt/intro)가 있긴 한데 별 도움이 되진 않는다. [Qt Documentation](https://doc.qt.io/) 을 가야 모든 클래스와 함수에 관한 정보를 얻을 수 있다. 이곳은 **C++** 라이브러리를 위한 문서이지만 파이썬과 사용법이 같기 때문에 참고할만 하다. 예를 들어 `QMainWindow` 클래스에 대한 멤버 함수를 찾고 싶다면 구글에서 `qt5 qmainwindow`를 검색하여 [QMainWindow Class](https://doc.qt.io/qt-5/qmainwindow.html) 문서를 보자. 이곳에는 `setGeometry()` 함수가 없다. 이유는 대다수의 함수를 부모클래스인 `QWidget`에서 물려받았기 때문에 `QWidget` 클래스 문서로 들어가야 `setGeometry()` 함수에 대한 설명을 볼 수 있다. 하지만 굳이 부모클래스를 찾아갈 필요없이 첫 화면에 보이는 `List of all members, including inherited members` 라는 링크로 들어가면 상속받은 모든 함수를 볼 수 있으므로 여기서 해당 함수를 검색하면 찾을 수 있다.
 
+![qt doc](/ian-lecture/assets/pyqt/qt-doc.png)
 
-다음 계획
-1. Qt 디자이너 이용해 위와 비슷한 예제 만드는 과정 보여주고
-2. 그 담에 위키북 참고해서 위젯 하나씩 설명 시그널 슬롯 무엇있는지 등
-3. 위키북 참고해서 메뉴, 상태바 등 설명
-4. 적당한 어플리케이션 만들기 
