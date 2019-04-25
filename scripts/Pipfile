@@ -11,6 +11,8 @@ pandas = "*"
 jupyter = "*"
 matplotlib = "*"
 sympy = "*"
+pyqt5 = "*"
+pyqt5-tools = "*"
 
 [requires]
 python_version = "3.6"
