@@ -95,11 +95,11 @@ $ ./myapp
 $ rm *.o *.out
 $ gedit Makefile
 # Makefile 작성
-myapp: main.o foo.o bar.o
-    g++ -o myapp main.o foo.o bar.o
+app.out: main.o foo.o bar.o
+	g++ -o app.out main.o foo.o bar.o
 main.o: foo.h bar.h main.cpp
-    foo.o: foo.h foo.cpp
-    bar.o: bar.h bar.cpp
+foo.o: foo.h foo.cpp
+bar.o: bar.h bar.cpp
 # 닫기
 $ make
 $ ./myapp
@@ -149,7 +149,7 @@ Makefile
 
 
 
-### 2.1 CMakeLists.txt 주요 명령어
+### 1.2.1 CMakeLists.txt 주요 명령어
 
 cmake의 주요 명령어를 하나씩 알아보면서 `CMakeLists.txt`를 작성해보자.
 
@@ -157,23 +157,26 @@ cmake의 주요 명령어를 하나씩 알아보면서 `CMakeLists.txt`를 작�
 
 #### cmake 예약 변수
 
-cmake에는 자동으로 지정된 변수들이 많은데 이들을 잘 알아야 원하는 빌드 설정을 하고 `CMakeLists.txt`도 쉽게 작성할 수 있다. 대부분 `CMAKE_`로 시작하며 `CMakeCache.txt`를 보면 어떤 변수들이 있는지 볼 수 있다. 그 중 중요한 몇 개만 여기에 설명한다.
+cmake에는 자동으로 지정된 변수들이 많은데 이들을 잘 알아야 원하는 빌드 설정을 하고 `CMakeLists.txt`도 쉽게 작성할 수 있다. 대부분 `CMAKE_`로 시작하며 `CMakeCache.txt`를 보면 어떤 변수들이 있는지 볼 수 있다. 그 중 중요한 몇 개만 여기에 설명하는데 아래 내용을 보다가 이 변수들이 나오면 의미를 찾아보자.
 
 - `CMAKE_CURRENT_SOURCE_DIR`: 소스 파일들을 찾을 디렉토리 경로로 `CMakeLists.txt`가 있는 경로가 기본 값으로 들어있다. 다른 경로를 설정할 때 이 변수를 기준으로 상대 경로를 만들면 편하다.
 - `CMAKE_INSTALL_PREFIX`: `make install` 할때 빌드 결과물이 복사될 경로로 `/usr/local`이 기본 값이다.
 - `CMAKE_PREFIX_PATH`: `find_package()` 등의 명령에서 외부 프로젝트를 검색할 경로다. 어떤 프로젝트에서 다른 프로젝트의 라이브러리를 사용하고자 할 때 이 변수의 경로에서 하위 디렉토리까지 전부 검색한다.
 - `CMAKE_PROJECT_NAME `: `project()`라는 명령어에서 설정할 수 있는 프로젝트의 이름이다.
 - `CMAKE_BUILD_TYPE`: 빌드 형상을 지정할 수 있는 변수인데 빌드 형상은 대표적으로 `Debug`와 `Release`가 있다.
+- `CMAKE_CXX_COMPILER`: c++컴파일러를 지정할 수 있다. `g++`이 기본이지만 다른 컴파일러나 `g++`의 다른 버전을 선택할 수 있다.
+- `CMAKE_CXX_FLAGS`: c++ 컴파일 옵션을 지정한다.
+- `CMAKE_INSTALL_PREFIX`: `make install`로 빌드 결과물을 설치할 base 경로를 설치한다. 자세한 설명은 `install()` 함수 내용을 참조한다.
 
 
 
 #### CMAKE_MINIMUM_REQUIRED() 최소 cmake 버전 확인
 
-외부 라이브러리(3rd party software)를 이용하는 경우 외부 라이브러리의 `*.cmake` 파일에서 빌드 설정을 가져오는 경우가 많은데 이때 서로 `CMakeLists.txt`를 작성할 당시의 cmake 버전이 어느정도 맞아야 작동할 수 있다. 버전이 너무 다르면 cmake의 변수명이나 문법이 조금씩 다를 수 있기 때문이다. 그래서 보통 **`CMakeLists.txt`의 맨 위**에 이 명령어를 쓴다. 아래는 cmake 버전 2.8 이상을 요구하는 명령어다. 현재 시스템에 설치된 cmake가 이보다 낮으면 에러가 발생하게 된다.
+외부 라이브러리(3rd party software)를 이용하는 경우 외부 라이브러리의 `*.cmake` 파일에서 빌드 설정을 가져오는 경우가 많은데 이때 서로 `CMakeLists.txt`를 작성할 당시의 cmake 버전이 어느정도 맞아야 작동할 수 있다. 버전이 너무 다르면 cmake의 변수명이나 문법이 조금씩 다를 수 있기 때문이다. 그래서 보통 **`CMakeLists.txt`의 맨 위**에 이 명령어를 쓴다. 아래는 cmake 버전 3.0 이상을 요구하는 명령어다. 현재 시스템에 설치된 cmake가 이보다 낮으면 에러가 발생하게 된다.
 
 ```cmake
 # cmake_minimum_required(VERSION <x.y.z.w>)
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.0)
 ```
 
 
@@ -234,7 +237,7 @@ add_executable(myapp ${SOURCE_FILES})
 일단 여기까지 쓰고 다시 빌드를 해보자. 자세한 설정이 더 들어갔지만 현재까지 결과는 같다. 지금까지 쓴 `CMakeLists.txt`는 다음과 같다. 한 줄씩 다시 보면서 의미를 떠올려보자.
 
 ```cmake
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.0)
 project("HelloCMake")
 message("project name: ${CMAKE_PROJECT_NAME}")
 message("install dir: ${CMAKE_INSTALL_PREFIX}")
@@ -250,9 +253,98 @@ add_executable(myapp ${SOURCE_FILES})
 
 
 
-### 2.2 라이브러리 생성 및 활용
+### 1.2.2 라이브러리 생성 및 활용
 
-실제로 쓸만한 프로그램을 만들기 위해서는 보통 외부의 라이브러리도 많이 쓰고 직접 라이브러리를 만들기도 한다. 라이브러리를 만들고 활용하는 방법에 대해 알아보자. 
+실제로 쓸만한 프로그램을 만들기 위해서는 보통 외부의 라이브러리도 많이 쓰고 직접 라이브러리를 만들기도 한다. 라이브러리를 만들고 활용하는 방법에 대해 알아보자. 우리가 이미 설치한 Qt5라이브러리를 활용하는 새로운 라이브러리 `libmyqt5`와 이 라이브러리를 사용하는 실행 파일 `myqt5_app`을 만들 것이다. 코드는 다음과 같다.
+
+```cpp
+// myqt5.h
+#ifndef FOO_H
+#define FOO_H
+
+#include <QtCore/QtCore>
+void myqt_func(const char* str);
+
+#endif // FOO_H
+// myqt5.cpp
+#include "myqt5.h"
+void myqt_func(const char* str) {
+	QString qstr = str;
+	qDebug() << "myqt5" << qstr;
+}
+// main.cpp
+#include <iostream>
+#include "myqt5.h"
+int main()
+{
+	std::cout << "Hello main\n";
+	myqt_func("hello myqt5");
+    return 0;
+}
+```
+
+
+
+
+
+일단 위에서 배운것을 토대로 기본 설정을 해보자. 한 가지 추가된 점은 `project`에서 `VERSION`이란 옵션 변수로 버전을 지정할 수 있다는 것이다.
+
+```cmake
+cmake_minimum_required(VERSION 3.0)
+# 프로젝트 이름과 버전 지정
+project("myqt5" VERSION 1.1)
+# 컴파일러 지정
+set(CMAKE_CXX_COMPILER g++)
+# 빌드 형상 지정: Release
+set(CMAKE_BUILD_TYPE Release)
+# true로 지정하면 빌드 과정의 모든 메시지 출력
+# set(CMAKE_VERBOSE_MAKEFILE true)
+# 빌드 결과물을 설치할 경로 지정하고 화면에 출력
+set(CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_SOURCE_DIR}/devel)
+message("install prefix ${CMAKE_INSTALL_PREFIX}")
+```
+
+
+
+#### ADD_COMPILE_OPTIONS() 컴파일 옵션 설정
+
+1.2.1 예제에서는 넣지 않았지만 실제로 컴파일을 할 때는 다양한 옵션을 입력해준다. 컴파일 옵션을 입력할 수 있는 함수가 `ADD_COMPILE_OPTIONS()`인데 옵션들을 공백으로 구분하여 넣어주면 된다. 컴파일 옵션을 지정하는 다른 방법은 `CMAKE_CXX_FLAGS`를 이용하는 것이다. 이 변수에 옵션 값을 넣어도 컴파일 옵션에 들어간다.
+
+```cmake
+# add_compile_options(<option1> <option2> <option3> ...)
+add_compile_options(-Wall -std=c++14 -O2 -fPIC)
+# set(CMAKE_CXX_FLAGS "-Wall -std=c++14 -O2 -fPIC")
+```
+
+- `-Wall`: 컴파일 과정에서의 모든 warning 화면에 출력
+- `-std=c++14`: c++14 사용
+- `-O2`: 2단계 컴파일 최적화 사용
+- `-fPIC`: 라이브러리를 만들 때 필요한 옵션
+
+다양한 컴파일 옵션에 대한 설명은 아래 링크들을 참조한다.  
+
+- [gcc 옵션 정리](https://devanix.tistory.com/169)
+- [컴파일 과정 & gcc 옵션 요약](http://egloos.zum.com/program/v/1373351)
+- [GCC -fPIC option](https://stackoverflow.com/questions/5311515/gcc-fpic-option)
+
+
+
+#### FIND_PACKAGE() 외부 라이브러리 검색
+
+외부 라이브러인 `Qt5Core`를 사용하기 위해 라이브러리를 검색해주는 함수다. `<package-name>Config.cmake`형식의 이름을 가진 파일을 찾고 그 파일의 설정변수를 가져온다. 또한 설정 파일의 디렉토리 경로를 `<package-name>_DIR`이란 변수에 저장하고 설정 파일의 full path를 `<package-name>_CONFIG`이란 변수에 저장한다. 다음은 `Qt5Core` 라이브러리를 찾으면서 생긴 변수들을 출력하는 함수다. `REQUIRED` 옵션은 빌드에 필수적인 패키지란 뜻이다. `REQUIRED`가 붙었는지 찾지 못하면 에러가 난다.
+
+```cmake
+find_package(Qt5Core REQUIRED)
+message("=== find package(Qt5Core) generated Qt5Core_DIR=${Qt5Core_DIR}, Qt5Core_CONFIG=${Qt5Core_CONFIG}")
+message("=== find package(Qt5Core) loaded Qt5Core_INCLUDE_DIRS=${Qt5Core_INCLUDE_DIRS}")
+```
+
+메시지 출력 결과는 다음과 같다. `Qt5CoreConfig.cmake`파일로부터 `Qt5Core_INCLUDE_DIRS` 변수를 불러왔다. 이 변수는 이후 헤더파일을 찾는데 사용된다.
+
+> === find package(Qt5Core) generated Qt5Core_DIR=/usr/lib/x86_64-linux-gnu/cmake/Qt5Core, Qt5Core_CONFIG=/usr/lib/x86_64-linux-gnu/cmake/Qt5Core/Qt5CoreConfig.cmake
+> === find package(Qt5Core) loaded Qt5Core_INCLUDE_DIRS=/usr/include/x86_64-linux-gnu/qt5/;/usr/include/x86_64-linux-gnu/qt5/QtCore;/usr/lib/x86_64-linux-gnu/qt5//mkspecs/linux-g++
+
+
 
 
 
