@@ -15,7 +15,7 @@ Qt는 원래 C++을 위한 cross-platform GUI 라이브러리로 시작하였으
 
 ### What is PyQt?
 
-Qt를 이용한 GUI는 C++에서 인기가 많아서 이를 파이썬에서도 사용하고자 Qt의 파이썬 바인딩인 PyQt가 만들어졌다. 과거에는 Qt4가 주류였기 때문에 PyQt4가 많이 쓰였지만 Qt4가 2015년 이후로 지원이 끝나면서 Qt5가 주류가 되고 그에 따라 **PyQt5**가 주로 쓰인다. 앞으로 그냥 PyQt라고 하면 PyQt5를 지칭하는 것으로 하자. Qt 라이브러리 대부분을 파이썬에서도 쓸 수 있게 되었다. 기존에도 Tkinter 등의 GUI 패키지가 있었지만 Qt처럼 GUI로 GUI를 그리는 툴이 없기 때문에 요즘은 파이썬에서도 GUI는 PyQt로 개발하는 경우가 많다. [PyQt를 이용한 프로젝트](https://wiki.python.org/moin/PyQt/SomeExistingApplications)
+Qt를 이용한 GUI는 C++에서 인기가 많아서 이를 파이썬에서도 사용하고자 Qt의 파이썬 바인딩인 PyQt가 만들어졌다.Qt 라이브러리 대부분을 파이썬에서도 쓸 수 있게 되었다.  과거에는 Qt4가 주류였기 때문에 PyQt4가 많이 쓰였지만 Qt4가 2015년 이후로 지원이 끝나면서 Qt5가 주류가 되고 그에 따라 **PyQt5**가 주로 쓰인다. 앞으로 그냥 PyQt라고 하면 PyQt5를 지칭하는 것으로 하자. 기존에도 Tkinter 등의 GUI 패키지가 있었지만 Qt처럼 GUI로 GUI를 그리는 툴이 없기 때문에 요즘은 파이썬에서도 GUI는 PyQt로 개발하는 경우가 많다. [PyQt를 이용한 프로젝트](https://wiki.python.org/moin/PyQt/SomeExistingApplications)
 
 ### How to Install
 
@@ -40,7 +40,7 @@ label.show()
 app.exec_()
 ```
 
-- `app = QApplication(sys.argv)`은 pyqt 기반 전체 GUI를 관리하는 객체다.
+- `app = QApplication(sys.argv)`은 전체 GUI를 관리하는 객체다.
 - `label`은 간단한 텍스트를 보여줄 수 있는 GUI 객체다. `label.show()`하면 객체를 화면에 띄운다.
 - `app.exec_()` 가 실행되어야 이벤트 루프가 시작되면서 입력을 받을 수 있는 상태가 된다. 파이썬은 GUI가 실행되는 동안 이 줄에 멈춰있다.
 
