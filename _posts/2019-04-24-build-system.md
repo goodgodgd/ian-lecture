@@ -1,11 +1,11 @@
 ---
 layout: post
-title:  "[Seminar] ROS build system"
+title:  "[Seminar] CMake build system"
 date:   2019-04-24 09:00:01
 categories: Seminar
 ---
 
-First write a post here, then move it to `_post` after completion.
+
 
 # 1. Linux Build System
 

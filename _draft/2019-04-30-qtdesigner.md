@@ -1,11 +1,19 @@
 ---
 layout: post
-title:  "Draft"
-date:   2019-04-22 09:00:01
+title:  "[Python] QtDesigner 활용"
+date:   2019-04-30 09:00:01
 categories: jekyll
 ---
 
-First write a post here, then move it to `_post` after completion.
+
+
+# 1. Simple QtDesigner Example
+
+이전 포스트에서 PyQt 코드를 이용해 간단한 GUI를 만들어 보았다면 이번에는 QtDesigner를 이용해 동일한 GUI를 만들어보자.
+
+
+
+
 
 
 
