@@ -1,13 +1,13 @@
 ---
 layout: post
-title:  "[Python] Implement GUI Text Editor"
+title:  "[Python] QtDesigner 활용"
 date:   2019-04-30 09:00:01
 categories: jekyll
 ---
 
 
 
-# 1. GUI Text Editor
+## 2. GUI Text Editor
 
 지금까지는 `QPushButton`과 `QLabel`만 써서 PyQt의 GUI를 사용하는 흐름을 배웠다. 이제부터는 GUI 텍스트 에디터를 구현하는 실습을 하면서 다양한 GUI 객체들을 활용하는 법을 배울것이다. 여기서는 그 중에서 자주 쓰이는 GUI 객체들만 활용하고 알아보고 나머지는 [Qt Documentation](<https://doc.qt.io/qt-5/index.html>)에서 검색해서 용법을 찾아보면 된다.
 

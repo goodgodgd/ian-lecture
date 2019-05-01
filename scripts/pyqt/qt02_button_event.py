@@ -36,9 +36,8 @@ class MyWindow(QMainWindow):
 
 def main():
     app = QApplication(sys.argv)
-    mywindow = MyWindow()
-    print(mywindow.__dict__)
-    mywindow.show()
+    my_wnd = MyWindow()
+    my_wnd.show()
     app.exec_()
 
 
