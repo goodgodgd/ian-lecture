@@ -48,6 +48,25 @@ if __name__ == "__main__":
 
 
 
+`QTextEdit`은 이 프로젝트에서 계속 사용될 것이기 때문이 주요 함수들을 아래와 같이 정리한다.
+
+- setText(text): text를 화면에 표시한다.
+- str toPlainText(): 화면에 표시중인 텍스트를 리턴한다.
+- QCursor textCursor(): 현재 커서 정보를 담고 있는 `QCursor` 객체를 리턴한다.
+- setFontFamily(str font): 글꼴을 font로 바꾼다.
+- setTextColor(QColor color): `QColor ` 객체로 글꼴의 색을 지정한다.
+- setFontWeight(int weight): QFont 내부에 정의된 weight 상수로 글꼴의 굵기를 지정한다.
+- setFontItalic(bool set): True/False를 입력하여 글꼴의 기울기를 지정한다.
+- setFontPointSize(int size): 글꼴의 크기를 지정한다.
+
+> <<Signal 사전>> [QTextEdit](<https://doc.qt.io/qt-5/qtextedit.html#signals>)  
+>
+> **cursorPositionChanged**: 커서 위치가 변할 때 발생
+>
+> **textChanged**: 표시중인 텍스트가 변할 때 발생
+
+
+
 ## 2. QMenu, QAction
 
 이제 화면 상단에 파일을 열고 닫을 수 있는 메뉴를 만들고 기능을 구현한다. QtDesigner에서 윈도우 상단의 `TypeHere`에 `File`이란 메뉴(QMenu)를 추가하고 그 아래 `Open`과 `Save`라는 액션(QAction)을 추가한다. 그러면 자연스럽게 Object Inspector 메뉴에 아래와 같이 객체들이 추가된다.
@@ -60,7 +79,7 @@ if __name__ == "__main__":
 
 ><<Signal 사전>> [QAction](<https://doc.qt.io/qt-5/qaction.html#signals>)  
 >
->**triggered**: 상단 메뉴의 action을 클릭했을 때 발생하는 Signal이다.
+>**triggered**: 상단 메뉴의 action을 클릭했을 때 발생
 
 `actionOpen.triggered`는 `open_file` 함수와 연결했고 `actionSave.triggered`는 `save_file` 함수와 연결하였다. 
 
@@ -131,12 +150,6 @@ It’s dangerous 따끔해 넌 장미 같아
 ## 3. QStatusBar
 
 텍스트를 읽어나 수정할 때 글자 수와 현재 위치를 윈도우 아래 statusbar에 출력해보자. 새 UI를 만들때 MainWindow를 선택하면 기본으로 윈도우 아래 `statusbar` 객체가 포함돼있다. 먼저 `textEdit`에서 커서가 이동할 때 발생하는 Signal과 이를 처리하는 Slot 함수(update_status)를 연결해야 한다.
-
-> <<Signal 사전>> [QTextEdit](<https://doc.qt.io/qt-5/qtextedit.html#signals>)  
->
-> **cursorPositionChanged**: QTextEdit 객체에서 커서 위치가 변할 때 발생
->
-> **textChanged**: QTextEdit 객체에서 텍스트가 변할 때 발생
 
 ```python
     def setup_ui(self):
@@ -395,7 +408,7 @@ QtDesigner에서 Input Widgets 아래 `Line Edit` 을 윈도우에 두 개를 �
         self.textEdit.setText(text)
 ```
 
-`textEdit.toPlainText()`으로 현재의 텍스트를 문자열로 받았고 이 문자열에서 두 개의 line edit으로 입력받은 두 단어를 교체하였다. `lineEdit_replace_src.text()`가 기존 텍스트에서 검색할 기존 단어이고 `lineEdit_replace_dst.text()`는 새로운 텍스트에서 기존 단어 대신 들어갈 단어이다.
+`textEdit.toPlainText()`으로 현재의 텍스트를 문자열로 받았고 이 문자열에서 두 개의 line edit으로 입력받은 두 단어를 교체하였다. `lineEdit_replace_src.text()`가 기존 텍스트에서 검색할 기존 단어고 `lineEdit_replace_dst.text()`는 새로운 텍스트에서 기존 단어 대신 들어갈 단어다.
 
 `fancy.txt`를 열어서 `fancy`를 `desire`로 바꾼 결과이다.
 
