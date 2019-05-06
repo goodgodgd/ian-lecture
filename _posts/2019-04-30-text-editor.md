@@ -2,7 +2,7 @@
 layout: post
 title:  "[Python] Implement GUI Text Editor"
 date:   2019-04-30 09:00:01
-categories: jekyll
+categories: 2019-1-systprog
 ---
 
 
@@ -240,7 +240,7 @@ UI 파일을 저장하고 코드로 돌아가보자. 일단 `Black` 버튼을 �
 >
 > **toggled**: 버튼을 눌러서 체크 상태가 변하면 발생, Slot 함수에서 체크 상태를 나타내는 `bool` 타입의 입력인자를 받을 수 있다.
 
-위 코드에서는 `radioButton_black`을 체크하면 `set_color_black()`가 실행되도록 했다. 위 방식대로 세 가지 색을 선택하려면 세 개의 radio button을 각각의 Slot 함수에 연결해야 할 것이다. 하지만 이렇게하면 버튼이 늘어남에 따라 코드가 상당히 길어진다. 이때 세 개의 버튼을 하나의 `QButtonGroup` 객체에 담으면 한 번의 connect로 세 개의 버튼을 모두 처리할 수 있다.  
+위 코드에서는 `radioButton_black`을 체크하면 `set_color_black()`가 실행되도록 했다. 위 방식대로 세 가지 색을 선택하려면 세 개의 radio button을 각각의 Slot 함수에 연결해야 할 것이다. 하지만 이렇게하면 버튼이 늘어남에 따라 코드가 상당히 길어진다. 이때 세 개의 버튼을 하나의 `QButtonGroup` 객체에 담으면 한 번의 connect로 세 개의 버튼을 모두 처리할 수 있다.  
 
 아래 코드를 보면 `QButtonGroup` 클래스의 `rb_color_group`이라는 객체를 만들고  세 개의 버튼을 거기에 담았다. 그런뒤 `buttonPressed`라는 Signal을 `change_color()` 함수에 연결하였다.
 
@@ -284,7 +284,7 @@ from PyQt5.QtGui import QColor
 
 `QButtonGroup` 의 Signal들은 그룹에 속한 버튼을 하나라도 클릭하면 발생하므로 Slot 함수를 버튼마다 따로 만들지 않아도 된다. Slot 함수인 `change_color()`에서는 이벤트를 발생시킨 버튼 객체를 입력인자 `rbutton`으로 받고 이 객체가 어떤 것인지를 `is` 연산자를 통해 확인한다. 객체를 확인하면 `QTextEdit.setTextColor()` 함수를 통해 앞으로 입력될 글자색을 변경한다.  
 
-입력인자로 `QColor`  객체를 받기 때문에 `from PyQt5.QtGui import QColor`를 추가하였다. `QColor`에 들어가는 세 개의 숫자는 RGB 즉, red, green, blue 세 가지 색을 의미한다.
+입력인자로 `QColor`  객체를 받기 때문에 `from PyQt5.QtGui import QColor`를 추가하였다. `QColor`에 들어가는 세 개의 숫자는 RGB 즉, red, green, blue 세 가지 색을 의미한다.
 
 ![radiobutton_result](/ian-lecture/assets/text_editor/radiobutton_result.png)
 
@@ -298,7 +298,7 @@ Check box는 각 버튼을 독립적으로 체크할 수 있는 버튼의 한 �
 
 ![checkbox_obj](/ian-lecture/assets/text_editor/checkbox_obj.png)
 
-Check box도 `QButtonGroup`에 넣어서 하나의 Slot 함수로 처리할 수 있지만 check box는 각각의 체크 여부에 따라 설정이 달라지므로 하나의 Slot 함수로 처리하는 것이 별 이득이 없다. 그래서 이번에는 각 check box마다 따로 Slot 함수를 만들어준다. Check box의 상태가 변할 때마다 반응을 해야 하므로 `toggled` Slot을 썼고 Slot 함수는 체크 상태를 확인할 수 있는 `checked`라는 입력인자를 넣어준다.
+Check box도 `QButtonGroup`에 넣어서 하나의 Slot 함수로 처리할 수 있지만 check box는 각각의 체크 여부에 따라 설정이 달라지므로 하나의 Slot 함수로 처리하는 것이 별 이득이 없다. 그래서 이번에는 각 check box마다 따로 Slot 함수를 만들어준다. Check box의 상태가 변할 때마다 반응을 해야 하므로 `toggled` Slot을 썼고 Slot 함수는 체크 상태를 확인할 수 있는 `checked`라는 입력인자를 넣어준다.
 
 ```python
 from PyQt5.QtGui import QColor, QFont
@@ -351,7 +351,7 @@ Slider 객체는 가로축이나 세로축 홈(groove)을 따라 핸들(handle)�
 
 Slider 객체 이름은 `horizontalSlider` 그대로 두고 Label의 기본 텍스트는 `Font size: 10`으로 이름은 `label_slider_value`로 수정한다.
 
-슬라이더에 따라 입력 글자 크기가 변하는 에디터를 만들기 위해 코드를 수정한다. `setup_ui()`에서 폰트 크기의 최소, 최대 값을 지정하고 `valueChanged()` Signal을 `change_font_size()` 함수와 연결한다. 이벤트가 발생하면 `label_slider_value`d에 현재 폰트 크기를 표시하고 `QTextEdit.setFontPointSize()` 함수를 통해 폰트 크기를 조절한다.
+슬라이더에 따라 입력 글자 크기가 변하는 에디터를 만들기 위해 코드를 수정한다. `setup_ui()`에서 폰트 크기의 최소, 최대 값을 지정하고 `valueChanged()` Signal을 `change_font_size()` 함수와 연결한다. 이벤트가 발생하면 `label_slider_value`d에 현재 폰트 크기를 표시하고 `QTextEdit.setFontPointSize()` 함수를 통해 폰트 크기를 조절한다.
 
 ```python
     def setup_ui(self):
@@ -376,13 +376,13 @@ Slider 객체 이름은 `horizontalSlider` 그대로 두고 Label의 기본 텍�
 
 `QLineEdit` 클래스는 한 줄짜리 단순한 텍스트 입출력을 하는데 사용된다. ID/PW 를 입력하는 창이 그 예이다. 여기서는 두 개의 line edit 객체로 두 개의 단어를 받아서 `textEdit`의 텍스트 내의 첫 번째 단어를 두 번째 단어로 교체하는 **Replace** 기능을 구현하고자 한다.  
 
-QtDesigner에서 Input Widgets 아래 `Line Edit` 을 윈도우에 두 개를 추가하고 Buttons 아래 있는 `Push Button`도 옆에 하나 추가하자. Push button의 기본 텍스트는 `Replace`로 하고 객체 이름은 `pushButton_replace`로 한다. Line edit 객체들의 이름도 `lineEdit_replace_src, lineEdit_replace_dst`로 수정하여 다음과 같은 상태를 만들어 보자.
+QtDesigner에서 Input Widgets 아래 `Line Edit` 을 윈도우에 두 개를 추가하고 Buttons 아래 있는 `Push Button`도 옆에 하나 추가하자. Push button의 기본 텍스트는 `Replace`로 하고 객체 이름은 `pushButton_replace`로 한다. Line edit 객체들의 이름도 `lineEdit_replace_src, lineEdit_replace_dst`로 수정하여 다음과 같은 상태를 만들어 보자.
 
 ![lineedit](/ian-lecture/assets/text_editor/lineedit.png)
 
 ![lineedit_obj](/ian-lecture/assets/text_editor/lineedit_obj.png)
 
-코드에서는 `QPushButton`의 `clicked` Signal을 이용하여 버튼이 눌렸을 때 `replace()` 함수를 실행하게 한다.
+코드에서는 `QPushButton`의 `clicked` Signal을 이용하여 버튼이 눌렸을 때 `replace()` 함수를 실행하게 한다.
 
 ```python
     def setup_ui(self):
