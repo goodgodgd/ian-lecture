@@ -2,7 +2,7 @@
 layout: post
 title:  "[Python] Implement GUI Text Editor"
 date:   2019-04-30 09:00:01
-categories: jekyll
+categories: 2019-1-systprog
 ---
 
 
@@ -48,25 +48,6 @@ if __name__ == "__main__":
 
 
 
-`QTextEdit`은 이 프로젝트에서 계속 사용될 것이기 때문이 주요 함수들을 아래와 같이 정리한다.
-
-- setText(text): text를 화면에 표시한다.
-- str toPlainText(): 화면에 표시중인 텍스트를 리턴한다.
-- QCursor textCursor(): 현재 커서 정보를 담고 있는 `QCursor` 객체를 리턴한다.
-- setFontFamily(str font): 글꼴을 font로 바꾼다.
-- setTextColor(QColor color): `QColor ` 객체로 글꼴의 색을 지정한다.
-- setFontWeight(int weight): QFont 내부에 정의된 weight 상수로 글꼴의 굵기를 지정한다.
-- setFontItalic(bool set): True/False를 입력하여 글꼴의 기울기를 지정한다.
-- setFontPointSize(int size): 글꼴의 크기를 지정한다.
-
-> <<Signal 사전>> [QTextEdit](<https://doc.qt.io/qt-5/qtextedit.html#signals>)  
->
-> **cursorPositionChanged**: 커서 위치가 변할 때 발생
->
-> **textChanged**: 표시중인 텍스트가 변할 때 발생
-
-
-
 ## 2. QMenu, QAction
 
 이제 화면 상단에 파일을 열고 닫을 수 있는 메뉴를 만들고 기능을 구현한다. QtDesigner에서 윈도우 상단의 `TypeHere`에 `File`이란 메뉴(QMenu)를 추가하고 그 아래 `Open`과 `Save`라는 액션(QAction)을 추가한다. 그러면 자연스럽게 Object Inspector 메뉴에 아래와 같이 객체들이 추가된다.
@@ -79,7 +60,7 @@ if __name__ == "__main__":
 
 ><<Signal 사전>> [QAction](<https://doc.qt.io/qt-5/qaction.html#signals>)  
 >
->**triggered**: 상단 메뉴의 action을 클릭했을 때 발생
+>**triggered**: 상단 메뉴의 action을 클릭했을 때 발생하는 Signal이다.
 
 `actionOpen.triggered`는 `open_file` 함수와 연결했고 `actionSave.triggered`는 `save_file` 함수와 연결하였다. 
 
@@ -150,6 +131,12 @@ It’s dangerous 따끔해 넌 장미 같아
 ## 3. QStatusBar
 
 텍스트를 읽어나 수정할 때 글자 수와 현재 위치를 윈도우 아래 statusbar에 출력해보자. 새 UI를 만들때 MainWindow를 선택하면 기본으로 윈도우 아래 `statusbar` 객체가 포함돼있다. 먼저 `textEdit`에서 커서가 이동할 때 발생하는 Signal과 이를 처리하는 Slot 함수(update_status)를 연결해야 한다.
+
+> <<Signal 사전>> [QTextEdit](<https://doc.qt.io/qt-5/qtextedit.html#signals>)  
+>
+> **cursorPositionChanged**: QTextEdit 객체에서 커서 위치가 변할 때 발생
+>
+> **textChanged**: QTextEdit 객체에서 텍스트가 변할 때 발생
 
 ```python
     def setup_ui(self):
@@ -253,7 +240,7 @@ UI 파일을 저장하고 코드로 돌아가보자. 일단 `Black` 버튼을 �
 >
 > **toggled**: 버튼을 눌러서 체크 상태가 변하면 발생, Slot 함수에서 체크 상태를 나타내는 `bool` 타입의 입력인자를 받을 수 있다.
 
-위 코드에서는 `radioButton_black`을 체크하면 `set_color_black()`가 실행되도록 했다. 위 방식대로 세 가지 색을 선택하려면 세 개의 radio button을 각각의 Slot 함수에 연결해야 할 것이다. 하지만 이렇게하면 버튼이 늘어남에 따라 코드가 상당히 길어진다. 이때 세 개의 버튼을 하나의 `QButtonGroup` 객체에 담으면 한 번의 connect로 세 개의 버튼을 모두 처리할 수 있다.  
+위 코드에서는 `radioButton_black`을 체크하면 `set_color_black()`가 실행되도록 했다. 위 방식대로 세 가지 색을 선택하려면 세 개의 radio button을 각각의 Slot 함수에 연결해야 할 것이다. 하지만 이렇게하면 버튼이 늘어남에 따라 코드가 상당히 길어진다. 이때 세 개의 버튼을 하나의 `QButtonGroup` 객체에 담으면 한 번의 connect로 세 개의 버튼을 모두 처리할 수 있다.  
 
 아래 코드를 보면 `QButtonGroup` 클래스의 `rb_color_group`이라는 객체를 만들고  세 개의 버튼을 거기에 담았다. 그런뒤 `buttonPressed`라는 Signal을 `change_color()` 함수에 연결하였다.
 
@@ -297,7 +284,7 @@ from PyQt5.QtGui import QColor
 
 `QButtonGroup` 의 Signal들은 그룹에 속한 버튼을 하나라도 클릭하면 발생하므로 Slot 함수를 버튼마다 따로 만들지 않아도 된다. Slot 함수인 `change_color()`에서는 이벤트를 발생시킨 버튼 객체를 입력인자 `rbutton`으로 받고 이 객체가 어떤 것인지를 `is` 연산자를 통해 확인한다. 객체를 확인하면 `QTextEdit.setTextColor()` 함수를 통해 앞으로 입력될 글자색을 변경한다.  
 
-입력인자로 `QColor`  객체를 받기 때문에 `from PyQt5.QtGui import QColor`를 추가하였다. `QColor`에 들어가는 세 개의 숫자는 RGB 즉, red, green, blue 세 가지 색을 의미한다.
+입력인자로 `QColor`  객체를 받기 때문에 `from PyQt5.QtGui import QColor`를 추가하였다. `QColor`에 들어가는 세 개의 숫자는 RGB 즉, red, green, blue 세 가지 색을 의미한다.
 
 ![radiobutton_result](/ian-lecture/assets/text_editor/radiobutton_result.png)
 
@@ -311,7 +298,7 @@ Check box는 각 버튼을 독립적으로 체크할 수 있는 버튼의 한 �
 
 ![checkbox_obj](/ian-lecture/assets/text_editor/checkbox_obj.png)
 
-Check box도 `QButtonGroup`에 넣어서 하나의 Slot 함수로 처리할 수 있지만 check box는 각각의 체크 여부에 따라 설정이 달라지므로 하나의 Slot 함수로 처리하는 것이 별 이득이 없다. 그래서 이번에는 각 check box마다 따로 Slot 함수를 만들어준다. Check box의 상태가 변할 때마다 반응을 해야 하므로 `toggled` Slot을 썼고 Slot 함수는 체크 상태를 확인할 수 있는 `checked`라는 입력인자를 넣어준다.
+Check box도 `QButtonGroup`에 넣어서 하나의 Slot 함수로 처리할 수 있지만 check box는 각각의 체크 여부에 따라 설정이 달라지므로 하나의 Slot 함수로 처리하는 것이 별 이득이 없다. 그래서 이번에는 각 check box마다 따로 Slot 함수를 만들어준다. Check box의 상태가 변할 때마다 반응을 해야 하므로 `toggled` Slot을 썼고 Slot 함수는 체크 상태를 확인할 수 있는 `checked`라는 입력인자를 넣어준다.
 
 ```python
 from PyQt5.QtGui import QColor, QFont
@@ -364,7 +351,7 @@ Slider 객체는 가로축이나 세로축 홈(groove)을 따라 핸들(handle)�
 
 Slider 객체 이름은 `horizontalSlider` 그대로 두고 Label의 기본 텍스트는 `Font size: 10`으로 이름은 `label_slider_value`로 수정한다.
 
-슬라이더에 따라 입력 글자 크기가 변하는 에디터를 만들기 위해 코드를 수정한다. `setup_ui()`에서 폰트 크기의 최소, 최대 값을 지정하고 `valueChanged()` Signal을 `change_font_size()` 함수와 연결한다. 이벤트가 발생하면 `label_slider_value`d에 현재 폰트 크기를 표시하고 `QTextEdit.setFontPointSize()` 함수를 통해 폰트 크기를 조절한다.
+슬라이더에 따라 입력 글자 크기가 변하는 에디터를 만들기 위해 코드를 수정한다. `setup_ui()`에서 폰트 크기의 최소, 최대 값을 지정하고 `valueChanged()` Signal을 `change_font_size()` 함수와 연결한다. 이벤트가 발생하면 `label_slider_value`d에 현재 폰트 크기를 표시하고 `QTextEdit.setFontPointSize()` 함수를 통해 폰트 크기를 조절한다.
 
 ```python
     def setup_ui(self):
@@ -389,13 +376,13 @@ Slider 객체 이름은 `horizontalSlider` 그대로 두고 Label의 기본 텍�
 
 `QLineEdit` 클래스는 한 줄짜리 단순한 텍스트 입출력을 하는데 사용된다. ID/PW 를 입력하는 창이 그 예이다. 여기서는 두 개의 line edit 객체로 두 개의 단어를 받아서 `textEdit`의 텍스트 내의 첫 번째 단어를 두 번째 단어로 교체하는 **Replace** 기능을 구현하고자 한다.  
 
-QtDesigner에서 Input Widgets 아래 `Line Edit` 을 윈도우에 두 개를 추가하고 Buttons 아래 있는 `Push Button`도 옆에 하나 추가하자. Push button의 기본 텍스트는 `Replace`로 하고 객체 이름은 `pushButton_replace`로 한다. Line edit 객체들의 이름도 `lineEdit_replace_src, lineEdit_replace_dst`로 수정하여 다음과 같은 상태를 만들어 보자.
+QtDesigner에서 Input Widgets 아래 `Line Edit` 을 윈도우에 두 개를 추가하고 Buttons 아래 있는 `Push Button`도 옆에 하나 추가하자. Push button의 기본 텍스트는 `Replace`로 하고 객체 이름은 `pushButton_replace`로 한다. Line edit 객체들의 이름도 `lineEdit_replace_src, lineEdit_replace_dst`로 수정하여 다음과 같은 상태를 만들어 보자.
 
 ![lineedit](/ian-lecture/assets/text_editor/lineedit.png)
 
 ![lineedit_obj](/ian-lecture/assets/text_editor/lineedit_obj.png)
 
-코드에서는 `QPushButton`의 `clicked` Signal을 이용하여 버튼이 눌렸을 때 `replace()` 함수를 실행하게 한다.
+코드에서는 `QPushButton`의 `clicked` Signal을 이용하여 버튼이 눌렸을 때 `replace()` 함수를 실행하게 한다.
 
 ```python
     def setup_ui(self):
@@ -408,7 +395,7 @@ QtDesigner에서 Input Widgets 아래 `Line Edit` 을 윈도우에 두 개를 �
         self.textEdit.setText(text)
 ```
 
-`textEdit.toPlainText()`으로 현재의 텍스트를 문자열로 받았고 이 문자열에서 두 개의 line edit으로 입력받은 두 단어를 교체하였다. `lineEdit_replace_src.text()`가 기존 텍스트에서 검색할 기존 단어고 `lineEdit_replace_dst.text()`는 새로운 텍스트에서 기존 단어 대신 들어갈 단어다.
+`textEdit.toPlainText()`으로 현재의 텍스트를 문자열로 받았고 이 문자열에서 두 개의 line edit으로 입력받은 두 단어를 교체하였다. `lineEdit_replace_src.text()`가 기존 텍스트에서 검색할 기존 단어이고 `lineEdit_replace_dst.text()`는 새로운 텍스트에서 기존 단어 대신 들어갈 단어이다.
 
 `fancy.txt`를 열어서 `fancy`를 `desire`로 바꾼 결과이다.
 
@@ -417,4 +404,31 @@ QtDesigner에서 Input Widgets 아래 `Line Edit` 을 윈도우에 두 개를 �
 
 
 지금까지 우리는 QtDesigner를 통해 GUI 객체들을 MainWindow에 추가하고 이들의 동작을 파이썬 코드에서 지정하여 텍스트 에디터를 만들었다. 다양한 GUI 클래스들이 필요하고 각 클래스 마다 사용하는 함수나 Signal 등이 다르지만 Documentation을 잘 보고 구글링을 하면 각 클래스의 사용법을 알 수 있다. 다른 유용한 GUI 클래스들도 많지만 이 정도 프로그램을 만들 수 있다면 GUI 프로그래밍의 패턴을 익힌 것이므로 다른 GUI 클래스들도 어렵지 않게 쓸 수 있을 것이다.
+
+
+
+## Homework 3
+
+각자 자신만의 GUI 프로그램을 만들어보세요. 창의적인 아이디어가 있다면 새로운 프로그램을 만들어도 되고 생각나는게 없다면 텍스트 에디터를 만들어도 됩니다.
+
+### 창작 프로그램 만들기
+
+자유 주제로 만들고 싶은 GUI 프로그램을 만들되 두 가지 조건을 만족해야 한다.
+
+- Push button과 Label 외에 최소 6가지 이상의 GUI 요소를 사용해야 한다. 여기에 나오지 않은 GUI 요소를 써도 된다. 
+- 단순히 여러 GUI 요소를 나열하는 것이 아니라 특정 목적을 위해 GUI 요소들이 용도에 맞게 적절히 사용되어야 한다. 
+
+평가: 창의성 4점, GUI 다양성 6점, GUI 적합성 5점  
+
+### 텍스트 에디터 만들기
+
+본 포스트에서 만든 에디터와는 사용법이 전혀 다른 새로운 에디터를 만들어야 한다. 변화를 줄 수 있는 첫 번째 방법은 GUI의 기능을 서로 바꾸는 것이다. 예를 들어 여기서는 radio button으로 글자 색을 선택하고 combo box로 글꼴을 선택했는데 둘의 기능을 서로 바꿀수 있다. 두 번째 방법은 여기 나오지 않은 새로운 GUI 요소를 쓰는 것이다. 텍스트 에디터 구현 조건은 다음과 같다.
+
+- 여기에 나온 GUI 요소 중 Push button, Label, Text edit외에 6가지 이상이 사용되어야 한다.
+- GUI 사용 방법이 학생들 모두 달라야 한다. 사용 방법이 전반적으로 유사할 경우 표절로 간주한다.
+- 여기서 사용하지 않았던 GUI 요소가 2개 이상 들어가야 한다. Qt Documentation 을 참고하여 새로운 GUI의 사용법을 스스로 알아봐야 한다.
+
+평가: 독창성 4점, 기존 GUI 활용 6점, 새로운 GUI 활용 5점  
+
+**주의**: 두 가지 프로그램 모두 버그가 없어야 합니다. 예를 들어 글자 색을 Check box로 선택하게 하면 두 가지 색이 선택 가능해져서 무슨 색이 나와야 하는지 알수 없게 됩니다. 크기와 색을 모두 선택했는데 둘 중 하나만 적용이 된다거나 에러가 나서 프로그램이 꺼지면 안됩니다. 버그 발견시 1~5점의 감점 있습니다.
 
