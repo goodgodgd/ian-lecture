@@ -6,3 +6,4 @@ Gemfile.lock
 *.txt
 *.pyc
 __pycache__
+sample_imgs
