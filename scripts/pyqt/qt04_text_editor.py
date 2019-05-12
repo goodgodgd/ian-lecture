@@ -45,7 +45,7 @@ class MyWindow(QMainWindow):
         print("open file:", filename)
         if not filename:
             return
-        with open(filename[0], "w") as f:
+        with open(filename, "w") as f:
             f.write(self.textEdit.toPlainText())
 
     def update_status(self):
