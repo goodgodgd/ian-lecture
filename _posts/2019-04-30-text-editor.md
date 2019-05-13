@@ -351,7 +351,7 @@ Slider 객체는 가로축이나 세로축 홈(groove)을 따라 핸들(handle)�
 
 Slider 객체 이름은 `horizontalSlider` 그대로 두고 Label의 기본 텍스트는 `Font size: 10`으로 이름은 `label_slider_value`로 수정한다.
 
-슬라이더에 따라 입력 글자 크기가 변하는 에디터를 만들기 위해 코드를 수정한다. `setup_ui()`에서 폰트 크기의 최소, 최대 값을 지정하고 `valueChanged()` Signal을 `change_font_size()` 함수와 연결한다. 이벤트가 발생하면 `label_slider_value`d에 현재 폰트 크기를 표시하고 `QTextEdit.setFontPointSize()` 함수를 통해 폰트 크기를 조절한다.
+슬라이더에 따라 입력 글자 크기가 변하는 에디터를 만들기 위해 코드를 수정한다. `setup_ui()`에서 폰트 크기의 최소, 최대 값을 지정하고 `valueChanged()` Signal을 `change_font_size()` 함수와 연결한다. 이벤트가 발생하면 `label_slider_value`에 현재 폰트 크기를 표시하고 `QTextEdit.setFontPointSize()` 함수를 통해 폰트 크기를 조절한다.
 
 ```python
     def setup_ui(self):
