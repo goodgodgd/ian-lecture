@@ -46,6 +46,23 @@ if __name__ == "__main__":
     main()
 ```
 
+`QTextEdit`은 이 프로젝트에서 계속 사용될 것이기 때문이 주요 함수들을 아래와 같이 정리한다.
+
+- setText(text): text를 화면에 표시한다.
+- str toPlainText(): 화면에 표시중인 텍스트를 리턴한다.
+- QCursor textCursor(): 현재 커서 정보를 담고 있는 `QCursor` 객체를 리턴한다.
+- setFontFamily(str font): 글꼴을 font로 바꾼다.
+- setTextColor(QColor color): `QColor ` 객체로 글꼴의 색을 지정한다.
+- setFontWeight(int weight): QFont 내부에 정의된 weight 상수로 글꼴의 굵기를 지정한다.
+- setFontItalic(bool set): True/False를 입력하여 글꼴의 기울기를 지정한다.
+- setFontPointSize(int size): 글꼴의 크기를 지정한다.
+
+> <<Signal 사전>> [QTextEdit](<https://doc.qt.io/qt-5/qtextedit.html#signals>)  
+>
+> **cursorPositionChanged**: 커서 위치가 변할 때 발생
+>
+> **textChanged**: 표시중인 텍스트가 변할 때 발생
+
 
 
 ## 2. QMenu, QAction
@@ -130,13 +147,7 @@ It’s dangerous 따끔해 넌 장미 같아
 
 ## 3. QStatusBar
 
-텍스트를 읽어나 수정할 때 글자 수와 현재 위치를 윈도우 아래 statusbar에 출력해보자. 새 UI를 만들때 MainWindow를 선택하면 기본으로 윈도우 아래 `statusbar` 객체가 포함돼있다. 먼저 `textEdit`에서 커서가 이동할 때 발생하는 Signal과 이를 처리하는 Slot 함수(update_status)를 연결해야 한다.
-
-> <<Signal 사전>> [QTextEdit](<https://doc.qt.io/qt-5/qtextedit.html#signals>)  
->
-> **cursorPositionChanged**: QTextEdit 객체에서 커서 위치가 변할 때 발생
->
-> **textChanged**: QTextEdit 객체에서 텍스트가 변할 때 발생
+텍스트를 읽어나 수정할 때 글자 수와 현재 위치를 윈도우 아래 statusbar에 출력해보자. 새 UI를 만들때 MainWindow를 선택하면 기본으로 윈도우 아래 `statusbar` 객체가 포함돼있다. 먼저 `textEdit`에서 커서가 이동할 때 발생하는 Signal(cursorPositionChanged)과 이를 처리하는 Slot 함수(update_status)를 연결해야 한다.
 
 ```python
     def setup_ui(self):
