@@ -44,7 +44,7 @@ OpenCV를 설치하고 첫 번째로 해봐야 할 일은 영상을 화면에 �
 ```python
 import cv2
 
-image = cv2.imread("../../assets/opencv/superson.jpg")
+image = cv2.imread("../sample_imgs/superson.jpg")
 cv2.imshow("superson", image)
 key = cv2.waitKey()
 print("key in:", key)
