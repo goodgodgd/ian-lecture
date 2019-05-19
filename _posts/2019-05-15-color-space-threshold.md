@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "[Python] Color Space and Thresholding"
+title:  "[Python] Color Space and Threshold"
 date:   2019-05-15 09:00:01
 categories: 2019-1-systprog
 ---
@@ -145,11 +145,11 @@ cv2.waitKey()
 
 
 
-# 2. Thresholding
+# 2. Threshold
 
-Thresholding 이란 특정 값을 기준으로 binary 영상을 만드는 기법이다. 영상에서 중간값을 없애고 흑백의 극단으로만 표현하면 사물의 윤곽을 뚜렷하게 나타낼 수 있다. 혹은 글자나 표지판처럼 원래 binary 영상이었으나 사진을 찍으면서 흐릿해진 부분을 다시 선명하게 복원할 때도 사용된다.  
+Threshold란 특정 값을 기준으로 binary 영상을 만드는 기법이다. 영상에서 중간값을 없애고 흑백의 극단으로만 표현하면 사물의 윤곽을 뚜렷하게 나타낼 수 있다. 혹은 글자나 표지판처럼 원래 binary 영상이었으나 사진을 찍으면서 흐릿해진 부분을 다시 선명하게 복원할 때도 사용된다.  
 
-앞서 처음 보여준 예시처럼 numpy 인덱싱을 통해서도 thresholding을 구현할 수 있지만 OpenCV에서 다양한 thresholding 방법을 편리하게 쓸 수 있게 만들어준 `threshold()`라는 함수를 제공한다. 결과를 보면 영상이 흑백으로 단순화된 것을 볼 수 있다. 
+앞서 처음 보여준 예시처럼 numpy 인덱싱을 통해서도 threshold를 구현할 수 있지만 OpenCV에서 다양한 threshold 방법을 편리하게 쓸 수 있게 만들어준 `threshold()`라는 함수를 제공한다. 결과를 보면 영상이 흑백으로 단순화된 것을 볼 수 있다. 
 
 ```python
 import os
@@ -169,7 +169,7 @@ cv2.waitKey()
 
 `threshold` 함수의 입출력 인자는 다음과 같다.
 
-> ret, dst cv2.threshold(src, thresh, maxval, type)  
+> ret, dst = cv2.threshold(src, thresh, maxval, type)  
 >
 > - img: 입력 영상
 > - threshold: 경계값
@@ -181,7 +181,7 @@ cv2.waitKey()
 >   - cv2.THRESH_TOZERO: px > threshold ? px : 0
 >   - cv2.THRESH_TOZERO_INV: px > threshold ? 0 : px
 > - ret: `thresh` 값 출력
-> - dst: thresholding 결과 영상
+> - dst: threshold 결과 영상
 
 
 
@@ -193,7 +193,7 @@ cv2.waitKey()
 
 
 
-다음은 `menubar`의 `Open, Save`부터 구현한 코드다. Text Editor에서 했듯이 `actionOpen`과 `actionSave`를 `triggered` Signal을 통해 각각 `open_file`과 `save_file` 함수와 연결한다. `open_file`에서는 영상 파일을 열어서 클래스 멤버 변수 `self.src_img`에 저장 후 화면에 보여준다. `save_file`에서는 thresholding 결과 영상인 `self.res_img`를 파일로 저장한다.
+다음은 `menubar`의 `Open, Save`부터 구현한 코드다. Text Editor에서 했듯이 `actionOpen`과 `actionSave`를 `triggered` Signal을 통해 각각 `open_file`과 `save_file` 함수와 연결한다. `open_file`에서는 영상 파일을 열어서 클래스 멤버 변수 `self.src_img`에 저장 후 화면에 보여준다. `save_file`에서는 thresholding 결과 영상인 `self.res_img`를 파일로 저장한다.
 
 ```python
 import sys
@@ -201,7 +201,6 @@ import cv2
 from PyQt5.QtWidgets import *
 from PyQt5 import uic
 import matplotlib.pylab as plt
-THRESH_ALL = 100
 
 class MyWindow(QMainWindow):
     def __init__(self):
@@ -246,7 +245,9 @@ if __name__ == "__main__":
 
 
 
-이제 조건에 따른 thresholding을 구현해보자. Text editor와는 다르게 이번에는 모든 radio button과 slider의 Signal을 하나의 함수로 연결한 후 그 함수에서 파라미터를 읽게 해보자. 다수의 radio button을 다룰 때 매번 if-else로 처리하기는 번거롭다. 이를 for문에서 처리할 수 있도록 radio button들을 해당 thresholding type과 함께 짝을 지어 `self.rb_dict`로 저장한다. 모든 radio button의 Slot 함수를 연결할 때도, `get_param()` 함수에서 선택된 radio button을 찾을 때도 다수의 if-else 대신 간단한 for문으로 해결할 수 있다.
+## 2.2 Threshold 구현
+
+이제 조건에 따른 threshold를 구현해보자. Text editor와는 다르게 이번에는 모든 radio button과 slider의 Signal을 하나의 함수로 연결한 후 그 함수에서 파라미터를 읽게 해보자. 다수의 radio button을 다룰 때 매번 if-else로 처리하기는 번거롭다. 이를 for문에서 처리할 수 있도록 radio button들을 해당 threshold type과 함께 짝을 지어 `self.rb_dict`로 저장한다. 모든 radio button의 Slot 함수를 연결할 때도, `get_param()` 함수에서 선택된 radio button을 찾을 때도 다수의 if-else 대신 간단한 for문으로 해결할 수 있다.
 
 ```python
     def __init__(self):
@@ -275,10 +276,7 @@ if __name__ == "__main__":
         if self.src_img is None:
             return
         thr_type, threshold = self.get_params()
-        if thr_type == THRESH_ALL:
-            self.res_img = self.threshold_all_types(threshold)
-        else:
-            ret, self.res_img = cv2.threshold(self.src_img, threshold, 255, thr_type)
+        ret, self.res_img = cv2.threshold(self.src_img, threshold, 255, thr_type)
         cv2.imshow(self.res_title, self.res_img)
         cv2.waitKey(1)
 
@@ -298,13 +296,12 @@ if __name__ == "__main__":
 
 
 
-이 그림은 MATLAB의 plot 기능을 모방한 `matplotlib`이라는 패키지를 통해 만든 것이다. 앞서 사용하지 않았던 `checkBox_all`을 클릭하면 모든 방식의 thresholding을 시도하여 한 창에 보여주도록 하였다. `matplotlib`은 아직 배우지 않았으니 다음 코드는 참고로만 봐두자.
+이 그림은 MATLAB의 plot 기능을 모방한 `matplotlib`이라는 패키지를 통해 만든 것이다. 앞서 사용하지 않았던 `checkBox_all`을 클릭하면 모든 방식의 threshold를 시도하여 한 장에 보여주도록 하였다. `matplotlib`은 아직 배우지 않았으니 다음 코드는 참고로만 봐두자.
 
 ```python
     def setup_ui(self):
         # .. 중략 ..
-        self.checkBox_all_types.toggled.connect(self.show_all_types)
-
+         self.pushButton_thresh_types.clicked.connect(self.show_all_types)
     def show_all_types(self, checked):
         if not checked:
             return
@@ -317,6 +314,126 @@ if __name__ == "__main__":
 
         for i, (key, value) in enumerate(imgs.items()):
             plt.subplot(2, 3, i+1)
+            plt.title(key)
+            plt.imshow(value, cmap='gray')
+            plt.xticks([])
+            plt.yticks([])
+        plt.tight_layout()
+        plt.show()
+```
+
+
+
+## 2.3 Threshold 자동화
+
+### Otsu의 알고리즘
+
+Threshold를 할 때 가장 중요한 것은 경계 값(`thresh`)을 얼마로 정하느냐이다. 적절한 경계 값을 찾기 위해서는 여러 경계 값을 반복적으로 시도해보며 찾아야 한다. 이러한 과정을 자동화 해주는 것이 Otsu의 알고리즘이다. Otsu의 알고리즘은 임의로 정한 경계 값을 기준으로 영상을 두 부류로 나눈 후 두 가지 명암 분포가 비슷해지도록 하는 경계 값을 선택한다. OpenCV에는 알고리즘이 구현되어 있어서 `threshold()`의 `type`인자에 `cv2.THRESH_OTSU`를 추가하면 경계 값을 자동으로 찾아준다. 이때 `thresh` 인자에는 아무 값이나 넣어도 되고 출력인자인 `ret`으로 자동으로 찾은 경계 값이 출력된다. 아래 코드는 `cv2.THRESH_BINARY` 타입에 Otsu의 알고리즘을 적용한 것이다.
+
+```python
+ret, res_img = cv2.threshold(src_img, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
+```
+
+
+
+### Adaptive Threshold
+
+원본 영상에 조명이 일정하지 않거나 배경색이 여러 가지인 경우에는 아무리 경계 값을 바꿔봐도 좋은 결과를 얻기 어렵다. 영상의 다양한 배경에 대처하기 위해서는 영상을 여러 영역으로 나눈 다음 각 픽셀이 해당 영역에 비해서 상대적으로 얼마나 높은지를 확인해야 한다. 이렇게 영역 별로 다른 threshold 값을 주는 것을 adaptive threshold 라고 한다. OpenCV에서는 `adaptiveThreshold()` 라는 함수를 제공한다.
+
+> ret, dst = adaptiveThreshold(src, maxValue, adaptiveMethod, thresholdType, blockSize, C)
+>
+> 	- src: 입력 영상
+> 	- maxValue: 경계 값을 만족하는 픽셀에 적용할 값
+>  - adaptiveMethod: 경계 값 결정 방법
+>    	- cv2.ADAPTIVE_THRESH_MEAN_C: 주변 영역의 평균 값으로 결정
+>    	- cv2.ADAPTIVE_THRESH_GAUSSIAN_C: 주변 영역의 Gaussian 가중 평균 값으로 결정 (가까울 수록 높은 가중치)
+> 	- thresholdType: threshold 적용 방법 (`threshold()` 와 동일)
+> 	- blockSize: 영역의 크기 (홀수만 가능 3, 5, 7, ...)
+> 	- C: 자동으로 계산된 경계 값에 가감할 상수(음수 가능)
+
+
+
+### GUI에 적용
+
+Threshold 자동화 기능을 방금 코드에 적용해보자. 적응형 알고리즘은기본 threshold 타입과는 독립적으로 작용하므로 새로운 버튼 그룹을 만들었다.
+
+![threshold-gui-adv](/ian-lecture/assets/opencv-color/threshold-gui-adv.png)
+
+- `None`: 적응형 알고리즘을 적용하지 않음
+- `OTSU`: Otsu 알고리즘으로 전역 경계 값 결정
+- `ADAPTIVE_MEAN`: `adaptiveThreshold()` 함수에서 `cv2.ADAPTIVE_THRESH_MEAN_C` 사용
+- `ADAPTIVE_GAUSS`: `adaptiveThreshold()` 함수에서 `cv2.ADAPTIVE_THRESH_GAUSSIAN_C` 사용
+
+코드에서도 다음과 같이 적응형 알고리즘을 적용할 수 있도록 수정한다. 새로 추가된 radio button도 모두 `threshold_image()` 함수로 연결한다. `get_params()` 함수에서는 `adaptiveThreshold()` 함수를 위한 출력 인자 `adaptive`를 추가하였다.
+
+```python
+# import ...
+class MyWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        # .. 중략 ..
+        self.rb_adap_list = [self.radioButton_none, self.radioButton_otsu,
+                             self.radioButton_adap_mean, self.radioButton_adap_gauss]
+        self.setup_ui()
+
+    def setup_ui(self):
+        # .. 중략 ..
+        for rbutton in self.rb_adap_list:
+            rbutton.clicked.connect(self.threshold_image)
+
+    def threshold_image(self):
+        if self.src_img is None:
+            return
+        thr_type, threshold, adaptive = self.get_params()
+        if adaptive is None:
+            ret, self.res_img = cv2.threshold(self.src_img, threshold, 255, thr_type)
+            print("threshold", ret)
+        else:
+            self.res_img = cv2.adaptiveThreshold(self.src_img, 255, adaptive, thr_type, 9, 5)
+        cv2.imshow(self.res_title, self.res_img)
+        cv2.waitKey(1)
+
+    def get_params(self):
+        thr_type = cv2.THRESH_BINARY
+        for rbutton, button_type in self.rb_dict.items():
+            if rbutton.isChecked():
+                thr_type = button_type
+
+        if self.radioButton_otsu.isChecked():
+            thr_type |= cv2.THRESH_OTSU
+
+        adaptive = None
+        if self.radioButton_adap_mean.isChecked():
+            adaptive = cv2.ADAPTIVE_THRESH_MEAN_C
+        elif self.radioButton_adap_gauss.isChecked():
+            adaptive = cv2.ADAPTIVE_THRESH_GAUSSIAN_C
+        threshold = self.verticalSlider.value()
+        self.label_threshold.setText(f"Threshold: {threshold}")
+        return thr_type, threshold, adaptive
+```
+
+
+
+다음은 네 가지 적응형 알고리즘 옵션을 적용한 결과이다. 영역에 따라 영상의 조명상태가 달라지기 때문에 이러한 영상에서 숫자를 잘 보려면 `adaptiveThreshold()` 함수를 써야한다. 아래 이미지를 만든 코드도 붙인다.
+
+![thresh-adap](/ian-lecture/assets/opencv-color/thresh-adap.png)
+
+```python
+    def setup_ui(self):
+        # .. 중략 ..
+        self.pushButton_adap_methods.clicked.connect(self.show_adap_methods)
+
+    def show_adap_methods(self):
+        threshold = self.verticalSlider.value()
+        imgs = {"None": self.src_img}
+        ret, imgs["Otsu"] = cv2.threshold(self.src_img, threshold, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
+        imgs["Adaptive_Mean"] = cv2.adaptiveThreshold(self.src_img, 255,
+                                    cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 9, 5)
+        imgs["Adaptive_Gauss"] = cv2.adaptiveThreshold(self.src_img, 255,
+                                    cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 9, 5)
+
+        for i, (key, value) in enumerate(imgs.items()):
+            plt.subplot(1, 4, i+1)
             plt.title(key)
             plt.imshow(value, cmap='gray')
             plt.xticks([])

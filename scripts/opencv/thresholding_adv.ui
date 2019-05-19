@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>242</width>
-    <height>214</height>
+    <width>293</width>
+    <height>294</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,7 +19,7 @@
      <rect>
       <x>20</x>
       <y>20</y>
-      <width>120</width>
+      <width>151</width>
       <height>121</height>
      </rect>
     </property>
@@ -95,7 +95,7 @@
    <widget class="QSlider" name="verticalSlider">
     <property name="geometry">
      <rect>
-      <x>170</x>
+      <x>200</x>
       <y>40</y>
       <width>22</width>
       <height>101</height>
@@ -108,7 +108,7 @@
    <widget class="QLabel" name="label_threshold">
     <property name="geometry">
      <rect>
-      <x>150</x>
+      <x>180</x>
       <y>20</y>
       <width>91</width>
       <height>16</height>
@@ -118,11 +118,76 @@
      <string>Threshold:</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_thresh_types">
+   <widget class="QGroupBox" name="groupBox_2">
     <property name="geometry">
      <rect>
       <x>20</x>
       <y>150</y>
+      <width>151</width>
+      <height>101</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Adaptive Method</string>
+    </property>
+    <widget class="QRadioButton" name="radioButton_adap_mean">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>60</y>
+       <width>131</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>ADAPTIVE_MEAN</string>
+     </property>
+    </widget>
+    <widget class="QRadioButton" name="radioButton_adap_gauss">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>80</y>
+       <width>131</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>ADAPTIVE_GAUSS</string>
+     </property>
+    </widget>
+    <widget class="QRadioButton" name="radioButton_otsu">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>40</y>
+       <width>90</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>OTSU</string>
+     </property>
+    </widget>
+    <widget class="QRadioButton" name="radioButton_none">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>20</y>
+       <width>90</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>None</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QPushButton" name="pushButton_thresh_types">
+    <property name="geometry">
+     <rect>
+      <x>180</x>
+      <y>160</y>
       <width>111</width>
       <height>23</height>
      </rect>
@@ -131,13 +196,26 @@
      <string>All Thresh Types</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="pushButton_adap_methods">
+    <property name="geometry">
+     <rect>
+      <x>180</x>
+      <y>190</y>
+      <width>111</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>All Adap Methods</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>242</width>
+     <width>293</width>
      <height>21</height>
     </rect>
    </property>
