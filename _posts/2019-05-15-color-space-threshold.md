@@ -87,8 +87,6 @@ hsvimg = cv2.cvtColor(bgrimg, cv2.COLOR_BGR2HSV)
 channels = np.concatenate([hsvimg[:,:,0], hsvimg[:,:,1], hsvimg[:,:,2]], axis=1)
 cv2.imshow("HSV channels", channels)
 cv2.waitKey()
-filename = os.path.join(IMG_PATH, "spiderman-hsv.jpg")
-cv2.imwrite(filename, channels)
 ```
 
 ![spiderman-hsv](/ian-lecture/assets/opencv-color/spiderman-hsv.jpg)
@@ -346,7 +344,7 @@ ret, res_img = cv2.threshold(src_img, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTS
 > 	- maxValue: 경계 값을 만족하는 픽셀에 적용할 값
 >  - adaptiveMethod: 경계 값 결정 방법
 >    	- cv2.ADAPTIVE_THRESH_MEAN_C: 주변 영역의 평균 값으로 결정
->    	- cv2.ADAPTIVE_THRESH_GAUSSIAN_C: 주변 영역의 Gaussian 가중 평균 값으로 결정 (가까울 수록 높은 가중치)
+>       	- cv2.ADAPTIVE_THRESH_GAUSSIAN_C: 주변 영역의 Gaussian 가중 평균 값으로 결정 (가까울 수록 높은 가중치)
 > 	- thresholdType: threshold 적용 방법 (`threshold()` 와 동일)
 > 	- blockSize: 영역의 크기 (홀수만 가능 3, 5, 7, ...)
 > 	- C: 자동으로 계산된 경계 값에 가감할 상수(음수 가능)
