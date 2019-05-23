@@ -101,6 +101,8 @@ categories: 2019-1-micro
 
 ## 1. 버전을 쌓는 Verb
 
+Quick Review에 나온 verb들을 먼저 자세히 살펴보자. Quick Review는 계속 앞으로 변경 사항을 축적하기만 하는데 거기에 필요한 verb들을 살펴본다.
+
 
 
 ### git init
@@ -181,7 +183,7 @@ categories: 2019-1-micro
 
 ### git clone
 
-> 원격 저장소를 복사한 로컬 저장소를 만든다. 저장소를 복사한다는 의미는 모든 브랜치의 모든 commit을 다운로드 받는다는 것이다. GitHub에서 "Download Zip"으로도 코드를 받을 수 있지만 과거 이력없이 최신 상태의 코드만 받게 된다.
+> 원격 저장소를 복사한 로컬 저장소를 만든다. 저장소를 복사한다는 의미는 모든 branch의 모든 commit을 다운로드 받는다는 것이다. GitHub에서 "Download Zip"으로도 코드를 받을 수 있지만 과거 이력없이 최신 상태의 코드만 받게 된다.
 >
 > `git clone <repository_url> [dir_name]` : `repository_url` 주소의 원격 저장소를 복사한다. 기본적으로는 저장소 이름과 같은 디렉토리가 생기고 뒤에 `dir_name`을 지정하면 그 이름으로 디렉토리가 생긴다.
 >
@@ -195,9 +197,9 @@ categories: 2019-1-micro
 
 > 원격 저장소에서 commit을 받아와 commit의 변경 사항을 로컬 저장소의 코드에 합친다.(merge) Pull을 실행하기 전에 반드시 로컬 저장소의 상태는 모든 것이 commit이 된 "Unmodified" 상태여야 pull을 할 수 있다. Pull은 사실 모든 commit을 내려받는 `git fetch`와 내려받은 commit들과 현재 로컬 파일에 반영하는 (합치는) `git merge FETCH_HEAD` 두 명령어를 결합한 것이다. 따라서 pull에는 merge와 관련된 옵션들이 있다.
 >
-> `git pull` : 원격 저장소의 모든 브랜치의 commit들을 로컬 저장소에 받고 각 브랜치를 모두 merge 한다. 원격의 master는 로컬의 master와 합치고 원격의 some_branch는 로컬의 some_branch와 합친다.
+> `git pull` : 원격 저장소의 모든 branch의 commit들을 로컬 저장소에 받고 각 branch를 모두 merge 한다. 원격의 master는 로컬의 master와 합치고 원격의 some_branch는 로컬의 some_branch와 합친다.
 >
-> `git pull <remote> <local_branch>` : 특정 브랜치(local_branch)만 변경 사항(commit)을 내려받고 합친다.
+> `git pull <remote> <local_branch>` : local_branch만 변경 사항(commit)을 내려받고 합친다.
 >
 > `git pull [--ff / --no-ff / --only-ff]` : merge 방식에 fast-forward 방식과 non-fast-forward 방식이 있는데 두 방식에 대한 설명은 [이곳](<https://backlog.com/git-tutorial/kr/stepup/stepup1_4.html>)에서 확인할 수 있다. `--only-ff`는 fast-forward 방식이 가능할 때만 merge를 하라는 것이다.
 
@@ -209,19 +211,21 @@ categories: 2019-1-micro
 
 > 로컬 저장소의 commit을 원격 저장소로 올린다. 현재 로컬 저장소의 파일 상태나 Stage 여부에 상관없이 오직 commit에 들어간 변경 사항만 원격 저장소로 올린다.
 >
-> `git push origin master` : Git 초보자들이 가장 많이 쓰는 명령어 중 하나이다. 저장소를 clone 받으면 `master`라는 기본 브랜치가 선택되고 원격 저장소는 자동으로 `origin`이란 이름으로 저장된다. 그래서 `master` 브랜치에서 작업 후 commit을 업로드 할 때 이 명령어를 쓰게된다.
+> `git push origin master` : Git 초보자들이 가장 많이 쓰는 명령어 중 하나이다. 저장소를 clone 받으면 `master`라는 기본 branch가 선택되고 원격 저장소는 자동으로 `origin`이란 이름으로 저장된다. 그래서 `master` branch에서 작업 후 commit을 업로드 할 때 이 명령어를 쓰게된다.
 >
-> `git push <remote_repository> <local_branch>` : local_branch의 commit들을 원격 저장소의 같은 이름의 브랜치에 올린다. 예를 들어 `git push origin master`는 로컬 저장소의 `master` 브랜치의 commit들을 원격 저장소의 `master` 브랜치(origin/master)에 올린다는 것이다. 원격 저장소에 local_branch가 없을 경우 GitHub에서 자동으로 같은 이름의 브랜치를 만들어준다.
+> `git push <remote_repository> <local_branch>` : local_branch의 commit들을 원격 저장소의 같은 이름의 branch에 올린다. 예를 들어 `git push origin master`는 로컬 저장소의 `master` branch의 commit들을 원격 저장소의 `master` branch(origin/master)에 올린다는 것이다. 원격 저장소에 local_branch가 없을 경우 GitHub에서 자동으로 같은 이름의 branch를 만들어준다.
 >
 > `git push <remote_repository> <local_branch>:<remote_branch>` : local_branch의 commit들을 원격 저장소의 remote_branch에 반영한다.
 >
-> `git push --all` : 모든 로컬 브랜치를 한번에 push 한다.
+> `git push --all` : 모든 로컬 branch를 한번에 push 한다.
 >
 > `git push --tags` :  기본적인 push는 tag를 자동으로 push 하지않는다. --tag 옵션으로 모든 tag를 push 할 수 있다. Tag에 대해서는 추후 배운다.
 
 
 
-## 2. 버전을 관리하는 Verb
+## 2. 나머지 주요 Verb
+
+Quick Review에서 다루지 않았지만 꼭 봐야할 중요한 verb들을 정리하였다.
 
 
 
@@ -281,23 +285,17 @@ categories: 2019-1-micro
 
 ### git reset
 
-> 버전 관리에서 매우 중요하면서도 조심히 써야 하는 verb다. 과거 버전으로 돌아가는 명령어다. 돌아갈 버전은 특정 commit으로 지정하는데 commit의 hash code나 가장 최근 commit을 나타내는 HEAD로 commit을 지정한다. 세 가지 방식이 있는데 유의해서 써야 한다. 자세한 설명은 [이곳]([https://git-scm.com/book/ko/v2/Git-%EB%8F%84%EA%B5%AC-Reset-%EB%AA%85%ED%99%95%ED%9E%88-%EC%95%8C%EA%B3%A0-%EA%B0%80%EA%B8%B0](https://git-scm.com/book/ko/v2/Git-도구-Reset-명확히-알고-가기))에서 그림을 보는것이 좋다.
+> 버전 관리에서 매우 중요하면서도 조심히 써야 하는 verb다. 과거 버전으로 돌아가는 명령어다. 돌아갈 특정 commit은 commit hash나 가장 최근 commit을 나타내는 HEAD로 commit을 지정한다. 세 가지 방식이 있는데 유의해서 써야 한다. 자세한 설명은 [이곳]([https://git-scm.com/book/ko/v2/Git-%EB%8F%84%EA%B5%AC-Reset-%EB%AA%85%ED%99%95%ED%9E%88-%EC%95%8C%EA%B3%A0-%EA%B0%80%EA%B8%B0](https://git-scm.com/book/ko/v2/Git-도구-Reset-명확히-알고-가기))에서 그림을 보는것이 좋다.
 >
-> `git reset --soft <past_commit> [filename]` : 작업 트리의 내용은 바꾸지 않고 HEAD만 "past_commit" 으로 변경한다. "past_commit" 이후의 변경 사항은 stage 되어있다. filename을 쓰면 특정 파일만 변경하고 
+> `git reset --soft <past_commit>` : 작업 트리의 내용은 바꾸지 않고 HEAD만 "past_commit" 으로 변경한다. 인덱스 공간을 건드리지 않으므로 "past_commit" 이후의 변경 사항은 stage 되어있다. filename을 쓰면 특정 파일만 변경하고 
 >
-> `git reset --mixed <past_commit> [filename]` :  --mixed는 기본 옵션이다. 작업 트리의 내용은 바꾸지 않고 HEAD를 "past_commit" 으로 변경한다. "past_commit" 이후의 변경된 파일은 Unstaged 상태가 된다.
+> `git reset --mixed <past_commit>` :  --mixed는 기본 옵션이다. 작업 트리의 내용은 바꾸지 않고 HEAD를 "past_commit" 으로 변경한다. 인덱스 공간을 "past_commit"으로 덮어써서 "past_commit" 이후의 변경된 파일은 Unstaged 상태가 된다.
 >
-> `git reset --hard <past_commit>` : 작업 트리의 내용을 "past_commit" 버전으로 바꾸고 이후의 commit들은 삭제해버린다.
+> `git reset --hard <past_commit>` : 작업 트리와 인덱스 공간 모두를 "past_commit" 버전으로 덮어써버린다. 파일의 상태는 Unmodified가 된다.
 >
-> `git reset <filename>` : 특정 파일에서 stage한 내용을 취소하여 Unstaged (Modified or Untracked) 상태로 만든다. add 명령을 취소한다고 보면된다.
-
-------
-
-
-
-### git merge
-
-> sdf
+> `git reset <filename>` : 특정 파일에서 stage한 내용을 취소하여 Unstaged (Modified or Untracked) 상태로 만든다. add 명령을 취소한다고 보면 된다.
+>
+> `git reset --soft <past_commit> <filename>` : 작업 트리의 파일을 변경하지 않고 최근 commit을 취소한다. 실행 후 Staged 상태가 된다.
 
 ------
 
@@ -305,7 +303,27 @@ categories: 2019-1-micro
 
 ### git diff
 
-> sdf
+> diff는 두 상태의 차이를 보여주는 verb다. 변경 사항을 확인할 때 매우 유용하다.
+>
+> `git diff` : 작업 트리와 인덱스의 차이점 보기 (Unstaged 변경 사항 보기)
+>
+> `git diff --cached` : 인덱스와 저장소(HEAD)의 차이점 보기 (Staged 변경 사항 보기)
+>
+> `git diff HEAD` : 작업 트리와 저장소(HEAD)의 차이점 보기
+>
+> `git diff <start> [end]` : start로부터의 변경 사항이나 start와 end 사이의 변경 사항을 본다. start와 end는 commit hash나 HEAD~n, branch 명, 태그 명이 될 수 있다.
+
+------
+
+
+
+### git merge
+
+> `git merge <other_branch>` : 현재 branch에서 other_branch의 commit들을 병합한다.
+>
+> `git merge [--ff / --no-ff / --ff-only] <other_branch>` : 병합하는 방식을 지정한다. 기본은 --ff (fast-forward)인데 --no-f (non-fast-forward)와의 차이는 [이곳](<https://backlog.com/git-tutorial/kr/stepup/stepup1_4.html>)에서 보는 것이 좋다. `--only-ff`는 fast-forward 방식이 가능할 때만 merge를 하라는 것이다.
+>
+> `git merge --squash <other_branch>` : other_branch의 모든 commit들을 하나의 commit으로 합쳐서 병합한다.
 
 ------
 
@@ -313,7 +331,17 @@ categories: 2019-1-micro
 
 ### git branch
 
-> sdf
+> Git을 이용한 협업의 핵심인 branch를 관리하는 verb다.
+>
+> `git branch` : 로컬 저장소의 branch 목록을 보여준다.
+>
+> `git branch -r` : 원격 저장소의 branch 목록을 보여준다.
+>
+> `git branch <branch_name>` : 새로운 branch를 만든다. 
+>
+> `git branch -m <old_name> <new_name>` : branch의 이름을 변경한다.
+>
+> `git branch -d <branch_name>` : branch를 삭제한다. HEAD에 병합되지 않은 branch를 삭제하려면 (즉 branch의 commit을 영구적으로 삭제하려면) -D 옵션을 준다.
 
 ------
 
@@ -321,7 +349,13 @@ categories: 2019-1-micro
 
 ### git checkout
 
-> sdf
+> checkout은 HEAD를 다른 commit으로 옮기고 작업 트리를 그 commit의 snapshot으로 복원한다. 목적지를 다른 branch로 지정하면 그 branch의 최신 commit으로 HEAD가 옮겨지고 작업 트리가 바뀐다. 그래서 주로 작업 branch를 변경하는데 주로 쓰인다.
+>
+> `git checkout <other_branch>` : other_branch로 작업 branch를 바꾸고 작업 트리 영역을 other_branch의 최신 commit 상태로 복원한다.
+>
+> `git checkout -b <new_branch>` : 현재 상태에서 새로운 branch를 생성하고 그곳으로 branch를 옮긴다. HEAD의 commit이 변하지 않고 단지 branch만 바뀐다. 그래서 작업 트리도 변하지 않는다.
+>
+> `git checkout HEAD -- <filename>` : 파일의 상태를 HEAD (최신 commit)으로 복원하는 명령어다. 잘못된 변경 사항이 있을 때 주로 쓴다.
 
 ------
 

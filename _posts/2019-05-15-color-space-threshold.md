@@ -208,6 +208,7 @@ class MyWindow(QMainWindow):
         self.res_img = None             # threshold 결과 영상
         self.src_title = "original"     # 원본 영상 제목
         self.res_title = "result image" # 결과 영상 제목
+        self.setup_ui()
 
     def setup_ui(self):
         self.actionOpen.triggered.connect(self.open_file)
