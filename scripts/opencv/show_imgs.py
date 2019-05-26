@@ -28,7 +28,7 @@ def show_imgs(titled_imgs, wnd_title, columns, min_width=None):
 
 def get_block_info(imgs_dict):
     pad = 10
-    title_pad = 30
+    title_pad = 25
     first_key = list(imgs_dict.keys())[0]
     img_size = imgs_dict[first_key].shape
     img_area = {"x": pad, "w": img_size[1], "y": title_pad, "h": img_size[0]}
