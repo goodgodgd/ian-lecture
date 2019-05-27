@@ -32,8 +32,8 @@ def hough_lines():
         if len(img.shape) == 2:
             images[key] = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
 
-    result_img = si.show_imgs(images, "hough lines", 3, 1200)
-    cv2.imwrite(IMG_PATH + "/houghlines.jpg", result_img)
+    result_img = si.show_imgs(images, "hough lines", 3, 1000)
+    # cv2.imwrite(IMG_PATH + "/houghlines.jpg", result_img)
 
 
 def hough_circles():
@@ -70,10 +70,10 @@ def hough_circles():
     for key, img in images.items():
         if len(img.shape) == 2:
             images[key] = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
-    result_img = si.show_imgs(images, "hough lines", 3, 1200)
+    result_img = si.show_imgs(images, "hough lines", 3, 1000)
     cv2.imwrite(IMG_PATH + "/houghcircles.jpg", result_img)
 
 
 if __name__ == "__main__":
-    # hough_lines()
+    hough_lines()
     hough_circles()
