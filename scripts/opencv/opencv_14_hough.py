@@ -45,15 +45,13 @@ def hough_circles():
     canny_edges = {}
     for key, img in images.items():
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        gray = cv2.GaussianBlur(gray, (3, 3), 0)
-        gray = cv2.GaussianBlur(gray, (3, 3), 0)
+        gray = cv2.bilateralFilter(gray, 5, 100, 100)
         canny_edges[key.replace("srcimg", "canny")] = cv2.Canny(gray, 100, 200)
 
     hough_results = {}
     for key, srcimg in images.items():
         gray = cv2.cvtColor(srcimg, cv2.COLOR_BGR2GRAY)
-        gray = cv2.GaussianBlur(gray, (3, 3), 0)
-        gray = cv2.GaussianBlur(gray, (3, 3), 0)
+        gray = cv2.bilateralFilter(gray, 5, 100, 100)
         circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT, 1, 30, None,
                                    param1=200, param2=50, maxRadius=60)
         if circles is not None:
@@ -75,5 +73,5 @@ def hough_circles():
 
 
 if __name__ == "__main__":
-    hough_lines()
+    # hough_lines()
     hough_circles()
