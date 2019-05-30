@@ -278,3 +278,20 @@ HYUKDOO.CHOI@LAPTOP-MHDHK8AC MINGW64 /d/Work/micro-project (master)
 
 
 
+## 3. Branch and Rebase
+
+위에서는 브랜치를 분기하고 이를 다시 merge하는 과정을 배웠다. 그런데 너무 많은 브랜치를 만들면 로그가 상당히 복잡해질 수 있다. 그렇다고 브랜치를 많이 쓰지 말라는 것은 아니다. 일단 작업 단위대로 브랜치를 생성한 후 두 개의 브랜치를 합칠 때 두 갈래 길이 만나는 것이 아니라 마치 한 브랜치에서 쭉 작업한 것처럼 두 브랜치의 commit들을 직선적으로 연결할 수 있다. 이것이 **rebase**다. 아래 그림은 rebase의단계를 보여준다. 처음에 두 갈래로 갈라진 두 개의 브랜치가 있다. merge를 이용해 `bugfix` 브랜치를 `master` 브랜치로 합칠수도 있지만 rebase로도 같은 효과를 낼 수 있다.
+
+![rebase1](/ian-lecture/assets/git-project/rebase1.png)
+
+![rebase2](/ian-lecture/assets/git-project/rebase2.png)
+
+![rebase3](/ian-lecture/assets/git-project/rebase3.png)
+
+merge와 효과는 비슷한데 왜 rebase라는게 있고 언제 써야하고 언제 쓰면 안될까?
+
+- 앞서 말했다시피 rebase는 전체적인 히스토리를 단순화한다. 복잡한 브랜칭 과정을 원격 저장소에 노출하고 싶지 않을 때 쓸 수 있다.
+- 두 개의 작업 단위라고 생각했는데 하다보니 하나의 작업 단위로 (하나의 브랜치로) 합치고 싶은 경우
+- 프로젝트 구성원들의 규칙에 따라서 merge 보다는 rebase를 쓰기로 한 경우
+- 주의: **원격 저장소에 올라간 commit들은 절대!! rebase 해서는 안된다.** 그러면 같은 저장소를 쓰는 모든 사람들에게 conflict가 발생할 수 있다.
+
