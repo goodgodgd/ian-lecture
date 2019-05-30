@@ -10,7 +10,7 @@ categories: 2019-1-systprog
 
 # 1. Hough Transform
 
-**허프 변환(Hough Transform)**은 영상에서 직선이나 원과 같은 모양을 찾는 방법이다. 먼저 영상에서 캐니 엣지로 외곽선을 추출하고 엣지로 검출된 픽셀 좌표들을 **허프 공간(Hough Space)**으로 변환한다. 허프 공간은 찾고자 하는 도형의 파라미터 공간(Parameter Space)이며 이곳에서 밀도가 높은 곳의 파라미터를 찾으면 해당 도형을 픽셀 좌표계에서 찾을 수 있다. 가장 대표적인 직선 검출을 예로 들면 아래 왼쪽 그림처럼 영상에서 직선은 $(\rho, \theta)$ 두 개의 파라미터로 결정할 수 있다. 엣지로 검출된 선분 위의 한 픽셀을 지날수 있는 모든 직선의 파라미터를 허프 공간에 표시하면 오른쪽 그림과 같이 곡선이 그려진다. 모든 엣지의 픽셀에 대해서 허프 공간의 곡선을 그려본다. 허프 공간을 일정 간격의 그리드(grid)로 나눈 후 각 그리드를 지나는 선분의 개수가 가장 높은 그리드의 파라미터가 우리가 찾는 선분의 파라미터가 된다. 이때 각 그리드를 지나는 선분의 개수를 **vote**라고 한다. 원을 찾을때도 마찬가지로 원을 $(x,y,r)$ 세 개의 파라미터로 특정할 수 있으므로 3차원 허프 공간을 만들고 엣지 위의 픽셀들을 허프 공간으로 변환하면 된다.
+**허프 변환(Hough Transform)**은 영상에서 직선이나 원과 같은 모양을 찾는 방법이다. 먼저 영상에서 캐니 엣지로 외곽선을 추출하고 엣지로 검출된 픽셀 좌표들을 **허프 공간(Hough Space)**으로 변환한다. 허프 공간은 찾고자 하는 도형의 파라미터 공간(Parameter Space)이며 이곳에서 밀도가 높은 곳의 파라미터를 찾으면 해당 도형을 픽셀 좌표계에서 찾을 수 있다. 가장 대표적인 직선 검출을 예로 들면 아래 왼쪽 그림처럼 영상에서 직선은 $$(\rho, \theta)$$ 두 개의 파라미터로 결정할 수 있다. 엣지로 검출된 선분 위의 한 픽셀을 지날수 있는 모든 직선의 파라미터를 허프 공간에 표시하면 오른쪽 그림과 같이 곡선이 그려진다. 모든 엣지의 픽셀에 대해서 허프 공간의 곡선을 그려본다. 허프 공간을 일정 간격의 그리드(grid)로 나눈 후 각 그리드를 지나는 선분의 개수가 가장 높은 그리드의 파라미터가 우리가 찾는 선분의 파라미터가 된다. 이때 각 그리드를 지나는 선분의 개수를 **vote**라고 한다. 원을 찾을때도 마찬가지로 원을 $$(x,y,r)$$ 세 개의 파라미터로 특정할 수 있으므로 3차원 허프 공간을 만들고 엣지 위의 픽셀들을 허프 공간으로 변환하면 된다.
 
 ![hough-transform1](/ian-lecture/assets/opencv-segment/hough-transform1.jpg)
 
@@ -24,22 +24,22 @@ OpenCV에서는 허프 직선 변환을 구현한 `cv2.HoughLines()`와 확률�
 
 > lines = **cv2.HoughLines**(image, rho, theta, threshold[, lines, srm, stm, min_theta, max_theta])
 >
-> - image: 8-bit, single channel binary source image. 주로 원본 영상에 가우시안 블러와 캐니 엣지를 순서대로 적용한 영상을 입력 영상으로 쓴다.
-> - rho: 직선과 원점과의 거리 측정 해상도, 허프 공간을 나누는 단위, 작을수록 정확히 측정할 수 있지만 입력 영상의 노이즈에 취약해진다.
-> - theta: 원점에서 직선에 내린 수선의 발의 각도 측정 해상도, 허프 공간을 나누는 단위, 작을수록 정확히 측정할 수 있지만 입력 영상의 노이즈에 취약해진다.
+> - image: 8-bit, single channel binary source image. 주로 원본 영상에 가우시안 블러와 캐니 엣지를 적용한 영상을 입력 영상으로 쓴다.
+> - rho: 직선과 원점과의 거리 측정 해상도, 허프 공간에서 rho 축을 나누는 단위, 작을수록 정확히 측정할 수 있지만 입력 영상의 노이즈에 취약해진다.
+> - theta: 원점에서 직선에 내린 수선의 발의 각도 측정 해상도, 허프 공간에서 theta 축을 나누는 단위, 작을수록 정확히 측정할 수 있지만 입력 영상의 노이즈에 취약해진다.
 > - threshold: 직선으로 판단한 최소한의 vote 개수, 작게 주면 검출 개수가 증가하지만 정확도가 감소, 높게 주면 검출 개수는 줄어들지만 확실한 직선만 검출
-> - lines: 검출 결과, 1 1N x 1 x 2 크기의 배열 $(\rho, \theta)$
+> - lines: 검출 결과, 1 1N x 1 x 2 크기의 배열 $$(\rho, \theta)$$
 > - srn, stn: 허프 변환을 목표 해상도에 바로 적용하는 것은 많은 연산이 필요하므로 낮은 해상도에서 점점 높은 해상도로 올리면서 찾는다. 이때 단계별 거리와 각도 해상도 갱신 비율을 srn, stn 으로 지정한다.
 > - min_theta, max_theta: 검출을 위해 사용할 최소, 최대 각도
 
 > lines = **cv2.HoughLinesP**(image, rho, theta, threshold[, lines, minLineLength, maxLineGap])
 >
 > - image, rho, theta, threshold는 위와 동일
-> - lines: 검출 결과, N x 1 x 4 크기의 배열로 시작점과 끝점 좌표 표현 $(x_1, y_1, x_2, y_2)$
+> - lines: 검출 결과, N x 1 x 4 크기의 배열로 시작점과 끝점 좌표 표현 $$(x_1, y_1, x_2, y_2)$$
 > - minLineLength: 선으로 인정할 최소 길이
 > - maxLineGap: 하나의 직선이 두 개 이상의 선분으로 끊어져 있을 때 얼마나 끊어진 간격까지 연결해서 하나의 선분으로 검출할 것인지 결정
 
-두 함수 중에서 `cv2.HoughLinesP`가 속도가 빠를 뿐더러 결과도 사용자가 쓰기 쉬운 끝점 좌표로 나오고 입력 인자도 선분의 조건을 직관적으로 제한할 수 있기 때문에 많이 쓰인다. 다만 선 검출이 `cv2.HoughLinesP()`에 비해서는 적게 되므로 threshold를 상대적으로 낮게 지정해야 한다. 다음은 `cv2.HoughLinesP` 함수를 이용해 책장의 선분을 검출하는 예시다. 결과로 나온 배열을 사용할 때 주의할 점은 크기가 (Nx4)가 아니라 (Nx1x4)라는 것이다.
+두 함수 중에서 `cv2.HoughLinesP`가 속도가 빠를 뿐더러 결과도 사용자가 쓰기 쉬운 끝점 좌표로 나오고 입력 인자도 선분의 조건을 직관적으로 제한할 수 있기 때문에 많이 쓰인다. 다만 선 검출이 `cv2.HoughLines()`에 비해서는 적게 되므로 threshold를 상대적으로 낮게 지정해야 한다. 다음은 `cv2.HoughLinesP` 함수를 이용해 책장의 선분을 검출하는 예시다. 결과로 나온 배열을 사용할 때 주의할 점은 크기가 (Nx4)가 아니라 (Nx1x4)라는 것이다.
 
 ```python
 import cv2
@@ -52,30 +52,26 @@ def hough_lines():
     images = {}
     for i, name in enumerate(img_names):
         images[f"srcimg{i+1}"] = cv2.imread(name, cv2.IMREAD_COLOR)
-
+    # 전처리 과정
     canny_edges = {}
     for key, img in images.items():
         grayimg = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         blurimg = cv2.GaussianBlur(grayimg, (3, 3), 0)
-        # blurimg = cv2.GaussianBlur(blurimg, (3, 3), 0)
         canny_edges[key.replace("srcimg", "canny")] = cv2.Canny(blurimg, 100, 200)
-
+    # hough line 적용
     hough_results = {}
     for key, canny_img in canny_edges.items():
-        lines = cv2.HoughLi(canny_img, 1, np.pi/180, 50, None, 50, 10)
+        lines = cv2.HoughLinesP(canny_img, 1, np.pi/180, 50, None, 50, 10)
+        print("lines", lines)
         result = images[key.replace("canny", "srcimg")].copy()
         for line in lines:
             x1, y1, x2, y2 = line[0]
             cv2.line(result, (x1,y1), (x2,y2), (0,0,255), 1)
         hough_results[key.replace("canny", "houghline")] = result
-
+    # 결과 출력
     images.update(canny_edges)
     images.update(hough_results)
-    for key, img in images.items():
-        if len(img.shape) == 2:
-            images[key] = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
-
-    result_img = si.show_imgs(images, "hough lines", 3, 1000)
+    result_img = si.show_imgs(images, "hough lines", 3, 1200)
 
 if __name__ == "__main__":
     hough_lines()
@@ -93,7 +89,7 @@ OpenCV는 Hough Circle Transform을 구현한 `cv2.HoughCircles()` 함수를 제
 
 > circles - **cv2.HoughCircles**(image, method, dp, minDist[, circles, param1, param2, minRadius, maxRadius])
 >
-> - image: 8-bit, single-channel, grayscale input image, HoughLines()와는 다르게 엣지 영상을 넣는 것이 아니라 단일 채널 원본 영상을 넣어준다.
+> - image: 8-bit, single-channel, grayscale input image, `cv2.HoughLinesP()`와는 다르게 엣지 영상을 넣는 것이 아니라 단일 채널 원본 영상을 넣어준다.
 > - method: 현재는 cv2.HOUGH_GRADIENT 만 구현이 되어있다.
 > - dp: 허프 공간에서의 그리드 크기, dp=1이면 입력 영상의 픽셀 해상도와 같아진다.
 > - minDist: 검출 원들 사이의 최소 거리
@@ -109,17 +105,19 @@ def hough_circles():
     images = {}
     for i, name in enumerate(img_names):
         images[f"srcimg{i+1}"] = cv2.imread(name, cv2.IMREAD_COLOR)
-
+    # 알고리즘에 들어가진 않지만 중간과정을 이해하기 위한 영상
     canny_edges = {}
     for key, img in images.items():
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        gray = cv2.bilateralFilter(gray, 5, 100, 100)
+        gray = cv2.GaussianBlur(gray, (3, 3), 0)
+        gray = cv2.GaussianBlur(gray, (3, 3), 0)
         canny_edges[key.replace("srcimg", "canny")] = cv2.Canny(gray, 100, 200)
-
+    # hough circle 적용
     hough_results = {}
     for key, srcimg in images.items():
         gray = cv2.cvtColor(srcimg, cv2.COLOR_BGR2GRAY)
-        gray = cv2.bilateralFilter(gray, 5, 100, 100)
+        gray = cv2.GaussianBlur(gray, (3, 3), 0)
+        gray = cv2.GaussianBlur(gray, (3, 3), 0)
         circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT, 1, 30, None,
                                    param1=200, param2=50, maxRadius=60)
         if circles is not None:
@@ -130,13 +128,10 @@ def hough_circles():
             for circle in circles:
                 result = cv2.circle(result, (circle[0], circle[1]), circle[2], (0,0,255), 2)
             hough_results[key.replace("srcimg", "houghcircle")] = result
-
+    # 결과 출력
     images.update(canny_edges)
     images.update(hough_results)
-    for key, img in images.items():
-        if len(img.shape) == 2:
-            images[key] = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
-    result_img = si.show_imgs(images, "hough lines", 3, 1000)
+    result_img = si.show_imgs(images, "hough lines", 3, 1200)
 ```
 
 결과를 보면 원이 밖에 걸쳐있는 것을 제외하고는 대부분의 두더지 구멍을 찾았다. 물론 원의 위치가 사람의 생각과는 조금 다르지만 이는 원을 정면이 아닌 사선 방향에서 찍어서 엣지가 타원으로 나오기 때문이다. 캐니 엣지를 보면 이해가 될 것이다.
@@ -215,7 +210,13 @@ if __name__ == "__main__":
 
 ### 예제 2. 물체 개수 세기(1): Puzzle
 
-단순한 색상의 여러 물체들이 뒤섞인 영상에서 flood fill 알고리즘을 이용하면 물체들을 분리해 낼 수 있다. 다음은 flood fill을 이용해 물체들을 분리하는 기본적인 알고리즘이다. 모든 픽셀을 돌아가면서 아직 채워지지 않은 픽셀을 `cv2.floodFill()` 함수로 채워나가면 된다. 이미 채워진 픽셀은 mask 값이 1이므로 이를 확인하면서 0인 곳에서만 색을 채우면 된다. 실제 사진을 다루기 전에 쉬운 문제를 하나 풀어보자. 다음과 같은 퍼즐 영상에서 퍼즐의 개수를 세는 것이다.
+단순한 색상의 여러 물체들이 뒤섞인 영상에서 flood fill 알고리즘을 이용하면 물체들을 분리해 낼 수 있다. 이를 응용하면 다음과 같은 퍼즐 영상에서 퍼즐의 개수를 셀 수 있다.
+
+![puzzle](/ian-lecture/assets/opencv-segment/puzzle.jpg)
+
+
+
+아래 스크립트는 flood fill을 이용해 물체들을 분리하는 기본 알고리즘을 구현한 것이다. 모든 픽셀을 돌아가면서 아직 채워지지 않은 픽셀을 `cv2.floodFill()` 함수로 채워나가면 된다. 이미 채워진 픽셀은 mask 값이 1이므로 이를 확인하면서 0인 곳에서만 색을 채우면 된다.
 
 ```python
 import cv2
@@ -232,12 +233,13 @@ def count_puzzle(img):
     for y in range(img.shape[0]):
         for x in range(img.shape[1]):
             if mask[y+1, x+1] == 0:
+                # flood fill로 채울 랜덤 색상 생성
                 color = np.random.randint(50, 256, 3).tolist()
                 color[0] = 255
                 ret, img, mask, rect = cv2.floodFill(img, mask, (x,y), color, (10,10,10), (10,10,10), flags=8)
                 mask_show = mask*255
                 print(f"area={ret}, rect={rect}, mask value={mask[y+1, x+1]}")
-                if ret > 500:
+                if ret > 500:   # 영역이 넓은 것만 퍼즐 조각으로 인정
                     cv2.imshow("image", img)
                     cv2.imshow("mask", mask_show)
                     cv2.waitKey(200)
@@ -253,7 +255,7 @@ if __name__ == "__main__":
     count_puzzle(image)
 ```
 
-결과를 보면 퍼즐 조각들이 모두 새로운 색으로 칠해졌고 각 퍼즐은 한가지 색으로만 칠해진 것을 볼 수 있다. 컬러 영상에서는 세 개 채널에서 모두 조건을 만족해야 하므로  `loDiff, upDiff` 값을 크게 줘야한다. 텍스트로 프린트 된 값들을 보면 퍼즐 사이에서는 `ret` 값이 1로 나온 경우가 대부분이다. 한 픽셀도 확장하지 못 한 것이다. 하지만 색이 균일한 퍼즐 안에서는 1000 픽셀 이상 나오는 것을 볼 수 있다. 이러한 성질을 이용해서 채워진 픽셀 영역이 500 이상일 때만 퍼즐로 인정하여 `count` 변수를 증가시켰다. 결과가 80이 나왔는데 실제로 영상의 퍼즐도 10x8로 배치되어 있어 정확하게 개수를 센 것이다.
+결과를 보면 퍼즐 조각들이 모두 새로운 색으로 칠해졌고 각 퍼즐은 한가지 색으로만 칠해진 것을 볼 수 있다. 컬러 영상에서는 세 개 채널에서 모두 조건을 만족해야 하므로  `loDiff, upDiff` 값을 크게 줘야한다. 텍스트로 프린트 된 값들을 보면 퍼즐 사이에서는 `ret` 값이 1로 나온 경우가 대부분이다. 한 픽셀도 확장하지 못 한 것이다. 하지만 색이 균일한 퍼즐 안에서는 1000 픽셀 이상 나오는 것을 볼 수 있다. 이러한 성질을 이용해서 채워진 픽셀 영역이 500 이상일 때만 퍼즐로 인정하여 `count` 변수를 증가시켰다. 결과가 80이 나왔는데 실제로 영상의 퍼즐도 10x8로 배치되어 있어 정확하게 개수를 센 것을 알 수 있다.
 
 ![floodfill_puzzle](/ian-lecture/assets/opencv-segment/floodfill_puzzle.jpg)
 
@@ -269,7 +271,7 @@ if __name__ == "__main__":
 
 #### Step 1. Prepare a Guide Mask
 
-이 영상에 퍼즐 예제와 같이 BGR 영상에 바로 flood fill을 한다면 음영의 차이 때문에 하나의 공이 여러개의 영역으로 분리될 수 있다. 공들의 색이 선명하게 차이가 나니 HSV 컬러 스페이스에서 Hue 채널을 이용하면 색상이 다른 공들을 쉽게 분리할 수 있을 것이다. 그리고 공들 사이에 음영이 어두워지는 엣지를 활용하면 같은 색의 공들도 어느정도 분리할 수 있을 것이다. 색상을 이용한 flood fill을 하기 전에 엣지나 음영 정보를 이용해서 **flood fill로 채워지는 범위에 대한 가이드를 mask로 만들어주자.** 보통은 mask를 all-zero-array에서 시작하지만 여기서는 flood fill로 영역이 확장되면 안되는 공의 외곽선 영역의 mask에 값을 입력한다. 영역이 확장되지 못하도록 울타리를 쳐주는 것이다.
+이 영상에 퍼즐 예제와 같이 BGR 영상에 바로 flood fill을 한다면 음영의 차이 때문에 하나의 공이 여러개의 영역으로 분리될 수 있다. 공들의 색이 선명하게 차이가 나니 HSV 컬러 스페이스에서 Hue 채널을 이용하면 색상이 다른 공들을 쉽게 분리할 수 있을 것이다. 그리고 공들 사이에 음영이 어두워지는 엣지를 활용하면 같은 색의 공들도 어느정도 분리할 수 있을 것이다. 색상을 이용한 flood fill을 하기 전에 엣지나 음영 정보를 이용해서 **flood fill로 채워지는 범위에 대한 가이드를 mask로 만들어주자.** 보통은 mask를 all-zero-array에서 시작하지만 여기서는 flood fill로 영역이 확장되면 안되는 공의 외곽선 영역의 mask에 값을 입력한다. 영역이 확장되지 못하도록 미리 울타리를 쳐주는 것이다.
 
 ```python
 import cv2
@@ -292,7 +294,7 @@ def prepare_mask(srcimg):
     images["hue"] = hsvimg[:, :, 0]
     images["saturation"] = hsvimg[:, :, 1]
     images["value"] = hsvimg[:, :, 2]
-    # create invalid mask by saturtion and value to set borders of balls
+    # create nonregion mask by saturtion and value to set borders of balls
     canny = cv2.Canny(images["value"], 80, 160)
     ret, nonregion = cv2.threshold(canny, 10, NON_REGION, cv2.THRESH_BINARY)
     nonregion[images["value"] < 70] = NON_REGION
@@ -321,6 +323,7 @@ mask가 준비되었다면 이제 flood fill을 적용할 차례다. Hue 영상�
   `flags = (4 | cv2.FLOODFILL_MASK_ONLY | (value << 8))`
 
 - `label`은 mask를 채울 값으로서 채워진 영역의 넓이가 `AREA_THR` 보다 넓으면 `mask`를 `label`로 채우고 `label` 값을 1 증가시킨다.
+
 - 채워진 영역의 넓이가 `AREA_THR` 이하면 공이 아닌 공 사이의 작은 영역이므로 `mask`를 `NON_REGION` 으로 채운다.
 
 ```python
@@ -394,7 +397,7 @@ def colorize_regions(mask, max_label):
 
 ![wildgoose](/ian-lecture/assets/opencv-segment/wildgoose.jpg)
 
-여기서는 OpenCV에서 제공하는 `cv2.watershed()` 함수를 사용하여 이를 해결할 것이다. 먼저 간단한 스레시홀드와 모폴로지 연산으로 확실하게 하늘인 곳과 확실하게 기러기인 영역을 찾는다. 확실한 영역은 `markers`에 표시하고 나머지는 0으로 채워 함수에 입력하면 함수에서 정확한 경계를 찾아준다.
+여기서는 OpenCV에서 워터셰드 알고리즘을 구현한 `cv2.watershed()` 함수를 사용하여 이를 해결할 것이다. 먼저 간단한 스레시홀드와 모폴로지 연산으로 확실하게 하늘인 곳과 확실하게 기러기인 영역을 찾는다. 확실한 영역은 `markers`에 표시하고 나머지는 0으로 채워 함수에 입력하면 함수에서 정확한 경계를 찾아준다.
 
 > markers = **cv2.watershed**(image, markers)
 >
@@ -416,13 +419,15 @@ def watershed():
     images = {"original": srcimg}
     # find apprent background(sky) and wild goose region
     gray = cv2.cvtColor(srcimg, cv2.COLOR_BGR2GRAY)
+    gray = cv2.GaussianBlur(gray, (3, 3), 0)
     ret, binary = cv2.threshold(gray, 150, 255, cv2.THRESH_BINARY)
-    images["threshold"] = binary
     kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
+    images["threshold"] = binary
     app_sky = cv2.erode(binary, kernel, iterations=3)
     images["apparent sky"] = app_sky
     app_goose = cv2.dilate(binary, kernel, iterations=1)
     images["apparent wildgoose"] = app_goose
+    images["undetermined"] = cv2.subtract(app_goose, app_sky)
     # create markers and watershed
     markers = np.zeros(gray.shape, dtype=np.int32)
     markers[app_sky > 0] = SKY_LABEL
@@ -435,7 +440,6 @@ def watershed():
     labelimg[markers == GOOSE_LABEL, :] = srcimg[markers == GOOSE_LABEL, :]
     images["label"] = labelimg
     result_img = si.show_imgs(images, "watershed", 3)
-    cv2.imwrite(IMG_PATH + "/result/watershed_wildgoose.jpg", result_img)
 
 if __name__ == "__main__":
     watershed()
