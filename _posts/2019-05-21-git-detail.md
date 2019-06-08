@@ -84,13 +84,13 @@ Git은 수천가지의 기능이 있는데 다양한 기능을 큰 분류로 묶
 
 ### git status
 
-> 최신 commit으로부터 변경 사항이 있는 파일들을 상태별로 묶어서 보여준다. Untracked, Not staged, Staged, Changes to be commited 등의 상태가 있다. 그리고 현재 상태에서 쓸만한 명령어 추천해준다.
+> HEAD로부터 변경 사항이 있는 파일들을 상태별로 묶어서 보여준다. Untracked, Not staged, Staged, Changes to be commited 등의 상태가 있다. 그리고 현재 상태에서 쓸만한 명령어 추천해준다.
 
 ------
 
 ### git add
 
-> Untracked 상태의 파일을 인덱스에 추가하거나 변경 사항을 stage 한다.
+> 지정한 파일(들)의 최신 상태를 인덱스에 업데이트한다. Untracked나 Modified 상태의 파일을 stage하여 다음 commit에 변경사항이 들어갈 수 있게 준비한다.
 >
 > `git add <filename>` : 특정 파일을 stage 한다.
 >
@@ -104,7 +104,7 @@ Git은 수천가지의 기능이 있는데 다양한 기능을 큰 분류로 묶
 
 ### git commit
 
-> Staged 변경 사항까지 들어간 저장소의 스냅샷을 저장한다. commit을 하면 Stage 한 상태까지를 저장하고 hash 혹은 checksum을 부여한다. (checksum과 hash는 비슷하게 쓰이지만 방식이 다르고 git에서는 checksum이 더 정확한 용어지만 hash라고 많이 부른다.)  Hash는 코드로부터 자동으로 생성되는 40자리 문자로서 commit의 ID 같은 역할을 한다. Hash는 `git log` 명령어를 통해 확인할 수 있다. 이 hash를 이용해 나중에 언제든 예전에 commit한 상태로 돌아갈 수 있다.
+> 현재 인덱스 상태를 저장소에 저장한다. commit을 하면 stage한 상태까지를 저장하고 hash 혹은 checksum을 부여한다. (checksum과 hash는 비슷하게 쓰이지만 방식이 다르고 git에서는 checksum이 더 정확한 용어지만 hash라고 많이 부른다.)  Hash는 코드로부터 자동으로 생성되는 40자리 문자로서 commit의 ID 같은 역할을 한다. Hash는 `git log` 명령어를 통해 확인할 수 있다. 이 hash를 이용해 나중에 언제든 예전에 commit한 상태로 돌아갈 수 있다.
 >
 > `git commit -m <message>` : 현재 stage된 변경사항을 message, author, hash와 함께 저장한다.  `-m` 옵션이 없으면 Git 기본 에디터가 실행되서 그곳에서 메시지를 작성하게 한다. 그냥 커맨드에서 -m 옵션을 써서 메시지를 입력하는게 낫다.
 >
@@ -176,7 +176,7 @@ Git은 수천가지의 기능이 있는데 다양한 기능을 큰 분류로 묶
 
 ### git pull
 
-> 원격 저장소에서 commit을 받아와 commit의 변경 사항을 로컬 저장소의 코드에 합친다.(merge) Pull을 실행하기 전에 반드시 로컬 저장소의 상태는 모든 것이 commit이 된 "Unmodified" 상태여야 pull을 할 수 있다. Pull은 사실 모든 commit을 내려받는 `git fetch`와 내려받은 commit들과 현재 로컬 파일에 반영하는 (합치는) `git merge FETCH_HEAD` 두 명령어를 결합한 것이다. 따라서 pull에는 merge와 관련된 옵션들이 있다.
+> 원격 저장소의 새로운 변경 사항(commit)들을 로컬 저장소에 내려받고 작업 트리에 그 내용을 반영한다. Pull을 실행하기 전에 반드시 로컬 저장소의 상태는 모든 것이 commit이 된 "Unmodified" 상태여야 pull을 할 수 있다. Pull은 사실 모든 commit을 내려받는 `git fetch`와 내려받은 commit들과 현재 로컬 파일에 반영하는 (합치는) `git merge FETCH_HEAD` 두 명령어를 결합한 것이다. 따라서 pull에는 merge와 관련된 옵션들이 있다.
 >
 > `git pull` : 원격 저장소의 모든 branch의 commit들을 로컬 저장소에 받고 각 branch를 모두 merge 한다. 원격의 master는 로컬의 master와 합치고 원격의 some_branch는 로컬의 some_branch와 합친다.
 >
@@ -188,7 +188,7 @@ Git은 수천가지의 기능이 있는데 다양한 기능을 큰 분류로 묶
 
 ### git push
 
-> 로컬 저장소의 commit을 원격 저장소로 올린다. 현재 로컬 저장소의 파일 상태나 Stage 여부에 상관없이 오직 commit에 들어간 변경 사항만 원격 저장소로 올린다.
+> 로컬 저장소의 새로운 commit을 원격 저장소로 올린다. 현재 로컬 저장소의 파일 상태나 Stage 여부에 상관없이 오직 commit에 들어간 변경 사항만 원격 저장소로 올린다.
 >
 > `git push origin master` : Git 초보자들이 가장 많이 쓰는 명령어 중 하나이다. 저장소를 clone 받으면 `master`라는 기본 branch가 선택되고 원격 저장소는 자동으로 `origin`이란 이름으로 저장된다. 그래서 `master` branch에서 작업 후 commit을 업로드 할 때 이 명령어를 쓰게된다.
 >
@@ -286,7 +286,7 @@ Git은 수천가지의 기능이 있는데 다양한 기능을 큰 분류로 묶
 
 ### git checkout
 
-> checkout은 HEAD를 다른 commit으로 옮기고 작업 트리를 그 commit의 snapshot으로 복원한다. 목적지를 다른 branch로 지정하면 그 branch의 최신 commit으로 HEAD가 옮겨지고 작업 트리가 바뀐다. 그래서 주로 작업 branch를 변경하는데 주로 쓰인다.
+> HEAD를 다른 commit 혹은 branch로 옮기고 작업 트리를 그 commit의 snapshot으로 복원한다. 목적지를 다른 branch로 지정하면 그 branch의 최신 commit으로 HEAD가 옮겨지고 작업 트리가 바뀐다. 그래서 주로 작업 branch를 변경하는데 주로 쓰인다.
 >
 > `git checkout <other_branch>` : other_branch로 작업 branch를 바꾸고 작업 트리 영역을 other_branch의 최신 commit 상태로 복원한다.
 >
