@@ -1,8 +1,8 @@
 ---
 layout: post
 title:  "Introduction to Linux"
-date:   2010-08-31 09:00:13
-categories: WIP
+date:   2019-08-31 09:00:13
+categories: 2019-2-robotics
 ---
 
 
