@@ -5,15 +5,23 @@ date:   2019-03-17 09:00:13
 categories: 2019-1-systprog
 ---
 
+
+
 ## 1. Basic Usages
 
 이전 장에서도 배웠듯이 파이썬에도 `if, for, while`이 있다. 특히 파이썬은 자료구조형과 밀접하게 연계되어 자료구조에 들어있는 자료들에 대해 쉽게 반복문을 실행할 수 있다. 제어문의 기본 용법과 편리하게 쓸 수 있는 다양한 문법들을 배워보자. `if, for, while`의 기본 용법은 다음과 같다.
 
 ```
-if condition:
-	statements_when_condition_is_true
+if condition1:
+	statements_when_condition1_is_true
+elif condition2:
+	statements_when_condition2_is_true
+else:
+	statements_when_no_condition_is_true
+
 for elem in something_iterable:
 	statements_to_process_elem
+
 while condition:
 	statements_while_condition_is_true
 ```
@@ -39,13 +47,15 @@ for hero in marvel_heroes:
 
 print("list of dc heroes")
 for i in range(len(dc_heroes)):
-    print(f"    {dc_heroes[i]}")
+    print(f"{i})  {dc_heroes[i]}")
 
 i = 0
+print("DC's male heroes ends with 'man'")
 while i < len(dc_heroes) and dc_heroes[i].endswith('man'):
-    print(f"{dc_heroes[i]}: DC's male heroes ends with 'man'")
+    print(f"    {dc_heroes[i]}")
     i += 1
 ```
+
 
 
 ## 2. 반복문 제어: `continue, break`
@@ -76,6 +86,8 @@ while name != 'q':
     index = dc_heroes.index(name)
     print(f"{name}'s index =", index)
 ```
+
+
 
 ## 3. for 응용: `enumerate, zip`
 
@@ -109,6 +121,8 @@ for ind, (mv, dc) in enumerate(zip(marvel_heroes, dc_heroes)):
     else:
         print("{0} vs {1}: {1} win!".format(mv, dc))
 ```
+
+
 
 ## 4. List Comprehension
 

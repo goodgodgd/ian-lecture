@@ -8,6 +8,8 @@ categories: 2019-1-systprog
 
 # 파이썬 기본 데이터 타입
 
+
+
 ## 1. 파이썬 변수와 타입
 
 파이썬 소개에서도 말했다시피 파이썬 변수는 동적 타입이다. 그러므로 변수에 값을 넣으면 알아서 타입이 그에 맞춰 변한다.
@@ -48,6 +50,8 @@ myarray = pd.DataFrame(myarray)
 # 1  4  5  6
 # 2  7  8  9
 ```
+
+
 
 ## 2. 숫자 타입
 
@@ -106,6 +110,8 @@ integer <class 'int'> 28
 ### 연습문제
 
 1) 위 연산을 이용해서 13의 3승을 16진수로 표현하시오.
+
+
 
 ## 3. 조건문(if)과 비교 연산자
 
@@ -169,6 +175,8 @@ big difference for other types
 foo == bar True
 foo is bar False
 ```
+
+
 
 ## 4. 문자열 타입
 

@@ -5,6 +5,8 @@ date:   2019-02-28 09:00:13
 categories: 2019-1-systprog
 ---
 
+
+
 ## 파이썬(Python) 유래
 
  > 파이썬(Python)은 1990년 암스테르담의 귀도 반 로섬(Guido Van Rossum)이 개발한 인터프리터 언어이다. 귀도는 파이썬이라는 이름을 자신이 좋아하는 코미디 쇼인 "몬티 파이썬의 날아다니는 서커스(Monty Python’s Flying Circus)"에서 따왔다고 한다. ([영상](https://www.youtube.com/watch?v=C-M2hs3sXGo&index=1&list=PLutTviYZk9KhOPSfWfBMU4-VNRCs6S4Jr)) 파이썬의 사전적인 의미는 고대 신화에 나오는 파르나소스 산의 동굴에 살던 큰 뱀을 뜻하며, 아폴로 신이 델파이에서 파이썬을 퇴치했다는 이야기가 전해지고 있다. 대부분의 파이썬 책 표지와 아이콘이 뱀 모양으로 그려져 있는 이유가 여기에 있다. <https://wikidocs.net/4307#fn:interpret>
@@ -118,3 +120,4 @@ def square(a)
 6. 개발자 스타일에 따라 코드가 크게 달라지지 않습니다. (띄어쓰기, 괄호 위치, 변수명 등)
 
 이제 여러분들도 이번 수업을 통해 파이썬의 매력을 느껴보시길 바랍니다.
+
