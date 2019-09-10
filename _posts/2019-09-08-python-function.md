@@ -93,7 +93,7 @@ while name != 'q':
 
 
 
-## 3. for 응용: `enumerate, zip, dict`
+## 3. for 응용: `enumerate, zip`
 
 파이썬에서는 `while`보다 `for`문의 활용법이 다양하다. 대표적으로 `enumerate, zip`이 있다. `enumerate`는 `for`문에서 리스트를 반복할 시 원소 뿐만 아니라 인덱스도 받을 수 있는 반복 객체를 만들어 준다. `zip`은 두 개의 리스트를 묶어서 각 리스트의 원소가 하나씩 합쳐진 튜플의 반복 객체를 만들어준다. 이들을 리스트로 변환해보면 무엇을 주는지 명확히 볼 수 있다.
 
@@ -116,6 +116,8 @@ for mv, dc in zip(marvel_heroes, dc_heroes):
 
 
 
+## 4. for for dict
+
 지금까지 주로 리스트를 이용한 `for`문을 보았는데 딕셔너리도 반복문에 자주 사용된다. 딕셔너리 자체로는 `for`문을 통해 반복할 수 없고 `Key`가 필요한지, `Value`가 필요한지, 둘 다 필요한지에 따라 맞는 함수를 통해 반복가능한(iterable) 자료형으로 바꾸어 쓰면 된다.
 
 ```python
@@ -133,7 +135,7 @@ for character, name in hero_names.items():
 
 
 
-## 4. List Comprehension
+## 5. List Comprehension
 
 리스트를 다루다 보면 다른 리스트에 기반해서 새로운 리스트를 만들거나 기존 리스트에서 필요한 것만 걸러서 새로운 리스트를 만들고 싶을 때가 있다. 일단 위에서 배운 내용을 토대로 이를 구현해보자.
 
@@ -177,6 +179,8 @@ heroes = {name: power for name, power in zip(marvel_heroes, abilities)}
 print("hero's ability", heroes)
 ```
 
+
+
 # 함수 (Function)
 
 함수란 주어진 입력에 대해서 정해진 동작을 하고 필요시 결과값을 반환하는 코드 묶음이다. 함수를 사용하는 이유는 크게 두 가지다. 
@@ -186,7 +190,7 @@ print("hero's ability", heroes)
 
 
 
-## 1 함수 정의
+## 1. 함수 정의
 
 C언어에서 함수의 프로토 타입을 먼저 적는 것을 함수 선언, 함수 내용을 구현하는 코드를 함수 정의라고 부르는데 파이썬에서는 이를 나누지 않고 바로 정의만하면 된다. 기본적인 함수의 구조는 다음과 같다. 파이썬은 다중 입력과 다중 출력을 지원하고 입력이나 출력이 없을 수도 있다. 
 
@@ -216,25 +220,58 @@ print(add(1, 2))
 
 
 
-## 2 입력인자 지정과 기본값
+## 2. Keyword Arguments
 
 파이썬은 동적 타입이기 때문에 입력인자에 어떤 값을 넣어도 일단 실행은 된다. 그렇기 때문에 함수에 입력인자가 많을 때는 순서에 맞지 않는 입력인자를 넣는 실수를 범할 가능성이 크다. 이를 방지하는 방법은 명시적으로 입력인자 이름에 값을 지정하는 것이다. 다음 예시를 보자.
 
 ```python
-member_scores = {"나연": {"python": 77, "cpp": 86, "java": 54},
-                 "정연": {"python": 96, "cpp": 69, "java": 85},
-                 "지효": {"python": 84, "cpp": 47, "java": 36}
-                 }
-def print_formatted_score(data, name, subject):
-    print("{} received {} in {}".format(name, data[name][subject], subject))
+def average_list(data, start, end, skip):
+    if end == 0:
+        avg_data = data[start:]
+    else:
+        avg_data = data[start:end]
 
-print_formatted_score(member_scores, "지효", "python")
-print_formatted_score(member_scores, "지효", subject="python")
-print_formatted_score(member_scores, name="지효", subject="python")
-print_formatted_score(member_scores, subject="python", name="지효")
-# NOT allowed
-# print_formatted_score(member_scores, name="지효", "python")
+    sum = 0
+    skip_count = 0
+    for ind, num in enumerate(avg_data):
+        if ind in skip:
+            skip_count += 1
+        else:
+            sum += num
+    dlen = len(avg_data) - skip_count
+    average = sum / dlen
+    print(f"average {start}~{end}, skip={skip} over {len(data)} numbers = {average}")
+    return average
+
+
+data = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+avg = average_list(data, 2, 7, [4])
 ```
+
+`average_list`는 이름 그대로 리스트의 평균을 구하는 함수인데 시작 인덱스(`start`)와 끝 인덱스(`end`)를 지정할 수 있고 중간에 빠져야할 인덱스(`skip`)를 지정할 수 있다.  
+
+위와 같이 입력인자가 다수인 경우에 어떤 인자를 몇 번째에 넣어야 할지 헷갈릴 수 있다. 혹은 다른 사람이 코드를 읽을 때 `average_list(data, 2, 7, [4])` 만 보면 의미를 이해하기 어렵다. 파이썬에서는 명시적인 코드를 선호하기 때문에 다음과 같이 입력 값이 어느 입력인자로 들어가야 하는지 명시적으로 보여줄 수 있다.
+
+```python
+avg = average_list(data, 2, 7, skip=[4])
+avg = average_list(data, 2, end=7, skip=[4])
+avg = average_list(data, start=2, end=7, skip=[4])
+avg = average_list(data=data, start=2, end=7, skip=[4])
+```
+
+
+
+
+
+그런데 보통 많이 필요한 기능은 리스트 전체에 대해서 평균을 내는 것인데 이때도 `average_list(data, 0, 0, [])`과 같이 나머지 입력인자를 다 써주는 것이 번거로울 수 있다.  `data`로 들어오는 리스트를 제외하고 나머지 입력인자는 
+
+
+
+## 3. 입력 기본값 지정
+
+
+
+
 
 `print_formatted_score` 함수는 네 번 호출이 되었는데 입력형식이 약간씩 다르지만 모두 같은 결과를 낸다. 첫 번째처럼 모든 인자를 순서에 맞춰 넣어도 되고 두 번째 세 번째처럼 입력 값에 해당하는 입력인자를 명시적으로 지정해줄 수 있다. 입력인자를 지정하기 때문에 네 번째처럼 입력인자의 순서를 바꿔도 작동한다. 하지만 **입력인자 지정은 반드시 순서에 의한 입력보다 뒤에** 나와야 한다. 입력인자를 지정하면 순서가 뒤바뀔 수도 있기 때문에 그 뒤에는 순서에 의한 입력을 넣지 못 한다.  
 
