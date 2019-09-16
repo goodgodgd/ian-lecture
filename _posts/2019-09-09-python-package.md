@@ -189,17 +189,27 @@ print("BMI:", bmi)
 
 
 
-### HW1. 행렬 연산 패키지 만들기
+## HW1. 행렬 연산 패키지 만들기
 
 `matrix`라는 패키지를 만들고 그 아래 `dense_matrix.py`와 `sparse_matrix.py`라는 두 개의 모듈을 만드시오.
 
-#### 1. 리스트 2차원 행렬 연산
+- 제출기한: 10.01 (화) 수업시간
+- 제출방식: LMS 수업페이지에 "HW1"이라는 게시판에 제출
+- 제출내용: 아래 파일들을 묶어 압축한  `HW1_이름.zip`  제출
+    1. `HW1.py`: 패키지 실행 코드 
+    2. `matrix`: 패키지 폴더
+    3. `result.txt`: `HW1.py`의 실행 결과
+
+
+
+### 1. 리스트 2차원 행렬 연산
 
 다음과 같은 코드가 동작하도록 `dense_matrix.py`에 리스트로 이루어진 두개의 행렬을 더하는 `add`와 곱하는 `multiply` 함수를 구현하시오. 
 
 ```python
 import matrix.dense_matrix as dm
 
+print("="*30 + "\nProblem 1")
 dm1 = [[1, 2], [3, 4], [5, 6]]
 dm2 = [[1, 2], [3, 4]]
 
@@ -212,16 +222,18 @@ print("multiply:", res)
 결과
 
 ```
+==============================
+Problem 1
 add: [[2, 4], 
 	  [6, 8]]
 multiply: [[7, 10], 
-		   [15, 22], 
-		   [23, 34]]
+           [15, 22], 
+           [23, 34]]
 ```
 
 
 
-#### 2. 딕셔너리 2차원 행렬 연산
+### 2. 딕셔너리 2차원 행렬 연산
 
 행렬 중에 대부분 값이 0이고 일부에서만 값을 갖는 행렬을 sparse matrix 라고 한다. Sparse matrix는 대부분 크기가 굉장히 크고 일부만 값을 가지고 있기 때문에 모든 값을 메모리에 올리는 건 비효율적이다. 그래서 `eigen`같은 수학 라이브러리에서는 sparse matrix를 위한 클래스를 따로 만들어 값을 가지고 있는 원소들만 저장한다. 아래 예시는 같은 행렬을 리스트로 만든 dense matrix와 딕셔너리로 만든 sparse matrix를 비교한 것이다.
 
@@ -240,6 +252,7 @@ sparse_mat = {'rows': 3, 'cols': 3, '00':1, '11':2, '22':3}
 ```python
 import matrix.sparse_matrix as sm
 
+print("="*30 + "\nProblem 2")
 sm1 = {'rows': 3, 'cols': 3, '00': 1, '11': 2, '22': 3}
 sm2 = {'rows': 3, 'cols': 3, '01': 1, '11': 2, '21': 3}
 res = sm.add(sm1, sm2)
@@ -251,15 +264,17 @@ print("dense:", res)
 결과
 
 ```
+==============================
+Problem 2
 add: {'rows': 3, 'cols': 3, '00': 1, '11': 4, '22': 3, '01': 1, '21': 3}
 dense: [[1, 1, 0], 
-		[0, 4, 0], 
-		[0, 3, 3]]
+        [0, 4, 0], 
+        [0, 3, 3]]
 ```
 
 
 
-#### 3. 예외 처리 (심화)
+### 3. 예외 처리 (심화)
 
 `matrix` 패키지의 모든 함수에서 행렬의 크기가 맞지 않을 때의 예외처리 코드를 추가한 함수들을 새로 만드시오. 새로운 함수 이름은 기존 함수 이름에 `_handle_exception`이란 접미사를 붙여 만든다. (예를 들어 `add`는 `add_handle_exception`이 된다.) 예외처리는 다음 코드를 참고한다.
 
@@ -276,15 +291,15 @@ except Exception as ex:
 
 다음은 각 함수에 대한 예외 상황들이다.
 
-1. `dense_matrix.add(m1, m2)`: m1의 크기와 m2의 크기가 다를 때
-2. `dense_matrix.add(m1, m2)`: m1이나 m2의 열의 개수가 일정하지 않을 때 e.g. `[[1, 2], [3]]`
-3. `dense_matrix.multiply(m1, m2)`: m1의 너비와 m2의 높이가 다를때
-4. `dense_matrix.multiply(m1, m2)`: m1이나 m2의 열의 개수가 일정하지 않을 때 e.g. `[[1, 2], [3]]`
-5. `sparse_matrix.add(m1)`: m1이나 m2에 `rows, cols` 키가 없을 때
-6. `sparse_matrix.add(m1, m2)`: m1이나 m2에 `rows, cols` 범위를 벗어나는 인덱스(키)가 있을 때
-7. `sparse_matrix.add(m1, m2)`: m1의 크기와 m2의 크기가 다를 때
-8. `sparse_matrix.dense(m1)`: m1에 `rows, cols` 키가 없을 때
-9. `sparse_matrix.dense(m1)`: m1에 `rows, cols` 범위를 벗어나는 인덱스(키)가 있을 때
+1. `dense_matrix.add_handle_exception(m1, m2)`: m1의 크기와 m2의 크기가 다를 때
+2. `dense_matrix.add_handle_exception(m1, m2)`: m1이나 m2의 열의 개수가 일정하지 않을 때 e.g. `[[1, 2], [3]]`
+3. `dense_matrix.multiply_handle_exception(m1, m2)`: m1의 너비와 m2의 높이가 다를때
+4. `dense_matrix.multiply_handle_exception(m1, m2)`: m1이나 m2의 열의 개수가 일정하지 않을 때 e.g. `[[1, 2], [3]]`
+5. `sparse_matrix.add_handle_exception(m1)`: m1이나 m2에 `rows, cols` 키가 없을 때
+6. `sparse_matrix.add_handle_exception(m1, m2)`: m1이나 m2에 `rows, cols` 범위를 벗어나는 인덱스(키)가 있을 때
+7. `sparse_matrix.add_handle_exception(m1, m2)`: m1의 크기와 m2의 크기가 다를 때
+8. `sparse_matrix.dense_handle_exception(m1)`: m1에 `rows, cols` 키가 없을 때
+9. `sparse_matrix.dense_handle_exception(m1)`: m1에 `rows, cols` 범위를 벗어나는 인덱스(키)가 있을 때
 
 
 
@@ -292,9 +307,9 @@ except Exception as ex:
 
 ```python
 def check_consistent_cols(mat):
-	...
-	if not consistent:
-		raise Exception("matrix columns are not consistent")
+    ...
+    if not consistent:
+        raise Exception("matrix columns are not consistent")
 ```
 
 `sparse_matrix`에서 인덱스(키)가 `rows, cols`의 범위를 벗어나는지를 확인하는 기능은 반복적으로 쓰이므로 아래와 같은 함수를 구현하여 사용하시오.
@@ -309,6 +324,7 @@ def check_indices(sparse):
 다음은 각 예외 상황을 확인하는 코드다.
 
 ```python
+print("="*30 + "\nProblem 3")
 dm1 = [[1, 2], [3, 4], [6]]
 dm2 = [[1, 2], [3, 4]]
 dm3 = [[1, 2]]
@@ -368,14 +384,16 @@ except Exception as ex:
 이를 구현하여 실행한 결과는 다음과 같다. 예외 메시지는 상황에 맞춰 임의로 작성하였다.
 
 ```
+==============================
+Problem 3
 [Exception] 1: different matrix size
 [Exception] 2: matrix columns are not consistent
 [Exception] 3: cannot multiply (2,2) x (1,2)
 [Exception] 4: matrix columns are not consistent
-[Exception] 5: Either rows or cols is not in m1
+[Exception] 5: either 'rows' or 'cols' is not in keys
 [Exception] 6: index out of bound
 [Exception] 7: different matrix size
-[Exception] 8: Either rows or cols is not in sparse
+[Exception] 8: either 'rows' or 'cols' is not in keys
 [Exception] 9: index out of bound
 ```
 
