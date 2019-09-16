@@ -223,8 +223,8 @@ print("boolvar is True:", boolvar is True)
 print("big difference for object types")
 foo = [1, 2]
 bar = [1, 2]
-print("foo == bar", foo == bar)
-print("foo is bar", foo is bar)
+print("foo == bar:", foo == bar)
+print("foo is bar:", foo is bar)
 goo = bar
 goo[0] = 0
 print("bar, goo:", bar, goo)
@@ -313,18 +313,18 @@ You 'need' python
 
 > 가사 원본  
 >
-> can you feel me 나를 느껴 봐요 
-> can you touch me 나를 붙잡아 줘
-> can you hold me 나를 꼭 안아 줘 
-> I want you pick me up
-> pick me pick me pick me up
-> pick me pick me pick me up
-> pick me pick me pick me pick me
-> pick me pick me pick me up
-> pick me pick me pick me up
-> pick me pick me pick me up
-> pick me pick me pick me pick me
-> I want you pick me up
+> can you feel me 나를 느껴 봐요  
+> can you touch me 나를 붙잡아 줘  
+> can you hold me 나를 꼭 안아 줘  
+> I want you pick me up  
+> pick me pick me pick me up  
+> pick me pick me pick me up  
+> pick me pick me pick me pick me  
+> pick me pick me pick me up  
+> pick me pick me pick me up  
+> pick me pick me pick me up  
+> pick me pick me pick me pick me  
+> I want you pick me up  
 
 ```python
 print("can you feel me 나를 느껴 봐요 \ncan you touch me 나를 붙잡아 줘")
@@ -365,87 +365,35 @@ C언어의 `printf` 와 비슷한 방식으로 포매팅을 한다. 이 방식�
 포매팅 방법은 문자열에 포맷 코드를 넣고 문자열 옆에 `%`를 쓴 후 값이나 변수명을 쓰면 그 값이 포맷 코드로 들어간다. 포맷 코드는 C언어와 마찬가지로 문자열은 `%s`, 정수형은 `%d`, 실수형은 `%f`를 쓴다.
 
 ```python
-print("\n" + "="*30)
-print("String formatting 1: %")
-print("class: %s" % "warrior")
-print("HP: %d" % 100)
-print("DPS: %f" % 1456.23)
-```
-
-다음과 같이 여러 값을 한번에 넣을 수도 있고 패턴 자체를 변수에 넣고 쓸수도 있다. 문자열의 세부적인 포매팅 (길이, 자리수)도 C언어와 비슷하게 형식을 지정할 수 있다.
-
-```python
-# 문자열은 10칸 사용, 정수는 5칸 사용, 실수는 10칸에 소수점은 3자리까지 사용
-pattern = "class: %10s, HP: %5d, DPS: %10.3f"
 _class = "warrior"
-HP = 100
-DPS = 1456.23
-char_intro = pattern % (_class, HP, DPS)
-print(char_intro)
-print(pattern % ("healer", 200, 834.79))
+print("\n" + "="*30, "\nString formatting 1: %")
+print("class: %s, HP: %d, DPS: %f" % (_class, 100, 1456.23))
 ```
 
 결과
 
 ```
-==============================
+============================== 
 String formatting 1: %
-class: warrior
-HP: 100
-DPS: 1456.230000
-class:    warrior, HP:   100, DPS:   1456.230
-class:     healer, HP:   200, DPS:    834.790
+class: warrior, HP: 100, DPS: 1456.230000
 ```
 
 #### b. format 함수를 이용한 방법
 
-위와 같은 문자열을 `str`타입에 내장된 `format()` 함수
-
-로 구현해보자. 문자열 내부에 `{}`(brace)이 있으면 이를 외부 데이터가 들어올 자리로 인식하고 `format()` 함수를 통해 데이터 값을 받는다. 이 방법의 장점은 어떤 데이터 타입이든 상관없이 brace에 자동으로 입력이 된다는 것이다. `{}` 안에는 `format(arg)` 함수의 인자가 따로 `print(arg)`되었을 때와 같은 문자열이 나온다.
+포맷 코드를 이용한 방식은 문자열에 들어올 데이터 타입에 맞는 포맷 코드를 입력해줘야하기 때문에 약간 까다로울 수 있다. 그래서 사실 포맷 코드는 요즘 잘 쓰이지 않는다. 더 쉬운 `str`타입에 내장된 `format()` 함수가 있기 때문이다. 문자열 내부에 `{}`(brace)가 있으면 이를 외부 데이터가 들어올 자리로 인식하고 `format()` 함수를 통해 데이터 값을 받는다. 이 방법의 장점은 어떤 데이터 타입이든 상관없이 brace에 자동으로 입력이 된다는 것이다. `{}` 안에는 `format(arg)` 함수의 인자가 따로 `print(arg)`되었을 때와 같은 문자열이 들어간다.
 
 ```python
-print("\n" + "="*30)
-print("String formatting 2: {}.format()")
-print("class: {}".format("warrior"))
-print("HP: {}".format(100))
-print("DPS: {}".format(1456.23))
-```
-
-마찬가지로, 여러개의 값을 한번에 입력할 수도 있다. 여러개의 값을 넣을 때는 왼쪽 brace부터 순서대로 들어간다. 정해진 칸 안에 문자열을 왼쪽(<), 오른쪽(>), 가운데(^)로 정렬할 수 있다. 정렬 방법은 `:` 뒤에 정렬기호를 입력하면 된다.
-
-```python
-_class = "warrior"
-HP = 100
-DPS = 1456.23
-# 모두 왼쪽 정렬, 문자열은 10칸, 정수는 5칸, 실수는 10칸에 소수점은 3자리까지 사용
-pattern = "class: {:<10}, HP: {:<5}, DPS: {:<10.3f}"
-char_intro = pattern.format(_class, HP, DPS)
-print(char_intro)
-print(pattern.format("healer", 200, 834.79))
+print("\n" + "="*30, "\nString formatting 2: {}.format()")
+print("class: {}, HP: {}, DPS: {}".format(_class, 100, 1456.23))
 ```
 
 #### c. f문자열 포매팅
 
-포맷 코드보다 `format()` 함수가 쓰기는 더 쉽지만 코드가 약간 더 옆으로 길어지는 단점도 있다. Python 3.6에서부터는 f문자열 포매팅을 지원하여 더 간결하게 구현할 수 있다. 방법은 `f'{var}'` 처럼 문자열 앞에 f를 붙이고 brace `{}`사이에 변수명이나 값을 넣는 것이다. 대신 f문자열 포매팅을 이용할 경우 앞선 방법처럼 문자열 패턴을 변수에 넣고 반복 사용하기는 어렵다. 예시를 보자.
+포맷 코드보다 `format()` 함수가 쓰기는 더 쉽지만 `{}` 칸이 많아지면 몇 번째 인자인지 헷갈릴 수 있다. (format 함수에 숫자나 별명으로 순서를 명시적으로 지정하는 방법도 있다.) Python 3.6에서부터는 f문자열 포매팅을 지원하여 더 직관적으로 문자열에 데이터를 삽입하는 방법이 있다. `f"{var}"` 처럼 문자열 앞에 f를 붙이고 brace `{}`사이에 변수명이나 값을 넣는 것이다.
 
 ```python
-print("\n" + "="*30)
-_class = "warrior"
-HP = 100
-DPS = 1456.23
-# 모두 왼쪽 정렬, 문자열은 10칸, 정수는 5칸, 실수는 10칸에 소수점은 3자리까지 사용
-char_intro = f"class: {_class:<10}, HP: {HP:<5}, DPS: {DPS:<10.3f}"
-print(char_intro)
-char_intro = f"class: {'healer':<10}, HP: {200:<5}, DPS: {834.79:<10.3f}"
-print(char_intro)
-```
-
-결과
-
-```
-==============================
-class: warrior   , HP: 100  , DPS: 1456.230  
-class: healer    , HP: 200  , DPS: 834.790   
+print("\n" + "="*30, "\nString formatting 3: 'f' formatting")
+print(f"class: {_class}, HP: {100}, DPS: {1459.23}")
 ```
 
 
