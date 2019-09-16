@@ -239,8 +239,8 @@ print("boolvar is True:", boolvar is True)
 print("big difference for object types")
 foo = [1, 2]
 bar = [1, 2]
-print("foo == bar", foo == bar)
-print("foo is bar", foo is bar)
+print("foo == bar:", foo == bar)
+print("foo is bar:", foo is bar)
 goo = bar
 goo[0] = 0
 print("bar, goo:", bar, goo)
@@ -329,18 +329,18 @@ You 'need' python
 
 > 가사 원본  
 >
-> can you feel me 나를 느껴 봐요 
-> can you touch me 나를 붙잡아 줘
-> can you hold me 나를 꼭 안아 줘 
-> I want you pick me up
-> pick me pick me pick me up
-> pick me pick me pick me up
-> pick me pick me pick me pick me
-> pick me pick me pick me up
-> pick me pick me pick me up
-> pick me pick me pick me up
-> pick me pick me pick me pick me
-> I want you pick me up
+> can you feel me 나를 느껴 봐요  
+> can you touch me 나를 붙잡아 줘  
+> can you hold me 나를 꼭 안아 줘  
+> I want you pick me up  
+> pick me pick me pick me up  
+> pick me pick me pick me up  
+> pick me pick me pick me pick me  
+> pick me pick me pick me up  
+> pick me pick me pick me up  
+> pick me pick me pick me up  
+> pick me pick me pick me pick me  
+> I want you pick me up  
 
 ```python
 print("can you feel me 나를 느껴 봐요 \ncan you touch me 나를 붙잡아 줘")
@@ -415,9 +415,7 @@ class:     healer, HP:   200, DPS:    834.790
 
 #### b. format 함수를 이용한 방법
 
-위와 같은 문자열을 `str`타입에 내장된 `format()` 함수
-
-로 구현해보자. 문자열 내부에 `{}`(brace)이 있으면 이를 외부 데이터가 들어올 자리로 인식하고 `format()` 함수를 통해 데이터 값을 받는다. 이 방법의 장점은 어떤 데이터 타입이든 상관없이 brace에 자동으로 입력이 된다는 것이다. `{}` 안에는 `format(arg)` 함수의 인자가 따로 `print(arg)`되었을 때와 같은 문자열이 나온다.
+위와 같은 문자열을 `str`타입에 내장된 `format()` 함수로 구현해보자. 문자열 내부에 `{}`(brace)이 있으면 이를 외부 데이터가 들어올 자리로 인식하고 `format()` 함수를 통해 데이터 값을 받는다. 이 방법의 장점은 어떤 데이터 타입이든 상관없이 brace에 자동으로 입력이 된다는 것이다. `{}` 안에는 `format(arg)` 함수의 인자가 따로 `print(arg)`되었을 때와 같은 문자열이 나온다.
 
 ```python
 print("\n" + "="*30)
