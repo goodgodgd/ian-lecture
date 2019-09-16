@@ -189,10 +189,193 @@ print("BMI:", bmi)
 
 
 
-### 연습문제
+### HW1. 행렬 연산 패키지 만들기
 
-`numeric`이란 패키지 안에 `prime_number.py`라는 모듈을 만들고 숫자 리스트를 받아 각 원소가 소수인지를 확인하는 함수 `check_prime_number(numbers)`를 구현하시오. 각 원소의 소수 여부를 bool 타입의 리스트로 리턴하시오.
+`matrix`라는 패키지를 만들고 그 아래 `dense_matrix.py`와 `sparse_matrix.py`라는 두 개의 모듈을 만드시오.
 
-예시: [341, 12, 523, 59] => [False, False, True, True]
+#### 1. 리스트 2차원 행렬 연산
 
+다음과 같은 코드가 동작하도록 `dense_matrix.py`에 리스트로 이루어진 두개의 행렬을 더하는 `add`와 곱하는 `multiply` 함수를 구현하시오. 
+
+```python
+import matrix.dense_matrix as dm
+
+dm1 = [[1, 2], [3, 4], [5, 6]]
+dm2 = [[1, 2], [3, 4]]
+
+res = dm.add(dm1[:2], dm2)
+print("add:", res)
+res = dm.multiply(dm1, dm2)
+print("multiply:", res)
+```
+
+결과
+
+```
+add: [[2, 4], 
+	  [6, 8]]
+multiply: [[7, 10], 
+		   [15, 22], 
+		   [23, 34]]
+```
+
+
+
+#### 2. 딕셔너리 2차원 행렬 연산
+
+행렬 중에 대부분 값이 0이고 일부에서만 값을 갖는 행렬을 sparse matrix 라고 한다. Sparse matrix는 대부분 크기가 굉장히 크고 일부만 값을 가지고 있기 때문에 모든 값을 메모리에 올리는 건 비효율적이다. 그래서 `eigen`같은 수학 라이브러리에서는 sparse matrix를 위한 클래스를 따로 만들어 값을 가지고 있는 원소들만 저장한다. 아래 예시는 같은 행렬을 리스트로 만든 dense matrix와 딕셔너리로 만든 sparse matrix를 비교한 것이다.
+
+```python
+dense_mat = [[1, 0, 0], 
+             [0, 2, 0], 
+             [0, 0, 3]]
+sparse_mat = {'rows': 3, 'cols': 3, '00':1, '11':2, '22':3}
+```
+
+딕셔너리의 키 값으로 좌표('yx')를 문자로 입력하고 그곳에 값을 넣는 방식이다.  
+
+1. `sparse_matrix.py`에 딕셔너리 기반 두 개의 sparse matrix를 더하는 `add` 함수를 구현하시오. 출력 또한 딕셔너리 기반 sparse matrix로 출력하시오.
+2. `sparse_matrix.py`에 딕셔너리 기반 sparse matrix를 리스트 기반 dense matrix로 변환하는 `dense`라는 함수를 구현하시오.
+
+```python
+import matrix.sparse_matrix as sm
+
+sm1 = {'rows': 3, 'cols': 3, '00': 1, '11': 2, '22': 3}
+sm2 = {'rows': 3, 'cols': 3, '01': 1, '11': 2, '21': 3}
+res = sm.add(sm1, sm2)
+print("add:", res)
+res = sm.dense(res)
+print("dense:", res)
+```
+
+결과
+
+```
+add: {'rows': 3, 'cols': 3, '00': 1, '11': 4, '22': 3, '01': 1, '21': 3}
+dense: [[1, 1, 0], 
+		[0, 4, 0], 
+		[0, 3, 3]]
+```
+
+
+
+#### 3. 예외 처리 (심화)
+
+`matrix` 패키지의 모든 함수에서 행렬의 크기가 맞지 않을 때의 예외처리 코드를 추가한 함수들을 새로 만드시오. 새로운 함수 이름은 기존 함수 이름에 `_handle_exception`이란 접미사를 붙여 만든다. (예를 들어 `add`는 `add_handle_exception`이 된다.) 예외처리는 다음 코드를 참고한다.
+
+```python
+def example(num):
+    if num > 10:
+        raise Exception("number > 10")
+
+try:
+    example(11)
+except Exception as ex:
+    print("[Exception]", ex)
+```
+
+다음은 각 함수에 대한 예외 상황들이다.
+
+1. `dense_matrix.add(m1, m2)`: m1의 크기와 m2의 크기가 다를 때
+2. `dense_matrix.add(m1, m2)`: m1이나 m2의 열의 개수가 일정하지 않을 때 e.g. `[[1, 2], [3]]`
+3. `dense_matrix.multiply(m1, m2)`: m1의 너비와 m2의 높이가 다를때
+4. `dense_matrix.multiply(m1, m2)`: m1이나 m2의 열의 개수가 일정하지 않을 때 e.g. `[[1, 2], [3]]`
+5. `sparse_matrix.add(m1)`: m1이나 m2에 `rows, cols` 키가 없을 때
+6. `sparse_matrix.add(m1, m2)`: m1이나 m2에 `rows, cols` 범위를 벗어나는 인덱스(키)가 있을 때
+7. `sparse_matrix.add(m1, m2)`: m1의 크기와 m2의 크기가 다를 때
+8. `sparse_matrix.dense(m1)`: m1에 `rows, cols` 키가 없을 때
+9. `sparse_matrix.dense(m1)`: m1에 `rows, cols` 범위를 벗어나는 인덱스(키)가 있을 때
+
+
+
+`dense_matrix`에서 행렬의 열의 개수가 일정한지를 확인하는 기능은 반복적으로 쓰이므로 아래와 같은 함수를 구현하여 사용하시오.
+
+```python
+def check_consistent_cols(mat):
+	...
+	if not consistent:
+		raise Exception("matrix columns are not consistent")
+```
+
+`sparse_matrix`에서 인덱스(키)가 `rows, cols`의 범위를 벗어나는지를 확인하는 기능은 반복적으로 쓰이므로 아래와 같은 함수를 구현하여 사용하시오.
+
+```python
+def check_indices(sparse):
+    ...
+    if out of bound:
+        raise Exception("index out of bound")
+```
+
+다음은 각 예외 상황을 확인하는 코드다.
+
+```python
+dm1 = [[1, 2], [3, 4], [6]]
+dm2 = [[1, 2], [3, 4]]
+dm3 = [[1, 2]]
+
+try:
+    res = dm.add_handle_exception(dm2, dm3)
+except Exception as ex:
+    print("[Exception] 1:", ex)
+
+try:
+    res = dm.add_handle_exception(dm1, dm2)
+except Exception as ex:
+    print("[Exception] 2:", ex)
+
+try:
+    res = dm.multiply_handle_exception(dm2, dm3)
+except Exception as ex:
+    print("[Exception] 3:", ex)
+
+try:
+    res = dm.multiply_handle_exception(dm1, dm2)
+except Exception as ex:
+    print("[Exception] 4:", ex)
+
+
+sm1 = {'rows': 3, '00': 1, '11': 2, '22': 3, '33': 4}
+sm2 = {'rows': 3, 'cols': 2, '00': 1, '11': 2, '22': 3}
+sm3 = {'rows': 3, 'cols': 2, '00': 1, '11': 2}
+sm4 = {'rows': 3, 'cols': 3, '01': 1, '11': 2, '21': 3}
+
+try:
+    res = sm.add_handle_exception(sm1, sm2)
+except Exception as ex:
+    print("[Exception] 5:", ex)
+
+try:
+    res = sm.add_handle_exception(sm2, sm4)
+except Exception as ex:
+    print("[Exception] 6:", ex)
+
+try:
+    res = sm.add_handle_exception(sm3, sm4)
+except Exception as ex:
+    print("[Exception] 7:", ex)
+
+try:
+    res = sm.dense_handle_exception(sm1)
+except Exception as ex:
+    print("[Exception] 8:", ex)
+
+try:
+    res = sm.dense_handle_exception(sm2)
+except Exception as ex:
+    print("[Exception] 9:", ex)
+```
+
+이를 구현하여 실행한 결과는 다음과 같다. 예외 메시지는 상황에 맞춰 임의로 작성하였다.
+
+```
+[Exception] 1: different matrix size
+[Exception] 2: matrix columns are not consistent
+[Exception] 3: cannot multiply (2,2) x (1,2)
+[Exception] 4: matrix columns are not consistent
+[Exception] 5: Either rows or cols is not in m1
+[Exception] 6: index out of bound
+[Exception] 7: different matrix size
+[Exception] 8: Either rows or cols is not in sparse
+[Exception] 9: index out of bound
+```
 
