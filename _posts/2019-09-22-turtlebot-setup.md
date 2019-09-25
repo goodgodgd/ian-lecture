@@ -145,10 +145,10 @@ $ sudo ntpdate ntp.ubuntu.com
 
 ## 3. ROS 패키지 설치
 
-`ros-melodic-desktop-base`는 GUI 관련 패키지를 제외한 최소 설치 세트다. SBC에서는 단순히 로봇과 센서 정보를 데스크탑에 입출력해주는 기능만 하기 때문에 많은 기능이 필요하지 않다.
+`ros-melodic-ros-base`는 GUI 관련 패키지를 제외한 최소 설치 세트다. SBC에서는 단순히 로봇과 센서 정보를 데스크탑에 입출력해주는 기능만 하기 때문에 많은 기능이 필요하지 않다.
 
 ```
-$ sudo apt install ros-melodic-desktop-base
+$ sudo apt install ros-melodic-ros-base
 ```
 
 
