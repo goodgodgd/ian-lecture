@@ -40,6 +40,8 @@ Raspberry Pi에는 Raspbian과 Ubuntu MATE 둘 다 사용가능하다. ROS Kinet
 
 ## 1. Ubuntu MATE 설치
 
+### 1.1 직접 설치
+
 우분투 마테를 쓰려면 SBC에 장착된 SD 카드를 꺼내서 PC에서 우분투 마테 부팅 디스크로 만들어야 한다. 먼저 아래 링크에서 Raspberry Pi 버전을 다운 받는다.  
 
 <https://ubuntu-mate.org/download/>  
@@ -74,35 +76,62 @@ sudo apt-get upgrade -y
 
 
 
-### 1.1 디스크 복사를 통한 설치
+### 1.2 디스크 복사를 통한 설치
 
-위 과정을 거치는 것은 번거롭기도 하고 시간이 많이 걸린다. 그러므로 미리 저 과정을 통해 SD카드를 하나 만들어 놓고 SD카드를 복제하는 것이 편할수 있다. 이를 위해서는 두 개의 저장장치가 필요하다. 하나는 (A) 우분투 마테가 세팅된 것이고 (B) 다른 하나는 용량이 비슷한 다른 저장장치다. 복사는 다음 순서대로 진행한다.
+위 과정을 거치는 것은 번거롭기도 하고 시간이 많이 걸린다. 그러므로 미리 저 과정을 통해 SD카드를 하나 만들어 놓고 SD카드를 복제하는 것이 편할수 있다. 여기서는 디스크를 종째로 복사하는 방법을 사용할 것이기 때문에 모든 하드웨어가 동일한 환경에서만 복제가 가능하다.
 
-1. A를 연결하고 `lsblk` 명령어를 통해 저장장치의 마운트 위치를 알아낸다. 통상 `/dev/sdx` 위치에 마운트가 되고 `x`만 순서대로 변한다. **마운트 위치를 헷갈리면 호스트 시스템이 날아갈수 있습니다. 잘 확인하세요!**
+#### 2.1 설치된 이미지 만들기
 
-2. 다음 명령어를 통해 A를 파일로 백업한다. A가 `/dev/sda`에 마운트 되었다면
+이미 우분투 마테가 설치된 SD카드를 이미지 파일로 백업한다. 먼저 SD카드를 리눅스 PC에 연결하고 `lsblk` 명령어를 통해 저장장치의 경로를 알아낸다. 통상 `/dev/sdx` 경로가 생기고 `"x"`만 변한다. 저장장치의 파티션 개수에 따라 아래와 같이 파티션이 표시된다.
 
-   ```
-   sudo dd if=/dev/sda of=~/rp_mate_18.04.iso bs=1024k
-   ```
+```
+# A. 하나의 파티션만 있는 경우
+sda           8:0    1  58.4G  0 disk /media/ian/IanFastStick
 
-3. 그 다음 B를 연결하고 `lsblk` 명령어를 통해 B의 마운트 위치를 알아낸다.
+# B. 두 개의 파티션이 있는 경우
+sda           8:0    1  14.9G  0 disk 
+├─sda1        8:1    1   199M  0 part /media/ian/system-boot
+└─sda2        8:2    1  14.7G  0 part /media/ian/writable
+```
 
-4. 다음 명령어를 통해 이미지 파일을 B에 복사한다. B가 `/dev/sdb`에 마운트 되었다면
+이미지를 만들기 전에 미리 파티션들을 언마운트(unmount)하는 것이 좋다.
 
-   ```
-   sudo dd if=~/rp_mate_18.04.iso of=/dev/sdb bs=1024k
-   ```
+```
+# A의 경우
+$ umount /dev/sda
+
+# B의 경우
+$ umount /dev/sda1
+$ umount /dev/sda2
+```
+
+예를 들어, SD카드가 `/dev/sda`에 위치한다면 다음 명령어를 통해 이미지를 만든다.
+
+```
+sudo dd if=/dev/sda of=~/rp_mate_18.04.iso bs=1024k
+```
+
+dd(disk dump)는 디스크 복사에 유용하게 쓸 수 있는 유틸인데 단점이 있다면 비어있는 공간까지 모두 백업한다는 것이다. 16GB 메모리 중에 1GB만 사용했더라도 백업이미지는 16GB가 된다.
+
+#### 2.2 이미지 복원하기
+
+백업이 끝나면 설치된 SD카드를 제거하고 새 SD카드를 연결한다. 마찬가지로 `lsblk` 명령어로 경로를 알아내고 SD카드의 모든 파티션을 언마운트(unmount) 한다.  
+
+예를 들어, SD카드가 `/dev/sda`에 위치한다면 다음 명령어를 통해 SD카드에 이미지를 복원한다.
+
+```
+sudo dd if=~/rp_mate_18.04.iso of=/dev/sda bs=1024k
+```
 
 
 
 ## 2. ROS 설치 (SBC)
 
-SBC에 ROS Melodic을 설치하는 과정은 데스크탑과 유사하지만 조금씩 다르니 아래 가이드를 따라 설치한다.
+SBC에 ROS Melodic을 설치하는 과정은 Remote PC와 유사하지만 조금씩 다르니 아래 가이드를 따라 설치한다.
 
 
 
-## 1. ROS 패키지 저장소 추가
+### 2.1 ROS 패키지 저장소 추가
 
 ROS 패키지들은 `apt`를 통해서 설치할 수 있는데 그러려면 ROS 저장소를 추가해야 한다.
 
@@ -132,20 +161,20 @@ uid           [ unknown] Open Robotics <info@osrfoundation.org>
 
 
 
-## 2. 시간 동기화
+### 2.2 패키지 설치
 
-PC들 사이에 통신을 하려면 시간이 서버와 동기화 되어있어야 한다. 동기화에 필요한 `ntpdate` 및 필요한 다른 패키지들을 설치한다.
+PC들 사이에 통신을 하려면 시간이 서버와 동기화 되어있어야 한다. 동기화에 필요한 `ntpdate`와 원격 접속에 필요한 `openssh` 등 필요한 패키지들을 미리 설치한다.
 
 ```
-$ sudo apt install -y build-essential chrony ntpdate net-tools
+$ sudo apt install -y build-essential chrony ntpdate net-tools gedit git openssh-server openssh-client
 $ sudo ntpdate ntp.ubuntu.com
 ```
 
 
 
-## 3. ROS 패키지 설치
+### 2.3 ROS 패키지 설치
 
-`ros-melodic-ros-base`는 GUI 관련 패키지를 제외한 최소 설치 세트다. SBC에서는 단순히 로봇과 센서 정보를 데스크탑에 입출력해주는 기능만 하기 때문에 많은 기능이 필요하지 않다.
+`ros-melodic-ros-base`는 GUI 관련 패키지를 제외한 최소 설치 세트다. SBC에서는 단순히 로봇과 센서 정보를 Remote PC에 입출력해주는 기능만 하기 때문에 많은 기능이 필요하지 않다.
 
 ```
 $ sudo apt install ros-melodic-ros-base
@@ -153,7 +182,7 @@ $ sudo apt install ros-melodic-ros-base
 
 
 
-## 4. rosdep 초기화
+### 2.4 rosdep 초기화
 
 `rosdep`은 소스 코드로부터 컴파일시 필요한 시스템 dependency를 자동으로 설치해주는 유틸이다.
 
@@ -164,7 +193,7 @@ $ rosdep update
 
 
 
-## 5. Catkin Workspace 초기화
+### 2.5 Catkin Workspace 초기화
 
 패키지를 만들고 빌드할 워크스페이스 디렉토리를 만들고 워크스페이스를 초기화한다. 여기서는 ROS에서 기본 제공하는 catkin 시스템을 사용한다.
 
@@ -178,7 +207,7 @@ $ cd ~/catkin_ws
 
 
 
-## 6. IP 확인
+### 2.6 IP 확인
 
 ROS는 마스터를 중심으로 통신을 하는데 여러 PC들 사이에 정보를 주고 받는 경우에는 마스터의 IP를 알고 있어야 한다. IP는 `ifconfig` 명령어로 찾을 수 있다. 여러 주소가 나오는데 그 중 `192.168.`로 시작하는 주소를 메모해둔다.
 
@@ -197,7 +226,7 @@ wlo1: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
 
 
 
-## 7. 초기화 스크립트 추가
+### 2.7 초기화 스크립트 추가
 
 `~/.bashrc` 파일은 bash 터미널을 열때 자동으로 실행되는 스크립트다. 여기에 ROS를 위한 기본 세팅을 추가하면 터미널에서 직접 명령을 실행하지 않아도 된다. 특히 `source /opt/ros/melodic/setup.bash`를 해야만 터미널에서 ros 명령어를 쓰고 ros 패키지 빌드도 할 수 있다.  
 
@@ -205,23 +234,24 @@ wlo1: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
 $ gedit ~/.bashrc
 # .bashrc 아래에 다음 텍스트 추가 후 저장하고(ctrl+s) 닫기
 alias cw='cd ~/catkin_ws'
-alias cm='cd ~/catkin_ws && catkin build'
+alias cm='cd ~/catkin_ws && catkin_make'
 source /opt/ros/melodic/setup.bash
 source ~/catkin_ws/devel/setup.bash
 export ROS_MASTER_URI=http://localhost:11311
 export ROS_HOSTNAME=localhost
+export TURTLEBOT3_MODEL=burger
 
 $ source ~/.bashrc
 ```
 
-SBC는 처리속도가 느려서 자체적으로 알고리즘을 실행하기에는 부담스럽고 데스크탑으로 로봇 정보를 입출력해주는 역할을 한다. 따라서 데스크탑과 연동될 수 있도록 주소를 다음과 같이 세팅해야 한다.
+SBC는 처리속도가 느려서 자체적으로 알고리즘을 실행하기에는 부담스럽고 Remote PC로 로봇 정보를 입출력해주는 역할을 한다. 따라서 Remote PC과 연동될 수 있도록 주소를 다음과 같이 세팅해야 한다.
 
-- ROS_MASTER_URI: `localhost` 대신에 데스크탑의 IP를 적는다. 이때 데스크탑의 ROS_MASTER_URI도 동일하게 설정되어 있어야 한다.
+- ROS_MASTER_URI: `localhost` 대신에 Remote PC의 IP를 적는다. 이때 Remote PC의 ROS_MASTER_URI도 동일하게 설정되어 있어야 한다.
 - ROS_HOSTNAME: `localhost` 대신에 SBC의 IP를 적는다.
 
 
 
-## 8. 터틀봇 패키지 설치
+### 2.8 터틀봇 패키지 설치
 
 터틀봇 자율주행을 하기 위해서는 로봇에 속도 명령을 내리고 현재 이동량을 읽고 LiDAR 센서 값을 받아올 수 있어야 한다. 이러한 기능을 하기 위해 아래 패키지들을 설치한다.
 
@@ -232,15 +262,101 @@ $ git clone https://github.com/ROBOTIS-GIT/turtlebot3_msgs.git
 $ git clone https://github.com/ROBOTIS-GIT/turtlebot3.git
 $ cd ~/catkin_ws/src/turtlebot3
 $ sudo rm -r turtlebot3_description/ turtlebot3_teleop/ turtlebot3_navigation/ turtlebot3_slam/ turtlebot3_example/
-$ sudo apt-get install ros-kinetic-rosserial-python ros-kinetic-tf
-$ source /opt/ros/kinetic/setup.bash
+$ sudo apt install ros-melodic-rosserial-python ros-melodic-tf
+$ source /opt/ros/melodic/setup.bash
 $ cd ~/catkin_ws
-$ catkin_make
+$ catkin_make -j1
 ```
 
-OpenCR이 루트 권한을 얻지 않아도 USB를 이용할 수 있도록 설정한다.
+OpenCR이 루트 권한을 얻지 않아도 USBrosru를 이용할 수 있도록 설정한다.
 
 ```
 $ rosrun turtlebot3_bringup create_udev_rules
+```
+
+
+
+## 3. 원격 제어
+
+리눅스에서는 ssh를 통해 간편하게 다른 컴퓨터의 원격 터미널에 접속할 수 있다. `openssh`는 위에서 미리 설치했지만 설치가 안됐다면 아래 명령어로 설치한다. Remote PC와 SBC 모두 설치되어 있어야 한다.
+
+```
+$ sudo apt install -y openssh-server openssh-client
+```
+
+접속하는 방법은 `ssh turtle@192.168.xxx.xxx` 를 실행하면 된다. 하지만 되지 않을 것이다. 추가로 설정을 해줘야한다.
+
+### Connection refused
+
+`ssh` 명령어를 실행했을 때 "ssh: connect to host 192.168.xx.xx port 22: Connection refused" 라고 뜬다면 SBC에서 ssh 서비스가 구동중이지 않은 것이다. 이 경우 SBC에서 다음 명령어를 실행한다.
+
+```
+$ sudo /etc/init.d/ssh restart
+```
+
+### Connection reset by
+
+`ssh` 명령어를 실행했을 때 "Connection reset by 192.168.xx.xx port 22" 라고 뜬다면 SBC에서 ssh 키(key)가 준비되지 않은 것이다. 이 경우 SBC에서 다음 명령어를 실행한다.
+
+```
+$ rm /etc/ssh/ssh_host_*
+$ dpkg-reconfigure openssh-server
+```
+
+### 원격 로봇 제어
+
+두 가지 설정을 해주면 Remote PC에서 ssh 명령어로 SBC의 터미널에 접속할 수 있다.
+아래 명령어를 입력하고 SBC의 비밀번호(robot)를 입력하면 터미널상의 사용자명이 `turtle`로 바뀐다.
+
+```bash
+# 192.168.xxx.xxx 는 SBC의 IP 주소
+$ ssh turtle@192.168.xxx.xxx
+
+# ssh에서 SBC에 명령: 로봇에서 odometry와 lds 메시지 토픽 발행
+turtle@turtle-01:~$ roslaunch turtlebot3_bringup turtlebot3_robot.launch
+
+# Remote PC: 새 탭 열고(ctrl+shit+T), 터틀봇을 원격 조종할 수 있는 노드 실행
+$ roslaunch turtlebot3_teleop turtlebot3_teleop_key.launch --screen
+
+# Remote PC: 새 탭 열고(ctrl+shit+T), 터틀봇의 경로와 LiDAR 정보를 볼 수 있는 rqt 실행
+$ roslaunch turtlebot3_bringup turtlebot3_model.launch
+```
+
+이제 SBC에 모니터, 키보드, 마우스가 없어도 원격 접속을 통해 SBC를 제어 할 수 있다.  
+단지 커맨드로만 제어할 수 있어 약간 불편할 수는 있지만 어차피 SBC에서 `roslaunch` 명령어를 내리고 나면 SBC에서는 더이상 할 일이 없다.
+
+
+
+## 4. 펌웨어 업데이트
+
+혹시 펌웨어 버전이 오래되어 업데이트를 해야한다면 SBC에서 아래 명령어를 통해 업데이트를 해준다.
+
+출처: https://discourse.ros.org/t/announcing-turtlebot3-software-v1-0-0-and-firmware-v1-2-0-update/4888
+
+```bash
+#opencr 업데이트
+$ export OPENCR_PORT=/dev/ttyACM0
+$ export OPENCR_MODEL=burger
+$ rm -rf ./opencr_update.tar.bz2
+
+#한 줄의 명령어
+$ wget https://github.com/ROBOTIS-GIT/OpenCR/raw/master/arduino/opencr_release/shell_update/opencr_update.tar.bz2 && tar -xvf opencr_update.tar.bz2 && cd ./opencr_update && ./update.sh $OPENCR_PORT $OPENCR_MODEL.opencr && cd ..
+#여기까지
+
+#패키지 소스 지우고 다시 다운로드
+$ cd ~/catkin_ws/src/
+$ rm -rf turtlebot3/ turtlebot3_msgs/ hls_lfcd_lds_driver/
+$ git clone https://github.com/ROBOTIS-GIT/hls_lfcd_lds_driver.git
+$ git clone https://github.com/ROBOTIS-GIT/turtlebot3_msgs.git
+$ git clone https://github.com/ROBOTIS-GIT/turtlebot3.git
+
+#터틀봇에 불필요한 노드 삭제
+$ cd ~/catkin_ws/src/turtlebot3
+$ sudo rm -r turtlebot3_description/ turtlebot3_teleop/ turtlebot3_navigation/ turtlebot3_slam/ turtlebot3_example/
+
+#기존 빌드파일 삭제 후 다시 빌드
+$ cd ~/catkin_ws/
+$ rm -rf build/ devel/
+$ cd ~/catkin_ws && catkin_make -j1
 ```
 
