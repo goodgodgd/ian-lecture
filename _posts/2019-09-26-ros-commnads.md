@@ -2,7 +2,7 @@
 layout: post
 title:  "ROS Commands"
 date:   2019-09-26 09:00:13
-categories: WIP
+categories: 2019-2-robotics
 ---
 
 
