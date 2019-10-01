@@ -305,20 +305,22 @@ $ dpkg-reconfigure openssh-server
 
 ### 원격 로봇 제어
 
-두 가지 설정을 해주면 Remote PC에서 ssh 명령어로 SBC의 터미널에 접속할 수 있다.
-아래 명령어를 입력하고 SBC의 비밀번호(robot)를 입력하면 터미널상의 사용자명이 `turtle`로 바뀐다.
+두 가지 설정을 해주면 Remote PC에서 ssh 명령어로 SBC의 터미널에 접속할 수 있다. SBC의 비밀번호(robot)를 입력하여 로그인하면 터미널상의 사용자명이 `turtle`로 바뀐다. 아래 명령은 모두 **Remote PC**에서 실행하는 것이다.
 
 ```bash
-# 192.168.xxx.xxx 는 SBC의 IP 주소
+# 현재 마스터가 없다면 실행
+$ roscore
+
+# 새 탭 열고(ctrl+shit+T), 원격접속: 192.168.xxx.xxx 는 SBC의 IP 주소
 $ ssh turtle@192.168.xxx.xxx
 
-# ssh에서 SBC에 명령: 로봇에서 odometry와 lds 메시지 토픽 발행
+# SBC에 명령: 로봇에서 odometry와 lds 메시지 토픽 발행
 turtle@turtle-01:~$ roslaunch turtlebot3_bringup turtlebot3_robot.launch
 
-# Remote PC: 새 탭 열고(ctrl+shit+T), 터틀봇을 원격 조종할 수 있는 노드 실행
+# 새 탭 열고(ctrl+shit+T), 터틀봇을 원격 조종할 수 있는 노드 실행
 $ roslaunch turtlebot3_teleop turtlebot3_teleop_key.launch --screen
 
-# Remote PC: 새 탭 열고(ctrl+shit+T), 터틀봇의 경로와 LiDAR 정보를 볼 수 있는 rqt 실행
+# 새 탭 열고(ctrl+shit+T), 터틀봇의 경로와 LiDAR 정보를 볼 수 있는 rqt 실행
 $ roslaunch turtlebot3_bringup turtlebot3_model.launch
 ```
 
