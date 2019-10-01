@@ -1,8 +1,8 @@
 ---
 layout: post
-title:  "Catkin Workspace"
-date:   2010-09-28 09:00:13
-categories: WIP Build System
+title:  "Catkin Build System"
+date:   2019-09-28 09:00:13
+categories: 2019-2-robotics
 ---
 
 
@@ -89,21 +89,21 @@ CMake를 이용한 빌드 과정은 다음과 같다.
 $ rm hello.o hello
 $ ls
 CMakeLists.txt  hello.c  Makefile
-ian@ian:~/workspace/build-system$ cmake .
+$ cmake .
 -- The C compiler identification is GNU 7.4.0
 -- The CXX compiler identification is GNU 7.4.0
-# ... 중략
+...
 -- Configuring done
 -- Generating done
 -- Build files have been written to: /home/ian/workspace/build-system
-ian@ian:~/workspace/build-system$ make
+$ make
 Scanning dependencies of target hello
 [ 50%] Building C object CMakeFiles/hello.dir/hello.c.o
 [100%] Linking C executable hello
 [100%] Built target hello
-ian@ian:~/workspace/build-system$ ls
+$ ls
 CMakeCache.txt  CMakeFiles  cmake_install.cmake  CMakeLists.txt  hello  hello.c  Makefile
-ian@ian:~/workspace/build-system$ ./hello 
+$ ./hello 
 HELLO WORLD !! 
 ```
 
@@ -222,6 +222,10 @@ add_compile_options(-std=c++11)
 find_package(catkin REQUIRED COMPONENTS roscpp std_msgs)
 # find_package(Boost REQUIRED COMPONENTS system)
 
+catkin_package(
+  CATKIN_DEPENDS roscpp std_msgs
+)
+
 include_directories(
 # include
   ${catkin_INCLUDE_DIRS}
@@ -313,7 +317,7 @@ $ cd ~/catkin_ws
 
 ### 3.1 catkin init
 
-워크스페이스를 처음 만들었다면 워크스페이스를 초기화해야한다. 워크스페이스 디렉토리에서 `catkin init`을 실행하면 된다. 
+워크스페이스를 처음 만들었다면 워크스페이스를 초기화해야한다. `~/catkin_ws`에서 `catkin init`을 실행하면 된다. 
 
 ```
 ~/catkin_ws$ catkin init
@@ -327,6 +331,139 @@ Build Space:       [missing] /home/ian/catkin_ws/build
 Devel Space:       [missing] /home/ian/catkin_ws/devel
 Install Space:      [unused] /home/ian/catkin_ws/install
 Log Space:         [missing] /home/ian/catkin_ws/logs
+Source Space:       [exists] /home/ian/catkin_ws/src
+DESTDIR:            [unused] None
+--------------------------------------------------------
+...
+--------------------------------------------------------
+
+ian@ian:~/catkin_ws$ ls -al
+total 16
+drwxr-xr-x  4 ian ian 4096 10월  1 18:24 .
+drwxr-xr-x 26 ian ian 4096 10월  1 18:24 ..
+drwxr-xr-x  2 ian ian 4096 10월  1 18:24 .catkin_tools
+drwxr-xr-x  2 ian ian 4096 10월  1 18:24 src
+```
+
+`catkin`은 실행할 때마다 위와 같이 워크스페이스의 상태를 깔끔하게 정리해서 보여준다. `catkin init`을 실행해도 아무것도 변한 것 같지 않지만 `.catkin_tools`라는 디렉토리가 추가 되었음을 알 수 있다.
+
+### 3.2 catkin build
+
+`build`말 그대로 `src` 디렉토리에 있는 패키지들을 빌드하는 verb다. 아직 아무 패키지도 만들지 않았지만 일단 빌드를 하는 것이 좋다. `~/catkin_ws`에서 `catkin build`를 실행하면 `devel, build` 두 개의 디렉토리가 생긴다. 중요한 것은 `devel` 디렉토리에 `setup.bash` 파일이 생긴다는 것이다. `devel/setup.bash`는 환경변수들을 세팅하는 스크립트기 때문에 워크스페이스를 사용할 때 항상 미리 실행해야한다. 그래서 ROS를 설치할 때 `~/.bashrc`에 `source ~/catkin_ws/devel/setup.bash`를 추가하는 것이다.
+
+```
+~/catkin_ws$ catkin build
+--------------------------------------------------------
+Profile:                     default
+Extending:             [env] /opt/ros/melodic
+Workspace:                   /home/ian/catkin_ws
+--------------------------------------------------------
+Build Space:        [exists] /home/ian/catkin_ws/build
+Devel Space:        [exists] /home/ian/catkin_ws/devel
+Install Space:      [unused] /home/ian/catkin_ws/install
+Log Space:         [missing] /home/ian/catkin_ws/logs
+Source Space:       [exists] /home/ian/catkin_ws/src
+DESTDIR:            [unused] None
+--------------------------------------------------------
+...
+--------------------------------------------------------
+[build] No packages were found in the source space '/home/ian/catkin_ws/src'
+[build] No packages to be built.
+[build] Package table is up to date.
+Starting  >>> catkin_tools_prebuild
+Finished  <<< catkin_tools_prebuild                [ 1.4 seconds ]
+[build] Summary: All 1 packages succeeded!
+[build]   Ignored:   None.
+[build]   Warnings:  None.
+[build]   Abandoned: None.
+[build]   Failed:    None.
+[build] Runtime: 1.4 seconds total.
+```
+
+워크스페이스를 만든 후 처음 빌드하는 거라면 `source ~/catkin_ws/devel/setup.bash`를 실행해야 한다. 혹은 `~/.bashrc`에 저 명령어가 이미 들어있다면 `source ~/.bashrc`를 실행해도 된다.
+
+패키지를 생성한 후 이를 빌드할 때도 워크스페이스 디렉토리에서 `catkin build`를 실행하면 된다. 패키지가 여러 개가 있다면 `catkin`의 화려한 병렬 빌드 과정을 볼 수 있다. ROS 설치 과정에서 빌드했던 `turtlebot3` 패키지를 빌드해보자.
+
+```
+$ cd ~/catkin_ws/src
+~/catkin_ws/src$ git clone https://github.com/ROBOTIS-GIT/turtlebot3_msgs.git
+~/catkin_ws/src$ git clone https://github.com/ROBOTIS-GIT/turtlebot3.git
+~/catkin_ws/src$ cd ..
+~/catkin_ws$ source devel/setup.bash
+~/catkin_ws$ catkin build
+--------------------------------------------------------
+Profile:                     default
+Extending:          [cached] /opt/ros/melodic
+Workspace:                   /home/ian/catkin_ws
+--------------------------------------------------------
+...
+--------------------------------------------------------
+[build] Found '8' packages in 0.0 seconds.
+[build] Updating package table.
+Starting  >>> turtlebot3_description
+Starting  >>> turtlebot3_msgs
+Starting  >>> turtlebot3_teleop
+Finished  <<< turtlebot3_description                [ 1.6 seconds ]
+Finished  <<< turtlebot3_teleop                     [ 1.9 seconds ]
+Finished  <<< turtlebot3_msgs                       [ 2.5 seconds ]
+Starting  >>> turtlebot3_bringup
+Finished  <<< turtlebot3_bringup                    [ 3.8 seconds ]
+Starting  >>> turtlebot3_example
+Starting  >>> turtlebot3_navigation
+Starting  >>> turtlebot3_slam
+Finished  <<< turtlebot3_navigation                 [ 1.5 seconds ]
+Finished  <<< turtlebot3_example                    [ 3.2 seconds ]
+Finished  <<< turtlebot3_slam                       [ 3.7 seconds ]
+[build] Summary: All 7 packages succeeded!
+[build]   Ignored:   1 packages were skipped or are blacklisted.
+[build]   Warnings:  None.
+[build]   Abandoned: None.
+[build]   Failed:    None.
+[build] Runtime: 10.2 seconds total.
+```
+
+패키지가 여러개 있을 때 언제 어떤 패키지를 빌드 시작해서 언제 끝나고 패키지마다 몇 초가 걸렸는지 자세한 진행과정을 볼 수 있다.
+
+### 3.3 catkin create
+
+`create`은 패키지를 만드는 verb인데 항상 "pkg"라는 기본 인자가 붙어야해서 항상 `catkin create pkg` 형태로 사용된다. 그리고 **패키지를 생성할 `src` 디렉토리에서 실행**해야한다. 사용법은 다음과 같다.
+
+```
+~/catkin_ws/src$ catkin create pkg <package_name> [--catkin-deps dep1 dep2 ...] [--system-deps dep1 dep2 ...]
+```
+
+첫번째 인자로 패키지 이름이 와야하고 이후에 옵션으로 의존 패키지들을 지정할 수 있다. 
+
+- --catkin-deps: 의존하는 캐킨 패키지들을 지정한다. (roscpp, rospy, std_msgs, sensor_msgs, message_generation 등)
+- --system-deps: 의존하는 시스템 패키지들을 지정한다. (opencv 등)
+
+따라서 위에서 실행한 `catkin_create_pkg hello_ros roscpp std_msgs`와 등가의 명령어는 다음과 같다. 타이핑을 조금 더 해야하지만 명령어의 의미가 좀더 명확해졌다. 
+
+```
+~/catkin_ws/src$ catkin create pkg hello_ros --catkin-deps roscpp std_msgs
+Creating package "hello_ros" in "/home/ian/catkin_ws/src"...
+Created file hello_ros/CMakeLists.txt
+Created file hello_ros/package.xml
+Created folder hello_ros/include/hello_ros
+Created folder hello_ros/src
+Successfully created package files in /home/ian/catkin_ws/src/hello_ros.
+```
+
+자동 생성된 패키지의 내용은 `catkin_create_pkg`의 결과와 같다. `catkin_create_pkg`를 했을 때처럼 `package.xml, CMakeLists.txt, src/hello_ros_node.cpp`를 똑같이 채워넣고 패키지를 빌드해보자.
+
+```
+# package.xml, CMakeLists.txt, src/hello_ros_node.cpp 먼저 작성
+~/catkin_ws/src$ cd ..
+~/catkin_ws$ catkin build
+--------------------------------------------------------
+Profile:                     default
+Extending:          [cached] /opt/ros/melodic
+Workspace:                   /home/ian/catkin_ws
+--------------------------------------------------------
+Build Space:        [exists] /home/ian/catkin_ws/build
+Devel Space:        [exists] /home/ian/catkin_ws/devel
+Install Space:      [unused] /home/ian/catkin_ws/install
+Log Space:          [exists] /home/ian/catkin_ws/logs
 Source Space:       [exists] /home/ian/catkin_ws/src
 DESTDIR:            [unused] None
 --------------------------------------------------------
@@ -344,31 +481,53 @@ Blacklisted Packages:        None
 --------------------------------------------------------
 Workspace configuration appears valid.
 --------------------------------------------------------
-ian@ian:~/catkin_ws$ ls -al
-total 16
-drwxr-xr-x  4 ian ian 4096 10월  1 18:24 .
-drwxr-xr-x 26 ian ian 4096 10월  1 18:24 ..
-drwxr-xr-x  2 ian ian 4096 10월  1 18:24 .catkin_tools
-drwxr-xr-x  2 ian ian 4096 10월  1 18:24 src
+[build] Found '9' packages in 0.0 seconds.
+[build] Updating package table.
+Starting  >>> hello_ros
+Starting  >>> turtlebot3_description
+Starting  >>> turtlebot3_msgs
+Starting  >>> turtlebot3_teleop
+Finished  <<< turtlebot3_description                [ 0.1 seconds ]
+Finished  <<< turtlebot3_teleop                     [ 0.1 seconds ]
+Finished  <<< turtlebot3_msgs                       [ 0.2 seconds ]
+Starting  >>> turtlebot3_bringup
+Finished  <<< turtlebot3_bringup                    [ 0.2 seconds ]
+Starting  >>> turtlebot3_example
+Starting  >>> turtlebot3_navigation
+Starting  >>> turtlebot3_slam
+Finished  <<< turtlebot3_navigation                 [ 0.1 seconds ]
+Finished  <<< turtlebot3_example                    [ 0.3 seconds ]
+Finished  <<< hello_ros                             [ 0.8 seconds ]
+Finished  <<< turtlebot3_slam                       [ 0.3 seconds ]
+[build] Summary: All 8 packages succeeded!
+[build]   Ignored:   1 packages were skipped or are blacklisted.
+[build]   Warnings:  None.
+[build]   Abandoned: None.
+[build]   Failed:    None.
+[build] Runtime: 1.0 seconds total.
 ```
 
-`catkin`은 실행할 때마다 위와 같이 워크스페이스의 상태를 깔끔하게 정리해서 보여준다. `catkin init`을 실행해도 아무것도 변한 것 같지 않지만 `.catkin_tools`라는 디렉토리가 추가 되었음을 알 수 있다.
+빌드가 잘 되었다면 노드를 실행해보자.
 
-### 3.2 catkin create
-
-
-
-### 3.3 catkin build
-
-
+```
+$ roscore
+~/catkin_ws$ rosrun hello_ros hello_ros_node
+[ INFO] [1569946100.153906358]: hello ROS 0
+[ INFO] [1569946100.254060324]: hello ROS 1
+[ INFO] [1569946100.354103276]: hello ROS 2
+[ INFO] [1569946100.454151302]: hello ROS 3
+[ INFO] [1569946100.554169990]: hello ROS 4
+[ INFO] [1569946100.654155443]: hello ROS 5
+[ INFO] [1569946100.754162105]: hello ROS 6
+[ INFO] [1569946100.854151440]: hello ROS 7
+[ INFO] [1569946100.954164801]: hello ROS 8
+[ INFO] [1569946101.054140677]: hello ROS 9
+[ INFO] [1569946101.154163657]: hello ROS 10
+```
 
 ### 3.4 catkin clean
 
-
-
-### 3.5 catkin config
-
-
+워크스페이스에서 소스코드 외에 모든 빌드 결과물이나 로그 등을 지우고 워크스페이스를 초기화 시킨다. 쉽게 말하면 `build, devel, log` 디렉토리를 삭제한다.
 
 
 
@@ -585,33 +744,4 @@ install(TARGETS ${OUTPUT_SHARED_LIB} ${OUTPUT_STATIC_LIB} ${OUTPUT_EXEC}
 
 
 
-
-
-
-
-
-
-
-
-- Catkin Workspace
-    - 리눅스 빌드 시스템 gcc make cmake
-    - 기존 catkin vs 새로운 catkin
-    - catkin verbs
-- 파이썬 가상환경: virutalenv, pyenv, pipenv
-
-
-
-- 패키지 만들기
-    - 토픽 노드: 기존 메시지 활용
-    - 토픽 노드: 새로운 메시지 만들기
-    - 서비스 노드: 기존 메시지 활용
-    - 서비스 노드: 새로운 메시지 만들기
-    - ROS launch 작성
-- git을 이용한 패키지 관리
-
-...
-
-- 좌표계변환
-- numpy, matplotlib
-- ROS 패키지 활용 (SLAM, RViz)
 
