@@ -545,11 +545,18 @@ THIS_PKG에서 사용할 외부 패키지를 검색해주는 함수다. 일반�
 find_package(<package_name1>, <package_name2>, ...)
 ```
 
-`REQUIRED`를 붙이면 필수 패키지란 뜻으로 이 패키지를 찾지 못하면 에러가 난다. 의존 패키지가 있는지 확인하는 용도로도 많이 쓰인다.   
+`find_package()`를 하면 다음 네 개의 변수가 기본 생성된다.
+
+- <PACKAGE_NAME>_FOUND : 패키지를 찾으면 1
+- <PACKAGE_NAME>_INCLUDE_DIRS or _INCLUDES : 헤더 파일들이 있는 경로
+- <PACKAGE_NAME>_LIBRARIES or _LIBS : 라이브러리 파일들
+- <PACKAGE_NAME>_DEFINITIONS
+
+`find_package(<package_name> REQUIRED)`처럼  `REQUIRED`를 붙이면 필수 패키지란 뜻으로 이 패키지를 찾지 못하면 에러가 난다. 의존 패키지가 있는지 확인하는 용도로도 많이 쓰인다.   
 
 `COMPONENT`는 여러개의 구성요소를 가진 패키지에서 특정 요소만 요구할 때 쓴다. 예를 들어 `find_package(Boost REQUIRED COMPONENTS system)` 는 `Boost`라는 패키지에서 `system`이라는 패키지만 필요하다는 것이다.  
 
-캐킨 패키지를 찾을 때도 아래 예시처럼 `catkin`이라는 패키지의 하위 구성요소로서 찾는다. 캐킨 패키지를 독립적인 패키지가 아니라 하위 요소로서 검색하는 이유는 이후의 편의를 위한 것이다. 이후의 설정에서 하위 패키지를 각각 설정해 줄 필요없이 `catkin` 하나만 설정해주면 하위 요소는 자동으로 설정이 된다.
+캐킨 패키지를 찾을 때도 아래 예시처럼 `catkin`이라는 패키지의 하위 구성요소로서 찾는다. 캐킨 패키지를 독립적인 패키지가 아니라 하위 요소로서 검색하는 이유는 이후의 편의를 위한 것이다. 아래와 같은 경우 자동 생성되는 `catkin_INCLUDE_DIRS`변수 하나에 구성요소(roscpp, std_msgs)의 헤더 경로가 모두 포함되고 마찬가지로 `catkin_LIBRARIES`에 구성요소의 라이브러리들이 모두 포함된다. 따라서 하위 패키지를 각각 설정해 줄 필요없이 `catkin` 하나만 설정해주면 하위 요소는 자동으로 설정이 된다.
 
 ```
 find_package(catkin REQUIRED COMPONENTS roscpp std_msgs)
@@ -569,6 +576,20 @@ include_directories(${catkin_INCLUDE_DIRS} ${roscpp_INCLUDE_DIRS} ${std_msgs_INC
 add_executable(foo ...)
 target_link_libraries(foo ${catkin_LIBRARIES} ${roscpp_LIBRARIES} ${std_msgs_LIBRARIES})
 ```
+
+`find_package(catkin...` 명령으로 생성된 변수들을 `message`함수를 통해 확인해 보았다.
+
+```
+message("_FOUND: " ${catkin_FOUND})
+message("_INCLUDE: " ${catkin_INCLUDE_DIRS})
+message("_LIB: " ${catkin_LIBRARIES})
+```
+
+출력된 결과는 다음과 같다. 두 개의 패키지와 관련된 모든 경로들이 포함된 것을 확인할 수 있다.
+
+> _FOUND: 1
+> _INCLUDE: /opt/ros/melodic/include/opt/ros/melodic/share/xmlrpcpp/cmake/../../../include/xmlrpcpp/usr/include
+> _LIB: /opt/ros/melodic/lib/libroscpp.so/usr/lib/x86_64-linux-gnu/libboost_filesystem.so/usr/lib/x86_64-linux-gnu/libboost_signals.so/opt/ros/melodic/lib/librosconsole.so/opt/ros/melodic/lib/librosconsole_log4cxx.so/opt/ros/melodic/lib/librosconsole_backend_interface.so/usr/lib/x86_64-linux-gnu/liblog4cxx.so/usr/lib/x86_64-linux-gnu/libboost_regex.so/opt/ros/melodic/lib/libxmlrpcpp.so/opt/ros/melodic/lib/libroscpp_serialization.so/opt/ros/melodic/lib/librostime.so/opt/ros/melodic/lib/libcpp_common.so/usr/lib/x86_64-linux-gnu/libboost_system.so/usr/lib/x86_64-linux-gnu/libboost_thread.so/usr/lib/x86_64-linux-gnu/libboost_chrono.so/usr/lib/x86_64-linux-gnu/libboost_date_time.so/usr/lib/x86_64-linux-gnu/libboost_atomic.so/usr/lib/x86_64-linux-gnu/libpthread.so/usr/lib/x86_64-linux-gnu/libconsole_bridge.so.0.4
 
 
 
@@ -616,7 +637,7 @@ catkin_install_python(PROGRAMS bin/hello
 
 ### 메시지 추가 함수
 
-토픽, 서비스, 액션 통신 방식에 따라 각기 다른 메시지 파일 형식이 존재하고 각각 따로 빌드한다. 사용자가 작성한 메시지 파일 형식에 맞는 함수로 메시지 파일을 추가하고 메시지를 생성한다.
+토픽, 서비스, 액션 통신 방식에 따라 각기 다른 경로에 다른 메시지 파일 형식이 존재한다. 사용자가 작성한 메시지 파일 형식에 맞는 함수로 메시지 파일을 추가하고 메시지를 생성한다.
 
 - **add_message_files(FILES message_file.msg)**: 메시지 파일을 빌드 타겟에 추가한다. msg 파일은 반드시 `PKG_ROOT/msg` 디렉토리에 있어야 한다.
 - **add_service_files(FILES service_file.srv)**: 서비스 파일을 빌드 타겟에 추가한다. srv 파일은 반드시 `PKG_ROOT/srv` 디렉토리에 있어야 한다.
@@ -627,6 +648,8 @@ catkin_install_python(PROGRAMS bin/hello
 ```cmake
 generate_messages(DEPENDENCIES std_msgs)
 ```
+
+메시지를 사용하는 경우 반드시 `package.xml`에서 `message_generation`을 build dependency로, `message_runtime`을 runtime dependency로 추가해야 한다. 또한 다음에 나오는 `catkin_package()`에 `CATKIN_DEPENDS message_runtime` 이 포함되어 있어야한다.
 
 
 
@@ -710,38 +733,5 @@ add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EX
 # target_link_libraries(<target-name> <library1> <library2> ...)
 target_link_libraries(${PROJECT_NAME}_node ${catkin_LIBRARIES})
 ```
-
-
-
-### install()
-
-cmake로 `Makefile`을 만들고  `make`를 하여 타겟이 생성된 후 `make install`을 실행하면 타겟이 시스템에 설치된다. 설치란게 별게 아니고 타겟을 다른 곳에서도 쓸 수 있도록 소스 파일을 제외한 바이너리와 헤더 파일들을 다른 곳으로 복사하는 것을 말한다. 설치할 경로는 위에서 `CMAKE_INSTALL_PREFIX` 변수로 지정했다. 이 변수를 지정하지 않으면 기본적으로 `/usr/local`에 설치된다. `INSTALL()`은 복사할 파일의 종류에 따라 설치 경로에 대한 상대 경로를 지정한다.
-
-```cmake
-# install(TARGETS <target1> <target2> ...
-        RUNTIME DESTINATION <executable-dir>
-        LIBRARY DESTINATION <shared-lib-dir>
-        ARCHIVE DESTINATION <static-lib-dir>
-        PUBLIC_HEADER DESTINATION <header-dir>
-        )
-install(TARGETS ${OUTPUT_SHARED_LIB} ${OUTPUT_STATIC_LIB} ${OUTPUT_EXEC}
-        RUNTIME DESTINATION bin
-        LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib
-        PUBLIC_HEADER DESTINATION include
-        )
-```
-
-위 함수의 인자들을 하나씩 알아보자
-
-- TARGETS: 설치할 타겟들을 공백으로 구분하여 입력한다.
-- RUNTIME DESTINATION: 실행 파일이 복사될 디렉토리를 지정한다.
-- LIBRARY DESTINATION: "SHARED" 라이브러리 파일이 복사될 디렉토리를 지정한다.
-- ARCHIVE DESTINATION: "STATIC" 라이브러리 파일이 복사될 디렉토리를 지정한다.
-- PUBLIC_HEADER DESTINATION: `SET_TARGET_PROPERTIES()` 함수에서 지정한 PUBLIC_HEADER 파일을 복사할 디렉토리를 지정한다.
-
-`INSTALL()` 함수에서 지정한 경로는 모두 `CMAKE_INSTALL_PREFIX` 혹은 `CATKIN_DEVEL_PREFIX`에 대한 상대 경로이다. 파일의 종류에 따라 저장될 디렉토리의 이름은 위와 같이 관습적으로 지정되어 있으니 가급적 저대로 쓰는 것이 좋다.  
-
-
 
 
