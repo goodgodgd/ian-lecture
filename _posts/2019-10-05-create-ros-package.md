@@ -536,9 +536,9 @@ int32 sum
 
 패키지 완성 후 `catkin build`를 하면 `~/catkin_ws/devel/lib/python2.7/dist-packages/<package_name>/srv`에 서비스 메시지 타입을 클래스로 정의하는 파이썬 스크립트가 자동생성된다. 여기에는 세 가지 클래스가 정의되어있다.
 
-- <service_name>Request : 클라이언트에서 보내는 요청 타입을 정의한 클래스
-- <service_name>Response : 서버에서 보내는 응답 타입을 정의한 클래스
-- <service_name> : 요청 클래스와 응답 클래스를 멤버 변수로 가진 클래스
+- `<service_name>Request` : 클라이언트에서 보내는 요청 타입을 정의한 클래스
+- `<service_name>Response` : 서버에서 보내는 응답 타입을 정의한 클래스
+- `<service_name>` : 요청 클래스와 응답 클래스를 멤버 변수로 가진 클래스
 
 이 패키지 같은 경우 `~/catkin_ws/devel/lib/python2.7/dist-packages/service_custom/srv/_AddTwoNum.py` 파일이 생기고 이 파일에는 `AddTwoNumRequest, AddTwoNumResponse, AddTwoNum`까지 총 세 개의 클래스가 정의되어 있다.
 

@@ -277,7 +277,7 @@ int main(int argc, char **argv)
 파일들이 준비됐다면 아래 명령어로 빌드를 한다. 명령을 실행하는 경로를 미리 맞춰야 한다.
 
 ```
-~/catkin$ catkin_make
+~/catkin_ws$ catkin_make
 ```
 
 빌드가 다 되면 노드를 실행한다. 항상 그렇듯 `roscore`는 미리 켜져있어야 한다
@@ -547,10 +547,10 @@ find_package(<package_name1>, <package_name2>, ...)
 
 `find_package()`를 하면 다음 네 개의 변수가 기본 생성된다.
 
-- <PACKAGE_NAME>_FOUND : 패키지를 찾으면 1
-- <PACKAGE_NAME>_INCLUDE_DIRS or _INCLUDES : 헤더 파일들이 있는 경로
-- <PACKAGE_NAME>_LIBRARIES or _LIBS : 라이브러리 파일들
-- <PACKAGE_NAME>_DEFINITIONS
+- `<PACKAGE_NAME>_FOUND` : 패키지를 찾으면 1
+- `<PACKAGE_NAME>_INCLUDE_DIRS or _INCLUDES` : 헤더 파일들이 있는 경로
+- `<PACKAGE_NAME>_LIBRARIES or _LIBS` : 라이브러리 파일들
+- `<PACKAGE_NAME>_DEFINITIONS`
 
 `find_package(<package_name> REQUIRED)`처럼  `REQUIRED`를 붙이면 필수 패키지란 뜻으로 이 패키지를 찾지 못하면 에러가 난다. 의존 패키지가 있는지 확인하는 용도로도 많이 쓰인다.   
 
