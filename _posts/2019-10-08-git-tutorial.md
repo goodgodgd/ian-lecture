@@ -1,8 +1,8 @@
 ---
 layout: post
 title:  "Git Tutorial"
-date:   2010-10-08 09:00:13
-categories: WIP
+date:   2019-10-08 09:00:13
+categories: 2019-2-robotics
 ---
 
 
@@ -421,7 +421,8 @@ if __name__ == "__main__":
 `git pull`을 하면 두 저장소의 수정사항이 서로 상충하기 때문에 "CONFLICT"라는 메시지가 뜬다.
 
 ```bash
-~/workspace/robotics-schl$ git pull
+# master의 경우는 'git pull'만 해도 된다.
+~/workspace/robotics-schl$ git pull origin master
 ...
 From https://github.com/goodgodgd/sch-robotics
    834f2d3..512fb8d  master     -> origin/master
@@ -513,23 +514,373 @@ if __name__ == "__main__":
 
 # GitHub and Branch
 
-이번에는 브랜치를 활용하는 방법을 알아본다. 브랜치는 여러 사람이 협업하는데 있어서 필수적인 기법이다. 브랜치를 로컬 저장소에서 커맨드로 관리할 수도 있지만 그보다는 깃헙에서 제공하는 브랜치 병합 기능을 쓰는 것이 활동 기록을 남기기에 적합하다. 여기서는 브랜치를 로컬 저장소에서 관리해야하는 부분과 깃헙에서 관리해야하는 부분을 나눠서 설명한다.
+## 1. 브랜치(Branch) 개념
+
+브랜치는 여러 사람이 협업하는데 있어서 필수적인 기법이다. 지금까지 실습한 내용은 모두 `master`라는 메인 브랜치에서만 작업을 한 것이다. 하지만 여러 사람이 하나의 브랜치에서 동시에 작업을 하게 되면 여러 문제가 발생할 것이다. 여러 사람이 작업중에 누군가 완성되지 않은 코드를 원격 저장소에 올리고 그걸 다른 작업중인 사람들이 받게되면 에러가 날 수도 있고 동작이 달라질 수 있다. 어쨌든 다른 사람이 작업중에 불필요한 영향을 많이 받아 작업 효율이 크게 저하된다.  
+
+브랜치를 쓰면 이러한 문제를 해결할 수 있다. 브랜치는 메인 브랜치의 특정 버전에서 분기(branching)하여 새로운 기능을 넣거나 이슈를 해결하는 등의 하나의 **작업 단위**를 진행하며 자유롭게 commit할 수 있는 **독립적인 작업공간**이다. 자신의 브랜치를 만들어 그곳에서 작업하는 동안에는 남의 눈치를 보지 않고 마음껏 코딩을 해도 된다. 기능이 어느정도 완성되면 코드 정리와 동작 테스트를 한 후 다른 사람들의 동의를 얻어 자신이 만든 변경사항을 메인 브랜치에 합친다. 그리고 다시 새로운 브랜치를 만들어 새로운 기능을 만들거나 이슈를 해결한다. 이것이 일반적인 git을 활용한 작업 흐름이다.  
+
+각 개발자는 자신이 단위 기능을 만드는 동안에는 다른 사람의 영향을 받지 않고 새로운 기능에만 집중할 수 있다. 프로젝트 관리 측면에서는 메인 브랜치를 작업 중인 브랜치와 분리하여 메인 브랜치의 안정성을 보장할 수 있다. 메인 브랜치를 업데이트 할 때는 작업 중간 상태가 아닌 작업이 완료된 상태의 코드를 보고 판단하면 되므로 프로젝트 관리를 효율적으로 할 수 있다.
+
+커밋과 브랜치를 비교해보면, 커밋(commit)은 작은 단위의 변경사항을 짧은 메시지와 함께 기록한다. 브랜치는 새로운 기능이나 특정 이슈 해결이라는 최소단위의 토픽(topic)을 잡고 브랜치 내부에서 여러 커밋을 쌓아서 그 기능을 완성한다. 토픽 브랜치를 메인 브랜치에 합친다는 것은 토픽 브랜치의 커밋을 메인 브랜치에 추가한다는 것이다. 그래서 커밋은 작은 단위(함수, 클래스)의 변경 사항이고 브랜치는 기능, 이슈 단위의 변경 사항이라고 볼 수 있다.
+
+![branch-start](../assets/git-project/branch-start.png)
+
+![branch-concept](../assets/git-project/branch-concept.png)
 
 
 
-## 1. 브랜치 만들어 작업하기
+## 2. 브랜치 만들어 작업하기
+
+먼저 기본적인 브랜치를 다루면 명령어부터 익혀본다. `git branch`는 일반적인 브랜치 관리 명령어고 `git checkout`은 브랜치를 전환하는데 쓴다.
+
+### git branch
+
+> Git을 이용한 협업의 핵심인 branch를 관리하는 verb다.
+>
+> `git branch` : 로컬 저장소의 branch 목록을 보여준다.
+>
+> `git branch -r` : 원격 저장소의 branch 목록을 보여준다.
+>
+> `git branch <branch_name>` : 새로운 branch를 만든다. 
+>
+> `git branch -m <old_name> <new_name>` : branch의 이름을 변경한다.
+>
+> `git branch -d <branch_name>` : branch를 삭제한다. HEAD에 병합되지 않은 branch를 삭제하려면 (즉 branch의 commit을 영구적으로 삭제하려면) -D 옵션을 준다.
+
+### git checkout
+
+> HEAD를 다른 commit 혹은 branch로 옮기고 작업 트리를 그 commit의 snapshot으로 복원한다. 목적지를 다른 branch로 지정하면 그 branch의 최신 commit으로 HEAD가 옮겨지고 작업 트리가 바뀐다. 그래서 주로 작업 branch를 변경하는데 주로 쓰인다.
+>
+> `git checkout <other_branch>` : other_branch로 작업 branch를 바꾸고 작업 트리 영역을 other_branch의 최신 commit 상태로 복원한다.
+>
+> `git checkout -b <new_branch>` : 현재 상태에서 새로운 branch를 생성하고 그곳으로 branch를 옮긴다. HEAD의 commit이 변하지 않고 단지 branch만 바뀐다. 그래서 작업 트리도 변하지 않는다.
+>
+> `git checkout HEAD -- <filename>` : 파일의 상태를 HEAD (최신 commit)으로 복원하는 명령어다. 잘못된 변경 사항이 있을 때 주로 쓴다.
+
+두 명령어를 실습해보자.
+
+```bash
+$ cd ~/workspace/robotics-schl
+# 브랜치 목록 보기, 현재 브랜치 확인
+~/workspace/robotics-schl$ git branch
+# 'new-feature'라는 브랜치 만들기
+~/workspace/robotics-schl$ git branch new-feature
+~/workspace/robotics-schl$ git branch
+# 'new-feature'로 브랜치 전환하기
+~/workspace/robotics-schl$ git checkout new-feature
+~/workspace/robotics-schl$ git branch
+# 'new-feature'를 'new-topic'으로 이름 바꾸기
+~/workspace/robotics-schl$ git branch -m new-feature new-topic
+~/workspace/robotics-schl$ git branch
+# 'master'로 브랜치 전환하기
+~/workspace/robotics-schl$ git checkout master
+~/workspace/robotics-schl$ git branch
+# 'new-topic'로 브랜치 삭제하기
+~/workspace/robotics-schl$ git branch -D new-topic
+~/workspace/robotics-schl$ git branch
+```
 
 
 
+### 브랜치에서 작업하기
+
+브랜치를 만들어 파이썬 학습시 만들었던 `list_ops.py`를 구현 후 이를 메인 브랜치에 합치는 실습을 해보자. 먼저 `make-list-operators`라는 브랜치를 만들어 바로 전환한다.
+
+```bash
+# 브랜치 만들고 만든 브랜치로 전환 한 줄에 처리
+~/workspace/robotics-schl$ git checkout -b make-list-operators
+```
+
+기본 실습에서 만든 `add_lists.py`에 기능을 추가하기 전에 먼저 이름을 `list_ops.py`로 수정한다.
+
+```bash
+~/workspace/robotics-schl$ cd git_practice
+~/workspace/robotics-schl/git_practice$ git mv add_lists.py list_ops.py
+~/workspace/robotics-schl/git_practice$ gedit list_ops.py
+```
+
+더하기 빼기 기능을 구현한다.
+
+```python
+# list_ops.py
+def add(foo, bar):
+    out = []
+    for f, b in zip(foo, bar):
+        out.append(f + b)
+    return out
+
+def subtract(foo, bar):
+    out = []
+    for f, b in zip(foo, bar):
+        out.append(f - b)
+    return out
+```
+
+변경 사항을 커밋한다.
+
+```bash
+~/workspace/robotics-schl/git_practice$ git add .
+~/workspace/robotics-schl/git_practice$ git commit -m 'implement add and subtract'
+```
+
+추가로 곱하기 나누기 기능도 구현한다.
+
+```python
+# 아래쪽에 추가
+def multiply(foo, bar):
+    out = []
+    for f, b in zip(foo, bar):
+        out.append(f * b)
+    return out
+
+def divide(foo, bar):
+    out = []
+    for f, b in zip(foo, bar):
+        out.append(f / b)
+    return out
+```
+
+변경 사항을 커밋한다.
+
+```bash
+~/workspace/robotics-schl/git_practice$ git add .
+~/workspace/robotics-schl/git_practice$ git commit -m 'implement multiply and substract'
+```
+
+`main.py`도 새로운 함수를 쓰도록 수정한다.
+
+```python
+# main.py
+import list_ops as lo
+
+if __name__ == "__main__":
+    foo = [1,2,3]
+    bar = [4,5,6]
+    print("foo+bar=", lo.add(foo, bar))
+    print("foo-bar=", lo.subtract(foo, bar))
+    print("foo*bar=", lo.multiply(foo, bar))
+    print("foo/bar=", lo.divide(foo, bar))
+```
+
+변경 사항을 커밋하고 로그를 확인해본다.
+
+```bash
+~/workspace/robotics-schl/git_practice$ git add .
+~/workspace/robotics-schl/git_practice$ git commit -m 'change main to use list ops'
+~/workspace/robotics-schl/git_practice$ git log
+commit e97a572fda2c2eb127a7f4c09eb3828daa9272e2 (HEAD -> master, make-list-operators)
+Author: goodgodgd <goodgodgd@yonsei.ac.kr>
+Date:   Mon Oct 14 12:46:32 2019 +0900
+    change main to use list ops
+
+commit fa8a82f31c9526f61c8a0e14ebe0ab2cffc7bdd6
+Author: goodgodgd <goodgodgd@yonsei.ac.kr>
+Date:   Mon Oct 14 12:46:02 2019 +0900
+    implement multiply and substract
+
+commit 55f779972a6dea3f5c78cff0a37575ee94065f24
+Author: goodgodgd <goodgodgd@yonsei.ac.kr>
+Date:   Mon Oct 14 12:45:14 2019 +0900
+    implement add and subtract
+
+commit 2cbd36fdf533fcd6cf879146dbc9b877ca0536d8 (origin/master, origin/HEAD)
+Author: goodgodgd <goodgodgd@yonsei.ac.kr>
+Date:   Mon Oct 14 01:09:47 2019 +0900
+    move files to git practice
+```
 
 
-## 2. Pull Request 만들기
+
+### git merge
+
+> `git merge <other_branch>` : 현재 branch에서 other_branch의 commit들을 병합한다.
+>
+> `git merge [--ff / --no-ff / --ff-only] <other_branch>` : 병합하는 방식을 지정한다. 기본은 --ff (fast-forward)인데 --no-f (non-fast-forward)와의 차이는 [이곳](<https://backlog.com/git-tutorial/kr/stepup/stepup1_4.html>)에서 보는 것이 좋다. `--only-ff`는 fast-forward 방식이 가능할 때만 merge를 하라는 것이다.
+>
+> `git merge --squash <other_branch>` : other_branch의 모든 commit들을 하나의 commit으로 합쳐서 병합한다.
+
+`git merge`는 두 개의 브랜치를 합칠 때 쓴다. 메인 브랜치로 전환 후 토픽 브랜치인 `make-list-operators` 브랜치를 병합한다. 병합 전에 `git pull`을 실행하여 다른 사람이 올린 변경 사항을 모두 병합 후 내가 만든 토픽 브랜치를 합쳐야 코드를 최신상태로 업데이트 할 수 있다.
+
+```bash
+~/workspace/robotics-schl/git_practice$ cd ..
+~/workspace/robotics-schl/git_practice$ git checkout master
+~/workspace/robotics-schl$ git pull
+~/workspace/robotics-schl$ git merge make-list-operators
+~/workspace/robotics-schl$ git status
+~/workspace/robotics-schl$ git push origin master
+```
+
+이때도 두 개의 브랜치가 서로 같은 줄을 다르게 수정했다면 `git pull`에서 경험했던 충돌(conflict)이 일어날 수 있다. 사실 `git pull`도 알고 보면 원격 저장소의 내용을 내려받는 `git fetch`와 브랜치를 흡수하는 `git merge` 두 명령어를 한번에 실행하는 것이다.
+
+병합을 하고 나면 두 `master` 브랜치에도 변경사항이 반영됐음을 확인할 수 있다.  
+
+여러사람이 협력하는 프로젝트에서는 이렇게 새로운 브랜치를 만들어 독립적으로 작업하고 단위 작업이 마무리가 됐을 때 메인 브랜치에 합치는 일이 동시다발적으로 일어난다.
 
 
 
+## 3. Pull Request 만들기
+
+앞에서는 커맨드에서 직접 `git merge`를 통해 브랜치를 병합시켰지만 현업에서 일하는 개발자들은 이렇게 하지 않는다. 브랜치를 만드는 이유는 기능을 변경/추가하거나 어떤 이슈를 해결하기 위함이다. 브랜치를 만들 때 이루고자하는 목적이 있는 것이다. 브랜치의 목적을 달성하고 메인 브랜치에 합칠 때 어떤 목적을 위해 어떻게 구현을 했는지 문서를 만들어 공유해야 다른 사람들이 쉽게 이해하고 받아들일 수 있다. 단순히 커밋 메시지와 코드만 보고는 브랜치의 기능을 쉽게 파악할 수 없다.  
+
+그래서 팀으로 일하는 개발자들은 브랜치를 합칠 때 자신이 임의로 합치지 않고 **Pull Request (PR)**라는 문서를 작성하여 저장소 관리자나 동료들에게 공유하고 동의를 구한다. git에서 "pull"이란 다른 저장소의 변경사항을 내 저장소에 반영한다는 의미가 있으므로 "Pull Request"란 내가 만든 브랜치의 변경사항을 메인 브랜치에 반영할 수 있도록 요청한다는 뜻이다.  
+
+"문서"라는 것이 워드나 슬라이드처럼 거창한 것이 아니라 깃헙 게시판에 내가 이 브랜치에서 이러이러한 작업을 했다고 설명하는 글을 쓰는 것이다. 깃헙에서는 관리 권한을 가진 사람이 깃헙 원격 저장소에서 병합(merge)할 수 있는 기능도 제공한다. 그래서 커맨드에서 `git merge`를 사용할 일이 별로 없다.  
+
+PR을 작성하게 되면 프로젝트의 개발 이력도 자연스럽게 기록이 된다. 누가 이 프로젝트에 언제 무엇을 기여했는지는 커밋 이력보다 PR을 보면 더 쉽게 알 수 있다. PR을 평소에 잘 작성해두면 회사에서 나중에 워드나 슬라이드 같은 공식 보고서를 만드는데도 큰 도움이 된다.  
+
+여기서는 깃헙을 이용한 브랜치 관리를 실습을 통해 익혀본다.
 
 
-## 브랜치에 PR 반영하기
 
+### 새 브랜치 작업하기
+
+앞서 만들었던 `~/workspace/robotics-schl`에서 이어서 작업을 한다. 리스트 연산을 하는 `list_ops.py`를 만들었으니 이번에는 딕셔너리 연산자를 만들어보자.
+
+```bash
+$ cd ~/workspace/robotics-schl
+~/workspace/robotics-schl$ git status
+# 이렇게 나오는 상태여야 한다.
+On branch master
+Your branch is up to date with 'origin/master'.
+
+nothing to commit, working tree clean
+
+~/workspace/robotics-schl$ git checkout -b make-dict-operators
+~/workspace/robotics-schl$ git branch
+* make-dict-operators
+  make-list-operators
+  master
+~/workspace/robotics-schl$ gedit git_practice/dict_ops.py
+```
+
+`dict_ops.py`를 다음과 같이 작성해보자.
+
+```python
+# dict_ops.py
+def add(foo, bar):
+    out = {}
+    for key in foo.keys():
+        if key in bar:
+            out[key] = foo[key] + bar[key]
+    return out
+
+def subtract(foo, bar):
+    out = {}
+    for key in foo.keys():
+        if key in bar:
+            out[key] = foo[key] - bar[key]
+    return out
+
+def multiply(foo, bar):
+    out = {}
+    for key in foo.keys():
+        if key in bar:
+            out[key] = foo[key] * bar[key]
+    return out
+
+def divide(foo, bar):
+    out = {}
+    for key in foo.keys():
+        if key in bar:
+            out[key] = foo[key] / bar[key]
+    return out
+```
+
+변경 사항을 커밋한다.
+
+```bash
+~/workspace/robotics-schl$ git add .
+~/workspace/robotics-schl$ git commit -m 'create dictionary operator module'
+```
+
+`main.py`도 딕셔너리 연산을 쓰도록 다음과 같이 수정한다.
+
+```python
+# main.py
+import list_ops as lo
+import dict_ops as do
+
+if __name__ == "__main__":
+    foo = [1,2,3]
+    bar = [4,5,6]
+    print(f"foo: {foo}, bar: {bar}")
+    print("foo+bar=", lo.add(foo, bar))
+    print("foo-bar=", lo.subtract(foo, bar))
+    print("foo*bar=", lo.multiply(foo, bar))
+    print("foo/bar=", lo.divide(foo, bar))
+    
+    foo = {"Java": 79, "Cpp": 45, "Python": 99}
+    bar = {"Java": 36, "Python": 56, "Ruby": 63}
+    print(f"foo: {foo}, bar: {bar}")
+    print("foo+bar=", do.add(foo, bar))
+    print("foo-bar=", do.subtract(foo, bar))
+    print("foo*bar=", do.multiply(foo, bar))
+    print("foo/bar=", do.divide(foo, bar))
+```
+
+변경 사항을 커밋한다.
+
+```bash
+~/workspace/robotics-schl$ git add .
+~/workspace/robotics-schl$ git commit -m 'make main.py to use dict_ops.py'
+```
+
+
+
+### GitHub에 PR 작성하기
+
+이제 작업한 브랜치를 원격 저장소로 올린다. 바로 `master` 브랜치에 합치지 않고 원격 저장소에 브랜치를 `pull request`와 함께 올려서 내가 한 일을 정리하고 다른 사람의 리뷰를 받을 수 있게 하는 것이다.  
+
+원격 저장소로 브랜치를 올리려면 `git push origin <branch_name>` 명령어를 쓴다. `origin`은 `git clone`을 할 때 자동지정된 원격 저장소의 이름인데 `git remote -v` 명령어를 통해 `origin`의 실제 주소를 볼 수 있다.
+
+``` bash
+~/workspace/robotics-schl$ git remote -v
+origin	https://github.com/goodgodgd/sch-robotics.git (fetch)
+origin	https://github.com/goodgodgd/sch-robotics.git (push)
+
+
+~/workspace/robotics-schl$ git push origin make-dict-operators
+...
+To https://github.com/goodgodgd/sch-robotics.git
+ * [new branch]      make-dict-operators -> make-dict-operators
+```
+
+
+
+이제 깃헙에 들어가보면 다음과 같이 `make-dict-operators` 브랜치를 위한 `Compare & pull request`라는 메뉴를 볼 수 있다.
+
+![pull-request-button](../assets/robotics-devel/pull-request-button.png)
+
+클릭해서 들어가면 다음과 같이 글을 쓸 수 있다. 이곳에 작업한 내용을 글로 정리하고 다른 사람들에게 요청할 사항을 남긴다.
+
+![writing-pull-request](../assets/robotics-devel/writing-pull-request.png)
+
+`Create pull request`를 누르면 PR이 완성된다. 다른 사람들은 여기서 PR을 읽고 커밋을 확인하고 코드 변경사항을 확인해서 리뷰 후 댓글을 남기거나 관리권한을 가진 사람이 `Merge pull request`를 눌러 `master` 브랜치에 합쳐줄 수도 있다.
+
+![written-pull-request](../assets/robotics-devel/written-pull-request.png)
+
+merge를 하고 나면 다음과 같이 화면이 바뀌고 master 브랜치의 코드도 변했음을 볼 수 있다.
+
+![pull-request-merged](../assets/robotics-devel/pull-request-merged.png)
+
+로컬 저장소의 `master` 브랜치도 업데이트 하고 싶다면 `master` 브랜치에서 `git pull`을 실행한다.
+
+```bash
+~/workspace/robotics-schl$ git checkout master
+~/workspace/robotics-schl$ git pull origin master
+Updating e97a572..7f2ae54
+Fast-forward
+ git_practice/dict_ops.py | 27 +++++++++++++++++++++++++++
+ git_practice/main.py     | 11 ++++++++++-
+ 2 files changed, 37 insertions(+), 1 deletion(-)
+ create mode 100644 git_practice/dict_ops.py
+```
+
+
+
+---
+
+여기까지 git과 깃헙의 사용법을 알아보았다. 세부적으로 들어가면 더 배워야 할것들이 많지만 일단은 여기있는 내용들을 숙지한다면 사용에 큰 문제는 없을 것이고 자세한 사항은 구글에 검색하면서 공부해보길 바란다.
 
 
