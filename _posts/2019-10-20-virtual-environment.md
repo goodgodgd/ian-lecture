@@ -530,45 +530,7 @@ pyenv는 본래 여러 파이썬 버전을 함께 운용하기 위해 만들어�
                                  Dload  Upload   Total   Spent    Left  Speed
 100  2454  100  2454    0     0   1465      0  0:00:01  0:00:01 --:--:--  1464
 Cloning into '/home/ian/.pyenv'...
-remote: Enumerating objects: 659, done.
-remote: Counting objects: 100% (659/659), done.
-remote: Compressing objects: 100% (494/494), done.
-remote: Total 659 (delta 328), reused 254 (delta 74), pack-reused 0
-Receiving objects: 100% (659/659), 376.92 KiB | 731.00 KiB/s, done.
-Resolving deltas: 100% (328/328), done.
-Cloning into '/home/ian/.pyenv/plugins/pyenv-doctor'...
-remote: Enumerating objects: 11, done.
-remote: Counting objects: 100% (11/11), done.
-remote: Compressing objects: 100% (9/9), done.
-remote: Total 11 (delta 1), reused 3 (delta 0), pack-reused 0
-Unpacking objects: 100% (11/11), done.
-Cloning into '/home/ian/.pyenv/plugins/pyenv-installer'...
-remote: Enumerating objects: 16, done.
-remote: Counting objects: 100% (16/16), done.
-remote: Compressing objects: 100% (13/13), done.
-remote: Total 16 (delta 1), reused 8 (delta 0), pack-reused 0
-Unpacking objects: 100% (16/16), done.
-Cloning into '/home/ian/.pyenv/plugins/pyenv-update'...
-remote: Enumerating objects: 10, done.
-remote: Counting objects: 100% (10/10), done.
-remote: Compressing objects: 100% (6/6), done.
-remote: Total 10 (delta 1), reused 6 (delta 0), pack-reused 0
-Unpacking objects: 100% (10/10), done.
-Cloning into '/home/ian/.pyenv/plugins/pyenv-virtualenv'...
-remote: Enumerating objects: 57, done.
-remote: Counting objects: 100% (57/57), done.
-remote: Compressing objects: 100% (51/51), done.
-remote: Total 57 (delta 11), reused 21 (delta 0), pack-reused 0
-Unpacking objects: 100% (57/57), done.
-Cloning into '/home/ian/.pyenv/plugins/pyenv-which-ext'...
-remote: Enumerating objects: 10, done.
-remote: Counting objects: 100% (10/10), done.
-remote: Compressing objects: 100% (6/6), done.
-remote: Total 10 (delta 1), reused 6 (delta 0), pack-reused 0
-Unpacking objects: 100% (10/10), done.
-
-WARNING: seems you still have not added 'pyenv' to the load path.
-
+...
 # Load pyenv automatically by adding
 # the following to ~/.bashrc:
 
@@ -700,45 +662,246 @@ pyenv-virtualenv: remove /home/ian/.pyenv/versions/3.7.5/envs/pyenv_py37? y
 
 우리는 ROS 프로그래밍을 하면 되는데 왜 가상 환경을 배우고 있던걸까? 바로 **Python 3를 쓰기 위해**서다. 간단히 토픽을 주고 받는 수준의 코드는 Python 2나 Python 3나 별 차이가 안나지만 파이썬 최신 문법을 쓰고, 복잡한 알고리즘 구현을 위해 최신 외부 패키지들을 사용하다 보면 Python 2로는 한계가 있다. 대표적으로 딥러닝 라이브러리를 쓰지 못한다. ~~그냥 구식 인터프리터를 쓰는게 찝찝하다.~~ 그리고 가급적 시스템 경로(`/usr`)에는 파이썬 패키지를 설치하지 않는 것이 좋기 때문에 외부 패키지를 쓰려면 가상 환경을 만들어서 설치해야 한다.  
 
+본격적으로 들어가기 전에 위에서 주석처리한 `~/.bashrc`의 ROS 관련 설정을 다시 복원해야 한다.
 
-
+```bash
+$ gedit ~/.bashrc
+# 아래 두 줄 주석 해제, 저장, 닫기
+source /opt/ros/melodic/setup.bash
+source ~/catkin_ws/devel/setup.bash
 ```
-pyenv virtualenv 3.6.8 ros_py36
+
+
+
+## 1. ROS를 위한 가상 환경 만들기
+
+pyenv를 이용해 `ros_py36`이란 가상 환경을 만든다. pyenv 가상 환경은 특정 경로에 종속된 것이 아니기 때문에 만들어진 가상 환경을 어디서나 쓸 수 있다는 장점이 있다. 가상 환경을 활성화하여 그곳에 ROS 관련 패키지와 메시지 관련 패키지를 설치한다.
+
+```bash
+# 가상 환경 만들기
+$ pyenv virtualenv 3.6.8 ros_py36
 Looking in links: /tmp/tmp86spyxlz
 Requirement already satisfied: setuptools in /home/ian/.pyenv/versions/3.6.8/envs/ros_py36/lib/python3.6/site-packages (40.6.2)
 Requirement already satisfied: pip in /home/ian/.pyenv/versions/3.6.8/envs/ros_py36/lib/python3.6/site-packages (18.1)
+# 가상 환경 활성화
+$ pyenv activate ros_py36
+# ROS에 필요한 패키지
+$ pip install rosinstall msgpack empy defusedxml netifaces
+# 외부 패키지 설치
+$ pip install numpy opencv-python
+# 가상 환경 비활성화
+$ pyenv deactivate ros_py36
+```
 
-pyenv activate ros_py36
 
-pip install rosinstall msgpack empy defusedxml netifaces
-pip install numpy opencv-python
 
-(ros_py36) ian@ian:~$ cd ~/catkin_ws/src
-(ros_py36) ian@ian:~/catkin_ws/src$ catkin create pkg test_py3 --catkin-deps rospy std_msgs sensor_msgs
+## 2. 패키지 만들기
+
+간단한 메시지를 보내거나 외부 패키지가 필요하지 않다면 굳이 Python3를 쓸 필요는 없다. 여기서는 OpenCV로 영상 파일을 열어서 영상을 토픽으로 보내고자 한다. 영상을 보내는 메시지 타입은 `sensor_msgs/Image`를 쓸 것이다.  
+
+```bash
+~$ cd ~/catkin_ws/src
+~/catkin_ws/src$ catkin create pkg test_py3 --catkin-deps rospy std_msgs sensor_msgs
 Creating package "test_py3" in "/home/ian/catkin_ws/src"...
 Created file test_py3/package.xml
 Created file test_py3/CMakeLists.txt
 Created folder test_py3/src
 Successfully created package files in /home/ian/catkin_ws/src/test_py3.
-(ros_py36) ian@ian:~/catkin_ws/src$ cd test_py3/
-(ros_py36) ian@ian:~/catkin_ws/src/test_py3$ gedit src/image_publisher
+```
 
+메시지를 만드는 것이 아니므로 `package.xml`이나 `CMakeLists.txt`도 거의 기본 설정대로 쓰면 된다.
+
+### package.xml
+
+```xml
+<?xml version="1.0"?>
+<package format="2">
+  <name>test_py3</name>
+  <version>0.1.0</version>
+  <description>Test python3 for ros</description>
+  <maintainer email="myemail@todo.todo">my name</maintainer>
+  <license>BSD</license>
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>rospy</build_depend>
+  <build_depend>sensor_msgs</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <build_export_depend>rospy</build_export_depend>
+  <build_export_depend>sensor_msgs</build_export_depend>
+  <build_export_depend>std_msgs</build_export_depend>
+  <exec_depend>rospy</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+</package>
+```
+
+### CMakeLists.txt
+
+```cmake
+cmake_minimum_required(VERSION 2.8.3)
+project(test_py3)
+
+find_package(catkin REQUIRED COMPONENTS
+  rospy
+  sensor_msgs
+  std_msgs
+)
+catkin_package(
+  CATKIN_DEPENDS rospy sensor_msgs std_msgs
+)
 ```
 
 
 
+## 3. PyCharm에서 개발하기
+
+그 동안 ROS 개발을 gedit에서 해왔고 gedit도 나름 파이썬 문법 하일라이팅을 지원하긴 하지만 자동 완성도 되지 않고 부족한 점이 많다. 역시 파이썬 개발을 할 때는 파이참(PyCharm)을 쓰는게 좋은데 약간의 트릭이 필요하다. 일단 평소대로 GUI를 통해 파이참을 실행하고 패키지 디렉토리(`~/catkin_ws/src/test_py3`)를 열어보자.  
 
 
 
+### PYTHONPATH 설정
+
+`src` 디렉토리 아래 `check_env.py`란 파일을 만들고 간단한 코드를 실행해보자.
+
+```python
+import rospy
+```
+
+파이참에서 바로 실행하면 실행 결과는 다음과 같다.
+
+> Traceback (most recent call last):
+>   File "/home/ian/catkin_ws/src/test_py3/src/check_env.py", line 1, in <module>
+>     import rospy
+> ModuleNotFoundError: No module named 'rospy'
+
+에러가 난 이유는 ROS의 Python 관련 패키지들에 접근하지 못하기 때문이다. 그럼 지금까지는 어떻게 썼던걸까? 다시 터미널로 돌아가 간단한 스크립트를 실행해보자.
+
+```bash
+$ python -c "import rospy"
+```
+
+문제 없이 실행된다. rospy는 `/opt/ros/melodic/lib/python2.7/dist-packages/rospy`에 설치되어 있는데 어떻게 `/usr/bin/python`이 그곳에 접근하는 걸까?  
+
+파이썬이 import를 할 때는 기본적으로 실행된 파이썬과 연결된 라이브러리 디렉토리를 검색한다. 예를 들어 `/usr/bin/python`은 `/usr/lib/python2.7/dist-packages`에서 패키지를 찾는다. 거기에 사용자가 다른 패키지 경로를 추가하고 싶을 때는 `PYTHONPATH`라는 환경 변수에 경로를 추가할 수 있다. 현재 `PYTHONPATH`를 확인해보자.
 
 ```
+$ echo $PYTHONPATH
+/home/ian/catkin_ws/devel/lib/python2.7/dist-packages:/opt/ros/melodic/lib/python2.7/dist-packages
+```
+
+우리가 만든 캐킨 워크스페이스와 시스템에 설치된 ROS 경로가 모두 세팅이 되어있다. 이것은 앞서 주석을 해제한 `~/.bashrc`에 들어있는 두 줄의 `source ~~/setup.bash`를 실행해서 만들어진 것이다. `PYTHONPATH` 변수는 파이썬의 버전을 가리지 않고 모두 적용된다. Python2, 3 모두 적용이 된다. 그래서 ROS 개발을 하지 않을 때는 `~/.bashrc`의 두 줄의 `source ~~/setup.bash`를 주석처리 하는 것이 낫다.  
+
+그런데 왜 파이참에서는 rospy를 찾지 못 했을까? 파이참에서는 `PYTHONPATH`가 설정되어 있지 않기 때문이다. `check_env.py`에 다음과 같은 스크립트를 써서 확인해보자.
+
+```python
+import os
+print(os.getenv('PYTHONPATH'))
+```
+
+결과는 다음과 같다.
+
+> /home/ian/catkin_ws/src/test_py3
+
+`PYTHONPATH`에 현재 경로만 나오고 ROS 관련된 경로가 없기 때문에 rospy를 찾지 못 한 것이다. `PYTHONPATH`는 `~/.bashrc`에서 실행된 것이고 이것은 bash 터미널을 열 때 실행이 된다. 하지만 GUI에서 파이참을 실행하게 되면 `~/.bashrc`가 실행되지 않고 따라서 `PYTHONPATH`도 설정되지 않는다.  
+
+두 가지 해결 방법이 있다. 첫 번째는 파이참의 내부 설정에서 `PYTHONPATH`에 있는 경로를 추가해 주는 것이다. 하지만 이 방법은 패키지 경로가 바뀌거나 새로운 PC에서 작업을 재개할 때마다 파이참 세팅을 해야 하므로 번거롭다.  
+
+간단한 방법은 **터미널에서 파이참을 실행하는 것이다.** bash 터미널에서는 이미 환경 설정이 되어있으므로 터미널에서 파이참을 실행하면 환경 변수도 그대로 가져올 수 있다. 터미널이 하나 떠잇어야 하긴 하지만 간단하게 문제를 해결할 수 있다. 터미널에서 파이참을 실행하는 명령어는 다음과 같다. 
+
+```
+$ pycharm-community
+```
+
+`check_env.py`에서 환경 변수를 확인하고 rospy를 import 해보자.
+
+```python
+import os
+print('PYTHONPATH:', os.getenv('PYTHONPATH'))
+import rospy
+```
+
+결과는 다음과 같다.
+
+> /usr/bin/python3.6 /home/ian/catkin_ws/src/test_py3/src/check_env.py
+> PYTHONPATH: /home/ian/catkin_ws/src/test_py3:/home/ian/catkin_ws/devel/lib/python2.7/dist-packages:/opt/ros/melodic/lib/python2.7/dist-packages
+> Traceback (most recent call last):
+>   File "/home/ian/catkin_ws/src/test_py3/src/check_env.py", line 3, in <module>
+>     import rospy
+>   File "/opt/ros/melodic/lib/python2.7/dist-packages/rospy/__init__.py", line 49, in <module>
+>     from .client import spin, myargv, init_node, \
+>   File "/opt/ros/melodic/lib/python2.7/dist-packages/rospy/client.py", line 52, in <module>
+>     import roslib
+>   File "/opt/ros/melodic/lib/python2.7/dist-packages/roslib/__init__.py", line 50, in <module>
+>     from roslib.launcher import load_manifest
+>   File "/opt/ros/melodic/lib/python2.7/dist-packages/roslib/launcher.py", line 42, in <module>
+>     import rospkg
+> ModuleNotFoundError: No module named 'rospkg'
+
+여전히 에러가 나긴 하지만 약간의 진전이 있다. `PYTHONPATH`에 ROS 패키지 경로가 추가가 됐다. 그리고 에러 메시지도 변했다. 원래는 rospy 자체를 가져오지 못 했는데 이제는 그 내부에서 "rospkg"를 가져오지 못 한다고 한다. 이제 rospkg만 가져올 수 있으면 파이참에서 ROS를 쓸 수 있다.
+
+
+
+### 인터프리터 설정
+
+rospkg를 가져오지 못 하는 이유는 현재 인터프리터를 시스템에 설치된 Python3인 `/usr/bin/python3.6`을 쓰고 있기 때문이다. rospkg가 어디에 설치되어 있는지 찾아보자.
+
+```
+$ find /usr/lib/python2.7 -name "rospkg"
+/usr/lib/python2.7/dist-packages/rospkg
+$ find /opt/ros/melodic/lib/python2.7 -name "rospkg"
+$ find /usr/lib/python3.6 -name "rospkg"
+```
+
+ROS 설치 경로인 `/opt/ros/melodic/lib/python2.7`이 아닌 `/usr/lib/python2.7`에 설치된 것을 확인할 수 있다. `/usr/lib/python3.6`에는 당연히 없다. 이것은 ROS 설치시 `ros-melodic-desktop-full`를 설치하면서 설치된 수많은 패키지들 중 하나다.  
+
+사실 Python 3를 위한 rospkg는 앞서 가상 환경을 만들면서 이미 설치했다. `pip install rosinstall`을 실행하면 rospkg 등 ROS와 관련된 다양한 패키지가 설치된다. 이제 해야할 일은 파이참에서 쓰는 인터프리터를 앞서 만든 가상 환경의 인터프리터로 바꾸는 것이다. 다음 순서를 따라가 파이참에서 인터프리터를 바꿔준다.
+
+> File -> Settings -> Project: test_py3 -> Project Interpreter -> 오른쪽 상단의 톱니 모양 클릭 ->  "Add..." 클릭 -> Existing environment 체크 -> "Interpreter"에서 `/home/[user-name]/.pyenv/versions/ros_py36/bin/python` 선택 -> "Ok" -> "Ok"
+
+이제 파이참에서 `check_env.py`를 실행해도 에러가 나지 않는다. ROS를 개발할 준비가 된 것이다. 파이참에서 자동 완성을 통해 ROS 패키지 내부의 함수 목록이나 함수 입력 인자를 보면서 코딩할 수 있다.
+
+
+
+### 요약
+
+원리를 이해하기 위해 장황하게 설명했지만 Python 3 + PyCharm 을 이용한 개발 방법은 다음과 같다.
+
+- Python 3를 위한 가상 환경을 만들고 `rosinstall msgpack empy defusedxml netifaces` 등을 설치한다.
+- 파이참은 터미널에서 `pycharm-community` 명령을 통해 실행한다.
+- 파이참에서 가상 환경의 인터프리터를 선택한다.
+
+지금까지 여러가지 경로가 나왔는데 간단히 정리하면 다음과 같다.
+
+- `/usr/bin/python, /usr/lib/python2.7`: 시스템 기본 Python 2와 그것에 연결된 패키지 경로
+- `/usr/bin/python3, /usr/lib/python3.6`: 시스템 기본 Python 3와 그것에 연결된 패키지 경로
+- `/opt/ros/melodic/lib/python2.7` : 시스템에 설치된 Python 기반 ROS 패키지 경로
+- `/home/[user-name]/catkin_ws/devel/lib/python2.7` : 사용자가 만든 Python 기반 ROS 패키지 경로
+- `/home/[user-name]/.pyenv/versions/[env-name]/lib` : 가상 환경의 패키지 경로
+
+
+
+## 4. 노드 만들기
+
+이미지를 보내고 받을 퍼블리셔와 서브스크라이버 파일을 만들고 실행 권한을 준다.
+
+```
+$ cd ~/catkin_ws/src/test_py3/src
+~/catkin_ws/src/test_py3/src$ touch image_publisher.py image_subscriber.py
+~/catkin_ws/src/test_py3/src$ chmod a+x image_publisher.py image_subscriber.py
+```
+
+구글에서 아무 영상 파일이나 찾아서 `~/catkin_ws/src/test_py3/ros.png`로 저장한다.
+
+### image_publisher.py
+
+퍼블리셔는 다음과 같이 구현한다.
+
+```python
 #!/home/ian/.pyenv/versions/ros_py36/bin/python
-
+# 사용자명(ian) 교체!
 import rospy
 from sensor_msgs.msg import Image
 import cv2
 import os
-
 
 def image_to_sensor_msg(image):
     sensor_img = Image()
@@ -753,41 +916,122 @@ def image_to_sensor_msg(image):
     sensor_img.data = image.tostring()
     return sensor_img
 
-
 def main():
     rospy.init_node("image_publisher")
     pub = rospy.Publisher("np_image", Image, queue_size=1)
 
-    thispath = os.path.abspath(__file__)
-    pkgpath = os.path.dirname(os.path.dirname(thispath))
-    print(f"this file: {thispath} \npackage path: {pkgpath}")
-    image = cv2.imread(pkgpath + "/ros_mark.png")
+    filepath = os.path.abspath(__file__)
+    pkgpath = os.path.dirname(os.path.dirname(filepath))
+    print(f"this file: {filepath} \npackage path: {pkgpath}")
+    image = cv2.imread(pkgpath + "/ros.png")
 
     rate = rospy.Rate(1)
     while not rospy.is_shutdown():
+        image = cv2.flip(image, 1)
         msg = image_to_sensor_msg(image)
         pub.publish(msg)
         print(f"publish image, time={msg.header.stamp.to_sec() % 1000:.1f}, w={msg.width}, h={msg.height}")
         rate.sleep()
 
-
 if __name__ == "__main__":
     main()
-
 ```
 
+부분별로 나눠서 살펴보자.
 
-
-
-
-```
+```python
 #!/home/ian/.pyenv/versions/ros_py36/bin/python
+# 사용자명(ian) 교체!
+import rospy
+from sensor_msgs.msg import Image
+import cv2
+import os
+```
 
+기존에 쓰던 shebang은 시스템의 기본 파이썬을 쓰기 위해 `/usr/bin/env python`이었다. 여기서는 가상 환경의 인터프리터를 써야 하므로 가상 환경의 인터프리터 경로를 명확하게 써야한다. **자신의 사용자명에 맞춰 경로를 수정해야 한다.**  
+
+```python
+def main():
+    rospy.init_node("image_publisher")
+    pub = rospy.Publisher("np_image", Image, queue_size=1)
+```
+
+"image_publisher"라는 노드를 만들고 `Image` 타입의 "np_image"라는 토픽을 발행하는 퍼블리셔를 생성했다.
+
+```python
+    filepath = os.path.abspath(__file__)
+    pkgpath = os.path.dirname(os.path.dirname(filepath))
+    print(f"this file: {filepath} \npackage path: {pkgpath}")
+    image = cv2.imread(pkgpath + "/ros.png")
+```
+
+파이썬에서 다른 파일을 읽을 때는 절대 경로로 접근하는 것이 좋다. 영상 파일이 패키지 내부에 있기 때문에 `image_publisher.py`의 절대 경로로부터 영상의 경로를 만들어내는 과정이다. `os.path.dirname(somepath)` 함수는 `somepath`의 가장 하부 경로를 하나씩 잘라낸다. 위 코드에서 출력된 내용은 다음과 같다.
+
+> this file: /home/ian/catkin_ws/src/test_py3/src/image_publisher.py 
+> package path: /home/ian/catkin_ws/src/test_py3
+
+`cv2.imread()`는 영상 파일을 읽어서 numpy array로 출력하는 함수다. OpenCV나 Numpy에 대한 내용은 일단 여기서는 중요한 것이 아니니 넘어가도록 하자.
+
+```python
+    rate = rospy.Rate(1)
+    while not rospy.is_shutdown():
+        image = cv2.flip(image, 1)
+        msg = image_to_sensor_msg(image)
+        pub.publish(msg)
+        print(f"publish image, time={msg.header.stamp.to_sec() % 1000:.1f}, w={msg.width}, h={msg.height}")
+        rate.sleep()
+```
+
+메시지 객체를 만들고 퍼블리시하는 과정은 기존과 같다. 매번 똑같은 영상을 보내면 보내고 있는지 구분이 안되므로 `cv2.flip()` 함수를 이용해 매번 영상을 좌우로 뒤집는다. `image_to_sensor_msg()`는 영상 타입을 메시지 타입으로 변환하는 함수다.
+
+```python
+def image_to_sensor_msg(image):
+    sensor_img = Image()
+    sensor_img.header.seq = 0
+    sensor_img.header.stamp = rospy.get_rostime()
+    sensor_img.header.frame_id = ""
+    sensor_img.height = image.shape[0]
+    sensor_img.width = image.shape[1]
+    # channel이나 depth가 없으니 step을 대신 사용
+    sensor_img.step = image.shape[2]
+    sensor_img.encoding = f"{image.dtype}"
+    sensor_img.data = image.tostring()
+    return sensor_img
+```
+
+입력 타입은 `numpy.ndarray`이고 퍼블리시 해야할 타입은 `sensor_msgs.msg.Image` 타입이다. 먼저 `Image` 객체를 만들고 내부의 멤버 변수들을 채운다. 채울 때 반드시 데이터 타입을 맞춰줘야 한다. 각 변수의 타입은 터미널에서 확인할 수 있다.
+
+```
+$ rosmsg info sensor_msgs/Image
+std_msgs/Header header
+  uint32 seq
+  time stamp
+  string frame_id
+uint32 height
+uint32 width
+string encoding
+uint8 is_bigendian
+uint32 step
+uint8[] data
+```
+
+`header.stamp`는 `time` 타입으로서 `rospy.get_rostime()` 함수를 통해 현재 시간을 입력할 수 있다. 영상은 3차원 배열이기 때문에 `height, width, step`에 각각 배열의 너비, 높이, 깊이를 입력했다. 원래 `step`은 영상의 가로 방향 한 줄에 들어가는 byte 수를 의미하는데 다른 의미로 사용해도 상관 없다.  
+
+`encoding`은 `string` 타입이므로 배열의 데이터 타입을 문자열로 입력했다. 영상의 데이터 타입은 `uint8`이다. `data`에는 실제 영상의 데이터를 `uint8[]` 배열로 넣어야하는데 보통 배열 타입은 `list` 타입으로 넣지만 `bytes` 타입도 사용 가능하다. numpy 배열에서 `tosting()` 함수를 쓰면 배열 데이터를 `bytes` 객체로 변환할 수 있다.
+
+
+
+### image_subscriber.py
+
+서브스크라이버는 다음과 같이 구현한다.
+
+```python
+#!/home/ian/.pyenv/versions/ros_py36/bin/python
+# 사용자명(ian) 교체!
 import rospy
 from sensor_msgs.msg import Image
 import cv2
 import numpy as np
-
 
 def sensor_msg_to_image(msg_image):
     np_image = np.fromstring(msg_image.data, dtype=msg_image.encoding)
@@ -797,49 +1041,69 @@ def sensor_msg_to_image(msg_image):
     cv2.imshow("subscribed image", np_image)
     cv2.waitKey(1)
 
-
 def main():
     rospy.init_node("image_subscriber")
     sub = rospy.Subscriber("np_image", Image, callback=sensor_msg_to_image)
     rospy.spin()
 
-
 if __name__ == "__main__":
     main()
-
 ```
 
+역시 부분별로 나눠서 살펴보자.
 
+```python
+#!/home/ian/.pyenv/versions/ros_py36/bin/python
+# 사용자명(ian) 교체!
+import rospy
+from sensor_msgs.msg import Image
+import cv2
+import os
+```
 
+윗 부분은 퍼블리셔와 같다. shebang 라인의 경로를 바꿔주는 것을 잊지말자.
 
+```python
+def main():
+    rospy.init_node("image_subscriber")
+    sub = rospy.Subscriber("np_image", Image, callback=sensor_msg_to_image)
+    rospy.spin()
+```
 
+"image_subscriber"라는 노드를 만들고 `Image` 타입의 "np_image" 토픽을 받는 서브스크라이버 객체를 만든다. 이후 메시지를 기다리며 대기한다.
 
+```python
+def sensor_msg_to_image(msg_image):
+    np_image = np.fromstring(msg_image.data, dtype=msg_image.encoding)
+    np_image = np_image.reshape((msg_image.height, msg_image.width, msg_image.step))
+    delay = rospy.get_time() - msg_image.header.stamp.to_sec()
+    print(f"publish image, delay={delay:.6f}, w={msg_image.width}, h={msg_image.height}")
+    cv2.imshow("subscribed image", np_image)
+    cv2.waitKey(1)
+```
 
+메시지가 들어올 때마다 이 함수가 실행된다. 이번에는 메시지로 들어온 `sensor_msgs.msg.Image` 타입에서 OpenCV에서 쓰는 `numpy.ndarray` 타입으로 변환해야 한다. 
 
+다음엔 메시지를 전송하고 받는데 걸린 시간을 측정한다. `rospy.get_rostime()`은 시스템 시각을 `secs, nsecs` 두 개의 정수로 이루어진 메시지 타입으로 출력하고 `rospy.get_time()`은 시스템 시각을 `float` 타입으로 출력한다. `to_sec()`은 메시지 타입을 `float` 타입으로 변환하는 함수다. 그래서 `delay`에는 현재 시각과 메시지를 보낼 때의 시각의 차이가 실수로 저장된다. 
 
+`cv2.imshow()`는 영상을 화면에 출력한다. `cv2.waitKey(N)`는 N ms 동안 대기하며 사용자 키 입력을 기다리는 함수다.
 
+## 5. 실행
 
+새 개의 명령어를 각기 다른 창에서 실행한다.
 
+```
+$ roscore
+$ rosrun test_py3 image_subscriber.py
+$ rosrun test_py3 image_publisher.py
+$ rqt_graph
+```
 
+1초마다 좌우반전 되는 영상이 보이고 그래프는 다음과 같이 나타난다.
 
+![image_topic_graph](../assets/robotics-devel/image_topic_graph.png)
 
+---
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+여기까지 배우면 ROS를 개발할 준비가 된 것이다. 이제 가상 환경에 Python 3 + ROS 패키지를 설치하고 이를 PyCharm에서 개발할 수 있다. 파이참을 쓰면 자동 완성이 되서 작업 효율이 올라가고 Python 3를 쓰면 최신 문법과 외부 패키지를 활용할 수 있다.
 
