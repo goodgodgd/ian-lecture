@@ -485,40 +485,347 @@ $ sudo apt install python3-venv
 venv로 가상 환경은 다음과 같이 만들 수 있다. virutalenv와 마찬가지로 `venv_py36`이라는 디렉토리가 생기고 그곳에 파이썬과 패키지가 설치된다.
 
 ```bash
-ian@ian:~$ cd ~/workspace/vework/
-ian@ian:~/workspace/vework$ python3 -m venv venv_py36
+~$ cd ~/workspace/vework/
+~/workspace/vework$ python3 -m venv venv_py36
 ```
 
 그 뒤로 가상 환경 활성화, 패키지 설치, 가상 환경 비활성화는 virtualenv와 같다.
 
 ```bash
-ian@ian:~/workspace/vework$ cd venv_py36/
+~/workspace/vework$ cd venv_py36/
 # 가상 환경 활성화
-ian@ian:~/workspace/vework/venv_py36$ source bin/activate
+~/workspace/vework/venv_py36$ source bin/activate
 # 가상 환경 확인
-(venv_py36) ian@ian:~/workspace/vework/venv_py36$ which python
+(venv_py36) ~/workspace/vework/venv_py36$ which python
 /home/ian/workspace/vework/venv_py36/bin/python
-(venv_py36) ian@ian:~/workspace/vework/venv_py36$ which pip
+(venv_py36) ~/workspace/vework/venv_py36$ which pip
 /home/ian/workspace/vework/venv_py36/bin/pip
 # 패키지 설치
-(venv_py36) ian@ian:~/workspace/vework/venv_py36$ pip install numpy
+(venv_py36) ~/workspace/vework/venv_py36$ pip install numpy
 Collecting numpy
 ...
 Installing collected packages: numpy
 Successfully installed numpy-1.17.3
 # 가상 환경 비활성화
-(venv_py36) ian@ian:~/workspace/vework/venv_py36$ deactivate 
+(venv_py36) ~/workspace/vework/venv_py36$ deactivate 
 ```
+
+venv는 특정 파이썬 인터프리터를 지정하는 기능이 없다. venv 자체가 특정 파이썬을 통해서 실행되기 때문에 `python -m` 할 때 인터프리터를 이미 선택한 것이다.
 
 
 
 ## 4. pyenv
 
+pyenv는 본래 여러 파이썬 버전을 함께 운용하기 위해 만들어졌다. 같은 Python3 라도 3.6에는 3.0에는 없는 추가된 문법이 있다. (e.g. f문자열 포맷팅) 수십명이 함께 작업하는 대규모 프로젝트에서 파이썬의 버전을 바꾸는 것은 신중하게 결정해야 할 일이다. 그래서 시스템의 파이썬 버전과는 다른 버전의 파이썬을 써야할 경우도 종종 생기는데 이때 pyenv가 유용하게 쓰인다.
+
+그리고 pyenv에 가상 환경 플러그인을 설치하면 가상 환경도 만들 수 있다. 여기서는 pyenv의 파이썬 인터프리터 선택 기능과 가상 환경 관리 기능에 대해 알아본다.
+
+### 4.1 pyenv 설치
+
+설치는 다음 스크립트를 실행하면 된다. 설치 과정을 보면 pyenv-virtualenv과 같은 플러그인도 설치되는 것을 볼 수 있다.
+
+```bash
+~$ curl -L https://raw.githubusercontent.com/yyuu/pyenv-installer/master/bin/pyenv-installer | bash
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100  2454  100  2454    0     0   1465      0  0:00:01  0:00:01 --:--:--  1464
+Cloning into '/home/ian/.pyenv'...
+remote: Enumerating objects: 659, done.
+remote: Counting objects: 100% (659/659), done.
+remote: Compressing objects: 100% (494/494), done.
+remote: Total 659 (delta 328), reused 254 (delta 74), pack-reused 0
+Receiving objects: 100% (659/659), 376.92 KiB | 731.00 KiB/s, done.
+Resolving deltas: 100% (328/328), done.
+Cloning into '/home/ian/.pyenv/plugins/pyenv-doctor'...
+remote: Enumerating objects: 11, done.
+remote: Counting objects: 100% (11/11), done.
+remote: Compressing objects: 100% (9/9), done.
+remote: Total 11 (delta 1), reused 3 (delta 0), pack-reused 0
+Unpacking objects: 100% (11/11), done.
+Cloning into '/home/ian/.pyenv/plugins/pyenv-installer'...
+remote: Enumerating objects: 16, done.
+remote: Counting objects: 100% (16/16), done.
+remote: Compressing objects: 100% (13/13), done.
+remote: Total 16 (delta 1), reused 8 (delta 0), pack-reused 0
+Unpacking objects: 100% (16/16), done.
+Cloning into '/home/ian/.pyenv/plugins/pyenv-update'...
+remote: Enumerating objects: 10, done.
+remote: Counting objects: 100% (10/10), done.
+remote: Compressing objects: 100% (6/6), done.
+remote: Total 10 (delta 1), reused 6 (delta 0), pack-reused 0
+Unpacking objects: 100% (10/10), done.
+Cloning into '/home/ian/.pyenv/plugins/pyenv-virtualenv'...
+remote: Enumerating objects: 57, done.
+remote: Counting objects: 100% (57/57), done.
+remote: Compressing objects: 100% (51/51), done.
+remote: Total 57 (delta 11), reused 21 (delta 0), pack-reused 0
+Unpacking objects: 100% (57/57), done.
+Cloning into '/home/ian/.pyenv/plugins/pyenv-which-ext'...
+remote: Enumerating objects: 10, done.
+remote: Counting objects: 100% (10/10), done.
+remote: Compressing objects: 100% (6/6), done.
+remote: Total 10 (delta 1), reused 6 (delta 0), pack-reused 0
+Unpacking objects: 100% (10/10), done.
+
+WARNING: seems you still have not added 'pyenv' to the load path.
+
+# Load pyenv automatically by adding
+# the following to ~/.bashrc:
+
+export PATH="/home/ian/.pyenv/bin:$PATH"
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
+```
+
+마지막에 보면 여기서도 `~/.bashrc`에 추가하라는 구문이 있다. 저기 써있는 그대로 추가한다.
+
+```bash
+$ gedit ~/.bashrc
+# 아래 세 줄 추가
+export PATH="/home/ian/.pyenv/bin:$PATH"
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
+# 저장 후 닫기
+```
+
+pyenv의 원리를 간단히 설명해보면 `~/.bashrc`에서 `pyenv init -`를 실행하면 `PATH`의 앞에 pyenv 경로가 추가된다. 우리가 어떤 명령어를 쉘에 입력할 때 `PATH`의 앞 쪽에 있는 경로부터 명령어를 찾는다. 그래서 `PATH` 앞 쪽에 pyenv 경로를 추가하고 그곳에 `python, pip, python3, pip3` 등의 실행 가능한 스크립트를 만든다. 스크립트는 현재 pyenv에서 지정한 버전의 명령어로 연결되게 하면 시스템 전체에서 사용되는 파이썬을 바꿔치기 할 수 있다.  
+
+실행 스크립트는 `/.pyenv/shims`에 있는데 모두다 실제 인터프리터가 아닌 인터프리터를 실행해주는 스크립트다. 'shim'이란 "틈새에 끼우는 끼움쇠, 쐐기"라는 뜻인데 pyenv에서는 사용자의 명령어와 실제 인터프리터 사이에 끼어있는 역할을 뜻하는 것 같다.
+
+```
+$ echo $PATH
+/home/ian/.pyenv/plugins/pyenv-virtualenv/shims:/home/ian/.pyenv/shims:/home/ian/.pyenv/bin:/home/ian/gems/bin:/home/ian/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+$ ls ~/.pyenv/shims
+2to3              idle     pip3.6    python            python3.6m-config  python3-config
+2to3-3.6          idle3    pip3.7    python3           python3.7          python-config
+2to3-3.7          idle3.6  pydoc     python3.6         python3.7-config   pyvenv
+easy_install      idle3.7  pydoc3    python3.6-config  python3.7-gdb.py   pyvenv-3.6
+easy_install-3.6  pip      pydoc3.6  python3.6-gdb.py  python3.7m         pyvenv-3.7
+easy_install-3.7  pip3     pydoc3.7  python3.6m        python3.7m-config
+```
+
+
+
+### 4.2 pyenv 사용법
+
+pyenv는 다양한 sub-command를 통해 다양한 기능을 제공한다. 그 중 파이썬 버전 선택과 관련된 동작들을 알아보자.
+
+- install [version]: 특정 버전의 파이썬을 `~/.pyenv/versions` 경로에 설치한다. 버전은 .으로 구분된 세 개의 숫자로 써야한다. 현재 최신 버전은 `3.7.5`다.
+- uninstall [version]: `install`로 설치한 특정 버전의 파이썬을 삭제한다.
+- versions: 현재 pyenv에 설치된 버전들을 보여준다.
+- version: 현재 사용중인 버전을 보여준다.
+- global [version]: 시스템 전역 인터프리터 버전을 지정한다.
+- local [version]: 현재 디렉토리 아래서 사용할 파이썬 버전을 지정한다.
+
+실습을 통해 배워보자.
+
+```bash
+# 설치 가능한 모든 파이썬 버전 보기
+$ pyenv install --list
+# 현재 시스템 버전인 3.6.8을 pyenv 경로에 설치
+$ pyenv install 3.6.8
+Downloading Python-3.6.8.tar.xz...
+-> https://www.python.org/ftp/python/3.6.8/Python-3.6.8.tar.xz
+Installing Python-3.6.8...
+WARNING: The Python readline extension was not compiled. Missing the GNU readline lib?
+Installed Python-3.6.8 to /home/ian/.pyenv/versions/3.6.8
+
+# 최신 버전인 3.7.5를 pyenv 경로에 설치
+$ pyenv install 3.7.5
+...
+
+# 설치된 버전 목록 확인
+$ pyenv versions
+* system (set by /home/ian/.pyenv/version)
+  3.6.8
+  3.7.5
+
+# 전역 파이썬 버전 변경
+$ pyenv global 3.7.5
+# 현재 사용중인 버전 확인
+$ pyenv version
+3.7.5 (set by /home/ian/.pyenv/version)
+$ which python
+/home/ian/.pyenv/shims/python
+$ python --version
+Python 3.7.5
+
+# 특정 디렉토리로 이동
+$ cd ~/workspace/vework
+# 현재 디렉토리에서만 다른 버전 지정
+~/workspace/vework$ pyenv local 3.6.8
+~/workspace/vework$ python --version
+Python 3.6.8
+# 버전 설정 파일 확인
+~/workspace/vework$ cat .python-version 
+3.6.8
+```
+
+
+
+### 4.3 pyenv 가상 환경 사용
+
+pyenv를 설치할 때 이미 가상 환경 플러그인도 설치되었으므로 따로 설치하지 않아도 된다. 다음은 가상환경과 관련된 sub-command들이다.
+
+- virtualenv [version] [env_name] : 특정 [version]의 환경을 [env_name]이란 이름으로 생성한다. `pyenv install`을 통해 설치된 버전이어야 한다. virutalenvwrapper처럼 현재 디렉토리에 만드는 것이 아니라 `~/.pyenv/versions/[version]/env/[env_name]` 아래에 새로운 환경이 만들어진다.
+- virtualenv-delete [env_name] : [env_name] 환경을 삭제한다.
+- activate [env_name] : [env_name] 환경을 활성화 시킨다.
+- deactivate : 환경을 비활성화 시킨다.
+
+```bash
+# 3.7.5 버전의 'pyenv_py37'이라는 가상 환경 만들기
+~/workspace/vework$ pyenv virtualenv 3.7.5 pyenv_py37
+Looking in links: /tmp/tmph8o2x4g9
+Requirement already satisfied: setuptools in /home/ian/.pyenv/versions/3.7.5/envs/pyenv_py37/lib/python3.7/site-packages (41.2.0)
+Requirement already satisfied: pip in /home/ian/.pyenv/versions/3.7.5/envs/pyenv_py37/lib/python3.7/site-packages (19.2.3)
+# 'pyenv_py37' 환경 활성화
+~/workspace/vework$ pyenv activate pyenv_py37 
+# 가상 환경에 numpy 설치
+(pyenv_py37) ~/workspace/vework$ pip install numpy
+...
+# 환경 비활성화
+(pyenv_py37) ~/workspace/vework$ pyenv deactivate 
+# 가상 환경 삭제
+~/workspace/vework$ pyenv virtualenv-delete pyenv_py37 
+pyenv-virtualenv: remove /home/ian/.pyenv/versions/3.7.5/envs/pyenv_py37? y
+```
+
+
+
+---
+
+지금까지 여러가지 가상 환경 툴에 대해 알아보았다. 툴은 여러가지지만 생성, 삭제, 활성화, 비활성화 네 가지 기능만 알면된다. 각자 장단점이 있으므로 상황에 맞춰, 혹은 마음에 드는 걸 골라쓰면 된다.
+
+# ROS를 위한 개발환경 세팅
+
+우리는 ROS 프로그래밍을 하면 되는데 왜 가상 환경을 배우고 있던걸까? 바로 **Python 3를 쓰기 위해**서다. 간단히 토픽을 주고 받는 수준의 코드는 Python 2나 Python 3나 별 차이가 안나지만 파이썬 최신 문법을 쓰고, 복잡한 알고리즘 구현을 위해 최신 외부 패키지들을 사용하다 보면 Python 2로는 한계가 있다. 대표적으로 딥러닝 라이브러리를 쓰지 못한다. ~~그냥 구식 인터프리터를 쓰는게 찝찝하다.~~ 그리고 가급적 시스템 경로(`/usr`)에는 파이썬 패키지를 설치하지 않는 것이 좋기 때문에 외부 패키지를 쓰려면 가상 환경을 만들어서 설치해야 한다.  
+
+
+
+```
+pyenv virtualenv 3.6.8 ros_py36
+Looking in links: /tmp/tmp86spyxlz
+Requirement already satisfied: setuptools in /home/ian/.pyenv/versions/3.6.8/envs/ros_py36/lib/python3.6/site-packages (40.6.2)
+Requirement already satisfied: pip in /home/ian/.pyenv/versions/3.6.8/envs/ros_py36/lib/python3.6/site-packages (18.1)
+
+pyenv activate ros_py36
+
+pip install rosinstall msgpack empy defusedxml netifaces
+pip install numpy opencv-python
+
+(ros_py36) ian@ian:~$ cd ~/catkin_ws/src
+(ros_py36) ian@ian:~/catkin_ws/src$ catkin create pkg test_py3 --catkin-deps rospy std_msgs sensor_msgs
+Creating package "test_py3" in "/home/ian/catkin_ws/src"...
+Created file test_py3/package.xml
+Created file test_py3/CMakeLists.txt
+Created folder test_py3/src
+Successfully created package files in /home/ian/catkin_ws/src/test_py3.
+(ros_py36) ian@ian:~/catkin_ws/src$ cd test_py3/
+(ros_py36) ian@ian:~/catkin_ws/src/test_py3$ gedit src/image_publisher
+
+```
 
 
 
 
-# ROS Python 3 환경 만들기
+
+
+
+```
+#!/home/ian/.pyenv/versions/ros_py36/bin/python
+
+import rospy
+from sensor_msgs.msg import Image
+import cv2
+import os
+
+
+def image_to_sensor_msg(image):
+    sensor_img = Image()
+    sensor_img.header.seq = 0
+    sensor_img.header.stamp = rospy.get_rostime()
+    sensor_img.header.frame_id = ""
+    sensor_img.height = image.shape[0]
+    sensor_img.width = image.shape[1]
+    # channel이나 depth가 없으니 step을 대신 사용
+    sensor_img.step = image.shape[2]
+    sensor_img.encoding = f"{image.dtype}"
+    sensor_img.data = image.tostring()
+    return sensor_img
+
+
+def main():
+    rospy.init_node("image_publisher")
+    pub = rospy.Publisher("np_image", Image, queue_size=1)
+
+    thispath = os.path.abspath(__file__)
+    pkgpath = os.path.dirname(os.path.dirname(thispath))
+    print(f"this file: {thispath} \npackage path: {pkgpath}")
+    image = cv2.imread(pkgpath + "/ros_mark.png")
+
+    rate = rospy.Rate(1)
+    while not rospy.is_shutdown():
+        msg = image_to_sensor_msg(image)
+        pub.publish(msg)
+        print(f"publish image, time={msg.header.stamp.to_sec() % 1000:.1f}, w={msg.width}, h={msg.height}")
+        rate.sleep()
+
+
+if __name__ == "__main__":
+    main()
+
+```
+
+
+
+
+
+```
+#!/home/ian/.pyenv/versions/ros_py36/bin/python
+
+import rospy
+from sensor_msgs.msg import Image
+import cv2
+import numpy as np
+
+
+def sensor_msg_to_image(msg_image):
+    np_image = np.fromstring(msg_image.data, dtype=msg_image.encoding)
+    np_image = np_image.reshape((msg_image.height, msg_image.width, msg_image.step))
+    delay = rospy.get_time() - msg_image.header.stamp.to_sec()
+    print(f"publish image, delay={delay:.6f}, w={msg_image.width}, h={msg_image.height}")
+    cv2.imshow("subscribed image", np_image)
+    cv2.waitKey(1)
+
+
+def main():
+    rospy.init_node("image_subscriber")
+    sub = rospy.Subscriber("np_image", Image, callback=sensor_msg_to_image)
+    rospy.spin()
+
+
+if __name__ == "__main__":
+    main()
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
