@@ -64,16 +64,15 @@ Traceback (most recent call last):
   File "<string>", line 1, in <module>
 ModuleNotFoundError: No module named 'numpy'
 
-$ python3 -c "import numpy"
-Traceback (most recent call last):
-  File "<string>", line 1, in <module>
-ModuleNotFoundError: No module named 'numpy'
 ~$ pip3 install numpy
 Collecting numpy
   Downloading https://files.pythonhosted.org/packages/0e/46/ae6773894f7eacf53308086287897ec568eac9768918d913d5b9d366c5db/numpy-1.17.3-cp36-cp36m-manylinux1_x86_64.whl (20.0MB)
     100% |████████████████████████████████| 20.0MB 84kB/s 
 Installing collected packages: numpy
 Successfully installed numpy-1.17.3
+
+$ python3 -c "import numpy; print(numpy.version.version)"
+1.17.3
 
 $ pip3 uninstall numpy
 Uninstalling numpy-1.17.3:
@@ -83,9 +82,6 @@ Uninstalling numpy-1.17.3:
 ...
 Proceed (y/n)? y
   Successfully uninstalled numpy-1.17.3
-
-$ python3 -c "import numpy; print(numpy.version.version)"
-1.17.3
 ```
 
 
