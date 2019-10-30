@@ -191,9 +191,6 @@ done.
 /home/ian/workspace/vework/virtual_py36/bin/python
 (virtual_py36) ~/workspace/vework/virtual_py36$ which pip
 /home/ian/workspace/vework/virtual_py36/bin/pip
-(virtual_py36) ~/workspace/vework/virtual_py36$ ln -l bin
-ln: invalid option -- 'l'
-Try 'ln --help' for more information.
 (virtual_py36) ~/workspace/vework/virtual_py36$ ls -l bin
 total 4476
 -rw-r--r-- 1 ian ian    2228 10월 22 00:54 activate
