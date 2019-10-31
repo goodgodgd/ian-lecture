@@ -124,14 +124,14 @@ pip3 install -r requirements.txt
 
 시스템에 패키지를 바로 설치하고 이를 기반으로 개발을 하는 것은 장기적으로 불안정하다. (=시스템을 주기적으로 갈아엎어야 한다.) 그래서 보통 새로운 프로젝트를 할 때마다 전용 가상 환경을 새로 만들어서 작업을 한다. 파이썬 가상 환경을 운영할 수 있는 툴은 여러가지가 있다.
 
-- virutalenv, virtualenvwrapper : 가장 오래되고 많이 쓰이기도 하는 가상 환경 툴이다. 파이참에서도 기본 툴로 쓴다.
-- venv: Python3.3부터 기본 내장된 패키지인데 virutalenv와 사용법이 비슷하다.
+- virtualenv, virtualenvwrapper : 가장 오래되고 많이 쓰이기도 하는 가상 환경 툴이다. 파이참에서도 기본 툴로 쓴다.
+- venv: Python3.3부터 기본 내장된 패키지인데 virtualenv와 사용법이 비슷하다.
 - pyenv: 원래는 여러 파이썬 버전을 동시에 사용하기 위한 툴인데 가상 환경 기능을 플러그인을 통해 추가 할 수 있다. 여러 프로젝트를 동시에 개발할 때 인기있는 옵션이다.
 - conda: conda는 Anaconda 설치시 포함되는 패키지 관리 툴로 가상 환경 관리 기능도 있다. Anaconda는 의존성 문제가 없고 많이 쓰이는 패키지들을 잘 조합해서 미리 다 설치해버리기 위해 나온 일종의 메타 메키지다. 초보자를 위한 튜토리얼엔 conda를 많이 쓰지만 Anaconda에는 불필요한 패키지가 많아 용량을 많이 차지하기 때문에 별로 추천하지 않는다.
-- pipenv: 가상 환경 관리 뿐만 아니라 패키지 설치 및 삭제, 파이썬 버전 선택, 의존성 문제 해결, 같은 환경 복구 등 같은 다양한 기능을 하나의 툴에 담은 실험적인 툴이다. (pipenv = pip + virutalenv) 하지만 설치 속도가 느리고 UI가 불친절하고 현재 개발이 멈춘 것 같다. 그래도 대부분의 경우에는 잘 작동해서 하나로 모든 것을 해결하기에 좋다. 
+- pipenv: 가상 환경 관리 뿐만 아니라 패키지 설치 및 삭제, 파이썬 버전 선택, 의존성 문제 해결, 같은 환경 복구 등 같은 다양한 기능을 하나의 툴에 담은 실험적인 툴이다. (pipenv = pip + virtualenv) 하지만 설치 속도가 느리고 UI가 불친절하고 현재 개발이 멈춘 것 같다. 그래도 대부분의 경우에는 잘 작동해서 하나로 모든 것을 해결하기에 좋다. 
 - poetry: 요즘 '핫'한 툴인것 같다. pipenv와 비슷한데 pipenv보다 더 나은 의존성 문제 해결 능력을 보여주고 터미널에 뜨는 메시지도 현재 상황을 친절하게 알려준다. 하지만 파이썬 버전을 선택하는 기능은 없다.
 
-여기서는 가장 안정적인 virutalenv, virtualenvwrapper, venv, pyenv에 대해서 사용법을 알아보겠다.
+여기서는 가장 안정적인 virtualenv, virtualenvwrapper, venv, pyenv에 대해서 사용법을 알아보겠다.
 
 
 
@@ -335,17 +335,17 @@ wheel           0.33.6
 
 
 
-## 2. virutalenvwrapper
+## 2. virtualenvwrapper
 
-virtualenv는 쓰기 간단하고 독립적인 환경을 만들 수 있어서 인기가 많지만 타이핑이 좀 귀찮다는 단점이 있다. 매번 작업을 시작할 때마다 가상 환경 경로로 이동해서(cd) 가상 환경을 활성화(activate)하는 것이 귀찮은데 이것을 virutalenvwrapper는 `work on <env_name>` 하나로 줄여준다.
+virtualenv는 쓰기 간단하고 독립적인 환경을 만들 수 있어서 인기가 많지만 타이핑이 좀 귀찮다는 단점이 있다. 매번 작업을 시작할 때마다 가상 환경 경로로 이동해서(cd) 가상 환경을 활성화(activate)하는 것이 귀찮은데 이것을 virtualenvwrapper는 `work on <env_name>` 하나로 줄여준다.
 
-또한 인터프리터나 패키지 설치 파일들이 프로젝트 디렉토리에 위치하기 때문에 git을 쓰는 경우 `venv` 디렉토리를 `.gitignore`에 추가해줘야 하는 것도 조금 번거로운 일이다. virutalenvwrapper는 가상 환경 파일들을 한 곳에 모아서 관리하기 때문에 프로젝트 디렉토리를 깨끗하게 쓸 수 있다.
+또한 인터프리터나 패키지 설치 파일들이 프로젝트 디렉토리에 위치하기 때문에 git을 쓰는 경우 `venv` 디렉토리를 `.gitignore`에 추가해줘야 하는 것도 조금 번거로운 일이다. virtualenvwrapper는 가상 환경 파일들을 한 곳에 모아서 관리하기 때문에 프로젝트 디렉토리를 깨끗하게 쓸 수 있다.
 
 
 
 ### 2.1 설치 및 설정
 
-virutalenvwrapper도 pip로 설치할 수 있다.
+virtualenvwrapper도 pip로 설치할 수 있다.
 
 ```
 $ pip3 install virtualenvwrapper
@@ -475,7 +475,7 @@ venv는 기본 패키지가 맞긴 한데 우분투에서 venv 실행시 패키�
 $ sudo apt install python3-venv
 ```
 
-venv로 가상 환경은 다음과 같이 만들 수 있다. virutalenv와 마찬가지로 `venv_py36`이라는 디렉토리가 생기고 그곳에 파이썬과 패키지가 설치된다.
+venv로 가상 환경은 다음과 같이 만들 수 있다. virtualenv와 마찬가지로 `venv_py36`이라는 디렉토리가 생기고 그곳에 파이썬과 패키지가 설치된다.
 
 ```bash
 ~$ cd ~/workspace/vework/
@@ -622,7 +622,7 @@ Python 3.6.8
 
 pyenv를 설치할 때 이미 가상 환경 플러그인도 설치되었으므로 따로 설치하지 않아도 된다. 다음은 가상환경과 관련된 sub-command들이다.
 
-- virtualenv [version] [env_name] : 특정 [version]의 환경을 [env_name]이란 이름으로 생성한다. `pyenv install`을 통해 설치된 버전이어야 한다. virutalenvwrapper처럼 현재 디렉토리에 만드는 것이 아니라 `~/.pyenv/versions/[version]/env/[env_name]` 아래에 새로운 환경이 만들어진다.
+- virtualenv [version] [env_name] : 특정 [version]의 환경을 [env_name]이란 이름으로 생성한다. `pyenv install`을 통해 설치된 버전이어야 한다. virtualenvwrapper처럼 현재 디렉토리에 만드는 것이 아니라 `~/.pyenv/versions/[version]/env/[env_name]` 아래에 새로운 환경이 만들어진다.
 - virtualenv-delete [env_name] : [env_name] 환경을 삭제한다.
 - activate [env_name] : [env_name] 환경을 활성화 시킨다.
 - deactivate : 환경을 비활성화 시킨다.
