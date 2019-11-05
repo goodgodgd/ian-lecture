@@ -173,7 +173,7 @@ self_drive 노드에서는 서브스크라이버에 `SelfDrive` 클래스의 `ld
 
 # Rqt
 
-
+`rqt`는 ROS를 위한 Qt 기반의 GUI 프레임워크다.
 
 
 
