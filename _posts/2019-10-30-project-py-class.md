@@ -163,7 +163,9 @@ print("current position:", puppy.position)	# => current position: 10
 
 ### Self는 무엇?
 
-클래스의 모든 함수에 공통적인 입력인자가 보이는데 `self`라는 변수다. static 함수를 제외하고 모든 클래스 멤버 함수에 첫 번째 인자로 `self`를 넣어야 한다. 이것은 C++ 클래스의 `this`와 비슷하다고 보면 된다. `self`는 객체 자신을 의미하는 것이며 객체의 함수나 변수는 `self`를 통해서만 접근할 수 있다. `move`라는 함수에서 `position` 변수에 접근하기 위해 `self.position`이라고 썼다. 함수 안에서 다른 함수를 부를 때도 `self`를 쓴다. `self`라는 입력인자는 함수를 호출할 때 직접 객체를 입력하는 것이 아니고 호출한 객체가 자동으로 들어간다. 예를 들면 `puppy.bark()`를 호출했을 때 첫 번째 인자인 `self`에 `puppy`가 들어가고 `puppy.move(10)`를 호출했을 때는 `self, distance`에 `puppy, 10`이 각각 들어간다.  
+클래스의 모든 함수에 공통적인 입력 인자가 보이는데 `self`라는 변수다. static 함수를 제외하고 모든 클래스 멤버 함수에 첫 번째 인자로 `self`를 넣어야 한다. 이것은 C++ 클래스의 `this`와 비슷하다고 보면 된다. **`self`는 객체 자신을 의미하는 것이며 객체의 함수나 변수는 `self`를 통해서만 접근할 수 있다.** `move`라는 함수에서 `position` 변수에 접근하기 위해 `self.position`이라고 썼다. 함수 안에서 다른 함수를 부를 때도 `self`를 쓴다.  
+
+`self`라는 입력 인자는 함수를 호출할 때 직접 객체를 입력하는 것이 아니고 호출한 객체가 자동으로 들어간다. 예를 들면 `puppy.bark()`를 호출했을 때 첫 번째 인자인 `self`에 `puppy`가 들어가고 `puppy.move(10)`를 호출했을 때는 `self, distance`에 `puppy, 10`이 각각 들어간다.  
 
 ### 사용법
 
@@ -209,7 +211,7 @@ for ani in animals:
 - `Animal`은 부모클래스고 `Cat, Cow`는 자식클래스다. 상속을 받을 때는 `class 자식클래스(부모클래스)` 형식으로 선언한다. 
 - 자식의 생성자에서 `super().__init__(name)`는 부모클래스의 생성자를 호출한다는 것이다. 이를통해 굳이 자식에서 `self.name=name` 라는 똑같은 코드를 쓰지 않아도 부모클래스의 생성자를 통해 같은 기능을 수행할 수 있다.  
 - `Cat, Cow`는 `Animal`로부터 `introduce()`라는 메소드를 물려받아 그대로 사용하기 때문에 자식클래스에 `introduce()`를 다시 정의하지 않아도 `introduce()`를 쓸 수 있다.
-- `Cat, Cow`는 `Animal`로부터 `sound()`라는 메소드를 물려받아이를 오버라이딩하여 함수의 기능을 수정하였다. 셋 다 `sound()`라는 똑같은 함수를 실행해도 다른 기능을 한다.
+- `Cat, Cow`는 `Animal`로부터 `sound()`라는 메소드를 물려받아이를 오버라이딩(overriding)하여 함수의 기능을 수정하였다. 셋 다 `sound()`라는 똑같은 함수를 실행해도 다른 기능을 한다.
 - for loop을 돌때 함수의 형식이 같기 때문에 어떤 클래스의 객체든 상관없이 `introduce(), sound()`가 실행된다.
 
 
@@ -241,6 +243,8 @@ $ chmod a+x self_drive.py
 ## Write Node Script
 
 `package.xml`이나 `CMakeLists.txt`는 기존 강의자료를 참조하여 정리한다. 프로젝트에서는 `package.xml` 좀 더 상세히 작성해야 한다. 노드 스크립트는 다음과 같이 작성할 수 있다.
+
+> 첫 줄의 shebang을 자신의 가상환경에 맞게 수정하자.
 
 ```python
 #!/path/to/virtual/env/bin/python
@@ -276,7 +280,6 @@ def main():
     subscriber = rospy.Subscriber('scan', LaserScan,
                                   lambda scan: driver.lds_callback(scan))
     rospy.spin()
-
 
 if __name__ == "__main__":
     main()

@@ -11,11 +11,11 @@ categories: WIP
 
 `numpy`는 배열 객체를 만들고 배열 연산을 할 수 있는 패키지다. `numpy`를 쓰면 `MATLAB`의 행렬 연산과 비슷한 기능을 한다. `numpy`의 다양한 기능과 세부적인 용법은 책 한권 분량이기 때문에 여기서는 기초적인 내용만 다룬다. 이후 배울 영상처리에서도 영상을 `numpy`의 배열로 처리하게 되므로 잘 알아두어야 한다. `numpy`에 관한 내용은 점프투파이썬이 아닌 [이곳](http://taewan.kim/post/numpy_cheat_sheet/)을 참고해서 만들었다. 이곳에 더 자세한 내용이 있으니 들어가서 공부해보길 바란다.
 
-## 2.1 Array vs Matrix
+## 1. Array vs Matrix
 
 MATLAB과 numpy의 가장 큰 차이는 기본 데이터 형식이 MATLAB은 **행렬(matrix)**이고 numpy는 **배열(array)**이라는 것이다. 그럼 행렬과 배열은 무엇이 다른가? 똑같이 `A=[1 2; 3 4]`라는 배열과 행렬이 있을 때 `A*A`를 하면 MATLAB에서는 `[7 10; 15 22]`가 나오고 numpy에서는 `[1 4; 9 16]`이 나온다. MATLAB은 행렬의 곱셈을 한 것이고 numpy는 배열의 같은 위치의 원소끼리 곱셈을 한 것이다. 행렬은 수학적인 matrix를 의미하는 것이고 배열은 프로그래밍에서 같은 종류의 데이터 여러 개를 모아놓은 것이다. 물론 MATLAB에서도 배열 연산이 가능하고 numpy에서도 행렬 연산이 가능하지만 기본 데이터 형식이 다르다는 것을 알아두어야 한다.
 
-## 2.2 Array Creation
+## 2. Array Creation
 
 배열을 생성하는 가장 기본적인 방법은 리스트를 이용하는 것이다. 다중 리스트를 이용하면 다차원 배열도 만들 수 있다. `np.array()` 함수에 list를 넣으면 되는데 `dtype`이란 입력인자로 데이터 타입도 정할 수 있다.
 
@@ -91,7 +91,7 @@ print("random int over [0, 5)\n", np.random.randint(0, 5, size=(2, 3)))
 >  [[3 0 0]
 >  [2 2 4]]
 
-## 2.3 Array Shape
+## 3. Array Shape
 
 배열에서 `np.ndarray.shape` 변수는 각 차원의 크기 정보를 튜플로 가지고 있다. 전체 차원수는  `np.ndarray.ndim` 으로 확인할 수 있다.
 
@@ -134,7 +134,7 @@ print("foo (3,2)\n", foo3d.reshape(2, 3))
 
 
 
-## 2.4 Array Indexing, Slicing
+## 4. Array Indexing, Slicing
 
 다차원 `numpy` 배열에서 특정 데이터 값이나 일부 배열을 가져오는 방법은 리스트와 비슷하다. 다차원 배열을 인덱싱, 슬라이싱 할 때는 하나의 `[d0, d1, ...]`안에 모든 인덱스를 넣는다. 기존에 MATLAB을 써본 사람은 배열에서 인덱스를 정할 때 n번째 인덱스가 가로축인지 세로축인지 깊이축인지 헷갈릴 수 있다. 그럴때는 다차원 리스트 안에 들어있는 값에 접근할 때를 생각해보면 된다. 가장 바깥쪽 리스트가 `d0`에 해당하고 점점 안으로 들어갈 수록 `d1, d2, ...`가 되는 것이다. 가로축, 세로축을 기준으로 생각하면 헷갈리니 개념을 잘 잡아야 한다. 다음 예제를 보면서 익혀보자.
 
@@ -201,7 +201,7 @@ print("6) data[:1, 1:, :]: shape={}\n{}".format(data[:1, 1:, :].shape, data[:1, 
 - 5)에서 나오는 숫자들은 4)와 같지만 `d1`에서 인덱싱이 아닌 슬라이싱을 했기 때문에 길이 1인 차원이 하나 더 생겼다. 리스트에서 인덱싱하면 값이 나오고 슬라이싱하면 리스트가 나온다는 것을 상기하자. 슬라이싱을 하면 크기와 관계없이 그 차원은 배열로 남고 인덱싱을 하면 그 차원은 값만 남기고 사라진다.
 - 6)은 모든 차원을 슬라이싱 했기 때문에 3차원 배열이 된다.
 
-## 2.5 Array Operations
+## 5. Array Operations
 
 배열 사이의 연산은 단순히 원소 사이의 연산으로 치환된다. 아래 예시에서 operator와 그에 해당하는 함수도 봐두자.
 
@@ -253,7 +253,7 @@ print("foo[foo % 2 == 0]:", foo[foo % 2 == 0])
 
 `foo > bar`를 프린트해보면 각각의 원소에 대해서 비교 연산을 한 TF 배열이 나온다. 이 TF 배열을 인덱스처럼 넣으면 `True`에 해당하는 원소들만 1차원 배열로 나오게 된다. 
 
-## 2.6 Math Functions
+## 6. Math Functions
 
 `numpy`는 `sin, cos, tan, exp, log, sqrt` 등의 기본적인 수학함수들도 제공한다. 배열에 적용하면 배열의 모든 원소에 대해 각각 계산한 결과가 나온다.
 
@@ -304,7 +304,7 @@ print("std", np.std(foo, axis=1))
 > max [0.43599 0.33033 0.54966 0.61927]
 > std [0.19938 0.15112]
 
-## 2.7 Iterate by for
+## 7. Iterate by for
 
 `numpy` 배열에 대해서도 for문을 돌 수 있는데 단순히 첫 번째 차원(d0)에 대해 순서대로 인덱싱한 결과가 나온다고 보면 된다. 다음 예시에서 인덱싱한 결과와 배열을 for문에 바로 넣은 결과가 같은 것을 볼 수 있다.
 
@@ -327,9 +327,132 @@ for row in foo:
 
 # Matplotlib
 
+matplotlib은 파이썬에서 그래프를 그릴 수 있게 해주는 패키지다. 다양한 형태의 그래프와 사진을 화면에 보여줄 수 있기 때문에 데이터 시각화를 위해 필수적인 패키지다. 이름에서도 알 수 있듯 매트랩(MATLAB)의 `plot` 함수와 사용방법이 유사하여 매트랩 사용자라면 쉽게 적응할 수 있다.  
+
+## 1. 함수형 vs 객체형
+
+matplotlib은 크게 두 가지 스타일로 사용할 수 있다. 하나는 매트랩처럼 전역 함수를 이용한 방식이고 다른 하나는 객체를 이용한 방식이다. 공식 문
+
+- 함수형: `matplotlib.pyplot` 패키지 아래의 전역 함수들을 사용하여 그림을 그린다. 사용방법이 객체형에 비해 간단하다.
+- 객체형: 화면을 이루는 구성요소를 객체로 보고 객체의 메소드를 통해 해당 화면 요소의 상태를 변경한다. 함수형에 비해 조금 복잡하지만 객체 지향 프로그래밍에 더 어울리고 더 세부적인 부분까지 제어할 수 있다.
+
+두 가지 코딩 스타일을 비교해보자.
+
+```python
+import matplotlib.pyplot as plt
+import numpy as np
+
+matlab_style = 0
+x = np.linspace(0, 10, 21)
+y1 = x
+y2 = x ** 2
+y3 = x ** 3 / 3
+
+if matlab_style:
+    # functional API
+    plt.plot(x, y1, label='linear')
+    plt.plot(x, y2, label='quadratic')
+    plt.plot(x, y3, label='cubic')
+    plt.xlabel('x axis')
+    plt.ylabel('y axis')
+    plt.title('MATLAB style plt')
+    plt.legend()
+    plt.show()
+else:
+    # object oriented API
+    fig, ax = plt.subplots(1, 1)
+    ax.plot(x, y1, label='linear')
+    ax.plot(x, y2, label='quadratic')
+    ax.plot(x, y3, label='cubic')
+    ax.set_xlabel('x axis')
+    ax.set_ylabel('y axis')
+    ax.set_title('Object style plt')
+    plt.legend()
+    plt.show()
+```
+
+함수형 API를 보면 모든 함수가 `plt (matplolib.pyplot)`로부터 시작한다. 함수 하나하나가 그래프의 "상태"에 영향을 미치지만 정작 그 상태를 나타내는 변수는 숨겨져있다. 패키지 내부의 전역 변수로 숨겨둔 것이다.  
+
+반면 객체형 API는 상태를 나타내는 객체를 외부로 노출하고 그 객체의 메소드를 통해서 상태를 변경한다. 위 예시에서 `ax`는 `matplotlib.axes.Axes`라는 클래스 객체다. `Axes`는 그림이나 그래프를 그릴 수 있는 단위 공간이라고 보면 된다. 2차원 그래프는 2개의 축(2 axes)을 가지고 있기 때문에 `Axes`라 이름 지었고 그 내부에  각각의 축은 `Axis`라는 클래스로 이루어져있다. 그래프를 그리고 그래프에 제목이나 축 레이블을 붙이는 대부분의 일들이 `ax` 를 통해 일어난다.  
+
+`ax`와 함께 만들어진 `fig`는 `matplotlib.figure.Figure` 클래스 객체다. `Figure`는 화면에 뜬 창(window)을 의미한다. `Figure` 객체는 내부에 칸을 나눠서 여러 개의 `Axes` 객체를 가질 수 있다.
+
+![matplotlib-structure.png](../assets/robotics-space/matplotlib-structure.png)
+
+이처럼 객체형 API는 사용자가 Figure에 대해 더 깊이 이해하게 하고 구성요소를 객체로 분해해 프로그래밍의 자유도를 높여주지만 처음 보는 사람에게는 난해하게 보일 수 있다. 반면에 함수형 API는 내부의 구현을 숨기고 단순하게 사용하도록 만들어져있다.  
+
+어느쪽을 선택하든 같은 결과를 만들어낼 수 있지만 단순히 몇 가지 데이터를 화면에 띄우는 정도는 함수형이 낫고 지속적으로 변화하는 객체의 상태를 갱신하면서 보여주는 복잡한 프로그램에는 객체형이 낫다고 할 수 있다. 여기서는 주로 함수형 API를 기반으로 설명한다.
 
 
-## 함수형 vs 객체형
+
+## 2. Plotting Functions
+
+`matplotlib.pyplot`에는 다양한 형태의 그래프를 그릴 수 있는 함수들이 있다.
+
+### 2.1 plot()
+
+> plot(x, y, fmt, ...)
+
+일반적인 그래프를 그릴 수 있는 가장 많이 쓰이는 함수다. 많은 입력 인자가 있지만 보통 세 가지를 많이 쓴다.
+
+- x: 2차원 데이터의 x축 좌표를 나타낸다. `list`나 `np.array` 등의 형식으로 입력할 수 있다.
+- y: 2차원 데이터의 y축 좌표를 나타내고 `x`와 같은 형식의 데이터를 받는다. `x`를 입력하지 않으면 첫 번째 인자를 `y`로 인식한다.
+- fmt: 그래프의 모양이나 색상을 지정한다. '\[marker]\[line]\[color]' 혹은 '\[color]\[marker]\[line]' 형식의 string으로 입력한다. 각 요소는 모두 생략 가능하며 생략시 기본 스타일로 지정된다. 다음은 `fmt`에 따른 그래프 스타일 예시다.
+  - 'b'    # blue markers with default shape
+  - 'or'   # red circles
+  - '-g'   # green solid line
+  - '--'   # dashed line with default color
+  - '^k:'  # black triangle_up markers connected by a dotted line
+
+입력 인자 중 `y`만 필수 인자고 나머지는 선택 인자다. 다음 예시를 그려보자.
+
+```python
+import matplotlib.pyplot as plt
+import numpy as np
+
+plt.rcParams["figure.figsize"] = (4,3)
+
+x = np.linspace(0, 8, 41)
+y = x ** 2
+plt.plot(y)
+plt.savefig('/home/ian/Pictures/plot1.png', dpi=200)
+plt.show()
+plt.plot(x, y)
+plt.savefig('/home/ian/Pictures/plot2.png', dpi=200)
+plt.show()
+plt.plot(x, y, 'r.')
+plt.savefig('/home/ian/Pictures/plot3.png', dpi=200)
+plt.show()
+
+```
+
+
+
+
+
+
+
+Doc: <https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.plot.html#matplotlib.pyplot.plot>
+
+### 2.2 bar()
+
+
+
+### 2.3 hist()
+
+
+
+### 2.4 scatter
+
+
+
+### 2.5 imshow
+
+
+
+
+
+
 
 https://riptutorial.com/ko/matplotlib/topic/881/matplotlib-시작하기
 
@@ -341,7 +464,7 @@ https://matplotlib.org/3.1.1/tutorials/index.html
 
 ---
 
-## TODO
+# TODO
 
 - 11.5: 가상환경 및 pycharm 설정, 프로젝트 공지
 - 11.6: navigation base
