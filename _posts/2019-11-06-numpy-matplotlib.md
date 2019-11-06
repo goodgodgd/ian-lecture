@@ -29,17 +29,40 @@ print("array2d\n", np.array(array2d, dtype=float))
 print("array3d\n", np.array(array3d))
 ```
 
+> array1d [1 2 3 4]
+> array2d [[1. 2.] [3. 4.]]
+> array3d [[[1 2]  [3 4]] [[5 6]  [7 8]]]
+
 `np.zeros(), np.ones(), np.identity(), np.eye()`는 0이나 1로 채워진 배열을 원하는 크기로 만드는 함수다. 일정 간격의 숫자를 만들때는 `np.linspace()`나 `np.arange()`를 쓰는데 `np.linspace()`는 숫자 개수를 기준으로, `np.arange()`는 간격을 기준으로 배열을 만든다. `np.permutation(n)`은 `[0, n)` 범위의 정수를 랜덤하게 섞은 배열을 생성해준다. 
 
 ```python
-print("ones\n", np.ones((2, 4)))
-print("zeros\n", np.zeros((3, 2)))
-print("identity\n", np.identity(3))
-print("identity\n", np.eye(3))
-print("linear space:", np.linspace(5, 10, 11))
-print("arange:", np.arange(5, 10, 0.5))
-print("permutation:\n", np.random.permutation(10))
+print("ones((2, 4))\n", np.ones((2, 4)))
+print("zeros((3, 2))\n", np.zeros((3, 2)))
+print("identity(3)\n", np.identity(3))
+print("eye(3)\n", np.eye(3))
+print("linspace(5, 10, 11):", np.linspace(5, 10, 11))
+print("arange(5, 10, 0.5):", np.arange(5, 10, 0.5))
+print("permutation(10):\n", np.random.permutation(10))
 ```
+
+> ones((2, 4))
+>  [[1. 1. 1. 1.]
+>  [1. 1. 1. 1.]]
+> zeros((3, 2))
+>  [[0. 0.]
+>  [0. 0.]
+>  [0. 0.]]
+> identity(3)
+>  [[1. 0. 0.]
+>  [0. 1. 0.]
+>  [0. 0. 1.]]
+> eye(3)
+>  [[1. 0. 0.]
+>  [0. 1. 0.]
+>  [0. 0. 1.]]
+> linspace(5, 10, 11): [ 5.   5.5  6.   6.5  7.   7.5  8.   8.5  9.   9.5 10. ]
+> arange(5, 10, 0.5): [5.  5.5 6.  6.5 7.  7.5 8.  8.5 9.  9.5]
+> permutation(10): [7 3 9 0 5 8 4 6 1 2]
 
 `np.linspace()`와 `np.arange()`로 비슷한 배열을 만들었는데 `np.linspace()`는 범위가 `[5, 10]`이고 `np.arange`는 `[5, 10)`이라서 마지막 10이 안 들어간다는 것에 유의하자.  
 
@@ -50,10 +73,23 @@ print("permutation:\n", np.random.permutation(10))
 - np.random.randint(low, high, size): 입력한 크기의 정수 난수배열 생성. `[low, high)` 사이의 정수를 랜덤생성하여 `size`의 크기의 배열을 만든다.
 
 ```python
+np.set_printoptions(precision=5)
 print("uniform over [0, 1)\n", np.random.rand(3, 4))
 print("normal by N(0, 1)\n", np.random.randn(3, 4))
 print("random int over [0, 5)\n", np.random.randint(0, 5, size=(2, 3)))
 ```
+
+> uniform over [0, 1)
+>  [[0.91393 0.85865 0.61936 0.58212]
+>  [0.28647 0.51623 0.22979 0.98041]
+>  [0.59227 0.97546 0.12851 0.91155]]
+> normal by N(0, 1)
+>  [[ 0.10321  0.93799  2.14548  0.25712]
+>  [-1.15454 -0.76393 -0.14389  0.51151]
+>  [ 0.4485   0.22908  0.04046  0.33101]]
+> random int over [0, 5)
+>  [[3 0 0]
+>  [2 2 4]]
 
 ## 2.3 Array Shape
 
@@ -61,9 +97,12 @@ print("random int over [0, 5)\n", np.random.randint(0, 5, size=(2, 3)))
 
 ```python
 foo = np.ones((3, 4, 2))
-print(foo.shape)
-print(foo.ndim)
+print("foo.shape:", foo.shape)
+print("foo.ndim:", foo.ndim)
 ```
+
+> foo.shape: (3, 4, 2)
+> foo.ndim: 3
 
 배열을 다루다 보면 shape을 바꾸고 싶을 때가 있다. 1차원 벡터를 2차원 배열로 바꾼다던지 3차원 배열을 1차원 벡터로 늘여서 표현한다던지 등의 경우가 있다. 이럴때는 `np.ndarray.reshape()`이라는 함수를 쓰면 된다. 아래 예시에서 어떻게 이런 결과가 나오는지 헷갈릴 수 있지만 데이터를 한 줄로 쭉 펴놓고 배열 모양에 순서대로 하나씩 넣는다고 생각하면 이해가 된다.
 
@@ -77,21 +116,55 @@ print("foo (3,2)\n", foo3d.reshape(3, 2))
 print("foo (3,2)\n", foo3d.reshape(2, 3))
 ```
 
+> foo [0 1 2 3 4 5]
+> foo (2,3)
+>  [[0 1 2]
+>  [3 4 5]]
+> foo3d (2,3,1)
+>  [[[0]  [1]  [2]]
+>  [[3]  [4]  [5]]]
+> foo3d (3,2)
+>  [[0 1]
+>  [2 3]
+>  [4 5]]
+> foo (3,2)
+>  [[0 1]
+>  [2 3]
+>  [4 5]]
+
+
+
 ## 2.4 Array Indexing, Slicing
 
 다차원 `numpy` 배열에서 특정 데이터 값이나 일부 배열을 가져오는 방법은 리스트와 비슷하다. 다차원 배열을 인덱싱, 슬라이싱 할 때는 하나의 `[d0, d1, ...]`안에 모든 인덱스를 넣는다. 기존에 MATLAB을 써본 사람은 배열에서 인덱스를 정할 때 n번째 인덱스가 가로축인지 세로축인지 깊이축인지 헷갈릴 수 있다. 그럴때는 다차원 리스트 안에 들어있는 값에 접근할 때를 생각해보면 된다. 가장 바깥쪽 리스트가 `d0`에 해당하고 점점 안으로 들어갈 수록 `d1, d2, ...`가 되는 것이다. 가로축, 세로축을 기준으로 생각하면 헷갈리니 개념을 잘 잡아야 한다. 다음 예제를 보면서 익혀보자.
 
 ```python
-data_list = [[[5, 6, 2], [3, 4, 9]], [[1, 7, 2], [3, 8, 0]]]
-data_np = np.array(data_list)
-print("data\n", data)
+data_list = [[[1, 2, 3], [4, 5, 6]], [[7, 8, 9], [10, 11, 12]]]
+print("data_list = ", data_list)
 print("data_list[0] =", data_list[0])
 print("data_list[0][1] =", data_list[0][1])
 print("data_list[0][1][2] =", data_list[0][1][2])
-print("data[0] =\n", data[0])
-print("data[0, 1] =", data[0, 1])
-print("data[0, 1, 2] =", data[0, 1, 2])
+data_np = np.array(data_list)
+print("data_np =\n", data_np)
+print("data_np[0] =\n", data_np[0])
+print("data_np[0, 1] =", data_np[0, 1])
+print("data_np[0, 1, 2] =", data_np[0, 1, 2])
 ```
+
+> data_list =  [[[1, 2, 3], [4, 5, 6]], [[7, 8, 9], [10, 11, 12]]]
+> data_list[0] = [[1, 2, 3], [4, 5, 6]]
+> data_list\[0][1] = [4, 5, 6]
+> data_list\[0]\[1][2] = 6
+> data_np =
+>  [[[ 1  2  3]
+>   [ 4  5  6]]
+>  [[ 7  8  9]
+>   [10 11 12]]]
+> data_np[0] =
+>  [[1 2 3]
+>  [4 5 6]]
+> data_np[0, 1] = [4 5 6]
+> data_np[0, 1, 2] = 6
 
 인덱싱 하는 순서는 다차원 리스트와 같고 인덱스를 여러 괄호에 따로 쓰느나 한 괄호에 쓰느냐의 차이만 있다. 슬라이싱에서는 더 큰 차이가 있는데 다차원 리스트는 다차원 슬라이싱을 할 수 없지만 `numpy` 배열에서는 가능하다. 
 
@@ -104,6 +177,22 @@ print("4) data[0, 1, :]: shape={}\n{}".format(data[0, 1, :].shape, data[0, 1, :]
 print("5) data[0, 1:, :]: shape={}\n{}".format(data[0, 1:, :].shape, data[0, 1:, :]))
 print("6) data[:1, 1:, :]: shape={}\n{}".format(data[:1, 1:, :].shape, data[:1, 1:, :]))
 ```
+
+> 1) array[0, :, :]: shape=(2, 3)
+> [[1 2 3]
+>  [4 5 6]]
+> 2) array[:, :, 1]: shape=(2, 2)
+> [[ 2  5]
+>  [ 8 11]]
+> 3) array[0, :, 1:]: shape=(2, 2)
+> [[2 3]
+>  [5 6]]
+> 4) array[0, 1, :]: shape=(3,)
+> [4 5 6]
+> 5) array[0, 1:, :]: shape=(1, 3)
+> [[4 5 6]]
+> 6) array[:1, 1:, :]: shape=(1, 1, 3)
+> [[[4 5 6]]]
 
 - 1)은 첫번째 차원은 인덱싱을 하고 나머지에선 전체 슬라이싱을 하여 결과가 2차원 배열로 나와야 하고 `data_np`에서 위쪽 배열이 출력된다. 
 - 2)에서는 반대로 세번째 차원을 인덱싱하고 나머지에서 전체 슬라이싱을 했는데  `data_np`의 가장 안쪽 리스트의 가운데 숫자들이 나옴을 볼 수 있다. 
@@ -136,15 +225,31 @@ print("foo.T (transpose)\n", foo.T)
 `np.dot` 함수는 배열이 아닌 dot product로 행렬의 곱하기를 계산하는 함수다. 배열에 `.T`를 붙이면 transpose 된 배열이 나온다. 배열에서 특정 조건을 만족하는 숫자들을 뽑아내고 싶을 때는 `True, False (TF)` 배열을 이용한 인덱싱도 가능하다.
 
 ```python
-print("\ncompare operations")
-print("foo > bar\n", foo > bar, "\n", np.greater(foo, bar))
+print("\ncomparison operators")
+print("foo > bar\n", foo > bar)
+print("greater\n", np.greater(foo, bar))
 print("foo[foo > bar]:", foo[foo > bar])
-print("foo > bar\n", foo <= bar, "\n", np.less_equal(foo, bar))
+print("foo > bar\n", foo <= bar)
+print("less_equal\n", np.less_equal(foo, bar))
 print("foo[foo > bar]:", foo[foo <= bar])
 print("foo[foo >= 5]:", foo[foo >= 5])
 print("foo[bar < 3]:", foo[bar < 3])
 print("foo[foo % 2 == 0]:", foo[foo % 2 == 0])
 ```
+
+> foo > bar
+>  [[ True False False]
+>  [False False  True]
+>  [False  True  True]]
+> foo[foo > bar]: [9 9 6 8]
+> foo > bar
+>  [[False  True  True]
+>  [ True  True False]
+>  [ True False False]]
+> foo[foo > bar]: [3 2 1 3 1]
+> foo[foo >= 5]: [9 9 6 8]
+> foo[bar < 3]: [9 2 1 6]
+> foo[foo % 2 == 0]: [2 6 8]
 
 `foo > bar`를 프린트해보면 각각의 원소에 대해서 비교 연산을 한 TF 배열이 나온다. 이 TF 배열을 인덱스처럼 넣으면 `True`에 해당하는 원소들만 1차원 배열로 나오게 된다. 
 
@@ -171,12 +276,19 @@ print("np.sqrt(foo)^2==foo:", np.sqrt(foo)*np.sqrt(foo))
 
 ```python
 print("\naggregate functions")
-foo = np.random.rand(2, 4)
-print("data", foo)
-print("1) mean over all", np.mean(foo))
-print("2) mean over axis 0", np.mean(foo, axis=0))
-print("3) mean over axis 1", np.mean(foo, axis=1))
+rgen = np.random.RandomState(2)
+foo = rgen.rand(2, 4)
+print("data:", foo)
+print("1) mean over all:", np.mean(foo))
+print("2) mean over axis 0:", np.mean(foo, axis=0))
+print("3) mean over axis 1:", np.mean(foo, axis=1))
 ```
+
+> data: [[0.43599 0.02593 0.54966 0.43532]
+>  [0.42037 0.33033 0.20465 0.61927]]
+> 1) mean over all: 0.3776910284933438
+> 2) mean over axis 0: [0.42818 0.17813 0.37716 0.5273 ]
+> 3) mean over axis 1: [0.36173 0.39366]
 
 1)은 foo의 모든 숫자에 대해 평균을 계산한 것이다. 2)는 세로줄의 평균을 구해서 4개의 숫자가 나왔다. 3)은 가로줄의 평균을 구해서 2개의 결과가 나왔다. 이러한 차원의 방향을 생각하며 아래 예시들도 이해해보자.
 
@@ -186,6 +298,11 @@ print("min", np.min(foo, axis=1))
 print("max", np.max(foo, axis=0))
 print("std", np.std(foo, axis=1))
 ```
+
+> sum [0.85636 0.35626 0.75431 1.05459]
+> min [0.02593 0.20465]
+> max [0.43599 0.33033 0.54966 0.61927]
+> std [0.19938 0.15112]
 
 ## 2.7 Iterate by for
 
