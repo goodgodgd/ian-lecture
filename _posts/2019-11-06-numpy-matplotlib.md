@@ -377,7 +377,7 @@ else:
 
 `ax`와 함께 만들어진 `fig`는 `matplotlib.figure.Figure` 클래스 객체다. `Figure`는 화면에 뜬 창(window)을 의미한다. `Figure` 객체는 내부에 칸을 나눠서 여러 개의 `Axes` 객체를 가질 수 있다.
 
-![matplotlib-structure.png](../assets/robotics-space/matplotlib-structure.png)
+![matplotlib-structure.png](../assets/matplotlib/matplotlib-structure.png)
 
 이처럼 객체형 API는 사용자가 Figure에 대해 더 깊이 이해하게 하고 구성요소를 객체로 분해해 프로그래밍의 자유도를 높여주지만 처음 보는 사람에게는 난해하게 보일 수 있다. 반면에 함수형 API는 내부의 구현을 숨기고 단순하게 사용하도록 만들어져있다.  
 
@@ -387,22 +387,24 @@ else:
 
 ## 2. Plotting Functions
 
-`matplotlib.pyplot`에는 다양한 형태의 그래프를 그릴 수 있는 함수들이 있다.
+`matplotlib.pyplot`에는 다양한 형태의 그래프를 그릴 수 있는 함수들이 있다. 여기서는 `matplotlib.pyplot`을 줄여서 `plt`로만 표기한다.
 
-### 2.1 plot()
+### 2.1 plot
 
-> plot(x, y, fmt, ...)
+> plt.plot(x, y, fmt, ...)
 
 일반적인 그래프를 그릴 수 있는 가장 많이 쓰이는 함수다. 많은 입력 인자가 있지만 보통 세 가지를 많이 쓴다.
 
 - x: 2차원 데이터의 x축 좌표를 나타낸다. `list`나 `np.array` 등의 형식으로 입력할 수 있다.
 - y: 2차원 데이터의 y축 좌표를 나타내고 `x`와 같은 형식의 데이터를 받는다. `x`를 입력하지 않으면 첫 번째 인자를 `y`로 인식한다.
-- fmt: 그래프의 모양이나 색상을 지정한다. '\[marker]\[line]\[color]' 혹은 '\[color]\[marker]\[line]' 형식의 string으로 입력한다. 각 요소는 모두 생략 가능하며 생략시 기본 스타일로 지정된다. 다음은 `fmt`에 따른 그래프 스타일 예시다.
+- fmt: 그래프의 모양이나 색상을 지정한다. '\[marker]\[line]\[color]' 혹은 '\[color]\[marker]\[line]' 형식의 string으로 입력한다. 각 요소는 모두 생략 가능하며 생략시 기본 스타일로 지정된다. 다음은 `fmt`에 따른 그래프 스타일 예시다. 자세한 내용은 아래 링크에서 확인할 수 있다.
   - 'b'    # blue markers with default shape
   - 'or'   # red circles
   - '-g'   # green solid line
   - '--'   # dashed line with default color
   - '^k:'  # black triangle_up markers connected by a dotted line
+
+Doc: <https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.plot.html#matplotlib.pyplot.plot>
 
 입력 인자 중 `y`만 필수 인자고 나머지는 선택 인자다. 다음 예시를 그려보자.
 
@@ -410,20 +412,242 @@ else:
 import matplotlib.pyplot as plt
 import numpy as np
 
-plt.rcParams["figure.figsize"] = (4,3)
-
 x = np.linspace(0, 8, 41)
 y = x ** 2
 plt.plot(y)
-plt.savefig('/home/ian/Pictures/plot1.png', dpi=200)
 plt.show()
 plt.plot(x, y)
-plt.savefig('/home/ian/Pictures/plot2.png', dpi=200)
 plt.show()
 plt.plot(x, y, 'r.')
-plt.savefig('/home/ian/Pictures/plot3.png', dpi=200)
 plt.show()
 
+```
+
+아래 그림은 세 번의 plot 결과를 모은 것이다. 첫 번째와 두 번째 그래프는 같아보이지만 x 축의 범위가 다르다.  
+
+첫 번째 plot은 y값만 넣었기 때문에 x축은 y값의 개수만큼 [0, 40] 사이의 정수들이 자동으로 들어갔다.  
+
+두 번째 plot은 x, y 모두 입력했기 때문에 x에 해당하는 위치에 y값이 그려져서 [0, 8] 사이에 그래프가 그려졌다.  
+
+세 번째 plot은 x, y, fmt 까지 입력했기 때문에 그래프 모양이 빨간 점으로 변했다. `'r.'`에서 'r'은 red, '.'은 선이 아닌 점으로 표시하라는 뜻이다.
+
+![plot-3step.png](../assets/matplotlib/plot-3step.png)
+
+
+
+### 2.2 subplot
+
+> ax = plt.subplot(nrows, ncols, index, ...)  
+> ax = plt.subplot(pos, ...)  
+> ax = plt.subplot(ax, ...)  
+
+`subplot` 자체는 그림을 그리는 함수는 아니지만 Figure 화면을 분할해서 하나의 창에 여러 그래프를 그릴 수 있게 해준다. 주의할 점은 `subplots`라는 비슷한 이름의 함수도 있는데 `subplot`과 `subplots`는 전혀 다른 함수다. `subplot`은 함수형 API에서 주로 사용되며 **현재** 사용할 칸을 선택한다. `plt.plot()` 함수를 실행하면 `plt.subplot()`에서 선택한 칸에 그래프가 그려진다. 반면 `plt.subplots()`는 객체형 API를 위해 사용되며 전체 창을 관리하는 `Figure` 객체와 분할된 각각의 칸을 관리하는 `Axes` 객체를 반환한다. 사용 방식에 따른 주요 입력 인자는 다음과 같다.
+
+- nrows, ncols, index: 창을 몇 행 몇 열로 나눌지, 그 중에 몇 번째 칸을 선택할지를 입력한다. 예를 들어 (3, 2, 4)를 입력하면 3행 2열의 칸들 중 4번째(오른쪽 가운데)가 선택된다.
+- pos: 위의 (nrows, ncols, index) 세 개의 정수를 하나의 숫자로 합친 세 자리 정수를 입력한다. 위 방식의 (3, 2, 4)를 pos로 입력하려면 "324"를 입력하면 된다.
+- ax: `Axes` 객체로 `plt.subplot()` 함수를 실행하면 리턴되는 객체다. 이를 `subplot`의 입력으로 넣으면 입력한 `ax` 칸이 활성화된다.
+
+다음 예시를 통해 사용법을 알아보자.
+
+```python
+import matplotlib.pyplot as plt
+import numpy as np
+
+x = np.linspace(0, 8, 41)
+y = x ** 2
+# subplot을 실행하는 두 가지 동일한 방법, 2x2로 나눠진 창에서 첫 번째 칸 선택
+plt.subplot(221)
+ax1 = plt.subplot(2, 2, 1)
+# subplot 선택 후 plot 하면 선택한 곳에 그래프 그려짐
+plt.plot(x, y)
+# 2번째 칸의 외곽선 없앰
+ax2 = plt.subplot(222, frameon=False)
+# 3번째 칸을 원형 좌표계로 설정
+plt.subplot(223, projection='polar')
+plt.plot(x, y)
+# 4번째 칸의 배경색을 빨간색으로 지정
+plt.subplot(224, facecolor='red')
+plt.plot(x, y)
+plt.show()
+# 2번째 칸을 다시 선택하고 그래프를 그림
+plt.subplot(ax2)
+plt.plot(x, y)
+# 1번째 칸에 그래프를 추가로 그림
+ax1.plot(x, x)
+# 그래프 화면에 표시
+plt.show()
+```
+
+![subplot](../assets/matplotlib/subplot.png)
+
+
+
+### 2.3 bar
+
+> plt.bar(x, height, width=0.8, bottom=None, *, align='center', ...)
+
+`bar`는 막대 그래프를 그리는 함수다.
+
+- x: 막대가 그려질 x축 좌표일 수도 있고 혹은 각 막대 아래 붙을 문자열 레이블을 입력할 수도 있다.
+- height: 막대의 높이 (y축 좌표)
+- bottom: 막대의 y축 시작점
+- width: 막대의 너비, 1이면 꽉차서 옆 막대랑 붙게됨
+- align: x축 위치에 막대를 가운데 정렬할지 왼쪽 정렬할지에 따라 "center", "align" 둘 중 선택
+
+```python
+import matplotlib.pyplot as plt
+import numpy as np
+
+x = ['spam', 'ham', 'egg']
+y = [3, 5, 4]
+# 1. 기본 bar 그림
+plt.subplot(221)
+plt.bar(x, y)
+# 2. 막대 너비를 늘리고 y축 기본값을 1로 설정
+plt.subplot(222)
+plt.bar(x, y, width=1, bottom=1)
+# 3. x축 좌표에 막대의 왼쪽 끝 정렬
+plt.subplot(223)
+plt.bar(x, y, align='edge')
+# 4. 막대 색은 각각 (red,green,blue), 외곽선은 녹색, 외곽선 두께는 3
+plt.subplot(224)
+plt.bar(x, y, color=((1,0,0),(0,1,0),(0,0,1)), edgecolor=(0.5,0.5,0.5), linewidth=3)
+plt.show()
+```
+
+![plt_bar](../assets/matplotlib/plt_bar.png)
+
+
+
+### 2.4 hist
+
+> plt.hist(x, bins=None, range=None, density=None, weights=None, cumulative=False, bottom=None, histtype='bar', align='mid', orientation='vertical', rwidth=None, log=False, color=None, label=None, ...)
+
+히스토그램(histogram)을 계산하고 그래프까지 그리는 함수다. 주요 입력 인자는 다음과 같다.
+
+- x: 빈도수를 계산할 입력 데이터, 보통 하나의 숫자열이지만 여러 숫자열을 묶은 리스트나 배열을 입력하면 여러 히스토그램을 동시에 계산하고 그린다.
+- bins: int or number sequence, 정수형 숫자 하나만 입력하면 입력 데이터의 최소 최대값 범위를 `bins` 개수 만큼 나눠서 히스토그램을 계산한다. `bins`가 숫자열이면 i번째 칸은 `[bins[i], bins[i+1])`의 범위를 가지고 마지막 칸만 `[bins[i], bins[i+1]]`으로 마지막 숫자를 포함한다.
+- range: bins가 정수 숫자일 때만 유효한 인자로 입력 데이터의 전체 범위를 지정하고 그 안에서 `bins`만큼 칸을 나누어 히스토그램을 계산한다.
+- density: `bool`형 타입으로 `True`면 히스토그램 전체 합이 1이 되게 한다.
+- cumulative: `bool`형 타입으로 `True`면 오른쪽으로 갈수록 히스토램을 누적하여 보여준다.
+- histtype: 기본 값 'bar'는 일반적인 막대 그래프 모양이고 `x`에 여러 데이터가 들어오면 구간마다 여러 히스토그램 막대를 옆으로 늘어놓는다. 'barstacked'를 입력하면 여러 데이터가 들어왔을 때 구간 별 히스토그램들을 상하로 쌓아서 보여준다.
+
+```python
+import matplotlib.pyplot as plt
+import numpy as np
+
+np.set_printoptions(precision=3)
+# 두 개의 정규분포 난수 생성, 1열은 N(0,2), 2열은 N(1,1)의 분포
+x = np.random.randn(100, 2)
+x[:, 0] = x[:, 0] * 2
+x[:, 1] = x[:, 1] + 1
+bins = np.arange(-3, 3.5, 0.5)
+# 기본 히스토그램, 계산한 빈도수와 경계값 출력 
+plt.subplot(221)
+n, edges, patches = plt.hist(x[:, 0], 10)
+print("histogram counts:", n)
+print("histogram edges:", edges)
+# bin의 범위를 직접 지정하고 전체 합이 1인 밀도를 출력
+plt.subplot(222)
+plt.hist(x[:, 1], bins, density=True)
+# 여러 데이터에 대한 히스토그램 동시 출력, 막대색, 막대 외곽선 색, 막대 외곽선 두께 지정
+plt.subplot(223)
+plt.hist(x, bins, color=((1,0,0),(0,1,0)), edgecolor=(0.5,0.5,0.5), linewidth=2)
+# 여러 데이터를 상하로 쌓아서 출력하고 데이터마다 레이블 붙임
+plt.subplot(224)
+plt.hist(x, bins, histtype='barstacked', label=("N(0,2)", "N(1,1)"))
+# legend()를 실행해야 레이블이 보임
+plt.legend()
+plt.show()
+```
+
+다음은 예제의 텍스트 출력과 Figure다.
+
+> histogram counts: [ 3.  8. 13. 14. 18. 15. 14.  7.  6.  2.]
+> histogram edges: [-4.448 -3.497 -2.546 -1.594 -0.643  0.308  1.26   2.211  3.162  4.113  5.065]
+
+![plt_hist](../assets/matplotlib/plt_hist.png)
+
+
+
+### 2.5 scatter
+
+> plt.scatter(x, y, s=None, c=None, marker=None, cmap=None, norm=None, vmin=None, vmax=None, alpha=None, linewidths=None, verts=None, edgecolors=None, ...)
+
+2차원 데이터를 평면상에 점으로 표현하여 데이터 분포를 보여주는 함수다. 단순히 점의 밀집도 뿐만 아니라 점의 크기와 색상까지 지정할 수 있어서 다양한 표현이 가능하다. 주요 입력 인자는 다음과 같다.
+
+- x, y: 2차원 데이터 위치
+- s: 마커의 크기인데 특이하게 마커의 반지름이 s에 비례하는 것이 아니라 $$\sqrt s$$에 비례한다. 만약 2의 반지름을 주고 싶다면 4를 입력해야 한다.
+- c: 마커의 색상을 지정하는데 하나만 넣어 마커의 색을 동일하게 표시하던지 각 (x, y) 데이터 쌍에 대한 색을 리스트나 배열로 하나씩 입력할 수 있다. 색상은 'red' 같은 단어로 입력하거나 '(1,0,0)' 같은 숫자로 입력하거나 color map의 인덱스로 입력할 수 있다.
+- marker: 마커의 모양을 결정한다. 마커 모양은 다음 목록 중 하나를 선택할 수 있다.
+  - markers = {'.': 'point', ',': 'pixel', 'o': 'circle', 'v': 'triangle_down', '^': 'triangle_up', '<': 'triangle_left', '>': 'triangle_right', '1': 'tri_down', '2': 'tri_up', '3': 'tri_left', '4': 'tri_right', '8': 'octagon', 's': 'square', 'p': 'pentagon', '*': 'star', 'h': 'hexagon1', 'H': 'hexagon2', '+': 'plus', 'x': 'x', 'D': 'diamond', 'd': 'thin_diamond', '|': 'vline', '_': 'hline', 'P': 'plus_filled', 'X': 'x_filled', 0: 'tickleft', 1: 'tickright', 2: 'tickup', 3: 'tickdown', 4: 'caretleft', 5: 'caretright', 6: 'caretup', 7: 'caretdown', 8: 'caretleftbase', 9: 'caretrightbase', 10: 'caretupbase', 11: 'caretdownbase', 'None': 'nothing', None: 'nothing', ' ': 'nothing', '': 'nothing'}
+- cmap: colormap을 선택한다. colormap은 실수(float)를 입력하면 그에 해당하는 (r,g,b) 값을 반환한다. `c` 인자에 실수 배열이 들어가면 colormap에 따라 마커의 색상을 지정한다.
+  - colormap 종류: <https://matplotlib.org/3.1.1/tutorials/colors/colormaps.html?highlight=colormap>
+- alpha: 불투명도를 결정한다. 0은 투명 1은 불투명이다.
+
+```python
+import matplotlib.pyplot as plt
+import numpy as np
+
+# 랜덤한 위치에 랜덤한 색상과 크기로 표시, colormap 지정
+x = np.random.rand(100)
+y = np.random.rand(100)
+colors = np.random.rand(100)
+scale = (np.random.rand(100) * 20) ** 2
+plt.scatter(x, y, s=scale, c=colors, alpha=0.5, cmap='cividis')
+# 등간격으로 빨간점 표시
+x, y = np.meshgrid(np.linspace(0, 1, 6), np.linspace(0, 1, 6))
+plt.scatter(x, y, s=20, c='red', alpha=1)
+plt.show()
+```
+
+![plt_scatter](../assets/matplotlib/plt_scatter.png)
+
+
+
+### 2.6 imshow
+
+> plt.imshow(X, cmap=None, aspect=None, interpolation=None, alpha=None, vmin=None, vmax=None, ...)
+
+이미지를 보여주는 함수다. 주요 입력 인자는 다음과 같다.
+
+- X: 입력 이미지로 다음 세 가지 모양(shape) 중 하나를 가질 수 있다.
+
+  - (M, N): 임의의 실수 값을 가지며 colormap에 의해 색상이 정해진다.
+  - (M, N, 3): RGB 이미지, 0~1 사이의 실수 값이나 0~255 사이의 정수 값을 가져야 한다.
+  - (M, N, 4): RGBA 이미지, 불투명도를 의미하는 A가 추가됨, 0~1 사이의 실수 값이나 0~255 사이의 정수 값을 가져야 한다.
+
+- cmap: colormap을 지정하는 인자인데 `matplotlib.cm` 내부의 colormap 객체나 colormap의 이름(str)으로 지정할 수 있다. 0~1 사이의 X 값에 따라 정해진 색을 출력하며 X가 RGB 이미지인 경우에는 사용되지 않는다.
+
+- aspect: 화면비를 결정하는 인자다. 실수 값을 넣으면 한 픽셀의 가로 세로 비율을 정해준다. 'auto'를 입력하면 창 크기에 따라 자동 조절되고 'equal'은 화면비를 1로 고정한다.
+
+- interpolation: `X` 배열의 값이 보통 화면 상의 픽셀과 1:1 mapping이 되진 않기 때문에 여러 픽셀에 중간쯤 걸쳐있거나 배열의 여러 값이 한 픽셀에 들어가기도 한다. 화면의 한 픽셀에 여러 값이 걸쳐있을 때 이를 어떻게 처리할지를 `interpolation` 옵션을 통해 결정한다. interpolation을 적용하면 불연속적인 이미지가 부드럽게 연결된다.
+
+  - 'nearest': 기본 값이며 가장 가까운 배열 값을 지정한다.
+
+  - 'bilinear': 픽셀 주변의 4개의 값과의 거리에 반비례하도록 4개의 값을 섞는다.
+
+  - 이 외에도 다양하게 있지만 그다지 필요하진 않다. 아래 그림은 interpolation 예시다. 검은 점이 `X` 값의 중심을 나타낸다. 5x5 배열을 수백 픽셀에 걸쳐 표현하였는데 'nearest'는 단순히 가까운 값으로 연결해서 불연속적이고 'bilinear'는 중심 픽셀(검은점)만 원래 값이고 나머지는 선형보간된 값을 보여준다.
+
+    ![interpolation](../assets/matplotlib/interpolation.png)
+
+- alpha: 0~1 사이의 이미지의 불투명도를 나타낸다.
+- vmin, vmax: 설정하지 않으면 자동으로 `X`의 최대 최소 값을 0~1로 mapping하여 colormap에서 값에 해당하는 색을 보여주는데 `vmin, vmax`를 설정하면 이 범위를 0~1로 mapping하여 색을 지정한다.
+
+```python
+import matplotlib.pyplot as plt
+import numpy as np
+
+# 등간격 2차원 좌표 만들기
+np.set_printoptions(precision=2)
+x, y = np.meshgrid(np.linspace(-10, 10, 101), np.linspace(-10, 10, 101))
+# print(x)
+z = x**2 + y**2
+# print(z)
+img = np.cos(z)
+# print(img)
+plt.imshow(img, cmap='rainbow')
+plt.show()
 ```
 
 
@@ -432,23 +656,13 @@ plt.show()
 
 
 
-Doc: <https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.plot.html#matplotlib.pyplot.plot>
-
-### 2.2 bar()
 
 
-
-### 2.3 hist()
+## 3. Auxiliary Functions
 
 
 
-### 2.4 scatter
-
-
-
-### 2.5 imshow
-
-
+### 3.1 xlabel, ylabel
 
 
 

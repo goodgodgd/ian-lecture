@@ -19,7 +19,7 @@ categories: 2019-2-robotics
 
 "내 PC" - "컴퓨터 관리" - "디스크 관리"로 들어간다.
 
-![mypc](../assets/robotics-setup/mypc.png)
+![mypc](../assets/robotics-linux/mypc.png)
 
 
 
@@ -51,7 +51,7 @@ categories: 2019-2-robotics
 
 Rufus는 설치없이 바로 실행가능하다. USB 드라이브와 설치 이미지를 선택하고 **시작**을 누르고 몇 가지 질문에 확인만 누르면 끝이다.
 
-![rufus](../assets/robotics-setup/rufus.png)
+![rufus](../assets/robotics-linux/rufus.png)
 
 
 
@@ -59,7 +59,7 @@ Rufus는 설치없이 바로 실행가능하다. USB 드라이브와 설치 이�
 
 PC를 부팅할 때 나오는 첫 화면에 ~~순간적으로 지나가지만~~ **Booting Priority**를 정할 수 있는 키가 보인다. `Fn`키나 `Del` 등의 키가 쓰이는데 메인보드마다 다르므로 첫 화면을 잘 봐야 한다. 어쨌든 그 키를 눌러서 부팅 드라이브로 우분투가 들어있는 USB를 선택한다. (대략 아래와 같은 화면이다.)
 
-![select-boot](../assets/robotics-setup/select-booting-drive.png)
+![select-boot](../assets/robotics-linux/select-booting-drive.png)
 
 
 
@@ -67,13 +67,13 @@ PC를 부팅할 때 나오는 첫 화면에 ~~순간적으로 지나가지만~~ 
 
 들어가면 아래와 같은 화면이 뜨는데 덥석! `Install Ubuntu`를 누르지 말고 `Try Ubuntu`로 들어간다.
 
-<img src="../assets/robotics-setup/ubuntu-install-1.png" alt="ubuntu-install-1" width="500"/>
+<img src="../assets/robotics-linux/ubuntu-install-1.png" alt="ubuntu-install-1" width="500"/>
 
 
 
 비어있는 드라이브에 우분투를 설치한다면 `Install Ubuntu`로 가도 되지만 경우에 따라 파티션 설정 메뉴가 뜨지 않는 경우가 있다. 일단 `Try Ubuntu`로 들어가본다. 여기서는 우분투를 설치하지 않고 **임시**로 우분투를 써볼 수 있다. 우분투를 마음껏 쓸 수 있지만 다시 부팅하면 상태가 리셋이 되므로 평소에 사용하기는 어렵다. 여기서 필요한 것은 아래 보이는 `Install Ubuntu 18.04 LTS`란 메뉴 뿐이다. 실행하면 우분투 설치 과정이 시작된다.
 
-![try-ubuntu](../assets/robotics-setup/try-ubuntu.jpg)
+![try-ubuntu](../assets/robotics-linux/try-ubuntu.jpg)
 
 
 
@@ -81,13 +81,13 @@ PC를 부팅할 때 나오는 첫 화면에 ~~순간적으로 지나가지만~~ 
 
 넘어가다 보면 "Installation Type" 설정이 보인다. 새 파티션을 만들어야 하므로 **Something else**를 선택한다.
 
-![ubuntu-install-type](../assets/robotics-setup/ubuntu-install-type.png)
+![ubuntu-install-type](../assets/robotics-linux/ubuntu-install-type.png)
 
 
 
 빈 공간(free space)를 선택하고 아래서 "+" 버튼을 누르면 파티션을 생성할 수 있다. 용량은 기본적으로 빈 공간 크기만큼 잡히니 놔두고 두 가지만 설정하면 된다.
 
-![create-boot-partition](../assets/robotics-setup/create-boot-partition.jpg)
+![create-boot-partition](../assets/robotics-linux/create-boot-partition.jpg)
 
 - Use as: Ext4 journaling file system
 - Mount point: **/**  (그림처럼 /boot 가 아니다)
@@ -152,5 +152,5 @@ https://m.blog.naver.com/opusk/220986268503
 
 `~/Downloads` 폴더에서 압축을 풀고 `D2Coding-Ver xxx/D2CodingAll` 폴더로 들어가 `*.ttf` 파일을 더블클릭하면 폰트 샘플이 보이고 "Install"을 누르면 설치된다. 설치된 폰트는 재부팅이나 재로그인을 하면 쓸 수 있다.
 
-![ubuntu_install_font](../assets/robotics-setup/ubuntu_install_font.jpg)
+![ubuntu_install_font](../assets/robotics-linux/ubuntu_install_font.jpg)
 

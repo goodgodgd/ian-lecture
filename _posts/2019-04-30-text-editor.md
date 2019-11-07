@@ -20,7 +20,7 @@ categories: 2019-1-systprog
 
 `QTextEdit`은 입출력 가능한 텍스트 창이다. 프로그램에서 텍스트를 출력할 수도 있고 사용자가 텍스트를 입력할 수도 있다. 일단 MainWindow에 `QTextEdit`을 추가해 화면에 띄워보자. 객체의 이름은 `textEdit` 그대로 두고 프로젝트 폴더에 `text_editor.ui`로 저장하자.
 
-![QTextEditor](/ian-lecture/assets/text_editor/textedit.png)
+![QTextEditor](../assets/pyqt_editor/textedit.png)
 
 
 
@@ -69,9 +69,9 @@ if __name__ == "__main__":
 
 이제 화면 상단에 파일을 열고 닫을 수 있는 메뉴를 만들고 기능을 구현한다. QtDesigner에서 윈도우 상단의 `TypeHere`에 `File`이란 메뉴(QMenu)를 추가하고 그 아래 `Open`과 `Save`라는 액션(QAction)을 추가한다. 그러면 자연스럽게 Object Inspector 메뉴에 아래와 같이 객체들이 추가된다.
 
-![QTextEditor](/ian-lecture/assets/text_editor/menu.png)
+![QTextEditor](../assets/pyqt_editor/menu.png)
 
-![QTextEditor](/ian-lecture/assets/text_editor/menu_obj.png)
+![QTextEditor](../assets/pyqt_editor/menu_obj.png)
 
 이제 코드에서 action을 클릭했을 때 실행할 Slot 함수를 연결해주자.
 
@@ -141,7 +141,7 @@ It’s dangerous 따끔해 넌 장미 같아
 저 별 저 별 그 옆에 큰 네 별
 ```
 
-![textedit_result](/ian-lecture/assets/text_editor/textedit_result.png)
+![textedit_result](../assets/pyqt_editor/textedit_result.png)
 
 
 
@@ -212,7 +212,7 @@ QtDesigner에서 왼쪽 Input Widgets 중에서 `Combo Box`를 선택하여 `tex
 
 이를 실행하여 폰트별로 글자를 쓴 결과는 다음과 같다.
 
-![comboBox](/ian-lecture/assets/text_editor/combobox.png)
+![comboBox](../assets/pyqt_editor/combobox.png)
 
 
 
@@ -222,9 +222,9 @@ Radio button은 여러 개의 버튼 중에 하나만 선택할 수 있는 버�
 
 QtDesigner에서 왼쪽 Containers 중에서 `Group Box`를  `comboBox` 아래에 추가한다. group box 객체를 더블 클릭하여 기본 텍스트를 `Color`로 바꾼다. 다음엔 group box 안에 세 개의 radio button을 추가한다. 아래 그림처럼 되도록 **기본 텍스트**와 **객체 이름**을 수정하고 크기를 적당히 조절한다.
 
-![radiobutton](/ian-lecture/assets/text_editor/radiobutton.png)
+![radiobutton](../assets/pyqt_editor/radiobutton.png)
 
-![radiobutton_obj](/ian-lecture/assets/text_editor/radiobutton_obj.png)
+![radiobutton_obj](../assets/pyqt_editor/radiobutton_obj.png)
 
 
 
@@ -297,7 +297,7 @@ from PyQt5.QtGui import QColor
 
 입력인자로 `QColor`  객체를 받기 때문에 `from PyQt5.QtGui import QColor`를 추가하였다. `QColor`에 들어가는 세 개의 숫자는 RGB 즉, red, green, blue 세 가지 색을 의미한다.
 
-![radiobutton_result](/ian-lecture/assets/text_editor/radiobutton_result.png)
+![radiobutton_result](../assets/pyqt_editor/radiobutton_result.png)
 
 
 
@@ -305,9 +305,9 @@ from PyQt5.QtGui import QColor
 
 Check box는 각 버튼을 독립적으로 체크할 수 있는 버튼의 한 종류이다. Check box도 radio button과 마찬가지로 `QAbstractButton`을 상속 받았으며 `QButtonGroup` 에 넣을 수 있다. Check box를 이용해서 새로 입력될 글자의 굵기와 기울기를 조절할 것이다. 이번에도 check box를 추가하기 전에 group box를 먼저 추가한다. 새로운 group box를 Color group box 아래 추가하고 기본 텍스트를 `Effect`로 바꾼다. 그 안에 두 개의 check box를 추가하고 아래와 같이 기본 텍스트와 객체 이름을 수정한다.
 
-![checkbox](/ian-lecture/assets/text_editor/checkbox.png)
+![checkbox](../assets/pyqt_editor/checkbox.png)
 
-![checkbox_obj](/ian-lecture/assets/text_editor/checkbox_obj.png)
+![checkbox_obj](../assets/pyqt_editor/checkbox_obj.png)
 
 Check box도 `QButtonGroup`에 넣어서 하나의 Slot 함수로 처리할 수 있지만 check box는 각각의 체크 여부에 따라 설정이 달라지므로 하나의 Slot 함수로 처리하는 것이 별 이득이 없다. 그래서 이번에는 각 check box마다 따로 Slot 함수를 만들어준다. Check box의 상태가 변할 때마다 반응을 해야 하므로 `toggled` Slot을 썼고 Slot 함수는 체크 상태를 확인할 수 있는 `checked`라는 입력인자를 넣어준다.
 
@@ -339,7 +339,7 @@ from PyQt5.QtGui import QColor, QFont
 
 다음은 글자의 굵기와 기울기를 조절하며 문자열을 입력한 결과이다.
 
-![checkbox_result](/ian-lecture/assets/text_editor/checkbox_result.png)
+![checkbox_result](../assets/pyqt_editor/checkbox_result.png)
 
 
 
@@ -358,7 +358,7 @@ Slider 객체는 가로축이나 세로축 홈(groove)을 따라 핸들(handle)�
 
 이 프로젝트에서는 슬라이더를 이용하여 텍스트의 크기를 조절하고자 한다. QtDesigner에서 Input Widgets 아래 있는 `Horizontal Slider`를 윈도우에 추가해보자. 그리고 그 아래 Display Wdigets 아래 있는 `Label`도 추가하여 아래와 같은 그림을 만들어보자. 
 
-![slider](/ian-lecture/assets/text_editor/slider.png)
+![slider](../assets/pyqt_editor/slider.png)
 
 Slider 객체 이름은 `horizontalSlider` 그대로 두고 Label의 기본 텍스트는 `Font size: 10`으로 이름은 `label_slider_value`로 수정한다.
 
@@ -379,7 +379,7 @@ Slider 객체 이름은 `horizontalSlider` 그대로 두고 Label의 기본 텍�
 
 다음은 폰트 크기를 조절한 결과이다.
 
-![slider_result](/ian-lecture/assets/text_editor/slider_result.png)
+![slider_result](../assets/pyqt_editor/slider_result.png)
 
 
 
@@ -389,9 +389,9 @@ Slider 객체 이름은 `horizontalSlider` 그대로 두고 Label의 기본 텍�
 
 QtDesigner에서 Input Widgets 아래 `Line Edit` 을 윈도우에 두 개를 추가하고 Buttons 아래 있는 `Push Button`도 옆에 하나 추가하자. Push button의 기본 텍스트는 `Replace`로 하고 객체 이름은 `pushButton_replace`로 한다. Line edit 객체들의 이름도 `lineEdit_replace_src, lineEdit_replace_dst`로 수정하여 다음과 같은 상태를 만들어 보자.
 
-![lineedit](/ian-lecture/assets/text_editor/lineedit.png)
+![lineedit](../assets/pyqt_editor/lineedit.png)
 
-![lineedit_obj](/ian-lecture/assets/text_editor/lineedit_obj.png)
+![lineedit_obj](../assets/pyqt_editor/lineedit_obj.png)
 
 코드에서는 `QPushButton`의 `clicked` Signal을 이용하여 버튼이 눌렸을 때 `replace()` 함수를 실행하게 한다.
 
@@ -410,7 +410,7 @@ QtDesigner에서 Input Widgets 아래 `Line Edit` 을 윈도우에 두 개를 �
 
 `fancy.txt`를 열어서 `fancy`를 `desire`로 바꾼 결과이다.
 
-![lineedit_result](/ian-lecture/assets/text_editor/lineedit_result.png)
+![lineedit_result](../assets/pyqt_editor/lineedit_result.png)
 
 
 
