@@ -1,8 +1,8 @@
 ---
 layout: post
 title:  "Numpy and Matplotlib"
-date:   2010-11-06 09:00:13
-categories: WIP
+date:   2019-11-06 09:00:13
+categories: 2019-2-robotics
 ---
 
 
@@ -425,11 +425,11 @@ plt.show()
 
 아래 그림은 세 번의 plot 결과를 모은 것이다. 첫 번째와 두 번째 그래프는 같아보이지만 x 축의 범위가 다르다.  
 
-첫 번째 plot은 y값만 넣었기 때문에 x축은 y값의 개수만큼 [0, 40] 사이의 정수들이 자동으로 들어갔다.  
+1. 첫 번째 plot은 y값만 넣었기 때문에 x축은 y값의 개수만큼 [0, 40] 사이의 정수들이 자동으로 들어갔다.  
 
-두 번째 plot은 x, y 모두 입력했기 때문에 x에 해당하는 위치에 y값이 그려져서 [0, 8] 사이에 그래프가 그려졌다.  
+2. 두 번째 plot은 x, y 모두 입력했기 때문에 x에 해당하는 위치에 y값이 그려져서 [0, 8] 사이에 그래프가 그려졌다.  
 
-세 번째 plot은 x, y, fmt 까지 입력했기 때문에 그래프 모양이 빨간 점으로 변했다. `'r.'`에서 'r'은 red, '.'은 선이 아닌 점으로 표시하라는 뜻이다.
+3. 세 번째 plot은 x, y, fmt 까지 입력했기 때문에 그래프 모양이 빨간 점으로 변했다. `'r.'`에서 'r'은 red, '.'은 선이 아닌 점으로 표시하라는 뜻이다.
 
 ![plot-3step.png](../assets/matplotlib/plot-3step.png)
 
@@ -446,8 +446,6 @@ plt.show()
 - nrows, ncols, index: 창을 몇 행 몇 열로 나눌지, 그 중에 몇 번째 칸을 선택할지를 입력한다. 예를 들어 (3, 2, 4)를 입력하면 3행 2열의 칸들 중 4번째(오른쪽 가운데)가 선택된다.
 - pos: 위의 (nrows, ncols, index) 세 개의 정수를 하나의 숫자로 합친 세 자리 정수를 입력한다. 위 방식의 (3, 2, 4)를 pos로 입력하려면 "324"를 입력하면 된다.
 - ax: `Axes` 객체로 `plt.subplot()` 함수를 실행하면 리턴되는 객체다. 이를 `subplot`의 입력으로 넣으면 입력한 `ax` 칸이 활성화된다.
-
-다음 예시를 통해 사용법을 알아보자.
 
 ```python
 import matplotlib.pyplot as plt
@@ -641,53 +639,125 @@ import numpy as np
 # 등간격 2차원 좌표 만들기
 np.set_printoptions(precision=2)
 x, y = np.meshgrid(np.linspace(-10, 10, 101), np.linspace(-10, 10, 101))
-# print(x)
-z = x**2 + y**2
-# print(z)
-img = np.cos(z)
-# print(img)
-plt.imshow(img, cmap='rainbow')
+z = (x**2 + y**2) / 5
+wave = np.cos(z)
+# -1~1 실수 값을 colormap으로 표현
+plt.subplot(131)
+plt.imshow(wave, cmap='rainbow')
+# bilinear interpolation으로 부드럽게 표현
+plt.subplot(132)
+plt.imshow(wave, cmap='rainbow', interpolation='bilinear')
+plt.subplot(133)
+# 이미지 파일 읽고 보여주기
+image = plt.imread("resources/keenan-wyrobek.png")
+plt.imshow(image)
 plt.show()
 ```
 
-
-
-
-
-
+![plt_imread](../assets/matplotlib/plt_imread.png)
 
 
 
 ## 3. Auxiliary Functions
 
+matplotlib에는 그래프를 그리는 것 뿐만 아니라 제목, 축 레이블, 텍스트 표시 등 다양한 부가 기능이 있다. 대부분 기능과 입력인자가 간단하므로 빠르게 훑어보자.
 
+`title()`은 그래프의 제목을 지정한다.
 
-### 3.1 xlabel, ylabel
+> plt.title(label, fontdict=None, loc='center', pad=None, ...)
+>
+> - label: 그래프 제목
+> - fontdict: 글꼴 지정, 기본값={'fontsize': rcParams['axes.titlesize'], 'fontweight' : rcParams['axes.titleweight'], 'verticalalignment': 'baseline', 'horizontalalignment': loc}
+> - loc: 제목의 위치 {'center', 'left', 'right'} 중 하나 선택
+> - pad: 그래프로부터의 거리
 
+`xlabel(), ylabel()`은 x 축, y 축에 축 제목을 붙인다.
 
+> plt.xlabel(xlabel, fontdict=None, labelpad=None, ...), plt.ylabel(ylabel, ...)
+>
+> - xlabel, ylabel: x 축, y 축 제목
+> - fontdict: 글꼴 지정, 상세 내용 title() 참조
+> - labelpad: 그래프로부터의 거리
 
+`xlim(), ylim()`은 x 축, y 축에 범위를 지정한다.
 
+> plt.xlim(*args) 은 여러가지 사용 방법이 있다. (ylim()도 동일) 
+>
+> left, right = xlim()  # return the current xlim  
+> xlim((left, right))   # set the xlim to left, right  
+> xlim(left, right)     # set the xlim to left, right  
+> xlim(right=3)  # adjust the right leaving left unchanged  
+> xlim(left=1)  # adjust the left leaving right unchanged   
 
-https://riptutorial.com/ko/matplotlib/topic/881/matplotlib-시작하기
+`grid()`는 화면에 점선을 표시한다.
 
-https://matplotlib.org/3.1.1/tutorials/index.html
+> plt.grid(b=None, which='major', axis='both', ...)
+>
+> - b: bool 타입으로 on/off를 결정한다. `None`이면 상태를 토글(toggle)한다.
+> - which: 점선을 그릴 tick의 단위를 {'major', 'minor', 'both'} 중에 선택한다.
+> - axis: 점선을 그릴 축 방향을 {'both', 'x', 'y'} 중에 선택한다.
 
+`text()`는 그래프 위에 텍스트를 표시한다.
 
+> plt.text(x, y, s, fontdict=None, ...)
+>
+> - x, y: 텍스트 시작 위치
+> - s: 텍스트 내용
+> - fontdict: 글꼴 지정, 상세 내용 title() 참조
 
+`legend()`는 하나의 Axes에 여러 그래프가 그려졌을 때 각 그래프의 모양, 색상과 레이블을 함께 보여줘서 각 그래프의 의미를 알 수 있게 해준다.
 
+> plt.legend()
 
----
+`show()`는 그림을 화면에 띄운다. 기본 값인 non-interactive mode에서는 그림을 닫을 때까지 이 함수에서 멈춰있는다.
 
-# TODO
+> plt.show()
+>
+> - block : `True`면 그림 창을 닫을 때까지 대기하고 `False`면 대기하지 않고 지나간다.
 
-- 11.5: 가상환경 및 pycharm 설정, 프로젝트 공지
-- 11.6: navigation base
-- 11.12: ros name and roslaunch
-- 11.13: 2차원 좌표계 변환
-- 11.19: 
-- 11.20: 2차원 변환 numpy 코딩
-- 11.26: rviz, rqt - 좌표계 변환 결과 보여주기, config 저장 불러오기, image/LDS 보여주기
-- 11.27: 3차원 좌표계 변환
-- 12.3: 
-- 12.4: 3차원 변환 코딩
+다음은 보조 함수를 이용해 그래프를 그리는 예시다.
+
+```python
+import matplotlib.pyplot as plt
+import numpy as np
+
+x = np.arange(0, 10, 0.1)
+y1 = x
+y2 = np.sin(x)
+y3 = x + np.sin(x)
+
+# 기본 설정으로 그래프만 그림
+plt.subplot(131)
+plt.plot(x, y1)
+plt.plot(x, y2)
+plt.plot(x, y3)
+# 주변 설정 추가: 제목, 축 제목, 축 범위, 범례 표시
+plt.subplot(132)
+plt.plot(x, y1, label="y=x")
+plt.plot(x, y2, label="y=cos(x)")
+plt.plot(x, y3, label="y=x+cos(x)")
+plt.title('Multi Functions')
+plt.xlabel('x axis')
+plt.ylabel('y axis')
+plt.xlim(0, 10)
+plt.ylim(0, 10)
+plt.grid(True)
+plt.legend()
+# 세부 설정 추가: 제목, 축 제목 크기 지정 / 텍스트 추가
+plt.subplot(133)
+plt.plot(x, y1, label="y=x")
+plt.plot(x, y2, label="y=cos(x)")
+plt.plot(x, y3, label="y=x+cos(x)")
+plt.text(6, 2, 'hello robotics')
+plt.title('Multi Functions', fontdict={'fontsize': 15}, pad=20)
+plt.xlabel('x axis', fontdict={'fontsize': 15}, labelpad=-2)
+plt.ylabel('y axis', fontdict={'fontsize': 15}, labelpad=-2)
+plt.xlim(0, 10)
+plt.ylim(0, 10)
+plt.grid(True)
+plt.legend()
+plt.show()
+```
+
+![plt_auxiliary](../assets/matplotlib/plt_auxiliary.png)
 
