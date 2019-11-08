@@ -331,7 +331,7 @@ matplotlib은 파이썬에서 그래프를 그릴 수 있게 해주는 패키지
 
 ## 1. 함수형 vs 객체형
 
-matplotlib은 크게 두 가지 스타일로 사용할 수 있다. 하나는 매트랩처럼 전역 함수를 이용한 방식이고 다른 하나는 객체를 이용한 방식이다. 공식 문
+matplotlib은 크게 두 가지 스타일로 사용할 수 있다. 하나는 매트랩처럼 전역 함수를 이용한 방식이고 다른 하나는 객체를 이용한 방식이다.
 
 - 함수형: `matplotlib.pyplot` 패키지 아래의 전역 함수들을 사용하여 그림을 그린다. 사용방법이 객체형에 비해 간단하다.
 - 객체형: 화면을 이루는 구성요소를 객체로 보고 객체의 메소드를 통해 해당 화면 요소의 상태를 변경한다. 함수형에 비해 조금 복잡하지만 객체 지향 프로그래밍에 더 어울리고 더 세부적인 부분까지 제어할 수 있다.
@@ -392,19 +392,19 @@ else:
 ### 2.1 plot
 
 > plt.plot(x, y, fmt, ...)
+>
+> <https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.plot.html>
 
 일반적인 그래프를 그릴 수 있는 가장 많이 쓰이는 함수다. 많은 입력 인자가 있지만 보통 세 가지를 많이 쓴다.
 
 - x: 2차원 데이터의 x축 좌표를 나타낸다. `list`나 `np.array` 등의 형식으로 입력할 수 있다.
 - y: 2차원 데이터의 y축 좌표를 나타내고 `x`와 같은 형식의 데이터를 받는다. `x`를 입력하지 않으면 첫 번째 인자를 `y`로 인식한다.
-- fmt: 그래프의 모양이나 색상을 지정한다. '\[marker]\[line]\[color]' 혹은 '\[color]\[marker]\[line]' 형식의 string으로 입력한다. 각 요소는 모두 생략 가능하며 생략시 기본 스타일로 지정된다. 다음은 `fmt`에 따른 그래프 스타일 예시다. 자세한 내용은 아래 링크에서 확인할 수 있다.
+- fmt: 그래프의 모양이나 색상을 지정한다. '\[marker]\[line]\[color]' 혹은 '\[color]\[marker]\[line]' 형식의 string으로 입력한다. 각 요소는 모두 생략 가능하며 생략시 기본 스타일로 지정된다. 다음은 `fmt`에 따른 그래프 스타일 예시다. 자세한 내용은 공식 문서(위 링크)에서 확인할 수 있다.
   - 'b'    # blue markers with default shape
   - 'or'   # red circles
   - '-g'   # green solid line
   - '--'   # dashed line with default color
   - '^k:'  # black triangle_up markers connected by a dotted line
-
-Doc: <https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.plot.html#matplotlib.pyplot.plot>
 
 입력 인자 중 `y`만 필수 인자고 나머지는 선택 인자다. 다음 예시를 그려보자.
 
@@ -439,12 +439,13 @@ plt.show()
 
 > ax = plt.subplot(nrows, ncols, index, ...)  
 > ax = plt.subplot(pos, ...)  
-> ax = plt.subplot(ax, ...)  
+> ax = plt.subplot(ax, ...)   
+> <https://matplotlib.org/api/_as_gen/matplotlib.pyplot.subplot.html>
 
 `subplot` 자체는 그림을 그리는 함수는 아니지만 Figure 화면을 분할해서 하나의 창에 여러 그래프를 그릴 수 있게 해준다. 주의할 점은 `subplots`라는 비슷한 이름의 함수도 있는데 `subplot`과 `subplots`는 전혀 다른 함수다. `subplot`은 함수형 API에서 주로 사용되며 **현재** 사용할 칸을 선택한다. `plt.plot()` 함수를 실행하면 `plt.subplot()`에서 선택한 칸에 그래프가 그려진다. 반면 `plt.subplots()`는 객체형 API를 위해 사용되며 전체 창을 관리하는 `Figure` 객체와 분할된 각각의 칸을 관리하는 `Axes` 객체를 반환한다. 사용 방식에 따른 주요 입력 인자는 다음과 같다.
 
-- nrows, ncols, index: 창을 몇 행 몇 열로 나눌지, 그 중에 몇 번째 칸을 선택할지를 입력한다. 예를 들어 (3, 2, 4)를 입력하면 3행 2열의 칸들 중 4번째(오른쪽 가운데)가 선택된다.
-- pos: 위의 (nrows, ncols, index) 세 개의 정수를 하나의 숫자로 합친 세 자리 정수를 입력한다. 위 방식의 (3, 2, 4)를 pos로 입력하려면 "324"를 입력하면 된다.
+- nrows, ncols, index: 창을 몇 행 몇 열로 나눌지, 그 중에 몇 번째 칸을 선택할지를 입력한다. 예를 들어 `plt.subplot(3, 2, 4)`를 실행하면 3행 2열의 칸들 중 4번째(오른쪽 가운데)가 선택된다.
+- pos: 위의 (nrows, ncols, index) 세 개의 정수를 하나의 숫자로 합친 세 자리 정수를 입력한다. `plt.subplot(3, 2, 4)`는 `plt.subplot(324)`와 같다.
 - ax: `Axes` 객체로 `plt.subplot()` 함수를 실행하면 리턴되는 객체다. 이를 `subplot`의 입력으로 넣으면 입력한 `ax` 칸이 활성화된다.
 
 ```python
@@ -483,6 +484,8 @@ plt.show()
 ### 2.3 bar
 
 > plt.bar(x, height, width=0.8, bottom=None, *, align='center', ...)
+>
+> <https://matplotlib.org/api/_as_gen/matplotlib.pyplot.bar.html>
 
 `bar`는 막대 그래프를 그리는 함수다.
 
@@ -490,7 +493,7 @@ plt.show()
 - height: 막대의 높이 (y축 좌표)
 - bottom: 막대의 y축 시작점
 - width: 막대의 너비, 1이면 꽉차서 옆 막대랑 붙게됨
-- align: x축 위치에 막대를 가운데 정렬할지 왼쪽 정렬할지에 따라 "center", "align" 둘 중 선택
+- align: x축 위치에 막대를 가운데 정렬할지 왼쪽 정렬할지에 따라 "center", "left" 둘 중 선택
 
 ```python
 import matplotlib.pyplot as plt
@@ -519,7 +522,8 @@ plt.show()
 
 ### 2.4 hist
 
-> plt.hist(x, bins=None, range=None, density=None, weights=None, cumulative=False, bottom=None, histtype='bar', align='mid', orientation='vertical', rwidth=None, log=False, color=None, label=None, ...)
+> plt.hist(x, bins=None, range=None, density=None, weights=None, cumulative=False, bottom=None, histtype='bar', align='mid', orientation='vertical', rwidth=None, log=False, color=None, label=None, ...)  
+> <https://matplotlib.org/api/_as_gen/matplotlib.pyplot.hist.html>
 
 히스토그램(histogram)을 계산하고 그래프까지 그리는 함수다. 주요 입력 인자는 다음과 같다.
 
@@ -561,7 +565,7 @@ plt.show()
 
 다음은 예제의 텍스트 출력과 Figure다.
 
-> histogram counts: [ 3.  8. 13. 14. 18. 15. 14.  7.  6.  2.]
+> histogram counts: [ 3.  8. 13. 14. 18. 15. 14.  7.  6.  2.]  
 > histogram edges: [-4.448 -3.497 -2.546 -1.594 -0.643  0.308  1.26   2.211  3.162  4.113  5.065]
 
 ![plt_hist](../assets/matplotlib/plt_hist.png)
@@ -570,17 +574,25 @@ plt.show()
 
 ### 2.5 scatter
 
-> plt.scatter(x, y, s=None, c=None, marker=None, cmap=None, norm=None, vmin=None, vmax=None, alpha=None, linewidths=None, verts=None, edgecolors=None, ...)
+> plt.scatter(x, y, s=None, c=None, marker=None, cmap=None, norm=None, vmin=None, vmax=None, alpha=None, linewidths=None, verts=None, edgecolors=None, ...)  
+> <https://matplotlib.org/api/_as_gen/matplotlib.pyplot.scatter.html>
 
 2차원 데이터를 평면상에 점으로 표현하여 데이터 분포를 보여주는 함수다. 단순히 점의 밀집도 뿐만 아니라 점의 크기와 색상까지 지정할 수 있어서 다양한 표현이 가능하다. 주요 입력 인자는 다음과 같다.
 
 - x, y: 2차원 데이터 위치
+
 - s: 마커의 크기인데 특이하게 마커의 반지름이 s에 비례하는 것이 아니라 $$\sqrt s$$에 비례한다. 만약 2의 반지름을 주고 싶다면 4를 입력해야 한다.
+
 - c: 마커의 색상을 지정하는데 하나만 넣어 마커의 색을 동일하게 표시하던지 각 (x, y) 데이터 쌍에 대한 색을 리스트나 배열로 하나씩 입력할 수 있다. 색상은 'red' 같은 단어로 입력하거나 '(1,0,0)' 같은 숫자로 입력하거나 color map의 인덱스로 입력할 수 있다.
+
 - marker: 마커의 모양을 결정한다. 마커 모양은 다음 목록 중 하나를 선택할 수 있다.
-  - markers = {'.': 'point', ',': 'pixel', 'o': 'circle', 'v': 'triangle_down', '^': 'triangle_up', '<': 'triangle_left', '>': 'triangle_right', '1': 'tri_down', '2': 'tri_up', '3': 'tri_left', '4': 'tri_right', '8': 'octagon', 's': 'square', 'p': 'pentagon', '*': 'star', 'h': 'hexagon1', 'H': 'hexagon2', '+': 'plus', 'x': 'x', 'D': 'diamond', 'd': 'thin_diamond', '|': 'vline', '_': 'hline', 'P': 'plus_filled', 'X': 'x_filled', 0: 'tickleft', 1: 'tickright', 2: 'tickup', 3: 'tickdown', 4: 'caretleft', 5: 'caretright', 6: 'caretup', 7: 'caretdown', 8: 'caretleftbase', 9: 'caretrightbase', 10: 'caretupbase', 11: 'caretdownbase', 'None': 'nothing', None: 'nothing', ' ': 'nothing', '': 'nothing'}
+  
+  > markers = {'.': 'point', ',': 'pixel', 'o': 'circle', 'v': 'triangle_down', '^': 'triangle_up', '<': 'triangle_left', '>': 'triangle_right', '1': 'tri_down', '2': 'tri_up', '3': 'tri_left', '4': 'tri_right', '8': 'octagon', 's': 'square', 'p': 'pentagon', '*': 'star', 'h': 'hexagon1', 'H': 'hexagon2', '+': 'plus', 'x': 'x', 'D': 'diamond', 'd': 'thin_diamond', '\|': 'vline', '_': 'hline', 'P': 'plus_filled', 'X': 'x_filled', 0: 'tickleft', 1: 'tickright', 2: 'tickup', 3: 'tickdown', 4: 'caretleft', 5: 'caretright', 6: 'caretup', 7: 'caretdown', 8: 'caretleftbase', 9: 'caretrightbase', 10: 'caretupbase', 11: 'caretdownbase', 'None': 'nothing', None: 'nothing', ' ': 'nothing', '': 'nothing'}
+  
 - cmap: colormap을 선택한다. colormap은 실수(float)를 입력하면 그에 해당하는 (r,g,b) 값을 반환한다. `c` 인자에 실수 배열이 들어가면 colormap에 따라 마커의 색상을 지정한다.
-  - colormap 종류: <https://matplotlib.org/3.1.1/tutorials/colors/colormaps.html?highlight=colormap>
+  
+  - colormap 종류: <https://matplotlib.org/3.1.1/tutorials/colors/colormaps.html>
+  
 - alpha: 불투명도를 결정한다. 0은 투명 1은 불투명이다.
 
 ```python
@@ -605,7 +617,8 @@ plt.show()
 
 ### 2.6 imshow
 
-> plt.imshow(X, cmap=None, aspect=None, interpolation=None, alpha=None, vmin=None, vmax=None, ...)
+> plt.imshow(X, cmap=None, aspect=None, interpolation=None, alpha=None, vmin=None, vmax=None, ...)   
+> <https://matplotlib.org/api/_as_gen/matplotlib.pyplot.imshow.html?highlight=imshow#matplotlib.pyplot.imshow>
 
 이미지를 보여주는 함수다. 주요 입력 인자는 다음과 같다.
 
