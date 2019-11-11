@@ -30,9 +30,9 @@ $ rosrun turtlesim turtlesim_node
 
 ## 1. Node Name Remapping
 
-같은 노드를 여러 개 실행하려면 다른 네임으로 실행해야 한다. 노드의 기본 네임은 파이썬 코드에서 `rospy.init_node("[node_name]")`에서 결정하는데 다른 네임의 노드를 실행하기 위해 코드를 수정할 필요는 없다. 커맨드라인에서 네임을 재지정(remapping)하면 된다. `rosrun` 명령어 뒤에 `[old_name]:=[new_name]`형식으로 덧붙이면 노드나 토픽 네임을 재지정할 수 있다. 
+같은 노드를 여러 개 실행하려면 다른 네임으로 실행해야 한다. 노드의 기본 네임은 파이썬 코드에서 `rospy.init_node("<node_name>")`에서 결정하는데 다른 네임의 노드를 실행하기 위해 코드를 수정할 필요는 없다. 커맨드라인에서 네임을 재지정(remapping)하면 된다. `rosrun` 명령어 뒤에 `<old_name>:=<new_name>`형식으로 덧붙이면 노드나 토픽 네임을 재지정할 수 있다. 
 
-먼저 위 명령어에서 `turtlesim_node`가 어떤 이름으로 실행됐는지 확인한다. 혼동하기 쉽지만 `turtlesim_node`는 실행 파일의 이름이고 노드의 기본 네임은 코드에서 지정한다. 
+먼저 위 명령어에서 `turtlesim_node`가 어떤 이름으로 실행됐는지 확인한다.
 
 ```bash
 $ rosnode list
@@ -40,6 +40,8 @@ $ rosnode list
 /teleop_turtle
 /turtlesim
 ```
+
+> Note: rosrun 사용 방법은 rosrun \<패키지 이름> \<노드 실행 파일 이름> 이다. "노드 실행 파일 이름"과 "노드 네임"은 다르다는 것을 유의하자.
 
 현재 네임은 `/turtlesim`이라는 것을 알 수 있다. 이 네임을 `turtlesim_remap`으로 수정하여 실행한다. 노드와 토픽 정보를 보기 위해 `rqt_graph`도 실행한다.
 
@@ -208,6 +210,8 @@ $ rqt_graph
 
 ## 2. launch tags
 
+launch 파일을 이루는 여러 태그에 대해 알아보자.
+
 ### \<launch\>
 
 launch 파일은 기본적으로 \<launch\> 태그로 시작하고 끝나야 한다.
@@ -294,12 +298,12 @@ ROS 마스터에 파라미터를 등록할 수 있는 태그다.
 
 ```xml
 <launch>
-	<group ns="box">
+    <group ns="box">
         <remap from="/box/turtle1/cmd_vel" to="turtle_vel"/>
         <node pkg="turtlesim" type="turtlesim_node" name="turtlesim"/>
         <node pkg="turtlesim" type="turtle_teleop_key" name="teleop_key"/>
     </group>
-	<group ns="musk">
+    <group ns="musk">
         <remap from="/musk/turtle1/cmd_vel" to="turtle_vel"/>
         <node pkg="turtlesim" type="turtlesim_node" name="turtlesim"/>
         <node pkg="turtlesim" type="turtle_teleop_key" name="teleop_key"/>
