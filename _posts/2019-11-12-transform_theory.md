@@ -1,13 +1,15 @@
 ---
 layout: post
 title:  "Transformation"
-date:   2010-11-12 09:00:13
-categories: WIP
+date:   2019-11-12 09:00:13
+categories: 2019-2-robotics
 ---
 
 
 
 # Coordinate Transformation
+
+
 
 ## 1. Problem Definition
 
@@ -19,8 +21,8 @@ categories: WIP
 
 좌표계 변환을 통해 우리가 알고자 하는것은 다음과 같은 것들이다.
 
-- 4번 좌표계에서 빨간 점의 좌표를 알고(b) 3번 좌표계 기준으로 4번 좌표계 원점의 위치와 상대적인 회전을 알 때(a), 3번 좌표계에서의 빨간 점의 좌표(c)는 무엇인가?
-- 3번 좌표계에서 빨간 점의 좌표를 알고(b) 3번 좌표계 기준으로 4번 좌표계 원점의 위치와 상대적인 회전을 알 때(c), 4번 좌표계에서의 빨간 점의 좌표(a)는 무엇인가?
+1. 4번 좌표계에서 빨간 점의 좌표를 알고(b) 3번 좌표계 기준으로 4번 좌표계 원점의 위치와 상대적인 회전을 알 때(a), 3번 좌표계에서의 빨간 점의 좌표(c)는 무엇인가?
+2. 3번 좌표계에서 빨간 점의 좌표를 알고(b) 3번 좌표계 기준으로 4번 좌표계 원점의 위치와 상대적인 회전을 알 때(c), 4번 좌표계에서의 빨간 점의 좌표(a)는 무엇인가?
 
 <img src="../assets/robotics-transform/define-problem.jpg" alt="define-problem" width="400">
 
@@ -53,12 +55,22 @@ categories: WIP
 - 원점 $$O \in \mathbb{R}^3$$는 Euclidean 3-space 속의 한 점이다.
 - Basis vectors of 3-D Cartesian coordinate system
   - 3개의 서로 직교하며 크기가 1인 벡터의 집합이다. 각각의 벡터가 각 차원의 축(axis)이 된다.
-  - $$\mathbf{v}=\{\mathbf{v}_1, \mathbf{v}_2, \mathbf{v}_3\}, \quad \mathbf{v}_i \in \mathbb{R}^n$$
-  - $$\mathbf{v}_i \cdot \mathbf{v}_k = \begin{cases} 1 & if \quad i=k \\ 0 & if \quad i \ne k \end{cases}$$
+  
+      $$\mathbf{v}=\{\mathbf{v}_1, \mathbf{v}_2, \mathbf{v}_3\}, \quad \mathbf{v}_i \in \mathbb{R}^n$$
+  
+      $$\mathbf{v}_i \cdot \mathbf{v}_k = \begin{cases} 1 & if \quad i=k \\ 0 & if \quad i \ne k \end{cases}$$
+  
   - Right-handed orientation: $$\mathbf{v}_1 \times \mathbf{v}_2 = \mathbf{v}_3, \mathbf{v}_3 \times \mathbf{v}_3 = \mathbf{v}_1, \mathbf{v}_3 \times \mathbf{v}_1 = \mathbf{v}_2$$
+  
   - Euclidean-n space 속 임의의 점 $$p \in \mathbb{R}^n$$는 basis vector의 선형 조합으로 표현할 수 있다.
-  - $$\mathbf{p}=p_1\mathbf{v}_1 + p_2\mathbf{v}_2 + p_3\mathbf{v}_3$$
+  
+      $$\mathbf{p}=p_1\mathbf{v}_1 + p_2\mathbf{v}_2 + p_3\mathbf{v}_3$$
+  
   - 보통 $$v_1=i=[1,0,0], v_2=j=[0,1,0], v_3=k=[0,0,1]$$를 주로 사용한다.
+  
+  - 서로 다른 basis vector가 직교하면 점을 이루는 좌표는 좌표계의 원점에서 점을 향하는 벡터와 basis vector와의 내적으로 구할 수 있다.
+  
+      $$p_i = \mathbf{v}_i \cdot \mathbf{p} = \mathbf{v}_i \cdot \left( p_1\mathbf{v}_1 + p_2\mathbf{v}_2 + p_3\mathbf{v}_3 \right) = p_i$$
 
 ![basis-vectors](../assets/robotics-transform/basis-vectors.jpg)
 
@@ -149,7 +161,9 @@ $$
 = \begin{bmatrix} A & \mathbf{q} \\ \mathbf{0} & 1 \end{bmatrix} 
 \begin{bmatrix} x \\ y \\ z \\ 1 \end{bmatrix} = T \mathbf{p}_h
 $$
-이러한 편리성 때문에 좌표계 변환시에는 동차 좌표를 많이 쓰고 앞으로는 문맥에 따라 그냥 $$\mathbf{p}$$를 동차 좌표 $$\left\{x,y,z,1\right\}$$로 사용한다.
+이러한 편리성 때문에 좌표계 변환시에는 동차 좌표를 많이 쓰고 앞으로는 문맥에 따라 그냥 $$\mathbf{p}$$를 동차 좌표 $$\left\{x,y,z,1\right\}$$로도 사용한다.
+
+
 
 ## 4. Rigid Transformation
 
@@ -169,41 +183,110 @@ $$
 
 
 
-## 5. 2D Rigid Transformation
+## 5. 2-D Rigid Transformation
 
 3차원 강체 변환은 상당히 복잡하므로 2차원 평면 상의 변환부터 자세히 다뤄보자. 2차원 강체 변환은 2차원 좌표에 회전과 이동을 적용하여 새로운 2차원 좌표를 만드는 것을 말한다.  
 $$
-\mathbf{p}' = \begin{bmatrix} x' \\ y' \\ 1 \end{bmatrix}
+\mathbf{p}_h' = \begin{bmatrix} x' \\ y' \\ 1 \end{bmatrix}
 = \begin{bmatrix} R & \mathbf{t} \\ \mathbf{0} & 1 \end{bmatrix} 
-\begin{bmatrix} x \\ y \\ 1 \end{bmatrix} = T \mathbf{p} \\
+\begin{bmatrix} x \\ y \\ 1 \end{bmatrix} = T \mathbf{p}_h \\
+\mathbf{p}' = R \mathbf{p} + \mathbf{t} \\
 R \in SO(2) \subset \mathbb{R}^{2 \times 2}, \quad \mathbf{t} \in \mathbb{R}^2
 $$
-$$R$$은 rotation matrix로 점을 회전시키고, $$\mathbf{t}$$는 translation vector로 점을 이동시킨다. 이동(translation)은 단순히 2차원 벡터를 더하는 것이니 간단하지만 회전은 좀 더 미묘하다. 벡터에 임의의 2x2 행렬을 곱하면 어파인 변환이 되는데 2x2 행렬 곱이 회전 변환이 되려면 행렬에 특별한 조건이 필요하다.  
+$$R$$은 rotation matrix로 점을 회전시키고, $$\mathbf{t}$$는 translation vector로 점을 이동시킨다. 이동(translation)은 단순히 2차원 벡터를 더하는 것이니 간단하지만 회전은 좀 더 미묘하다. 벡터에 임의의 2x2 행렬을 곱하면 선형 변환이 되는데 2x2 행렬 곱이 회전 변환이 되려면 행렬에 특별한 조건이 필요하다.  
 
-회전 변환 자체도 강체 변환이기 때문에 두 점 사이의 거리가 유지되면 두 직선 사이의 각도도 유지된다.
+### 5.1 Rotation Matrix
+
+회전 변환 자체도 강체 변환이기 때문에 두 점 사이의 거리가 유지되면 두 직선 사이의 각도도 유지된다. 좌표계가 아래와 같이 회전했을 때 서로 직각인 X, Y 좌표축은 회전을 해도 서로 직각이다.  
+
+<img src="../assets/robotics-transform/frame-rotation.png" alt="frame-rotation" width="400">
+
+각도 $$\theta$$만큼 회전한 X', Y' 축의 방향을 계산해보면 다음과 같다.
+$$
+\mathbf{x}' = \begin{bmatrix} cos\theta \\ sin\theta \end{bmatrix}, \quad 
+\mathbf{y}' = \begin{bmatrix} -sin\theta \\ cos\theta \end{bmatrix}
+$$
+기준 좌표계에서의 좌표가 $$\mathbf{p}=(x,y)$$일 때 회전된 좌표계에서 좌표 $$\mathbf{p}'=(x',y')$$는 원점에서 점을 향하는 벡터 $$\vec{\mathbf{p}}$$를 새로운 좌표 축인 X', Y'에 사영(projection)하여 구할 수 있다. 사영한다는 것이 결국엔 앞서 말한대로 벡터와 좌표축을 내적하는 것이다.
+$$
+x' = \mathbf{x}' \cdot \vec{\mathbf{p}} = (\mathbf{x}')^T \vec{\mathbf{p}}  \\
+y' = \mathbf{y}' \cdot \vec{\mathbf{p}} = (\mathbf{y}')^T \vec{\mathbf{p}}
+$$
+위 식을 행렬로 정리하면 다음과 같다.
+$$
+\mathbf{p}' = \begin{bmatrix} x' \\ y' \end{bmatrix}
+= \begin{bmatrix} (\mathbf{x}')^T \\ (\mathbf{y}')^T \end{bmatrix} \mathbf{p}
+= \begin{bmatrix} cos\theta & sin\theta \\ -sin\theta & cos\theta \end{bmatrix} \mathbf{p}
+$$
+계산해보면 $$x'=cos\theta \ x + sin\theta \ y$$ 로 원래 $$x$$ 좌표 보다 늘어나고 $$y'= -sin\theta \ x + cos\theta \ y$$ 로 원래 $$y$$ 좌표 보다 줄어드는게 되는데 이는 그림에서도 확인할 수 있다. 기준 좌표계에 비해 회전된 좌표계의 x축 좌표가 늘어나고 y축 좌표가 줄어든다.  
+
+반대로 회전된 좌표계의 좌표 $$\mathbf{p}'=(x',y')$$가 주어졌을 때 기준 좌표계에서의 좌표는 다음과 같다.
+$$
+\mathbf{p} = \begin{bmatrix} cos\theta & sin\theta \\ -sin\theta & cos\theta \end{bmatrix}^{-1} \mathbf{p}'
+= \begin{bmatrix} cos\theta & -sin\theta \\ sin\theta & cos\theta \end{bmatrix} \mathbf{p}'
+$$
+위 식에서 회전된 좌표에 곱해져서 기준 좌표를 만드는 행렬이 바로 회전 행렬(rotation matrix) $$R$$ 이다.  
+
+### 5.2 Transformation Equation
+
+회전 행렬을 구했으니 이동(translation)까지 포함한 강체 변환 식을 다시 정리해보면 다음과 같다.
+$$
+\mathbf{p}' = R \mathbf{p} + \mathbf{t} \\
+\mathbf{p}_h' = \begin{bmatrix} R & \mathbf{t} \\ \mathbf{0} & 1 \end{bmatrix} \mathbf{p}_h = T\mathbf{p}_h \\
+R = \begin{bmatrix} cos\theta & -sin\theta \\ sin\theta & cos\theta \end{bmatrix}, 
+\quad \theta \in \mathbb{R}, \ 
+\mathbf{t} = \begin{bmatrix} t_x \\ t_y \end{bmatrix}  \in \mathbb{R}^2
+$$
+위 식을 통해 처음 "Problem Definition"에서 질문했던 첫 번째 문제에 대해 답할 수 있게 됐다. 변환된 좌표계(X', Y')에서 어떤 점의 좌표 $$\mathbf{p}'$$를 알고, 기준 좌표계(X,Y)를 기준으로 변환된 좌표계의 상대적인 회전과 이동량을 알때 기준 좌표계에서의 좌표 $$\mathbf{p}$$를 구할 수 있다.  
+
+두 번째 문제는 반대로 기준 좌표계에서의 좌표를 알 때 변환된 좌표계에서의 좌표를 구하는 것이다. 변환의 방향이 정반대이므로 식도 역함수로 나온다.  
+$$
+\mathbf{p} = R^{-1} \left( \mathbf{p}' - \mathbf{t} \right)  \\
+\mathbf{p}_h = T^{-1}\mathbf{p}_h' 
+= \begin{bmatrix} R^{-1} & R^{-1} \mathbf{t} \\ \mathbf{0} & 1 \end{bmatrix} \mathbf{p}_h' \\
+R^{-1} = \begin{bmatrix} cos\theta & sin\theta \\ -sin\theta & cos\theta \end{bmatrix}
+$$
+아래 그림은 회전 변환에 이동을 더하여 2차원 강체 변환을 표현한 것이다.  
+
+<img src="../assets/robotics-transform/rigid2d.png" alt="rigid2d" width="400">
+
+이때 정변환과 역변환의 기준은 어느 좌표계를 기준으로 이동($$\mathbf{t}$$)과 회전($$\theta$$)를 구했는지를 떠올리면 된다.  
+
+이를 좀 더 일반화 시켜 변환된 좌표계를 B 좌표계, 기준 좌표계를 A 좌표계라 하고 변환 식을 다시 명확하게 정리해보면 다음과 같다.
+$$
+\mathbf{p}^A = R^A_B \mathbf{p}^B + \mathbf{t}^A_B \\
+\mathbf{p}_h^A 
+= \begin{bmatrix} R^A_B & \mathbf{t}^A_B \\ 
+\mathbf{0} & 1 \end{bmatrix} \mathbf{p}_h^B 
+= T^A_B\mathbf{p}_h^B \\
+$$
+
+
+### 5.3 Consecutive Transformation
+
+위에서는 두 개의 좌표계 사이의 변환을 다뤘는데 이를 응용하면 다수의 좌표계가 있을 때 좌표계들 사이의 상대적인 관계를 연결하면 모든 좌표계 사이의 변환을 만들 수 있다.  
+
+예를 들어 다관절 로봇에서 마지막 그리퍼(gripper) 기준으로 앞의 물건의 좌표는 센서를 통해 쉽게 알 수 있다. 그런데 바닥의 기준 좌표계에서의 물건의 좌표를 계산하려면 그리퍼와 베이스 좌표계 사이의 중간 좌표계들을 지나가야한다. 아래 그림에서 C 좌표계에서의 점 $$\mathbf{p}$$의 좌표를 알고 있다면 이를 먼저 B 좌표계로 변환한 뒤 이것을 다시 A 좌표계로 변환하고 또 W 좌표계로 변환해야 한다.
 
 
 
-![rotation2d](../assets/robotics-transform/rotation2d.png)
+![joint-arm](../assets/robotics-transform/joint-arm.jpg)
 
 
 
+위 예시는 3차원 좌표계지만 2차원 좌표계에서도 마찬가지다. 아래 그림에서 로봇은 이동하면서 일정 시간마다 자신이 직전 위치로부터 **상대적으로** 얼마나 이동하고 회전했는지를 기록했다. 예를 들어 $$\mathbf{t}_{A \rightarrow B}, \ \theta_{A \rightarrow B}$$는 각각 로봇이 Pose A의 좌표계를 기준으로 Pose B가 얼마나 이동했는지를 표현한다.  
 
+![consec-transform](../assets/robotics-transform/consec-transform.png)
 
+만약 Pose D에서 점 $$\mathbf{p}$$를 발견하여 좌표 $$\mathbf{p}^D$$를 얻었다면 기준 좌표계인 월드(W) 좌표계에서 점 $$\mathbf{p}$$의 좌표는 다음과 같이 구할 수 있다.
+$$
+\begin{align}
+\mathbf{p}_h^W &= T_D^W \mathbf{p}_h^D \\
+&= T_A^W T_B^A T_C^B T_D^C \mathbf{p}_h^D \\
+&= T_A^W T_B^A T_C^B \mathbf{p}_h^C \\
+&= T_A^W T_B^A \mathbf{p}_h^B \\
+&= T_A^W \mathbf{p}_h^A \\
+\end{align}
+$$
+Pose D에서 월드(W) 좌표계로 가는 변환($$T_D^W$$)은 네 번의 좌표계 변환으로 구할 수 있고 좌표에 변환 행렬을 곱할 때마다 월드에 가까운 좌표계로 변환된다.
 
-
----
-
-# TODO
-
-- 11.5: 가상환경 및 pycharm 설정, 프로젝트 공지
-- 11.6: navigation base
-- 11.12: ros name and roslaunch
-- 11.13: 학술제 휴강
-- 11.19: 학술제 휴강
-- 11.20: 2차원 좌표계 변환 이론
-- 11.26: 2차원 변환 numpy 코딩
-- 11.27: 프로젝트 테스트
-- 12.3: rviz, rqt - 좌표계 변환 결과 보여주기, config 저장 불러오기, image/LDS 보여주기
-- 12.4: 
 
