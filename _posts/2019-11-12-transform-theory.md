@@ -203,7 +203,7 @@ $$R$$은 rotation matrix로 점을 회전시키고, $$\mathbf{t}$$는 translatio
 
 회전 변환 자체도 강체 변환이기 때문에 두 점 사이의 거리가 유지되면 두 직선 사이의 각도도 유지된다. 좌표계가 아래와 같이 회전했을 때 서로 직각인 X, Y 좌표축은 회전을 해도 서로 직각이다.  
 
-<img src="../assets/robotics-transform/frame-rotation.png" alt="frame-rotation" width="400">
+<img src="../assets/robotics-transform/frame-rotation.jpg" alt="frame-rotation" width="400">
 
 각도 $$\theta$$만큼 회전한 X', Y' 축의 방향을 계산해보면 다음과 같다.  
 
@@ -264,7 +264,7 @@ $$
 
 아래 그림은 회전 변환에 이동을 더하여 2차원 강체 변환을 표현한 것이다.  
 
-<img src="../assets/robotics-transform/rigid2d.png" alt="rigid2d" width="400">
+<img src="../assets/robotics-transform/rigid_transform_2d.jpg" alt="rigid2d" width="400">
 
 이때 정변환과 역변환의 기준은 어느 좌표계를 기준으로 이동($$\mathbf{t}$$)과 회전($$\theta$$)를 구했는지를 떠올리면 된다.  
 
