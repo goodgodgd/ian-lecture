@@ -113,7 +113,7 @@ categories: 2019-2-robotics
 벡터의 내적(inner product)와 점곱(dot product)은 같은 의미로 사용되지만 사실 내적은 점곱을 더욱 일반화한 상위 개념이다. 하지만 Euclidean space의 벡터를 다룰 때는 둘을 같다고 봐도 무방하다. 공간 상의 벡터에 대한 내적(<>) 혹은 점곱(·)의 정의와 성질은 다음과 같다.
 $$
 \left\langle \mathbf{u},\mathbf{v} \right\rangle \overset{ \underset{def}{} }{=} \mathbf{u} \cdot \mathbf{v}
-= \mathbf{u}_1 \mathbf{v}_1 + \mathbf{u}_2 \mathbf{v}_2 + \mathbf{u}_3 \mathbf{v}_3, \quad \mathbf{u}, \mathbf{v} \in \mathbb{R}^3, 
+= u_1 v_1 + u_2 v_2 + u_3 v_3, \quad \mathbf{u}, \mathbf{v} \in \mathbb{R}^3, 
 \quad \left\langle \mathbf{u},\mathbf{v} \right\rangle \in \mathbb{R}^3
 $$
 
@@ -147,8 +147,8 @@ $$
 
 이러한 변환은 여러 번 연속해서 일어날 수 있다.
 
-- Consecutive linear transformtions: $$\mathbf{p}' = A_2 \left(A_1 \mathbf{p} \right)$$   : simple!
-- Consecutive affine transformtions: $$\mathbf{p}' = A_2 \left(A_1 \mathbf{p} + \mathbf{q}_1 \right) + \mathbf{q}_2 = A_2A_1 \mathbf{p} + A_2\mathbf{q}_1 + \mathbf{q}_2$$   : complex!
+- Consecutive linear transformations (simple!): $$\mathbf{p}' = A_2 \left(A_1 \mathbf{p} \right)$$  
+- Consecutive affine transformations (complex!): $$\mathbf{p}' = A_2 \left(A_1 \mathbf{p} + \mathbf{q}_1 \right) + \mathbf{q}_2 = A_2A_1 \mathbf{p} + A_2\mathbf{q}_1 + \mathbf{q}_2$$  
 
 선형 변환은 단순히 앞에 행렬을 곱해나가면 되는데 어파인 변환은 변환을 거듭할수록 항이 늘어나서 연산이 복잡해진다. 그런데 맨 처음에 예를 들었던 좌표계 변환을 생각해보면 좌표계의 원점이 달라지기 때문에 어파인 변환을 이용해야 제대로 된 좌표계 변환을 할 수 있다.  
 
@@ -173,7 +173,7 @@ $$
 
 출처: <https://en.wikipedia.org/wiki/Affine_transformation>  
 
-하지만 어파인 변환은 실세계에서 일어나는 좌표계 변환을 표현하기에는 너무 자유도가 높다. 즉 실세계의 좌표계 변환에서는 오직 회전(rotation)만 가능하고 reflection, scale, shear는 일어날 수 없다.   
+하지만 어파인 변환은 실세계에서 일어나는 좌표계 변환을 표현하기에는 너무 자유도가 높다. 즉 실세계의 좌표계 변환에서는 오직 회전(rotation)과 이동(translation)만 가능하고 reflection, scale, shear는 일어날 수 없다.   
 
 똑같은 물건을 아무리 다른 위치 다른 각도에서 봐도 상하관계는 유지하면서 좌우만 뒤집거나(reflection), 물건이 커지거나(scale), 각도가 찌그러지거나(shear) 하지 않는다. 이러한 성질을 가지는 물체를 강체(rigid-body)라 하는데 강체 내부의 임의의 두 점 사이의 거리는 보는 시점에 상관없이 항상 동일하다.  
 
@@ -300,18 +300,18 @@ $$
 
 ![consec-transform](../assets/robotics-transform/consec-transform.png)
 
-만약 Pose D에서 점 $$\mathbf{p}$$를 발견하여 좌표 $$\mathbf{p}^D$$를 얻었다면 기준 좌표계인 월드(W) 좌표계에서 점 $$\mathbf{p}$$의 좌표는 다음과 같이 구할 수 있다.
+만약 Pose D에서 점 $$\mathbf{p}$$를 발견하여 좌표 $$\mathbf{p}^D$$를 얻었다면 기준 좌표계인 전역(G) 좌표계에서 점 $$\mathbf{p}$$의 좌표는 다음과 같이 구할 수 있다.
 
 $$
 \begin{align}
-\mathbf{p}_h^W &= T_D^W \mathbf{p}_h^D \\
-&= T_A^W T_B^A T_C^B T_D^C \mathbf{p}_h^D \\
-&= T_A^W T_B^A T_C^B \mathbf{p}_h^C \\
-&= T_A^W T_B^A \mathbf{p}_h^B \\
-&= T_A^W \mathbf{p}_h^A \\
+\mathbf{p}_h^G &= T_D^G \mathbf{p}_h^D \\
+&= T_A^G T_B^A T_C^B T_D^C \mathbf{p}_h^D \\
+&= T_A^G T_B^A T_C^B \mathbf{p}_h^C \\
+&= T_A^G T_B^A \mathbf{p}_h^B \\
+&= T_A^G \mathbf{p}_h^A \\
 \end{align}
 $$
 
-Pose D에서 월드(W) 좌표계로 가는 변환($$T_D^W$$)은 네 번의 좌표계 변환으로 구할 수 있고 좌표에 변환 행렬을 곱할 때마다 월드에 가까운 좌표계로 변환된다.
+Pose D에서 전역(G) 좌표계로 가는 변환($$T_D^G$$)은 네 번의 좌표계 변환으로 구할 수 있고 좌표에 변환 행렬을 곱할 때마다 전역 좌표계에 가까운 좌표계로 변환된다.
 
 
