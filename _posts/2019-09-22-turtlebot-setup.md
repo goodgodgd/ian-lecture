@@ -268,7 +268,7 @@ $ cd ~/catkin_ws
 $ catkin_make -j1
 ```
 
-OpenCR이 루트 권한을 얻지 않아도 USBrosru를 이용할 수 있도록 설정한다.
+OpenCR이 루트 권한을 얻지 않아도 rosrun를 이용할 수 있도록 설정한다.
 
 ```
 $ rosrun turtlebot3_bringup create_udev_rules

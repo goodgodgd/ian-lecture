@@ -16,7 +16,7 @@ categories: 2019-2-robotics
 4. 점 $$\mathbf{p}$$의 전역 좌표와 모든 포즈의 전역 포즈(global pose)를 알 때, 각 포즈에서 발견한 점 $$\mathbf{p}$$의 상대 좌표 계산
 4. 각 포즈에서 발견한 점 $$\mathbf{p}$$의 좌표와 모든 포즈의 전역 포즈(global pose)를 알 때 점 $$\mathbf{p}$$의 전역 좌표 계산
 
-![consec-transform](../assets/robotics-transform/consec-transform.jpg)
+![consec-transform](../assets/robotics-transform/consec-transform.png)
 
 
 
