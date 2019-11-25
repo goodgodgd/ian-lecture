@@ -234,7 +234,7 @@ $$
 
 $$
 \mathbf{p} = \begin{bmatrix} cos\theta & sin\theta \\ -sin\theta & cos\theta \end{bmatrix}^{-1} \mathbf{p}'
-= \begin{bmatrix} cos\theta & -sin\theta \\ sin\theta & cos\theta \end{bmatrix} \mathbf{p}'
+= \begin{bmatrix} cos\theta & -sin\theta \\ sin\theta & cos\theta \end{bmatrix} \mathbf{p}' = R \mathbf{p}'
 $$
 
 위 식에서 회전된 좌표에 곱해져서 기준 좌표를 만드는 행렬이 바로 회전 행렬(rotation matrix) $$R$$ 이다.  
@@ -291,7 +291,7 @@ $$
 
 
 
-위 예시는 3차원 좌표계지만 2차원 좌표계에서도 마찬가지다. 아래 그림에서 로봇은 이동하면서 일정 시간마다 자신이 직전 위치로부터 **상대적으로** 얼마나 이동하고 회전했는지를 기록했다. 예를 들어 $$\mathbf{t}_{A \rightarrow B}, \ \theta_{A \rightarrow B}$$는 각각 로봇이 Pose A의 좌표계를 기준으로 Pose B가 얼마나 이동했는지를 표현한다.  
+위 예시는 3차원 좌표계지만 2차원 좌표계에서도 마찬가지다. 아래 그림에서 로봇은 이동하면서 일정 시간마다 자신이 직전 위치로부터 **상대적으로** 얼마나 이동하고 회전했는지를 기록했다. 예를 들어 $$\mathbf{t}_B^A, \ \theta_B^A$$는 각각 로봇이 Pose A의 좌표계를 기준으로 Pose B가 얼마나 이동했는지를 표현한다.  
 
 > 로보틱스에서 **Pose**는 위치(position)와 자세(orientation)을 합쳐 부르는 말이다. 2차원에서는 2차원 좌표$$(x,y)$$와 방향 각도 $$\theta$$가 Pose라고 할 수 있다. Pose에 좌표계 정의에 필요한 요소가 다 들어있기 때문에 Pose마다 좌표계를 만들수 있다. 로봇의 위치를 원점으로하고 로봇의 전방을 x축, 왼쪽을 y축으로 하는 좌표계를 만들면 로봇을 기준으로 다른 좌표나 Pose를 다시 계산할 수 있다.  
 >
