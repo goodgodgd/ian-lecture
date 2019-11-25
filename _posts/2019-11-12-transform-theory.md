@@ -189,10 +189,10 @@ $$
 
 
 $$
-\mathbf{p}_h' = \begin{bmatrix} x' \\ y' \\ 1 \end{bmatrix}
+\mathbf{p}_h = \begin{bmatrix} x \\ y \\ 1 \end{bmatrix}
 = \begin{bmatrix} R & \mathbf{t} \\ \mathbf{0} & 1 \end{bmatrix} 
-\begin{bmatrix} x \\ y \\ 1 \end{bmatrix} = T \mathbf{p}_h \\
-\mathbf{p}' = R \mathbf{p} + \mathbf{t} \\
+\begin{bmatrix} x' \\ y' \\ 1 \end{bmatrix} = T \mathbf{p}_h' \\
+\mathbf{p} = R \mathbf{p}' + \mathbf{t} \\
 R \in SO(2) \subset \mathbb{R}^{2 \times 2}, \quad \mathbf{t} \in \mathbb{R}^2
 $$
 
@@ -244,8 +244,8 @@ $$
 회전 행렬을 구했으니 이동(translation)까지 포함한 강체 변환 식을 다시 정리해보면 다음과 같다.
 
 $$
-\mathbf{p}' = R \mathbf{p} + \mathbf{t} \\
-\mathbf{p}_h' = \begin{bmatrix} R & \mathbf{t} \\ \mathbf{0} & 1 \end{bmatrix} \mathbf{p}_h = T\mathbf{p}_h \\
+\mathbf{p} = R \mathbf{p}' + \mathbf{t} \\
+\mathbf{p}_h = \begin{bmatrix} R & \mathbf{t} \\ \mathbf{0} & 1 \end{bmatrix} \mathbf{p}_h' = T\mathbf{p}_h \\
 R = \begin{bmatrix} cos\theta & -sin\theta \\ sin\theta & cos\theta \end{bmatrix}, 
 \quad \theta \in \mathbb{R}, \ 
 \mathbf{t} = \begin{bmatrix} t_x \\ t_y \end{bmatrix}  \in \mathbb{R}^2
@@ -256,9 +256,9 @@ $$
 두 번째 문제는 반대로 기준 좌표계에서의 좌표를 알 때 변환된 좌표계에서의 좌표를 구하는 것이다. 변환의 방향이 정반대이므로 식도 역함수로 나온다.  
 
 $$
-\mathbf{p} = R^{-1} \left( \mathbf{p}' - \mathbf{t} \right)  \\
-\mathbf{p}_h = T^{-1}\mathbf{p}_h' 
-= \begin{bmatrix} R^{-1} & R^{-1} \mathbf{t} \\ \mathbf{0} & 1 \end{bmatrix} \mathbf{p}_h' \\
+\mathbf{p}' = R^{-1} \left( \mathbf{p} - \mathbf{t} \right)  \\
+\mathbf{p}_h' = T^{-1}\mathbf{p}_h 
+= \begin{bmatrix} R^{-1} & R^{-1} \mathbf{t} \\ \mathbf{0} & 1 \end{bmatrix} \mathbf{p}_h \\
 R^{-1} = \begin{bmatrix} cos\theta & sin\theta \\ -sin\theta & cos\theta \end{bmatrix}
 $$
 
