@@ -1,8 +1,8 @@
 ---
 layout: post
 title:  "[Python] Number and String in Python"
-date:   2019-03-01 09:00:13
-categories: 2019-1-systprog
+date:   2020-03-01 09:00:13
+categories: 2020-1-systprog
 ---
 
 
@@ -116,6 +116,7 @@ integer <class 'int'> 28
 ## 3. 조건문(if)과 비교 연산자
 
 파이썬에서도 `>, <, <=, >=, ==, !=` 연산자를 통해 숫자의 크기를 비교할 수 있다. 비교 연산자를 배우는 김에 `if`문까지 배워보자. 파이썬에서 `if`는 다음과 같이 쓴다.
+
 ```python
 if cond1:
     statement1
@@ -126,7 +127,9 @@ elif cond2:
 else:
     statement5
 ```
+
 C언어의 if문과 비교해보면, 
+
 1. 조건문(if) 아래의 코드 블럭에 괄호가 없고 오직 들여쓰기로만 블럭을 구분한다. 
 2. 들여쓰기는 일반적으로 탭(Tab)이 아닌 공백 4칸을 사용한다. 탭은 에디터마다 길이가 다르므로 일정한 공백을 사용하는 것이 좋다. 탭과 공백을 섞어쓰면 에러가 난다. 하지만! PyCharm이나 VScode 같은 파이썬 전문 에디터에서는 탭을 알아서 공백 4칸으로 만들어준다.
 3. 새로운 블럭은 항상 `:`(colon) 기호 아래 들여쓰기 후 시작한다. 
@@ -146,35 +149,64 @@ else:
     print("13**3 < 30**2")
 ```
 
-그런데 파이썬에는 비교 연산자가 하나 더 있다. 바로 `is`다. 파이썬에서 두 객체가 '같음'을 비교하는 연산자는 `is`와 `==` 두 가지가 있다. 둘은 비슷해 보이지만 전혀 다른 연산자다. `is`는 동일한 객체, 즉 같은 주소(메모리)를 공유하는 객체인지를 확인하는 것이고, `==`는 객체의 값(value)이 같은지를 확인하는 것이다. 다음 예시를 통해 확인해보자.
+
+
+### is, and, or, in 연산자
+
+파이썬에는 `is, and, or, in` 처럼 단어로된 연산자들이 있다. 부호 연산자를 쓰는 것 보다 단어 연산자를 쓰면 코드가 인간의 언어에 가까워져서 자연스럽게 읽고 이해할 수 있다.  
+
+`is`는 `==`와 헷갈리기 쉽지만 전혀 다른 연산자다. `==` 앞 뒤의 두 값(value)이 같음을 비교한다면 `is`는 앞 뒤의 두 객체가 동일한 객체인지를 비교한다. 동일한 객체라는 뜻은 메모리를 공유하는, C언어로 치면 포인터 값이 같은 변수라는 뜻이다. 상수와의 비교에서는 `==` 연산자와 비슷하게 기능한다.
 
 ```python
 print("\nWhat is difference between `is` and `==`?")
-print("little difference for basic types(int, float, bool, str)")
-print("12 == 12:", 12 == 12)
-print("12 is 12:", 12 is 12)
-print("12 == True:", 12 == True)
-print("12 is True:", 12 is True)
+print("little difference for built-in types(int, float, str)")
+intvar = 12
+print("intvar == 12:", intvar == 12)
+print("intvar is 12:", intvar is 12)
+boolvar = True
+print("boolvar == True:", boolvar == True)
+print("boolvar is True:", boolvar is True)
 
-print("big difference for other types")
-foo = [1]
-bar = [1]
-print("foo == bar", foo == bar)
-print("foo is bar", foo is bar)
+print("big difference for object types")
+foo = [1, 2]
+bar = [1, 2]
+print("foo == bar:", foo == bar)
+print("foo is bar:", foo is bar)
+goo = bar
+goo[0] = 0
+print("bar, goo:", bar, goo)
+print("foo == goo", foo == goo)
+print("bar is goo", bar is goo)
 ```
 
 결과
+
 ```
 What is difference between `is` and `==`?
-little difference for basic types(int, float, str)
-12 == 12: True
-12 is 12: True
-12 == True: False
-12 is True: False
-big difference for other types
+little difference for built-in types(int, float, str)
+intvar == 12: True
+intvar is 12: True
+boolvar == True: True
+boolvar is True: True
+big difference for object types
 foo == bar True
 foo is bar False
+bar, goo: [0, 2] [0, 2]
+foo == goo False
+bar is goo True
 ```
+
+`and, or`는 각각 C언어의 `&&, ||`에 해당한다. 파이썬에는 비트 연산자인 `&, |`는 있으나 논리 연산자로는 `&&, ||`이 아닌 `and, or`를 사용한다.
+
+```python
+value = 10
+if value % 2 == 0 and value < 12:
+    print("value is even and less than 12")
+if value % 2 != 0 or value < 0:
+    print("value is odd or negative")
+```
+
+`in` 연산자는 어떤 객체가 문자열이나 리스트, 딕셔너리 등의 배열형 객체에 원소로서 포함되어 있는지를 확인하는 연산자인데 앞으로 배열형 객체를 배우면서 `in`의 용법에 대해서도 배울 것이다.
 
 
 
@@ -185,7 +217,7 @@ foo is bar False
 ```python
 string1 = "Life is too short"
 string2 = 'You need python'
-print(type(string1), type(string1))
+print("type(string1):", type(string1))
 # 문자열 안에 따옴표(', ") 입력
 print("Life 'is' too short")
 print('You "need" python')
@@ -425,9 +457,35 @@ print("split by words:", We_say.split(" "))
 print("split by phrase:", We_say.split(","))
 ```
 
+
+
 ### 연습문제
 
-1) 자신이 좋아하는 후크송 가사를 문자열 연산을 통해 만들어 보세오.
-2) 가사에서 반복되는 단어가 몇 번 나오는지, 첫 번째로 나오는 위치는 어디인지 찾아보세요.
-3) 가사에서 반복되는 단어를 다른 단어로 바꾸세오.
+1) "대리암"의 가사를 문자열 연산을 통해 만들어 보세오.  
 
+```python
+marble = \
+    "나는 대리암 염산과 반응하면 이산화탄소를 내며 녹는 대리암\n" \
+    "나는 대리암 염산과 반응하면 이산화탄소를 내며 녹는 대리암\n" \
+    "그간 많은 stress 견뎌내며 비로소 대리암이 되었다네\n" \
+    "모든 게 완벽했던 그 어느 날 난 너를 만나게 된 거야\n" \
+    "모든 게 완벽했던 그 어느 날 난 너를 만나게 된 거야\n" \
+    "나는 대리암 염산과 반응하면 이산화탄소를 내며 녹는 대리암\n" \
+    "나는 대리암 염산과 반응하면 이산화탄소를 내며 녹는 대리암\n" \
+    "나를 보고 웃기라도 하는 날엔 하루 종일 아무것도 할 수 없네\n" \
+    "그 눈으로 날 똑바로 바라보면 나는 녹아버릴 거야\n" \
+    "나는 대리암 염산과 반응하면 이산화탄소를 내며 녹는 대리암\n" \
+    "나는 대리암 염산과 반응하면 이산화탄소를 내며 녹는 대리암\n" \
+    "나는 대리암 염산과 반응하면 이산화탄소를 내며 녹는 대리암\n" \
+    "나는 대리암 염산과 반응하면 이산화탄소를 내며 녹는 대리암\n" \
+    "이것이 염산반응이다\n" \
+    "이것이 염산반응이다\n" \
+    "Hcl이다 CaCO3다\n" \
+    "2Hcl + CaCO3 -> CaCl2 +CO2 + H2O다.\n" \
+    "나는 대리암 염산과 반응하면 이산화탄소를 내며 녹는 대리암\n" \
+    "나는 대리암 염산과 반응하면 이산화탄소를 내며 녹는 대리암\n" \
+    "나는 대리암 나는 대리암"
+```
+
+2) 가사에서 "대리암"이 몇 번 나오는지, 세 번째로 나오는 위치는 어디인지 찾아보세요.  
+3) 가사에서 "대리암"을 "석회암"으로 바꿔보세오.  
