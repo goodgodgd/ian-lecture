@@ -1,8 +1,8 @@
 ---
 layout: post
 title:  "[Python] Data Structure 2: Dictionary, Tuple, Set"
-date:   2019-03-09 09:00:13
-categories: 2019-1-systprog
+date:   2020-03-09 09:00:13
+categories: 2020-1-systprog
 ---
 
 ## 2. Dictionary
@@ -53,7 +53,7 @@ except TypeError as te:
 
 ### 2.1  기본 사용법
 
-딕셔너리의 기본 특징은 **순서가 없다**는 것이다.(Unordered) 보통은 입력한 순서가 그대로 유지되는 것 처럼 보이지만 값을 넣고 빼고 하다보면 `print()` 했을 때 순서가 뒤바뀔 때도 있다. 사실 딕셔너리는 오직 `Key`로만 `Value`에 접근할 수 있으니 순서는 상관없다. 다음 예제를 통해 기본 사용법을 익혀보도록 하자.
+딕셔너리의 기본 특징은 **순서가 없다**는 것이다.(Unordered) Python 3.5까지는 딕셔너리를 만든 순서와 프린트 혹은 for loop에서의 순서가 달라질때도 있었으나 Python 3.6부터는 가급적 만들때의 순서를 지킨다. 사실 딕셔너리는 오직 `Key`로만 `Value`에 접근할 수 있으니 순서는 상관없다. 다음 예제를 통해 기본 사용법을 익혀보도록 하자.
 
 ```python
 print("\nbasic usage")
@@ -134,13 +134,22 @@ scores: [80, 70, 90, 85]
 items: [('pooh', 80), ('tigger', 70), ('piglet', 90), ('rabbit', 85)]
 ```
 
-딕셔너리 자체로는 `for`문을 통해 반복할 수 없고 `Key`가 필요한지, `Value`가 필요한지, 둘 다 필요한지에 따라 맞는 함수를 통해 반복가능한(iterable) 자료형으로 바꾸어 쓰면 된다.
+
+
+### 2.3 Iteration
+
+딕셔너리도 리스트처럼  for 문을 통해 반복할 수 있다. 딕셔너리 자체를 반복하면 `Key`가 하나씩 나온다. `Key`가 필요한지, `Value`가 필요한지, 둘 다 필요한지에 따라 맞는 함수를 통해 반복가능한(iterable) 자료형으로 변환하여 쓰면 된다.
+
 ```python
 print("\niterate over keys")
+for name in scores:
+    print("name:", name, "->", scores[name])
 for name in scores.keys():
-    print("name:", name)
+    print("name:", name, "=>", scores[name])
+print("\niterate over value")
 for score in scores.values():
     print("score:", score)
+print("\niterate over keys and values")
 for name, score in scores.items():
     print("name:score:", name, ":", score)
 ```
