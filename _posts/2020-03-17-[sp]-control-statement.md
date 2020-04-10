@@ -1,8 +1,8 @@
 ---
 layout: post
 title:  "[Python] Control statements: if, for and while"
-date:   2019-03-17 09:00:13
-categories: 2019-1-systprog
+date:   2020-03-17 09:00:13
+categories: 2020-1-systprog
 ---
 
 
@@ -35,11 +35,11 @@ all_heros = marvel_heroes + dc_heroes
 
 myhero = "batman"
 if myhero in marvel_heroes:
-    print("{}: Avengers are super cool!".format(myhero))
+    print(f"{myhero}: Avengers are super cool!")
 elif myhero in dc_heroes:
-    print("{}: We save martha...".format(myhero))
+    print(f"{myhero}: We save martha...")
 else:
-    print("{}: We are villains!!".format(myhero))
+    print(f"{myhero}: We are villains!!")
 
 print("list of marvel heroes")
 for hero in marvel_heroes:
@@ -174,17 +174,19 @@ print("hero's ability", heroes)
 다음 코드의 주석들을 구현하는 코드를 작성하시오.
 
 ```python
-heroes = ["iron man", "thor", "hulk", "captain america", "hawkeye"]
+heroes = ["iron man", "thor", "spider man", "hulk", "captain america", "hawkeye"]
 print("original heroes:", heroes)
 # 1. 히어로들을 알파벳 역순으로 정렬하시오.
 
 print("1. sorted heroes:", heroes)
 
-# 2. 1의 결과에서 첫번째와 마지막 히어로를 제거하고 captain marvel과 spider man을 추가하시오.
+# 2. 아래 new_heroes에서 첫번째와 마지막 히어로를 제거하고 captain marvel과 hawkeye을 추가하시오.
+new_heroes = [hero for hero in heroes]
 
-print("2. change heroes:", heroes)
+print("2. change heroes:", new_heroes)
 
 # 3. for문을 이용하여 'man'으로 끝나는 히어로 이름에서 'man'을 'woman'으로 바꾼 새 리스트 heroines를 만드시오.
+heroines = []
 
 print("3. transgender heroines:", heroines)
 
@@ -194,17 +196,17 @@ print("4. neutralized heroes:", neutralized_heroes)
 
 # 5. 2의 heroes에서 enumerate를 이용하여 홀수번째 히어로만 뽑아낸 새 리스트 odd_heroes를 만드시오.
 
-print("5. odd heroes", odd_heroes)
+print("5.2 odd heroes", odd_heroes)
 
 # 6. for문에 zip 함수를 써서 5의 히어로 이름과 배우 이름을 딕셔너리로 묶은 hero_actors를 만들어 보시오.
+actor_names = ["햄식이", "톰 홀랜드", "로다주", "마크 러펄로"]
 
 print("6. hero actors", hero_actors)
-print("6. thor was played by", hero_actors["hawkeye"])
+print("6. thor was played by", hero_actors["thor"])
 print("6. spider man was played by", hero_actors["spider man"])
 
-# 7. 2의 heroes를 연기한 배우들의 이름을 6의 hero_actors를 이용해 출력하시오.
+# 7. 2의 new_heroes를 연기한 배우들의 이름을 6의 hero_actors를 이용해 출력하시오.
 # 이름이 있으면 6번과 같이 이름을 출력하고 없으면 "?? has no name"을 출력하시오.
-
 ```
 
 
