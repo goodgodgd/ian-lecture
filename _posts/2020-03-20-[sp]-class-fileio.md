@@ -230,7 +230,6 @@ matrix_str = "4 2\n5 3"
 print("read matrix:", matrix)
 # => read matrix: [[4, 2], [5, 3]]
 # determinant 계산
-
 ```
 
 
