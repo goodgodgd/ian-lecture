@@ -1,8 +1,8 @@
 ---
 layout: post
 title:  "[Python] Use Basic Packages"
-date:   2019-04-02 09:00:13
-categories: 2019-1-systprog
+date:   2020-04-02 09:00:13
+categories: 2020-1-systprog
 ---
 
 
