@@ -1,8 +1,8 @@
 ---
 layout: post
 title:  "[Python] Implement GUI Text Editor"
-date:   2019-04-30 09:00:01
-categories: 2019-1-systprog
+date:   2020-04-30 09:00:01
+categories: 2020-1-systprog
 ---
 
 
@@ -104,7 +104,7 @@ class MyWindow(QMainWindow):
         print("open file:", filename)
         if not filename:
             return
-        with open(filename, "r") as f:
+        with open(filename, "r", encoding="utf8") as f:
             text = f.read(10000)
             self.textEdit.setText(text)
 ```
@@ -120,7 +120,7 @@ class MyWindow(QMainWindow):
         print("open file:", filename)
         if not filename:
             return
-        with open(filename[0], "w") as f:
+        with open(filename, "w", encoding="utf8") as f:
             f.write(self.textEdit.toPlainText())
 ```
 

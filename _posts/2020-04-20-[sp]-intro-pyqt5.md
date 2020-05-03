@@ -1,8 +1,8 @@
 ---
 layout: post
 title:  "[Python] Introduction to PyQt5"
-date:   2019-04-20 09:00:01
-categories: 2019-1-systprog
+date:   2020-04-20 09:00:01
+categories: 2020-1-systprog
 ---
 
 
@@ -11,7 +11,7 @@ categories: 2019-1-systprog
 
 ### What is Qt?
 
-Qt는 원래 C++을 위한 cross-platform GUI 라이브러리로 시작하였으나 현재는 범용 어플리케이션 프레임워크로 기능이 확장되었고 기존 데스크탑 위주에서  Android, iOS까지 확장되었다. C++라이브러리 뿐만 아니라 개발환경인 QtCreator, GUI 디자인 툴인 Qt Designer 등도 제공하여 왠만한 어플리케이션은 Qt 안에서 모두 개발 가능하다. 그럼에도 아직까지 가장 널리 사용되는 기능은 **cross-platform GUI** 다. Cross-platform이란 하나의 코드를 여러 운영체제에서 쓸수 있다는 뜻으로 *"Write once, compile anywhere!"* 라는 그들의 구호에 잘 나타나있다. C++에서 GUI를 만들때는 운영체제마다 상이한 API를 써야하는데 그러한 API를 내부적으로 쓰되 사용자에게는 통일된 GUI 클래스를 제공하여 사용자는 어느 운영체제건 상관없이 Qt 라이브러리로 동일한 코드를 컴파일하여 동일한 GUI를 만들어 낼 수 있다.
+Qt는 원래 C++을 위한 cross-platform GUI 라이브러리로 시작하였으나 현재는 범용 어플리케이션 프레임워크로 기능이 확장되었고 기존 데스크탑 위주에서  Android, iOS까지 확장되었다. C++라이브러리 뿐만 아니라 개발환경인 QtCreator, GUI 디자인 툴인 Qt Designer 등도 제공하여 왠만한 어플리케이션은 Qt 안에서 모두 개발 가능하다. 그래도 핵심 기능은 여전히 **cross-platform GUI** 다. Cross-platform이란 하나의 코드를 여러 운영체제에서 쓸수 있다는 뜻으로 *"Write once, compile anywhere!"* 라는 그들의 구호에 잘 나타나있다. C++에서 GUI를 만들때는 운영체제마다 상이한 API를 써야하는데 그러한 API를 내부적으로는 사용하되 사용자에게는 통일된 API를 제공하여 사용자는 어느 운영체제건 상관없이 Qt 라이브러리로 동일한 코드를 컴파일하여 동일한 GUI를 만들어 낼 수 있다.
 
 ### What is PyQt?
 
@@ -46,7 +46,7 @@ app.exec_()
 
 ### Design Methods: Writing code vs Qt Designer
 
-PyQt를 이용한 GUI 설계 방식은 두 가지가 있다. 위와 같이 직접 파이썬 코드로 GUI 객체를 생성하고 속성을 지정수도 있고 Qt Designer를 통해 GUI를 모두 설계한 뒤 이를 불러오는 방식이 있다. 두 방법이 장단점이 있는데 Qt Designer를 이용하면 그래픽 툴을 이용해 GUI를 쉽게 만들수 있고 실행 전 미리 시각적으로 볼 수 있기 때문에 시행착오가 적다. 하지만 GUI에 어떤 요소가 있는지 파이썬 코드에 드러나지 않기 때문에 GUI 설계가 끝난 뒤에도 Qt Designer를 항상 함께 실행해야 하는 불편함이 있다. Qt Designer를 이용하더라도 어차피 세부 설정이나 이벤트 처리는 파이썬 코드로 만들어야 하기 때문에 두 방식을 다 알아두는 것이 좋다.
+PyQt를 이용한 GUI 설계 방식은 두 가지가 있다. 위와 같이 직접 파이썬 코드로 GUI 객체를 생성하고 속성을 지정수도 있고 Qt Designer를 통해 GUI를 모두 그린 뒤 이를 불러오는 방식이 있다. 두 방법이 장단점이 있는데 Qt Designer를 이용하면 그래픽 툴을 이용해 GUI를 쉽게 만들수 있고 실행 전 미리 시각적으로 볼 수 있기 때문에 시행착오가 적다. 하지만 GUI에 어떤 요소가 있는지 파이썬 코드에 드러나지 않기 때문에 GUI 설계가 끝난 뒤에도 Qt Designer를 항상 함께 실행해야 하는 불편함이 있다. Qt Designer를 이용하더라도 어차피 세부 설정이나 이벤트 처리는 파이썬 코드로 만들어야 하기 때문에 두 방식을 다 알아두는 것이 좋다.
 
 ![qtdesigner](../assets/pyqt_basic/qtdesigner.png)
 
@@ -122,7 +122,7 @@ if __name__ == "__main__":
         # => window geometry: 500 200 300 150
 ```
 
-MainWindow 내부에 버튼을 추가할 때는 반드시 생성자의 두 번째 인자로 `self`가 들어가야만 윈도우에 버튼이 추가된다. 방금은 `setGeometry`함수로 위치와 크기를 한번에 지정했지만 `move(), resize()` 함수로 위치와 함수를 따로 지정하고 현재 설정된 값을 `pos(), size()`을 통해 읽을 수 있다. 여기서 중요한 것은 마지막 줄의 `connect` 함수다. `btn_print` 객체의 `clicked`라는 Signal을 `self.hello_slot`이라는 Slot 함수와 연결(connet)한 것이다. 이제 `btn_print`를 누르면 `hello_slot`이라는 함수가 실행될 것이다.
+MainWindow 내부에 버튼을 추가할 때는 반드시 생성자의 두 번째 인자로 `self`가 들어가야만 윈도우에 버튼이 추가된다. 방금은 `setGeometry`함수로 위치와 크기를 한번에 지정했지만 `move(), resize()` 함수로 위치와 함수를 따로 지정하고 현재 설정된 값을 `pos(), size()`을 통해 읽을 수 있다. 여기서 중요한 것은 마지막 줄의 `connect` 함수다. `btn_print` 객체의 `clicked`라는 Signal을 `self.hello_slot`이라는 Slot 함수와 연결(connet)한 것이다. 이제 `btn_print`를 클릭하면 `hello_slot`이라는 함수가 실행될 것이다.
 
 ```python
         btn_print = QPushButton("Hello", self)
@@ -183,7 +183,7 @@ MainWindow 내부에 버튼을 추가할 때는 반드시 생성자의 두 번�
 
 1. 현재 사용중인 Python 찾기: File - Settings - Project - Project Interpreter 들어가서 `Project Interpreter: `  옆의 파이썬 경로 찾기
 
-2. QtDesigner 시작화면에 등록: [path-to-python-root]/Lib/site-packages/pyqt5_tools/designer.exe 우클릭하여 "시작화면에 고정"
+2. QtDesigner 시작화면에 등록: [path-to-python-root]/Lib/site-packages/pyqt5_tools/Qt/bin/designer.exe 우클릭하여 "시작화면에 고정"
 
 3. QtDesigner 실행
 
@@ -307,4 +307,4 @@ if __name__ == "__main__":
 
 
 
-UI를 불러온 이후 `btn_print`와 `btn_close` 각각을 다른 slot에 연결(connect)하였다. `MyWindow` 클래스로부터 만들어진 `my_wnd` 객체에 QtDesigner에서 만든 `btn_print, btn_close, label_print` 가 들어있는지 확인하기 위해서는 `dir()` 함수를 쓰면 된다. `dir(obj)`은 객체의 모든 attribute (함수와 변수) 목록을 출력해준다. `print(dir(my_wnd))`를 실행하면 너무 긴 목록이 나오기 때문에 "btn"과 "label"로 시작하는 attribute만 출력하니 QtDesigner에서 만든 GUI 객체들을 확인할 수 있다.
+`uic.loadUi()` 함수를 이용해 UI 파일을 불러온다. 이후 `btn_print`와 `btn_close` 각각을 다른 slot에 연결(connect)하였다. `MyWindow` 클래스로부터 만들어진 `my_wnd` 객체에 QtDesigner에서 만든 `btn_print, btn_close, label_print` 가 들어있는지 확인하기 위해서는 `dir()` 함수를 쓰면 된다. `dir(obj)`은 객체의 모든 attribute (함수와 변수) 목록을 출력해준다. `print(dir(my_wnd))`를 실행하면 너무 긴 목록이 나오기 때문에 "btn"과 "label"로 시작하는 attribute만 출력하니 QtDesigner에서 만든 GUI 객체들을 확인할 수 있다.
