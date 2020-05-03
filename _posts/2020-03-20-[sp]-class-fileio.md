@@ -2,7 +2,7 @@
 layout: post
 title:  "[Python] Class and File IO"
 date:   2020-03-20 09:00:13
-categories: 2019-1-systprog
+categories: 2020-1-systprog
 ---
 
 
