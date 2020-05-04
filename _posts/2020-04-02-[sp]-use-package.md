@@ -172,7 +172,7 @@ print("subdir list in current dir:", dirlist)
 
 ## HW2
 
-다음 주소 <http://naver.me/54MAmyO1>에서 압축파일을 받아 압축을 푸세요. `lyrics`라는 폴더 아래 봄 노래 세 곡의 가사가 텍스트 파일로 저장되어 있습니다. 다음 기능을 하는 파이썬 스크립트를 만들어보세요.
+다음 [주소](<https://drive.google.com/file/d/1x_DII1VEvpdYHx8GQjAEgWsG2fsqO8L4/view?usp=sharing>)에서 압축파일을 받아 압축을 푸세요. `lyrics`라는 폴더 아래 봄 노래 세 곡의 가사가 텍스트 파일로 저장되어 있습니다. 다음 기능을 하는 파이썬 스크립트를 만들어보세요.
 
 1. `lyrics` 옆에 `lyrics_winter`라는 폴더를 만들기, 단 폴더가 있는지를 확인해서 없을때만 만들기
 2. `lyrics` 내부의 파일 목록을 만들고 한 파일씩 가사 데이터를 읽기
