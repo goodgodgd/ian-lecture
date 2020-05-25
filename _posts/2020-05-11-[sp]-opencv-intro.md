@@ -1,8 +1,8 @@
 ---
 layout: post
 title:  "[Python] Introduction to OpenCV"
-date:   2019-05-11 09:00:01
-categories: 2019-1-systprog
+date:   2020-05-11 09:00:01
+categories: 2020-1-systprog
 ---
 
 
@@ -17,7 +17,7 @@ OpenCV는 2500개 이상의 최적화된 알고리즘을 제공하여 많은 사
 
 OpenCV는 원래 1999년 인텔의 러시아 팀에서 개발이 되었다. (OpenCV 아버지 Gary Bradski) 첫 번째 alpha 버전은 2000년에 나오고 중간에 beta 버전들이 나온 후, 2006년에 OpenCV 1.0 나오게 됐다. (내가 처음 OpenCV를 접한 것도 학부 4학년 2008년 이었는데 그때 이미 한글책도 나오고 보편적으로 쓰이고 있었다.)  
 
-중간에 다른 회사에서 관리하다가 이제는 [opencv.org](<https://opencv.org/>)라는 단체에서 "관리"한다. 여기서 관리라 함은 여러 개발자들이 올려준 소스들을 검증하고 다음 Release에 넣을지 등을 결정한다는 것이고 개발은 수많은 자원자들과 이를 지원하는 회사들에 의해 진행 된다. 2019년 5월 현재는 OpenCV 4.1이 최신 버전이며 pypi에 올라온 `opencv-python` 패키지도 최신 버전을 제공한다.  
+중간에 다른 회사에서 관리하다가 이제는 [opencv.org](<https://opencv.org/>)라는 단체에서 "관리"한다. 여기서 관리라 함은 여러 개발자들이 올려준 소스들을 검증하고 다음 Release에 넣을지 등을 결정한다는 것이고 개발은 수많은 자원자들과 이를 지원하는 회사들에 의해 진행된다. 2020년 5월 현재는 OpenCV 4.3이 최신 버전이며 pypi에 올라온 `opencv-python` 패키지는 4.2 버전을 제공하고 있다. 
 
 
 
@@ -53,7 +53,7 @@ cv2.destroyAllWindows()
 
 
 
-![손흥민능욕.jpg](/ian-lecture/assets/opencv/superson-cap.jpg)
+![손흥민능욕.jpg](../assets/opencv/superson-cap.jpg)
 
 영상 입출력에 관련된 함수들을 살펴보자.
 
@@ -63,7 +63,7 @@ cv2.destroyAllWindows()
 >
 > - cv2.IMREAD_COLOR: flag 기본 값, 일반적인 color 영상 읽기, alpha channel 무시
 > - cv2.IMREAD_GRAYSCALE: 영상을 gray scale로 읽기
-> - cv2.IMREAD_UNCHANGED: 영상을 alpha channel까지 포함하여 읽기
+> - cv2.IMREAD_UNCHANGED: 영상을 (alpha channel까지 포함하여) 저장된 그대로 읽기
 >
 > **imshow(title, image)**: 제목과 영상을 입력하면 윈도우 창에 보여준다.
 >
@@ -107,7 +107,7 @@ cv2.destroyAllWindows()
 
 참고로, 위 코드에서 `chr()`는 유니코드 숫자를 문자로 변환하는 함수고 `ord()`는 그 반대로 변환하는 함수다.
 
-![손흥민능욕2.jpg](/ian-lecture/assets/opencv/superson-types.jpg)
+![손흥민능욕2.jpg](../assets/opencv/superson-types.jpg)
 
 
 
@@ -144,21 +144,17 @@ cap.release()
 >
 > **VideoCapture(camera_id)**: 객체 생성시 PC에 연결된 카메라 번호(주로 0)를 입력하면 카메라로부터 실시간 영상을 받을 수 있다.
 >
+> **read()**: 한 프레임을 읽고 bool type으로 읽기의 성공 여부와 읽은 영상을 반환한다.
+>
 > **isOpened()**: 파일이나 실시간 스트림이 정상적으로 열렸는지 확인하여 bool type으로 반환한다.
 >
 > **get(propId)**: 비디오 파일의 다양한 속성(크기, 시작위치 등)을 읽는다. `propId`로 입력한 속성을 반환한다. 비디오 속성의 목록은 [여기](https://docs.opencv.org/4.1.0/d4/d15/group__videoio__flags__base.html#gaeb8dd9c89c10a5c63c139bf7c4f5704d)서 확인할 수 있다.
 >
 > **set(propId, value)**: 비디오 파일의 다양한 속성을 수정한다. `propId`로 입력한 속성 값을 `value`로 바꾼다.
->
-> **read()**: 한 프레임을 읽고 bool type으로 읽기의 성공 여부와 읽은 영상을 반환한다.
-
-
 
 ## 3.2 Write Video
 
 동영상을 저장할 때는 `cv2.VideoWriter` 객체를 생성하여 사용한다. 주요 함수를 살펴보자.
-
-
 
 > **VideoWriter(filename, fourcc, fps, frameSize)**: 객체 생성자
 >
@@ -212,7 +208,7 @@ cap.release()
 vout.release()
 ```
 
-![endgame.png](/ian-lecture/assets/opencv/endgame-cap.jpg)
+![endgame.png](../assets/opencv/endgame-cap.jpg)
 
 # 4. Pixel Operation
 
@@ -275,7 +271,7 @@ cv2.imshow("jjangzeolmi", image)
 cv2.waitKey()
 ```
 
-![jjang-border.png](/ian-lecture/assets/opencv/jjang-border.jpg)
+![jjang-border.png](../assets/opencv/jjang-border.jpg)
 
 
 
@@ -325,7 +321,7 @@ cv2.imshow("draw shape", shapeimg)
 cv2.waitKey()
 ```
 
-![makrae-shape.png](/ian-lecture/assets/opencv/makrae-shape.jpg)
+![makrae-shape.png](../assets/opencv/makrae-shape.jpg)
 
 
 
@@ -393,7 +389,7 @@ if __name__ == "__main__":
 
 Callback 함수에 값을 전달하기 위해 전역 변수로 선언했어야 할 변수들을 클래스 멤버 변수로 선언하고 이벤트를 처리하는 `on_mouse_event()` 함수도 멤버 함수로 선언하여 사용했다. ~~근데 결과를 보니 아까 코드로 그렸던게 더 예쁜듯~~
 
-![makrae-callback.png](/ian-lecture/assets/opencv/makrae-callback.jpg)
+![makrae-callback.png](../assets/opencv/makrae-callback.jpg)
 
 
 
