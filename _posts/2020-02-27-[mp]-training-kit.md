@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Chap03 개발 환경 설정"
+title:  "ATmega128 개발환경 설정"
 date:   2020-02-27 09:00:03
 categories: 2020-1-MICRO
 ---
