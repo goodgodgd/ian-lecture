@@ -11,7 +11,7 @@ categories: 2019-1-systprog
 
 Color space란 화소의 색상을 표현하는 공간이다. (영상 픽셀 좌표 (u, v)와는 전혀 다른 개념이다.) 우리가 가장 흔하게 쓰고 있는 color space는 RGB color space다. 일반적인 영상에서 한 픽셀은 RGB가 각각 8 bit씩 0~255 사이의 값을 가질 수 있다. 아래 그림처럼 하나의 색상은 3차원 RGB 공간에서 한 점을 나타낸다. 
 
-![rgb-color-space](/ian-lecture/assets/opencv-color/rgb-color-space.gif)
+![rgb-color-space](../assets/opencv-color/rgb-color-space.gif)
 
 
 
@@ -19,13 +19,15 @@ Color space란 화소의 색상을 표현하는 공간이다. (영상 픽셀 좌
 
 이렇게 색상을 나타낼 수 있는 공간을 color space라고 하는데 그 중 가장 간단한 것은 흑과 백, 즉 0과 255로만 이루어진 **binary** 영상이다. 흰 바탕에 검은 글씨만 쓸 수 있는 메모장 같은 앱이 binary color space를 쓴다고 볼 수 있다. 그리고 밝기의 명암을 나타낼 수 있는 **gray** 영상이있다. Binary와 gray 모두 픽셀 하나의 색상이 하나의 값으로 결정이 되는 1차원 color space다. binary는 값을 0과 255만 가질수 있고 gray는 0~255 사이의 값을 가질 수 있다. 아래 그림은 binary, gray, rgb 영상을 비교한 것이다.
 
-![spiderman-gray](/ian-lecture/assets/opencv-color/spiderman-gray.jpg)
+![spiderman-gray](../assets/opencv-color/spiderman-gray.jpg)
 
 
 
-컬러 영상을 표현하기 위해서는 화소 하나당 RGB 세 개의 값이 필요하다. 즉 red, green, blue 영상을 나타내는 세 장의 gray 영상이 합쳐져야 하나의 컬러 영상을 만들 수 있다. 이때 각 색상을 나타내는 gray 영상을 **채널(channel)**이라 부른다.  영상 데이터의 shape을 보면 gray 영상은 (rows, cols) 2차원 배열로 나타나지만 rgb 영상은 (rows, cols, 3)으로 3차원 배열로 나타난다. 아래 그림은 왼쪽부터 blue, green, red 각 채널을 gray 영상으로 나타낸 것이다. Blue와 red 영상을 보면 스파이더맨 슈트의 빨간색과 파란색 영역의 밝기가 서로 반대로 나타나는 것을 확인할 수 있다.
+컬러 영상을 표현하기 위해서는 화소 하나당 RGB 세 개의 값이 필요하다. 즉 red, green, blue 영상을 나타내는 세 장의 gray 영상이 합쳐져야 하나의 컬러 영상을 만들 수 있다. 이때 각 색상을 나타내는 gray 영상을 **채널(channel)**이라 부른다.  영상 데이터의 shape을 보면 gray 영상은 (rows, cols) 2차원 배열로 나타나지만 rgb 영상은 (rows, cols, 3)으로 3차원 배열로 나타난다.  
 
-![spiderman-bgr](/ian-lecture/assets/opencv-color/spiderman-bgr.jpg) 
+아래 그림은 왼쪽부터 blue, green, red 각 채널을 gray 영상으로 나타낸 것이다. Blue와 red 영상을 보면 스파이더맨 슈트의 빨간색과 파란색 영역의 밝기가 서로 반대로 나타나는 것을 확인할 수 있다.
+
+![spiderman-bgr](../assets/opencv-color/spiderman-bgr.jpg) 
 
 
 
@@ -74,7 +76,7 @@ cv2.waitKey()
 - **S**aturation: 색의 순도. 0~255 사이의 값을 가지며 0에 가까울수록 무채색이되고 255에 가까울수록 색이 선명해진다.
 - **V**alue: 빛의 밝기. 0~255사이의 값을 가지며 0에 가까울수록 어둡고 255에 가까울수록 밝다.
 
-![HSV-color-space](/ian-lecture/assets/opencv-color/HSV_color_space.png)
+![HSV-color-space](../assets/opencv-color/HSV_color_space.png)
 
 
 
@@ -89,7 +91,7 @@ cv2.imshow("HSV channels", channels)
 cv2.waitKey()
 ```
 
-![spiderman-hsv](/ian-lecture/assets/opencv-color/spiderman-hsv.jpg)
+![spiderman-hsv](../assets/opencv-color/spiderman-hsv.jpg)
 
 각 채널 영상을 원본 영상과 비교해보면 이해할 수 있다. 왼쪽은 Hue 채널인데 빨간색이 0이나 180 근처이므로 옷의 빨간색은 180에 가깝게 나타났고 얼굴은 0에 가깝게 나왔다. 그리고 옷 영역에서 명암에 따른 차이는 거의 사라지고 색상별로 거의 균일한 값이 나옴을 확인할 수 있다. 오른쪽은 Value 채널인데 밝기를 나타낸 것이므로 gray 영상과 비슷하게 나온다.  
 
@@ -112,7 +114,7 @@ cv2.imshow("segmented image", segment)
 cv2.waitKey()
 ```
 
-![spiderman-segment](/ian-lecture/assets/opencv-color/spiderman-segment.jpg)
+![spiderman-segment](../assets/opencv-color/spiderman-segment.jpg)
 
 왼쪽의 톰 홀랜드는 색상이 선하고 배경이 단순하기 때문에 거의 정확하게 얼굴과 몸이 구분된 것을 볼 수 있다. 반면 오른쪽의 토비 맥과이어는 색상이 어두워서 색상의 해상도가 좋지 않고 배경에도 파란색이 들어가 있어서 segmentation의 정확도가 떨어진다. 여기서 중요한 것은 **양쪽의 명암이 크게 다른데도 색상(hue)을 기준으로 비슷한 결과**를 냈다는 것이다.  
 
@@ -139,7 +141,7 @@ cv2.imshow("YUV channels", channels)
 cv2.waitKey()
 ```
 
-![spiderman-yuv](/ian-lecture/assets/opencv-color/spiderman-yuv.jpg)
+![spiderman-yuv](../assets/opencv-color/spiderman-yuv.jpg)
 
 
 
@@ -163,7 +165,7 @@ cv2.imshow("thresolding", showimg)
 cv2.waitKey()
 ```
 
-![sungmo_thresh](/ian-lecture/assets/opencv-color/sungmo_thresh.png)
+![sungmo_thresh](../assets/opencv-color/sungmo_thresh.png)
 
 `threshold` 함수의 입출력 인자는 다음과 같다.
 
@@ -172,7 +174,7 @@ cv2.waitKey()
 > - img: 입력 영상
 > - threshold: 경계값
 > - value: 경계 값 기준을 만족하는 픽셀에 들어갈 값
-> - type: threshol 적용 방법
+> - type: threshol 적용 방법, 자세한 내용은 [이곳](https://docs.opencv.org/master/d7/d1b/group__imgproc__misc.html#gaa9e58d2860d4afa658ef70a9b1115576) 참조
 >   - cv2.THRESH_BINARY: px > threshold ? maxval: 0
 >   - cv2.THRESH_BINARY_INV: px > threshold ? 0 : maxval
 >   - cv2.THRESH_TRUNC: px > threshold ? maxval : px
@@ -187,7 +189,7 @@ cv2.waitKey()
 
 `threshold()` 함수의 다양한 효과를 편리하게 확인하기 위해 GUI를 만들어보자. `QFileDialog`를 통해 파일을 선택하기 위해 `menubar`에 `File-Open, Save`를 추가하고, `thresh`는 slider를 통해 조절할 수 있다. `maxval`은 255 고정값으로 넣고, `type`은 여러가지 중에 하나를 선택해야 하니 radio button을 사용한다. 그래서 다음과 같은 GUI를 QtDesigner에서 설계한 뒤 `thresholding.ui`라는 이름으로 저장한다.
 
-![threshold-gui](/ian-lecture/assets/opencv-color/threshold-gui.png)
+![threshold-gui](../assets/opencv-color/threshold-gui.png)
 
 
 
@@ -206,8 +208,6 @@ class MyWindow(QMainWindow):
         self.ui = uic.loadUi("thresholding.ui", self)
         self.src_img = None             # 원본 영상
         self.res_img = None             # threshold 결과 영상
-        self.src_title = "original"     # 원본 영상 제목
-        self.res_title = "result image" # 결과 영상 제목
         self.setup_ui()
 
     def setup_ui(self):
@@ -221,7 +221,7 @@ class MyWindow(QMainWindow):
         if not filename:
             return
         self.src_img = cv2.imread(filename, cv2.IMREAD_GRAYSCALE)
-        cv2.imshow(self.src_title, self.src_img)
+        cv2.imshow("original", self.src_img)
         cv2.waitKey(1)
 
     def save_file(self):
@@ -276,7 +276,7 @@ if __name__ == "__main__":
             return
         thr_type, threshold = self.get_params()
         ret, self.res_img = cv2.threshold(self.src_img, threshold, 255, thr_type)
-        cv2.imshow(self.res_title, self.res_img)
+        cv2.imshow("result image", self.res_img)
         cv2.waitKey(1)
 
     def get_params(self):
@@ -291,7 +291,7 @@ if __name__ == "__main__":
 
 각각의 radio button을 눌러보고 slider를 움직이면서 효과를 느껴보자. 다음은 각 thresholding 방식을 비교한 그림이다.  
 
-![thresh-all-types](/ian-lecture/assets/opencv-color/thresh-all-types.png)
+![thresh-all-types](../assets/opencv-color/thresh-all-types.png)
 
 
 
@@ -301,6 +301,7 @@ if __name__ == "__main__":
     def setup_ui(self):
         # .. 중략 ..
          self.pushButton_thresh_types.clicked.connect(self.show_all_types)
+
     def show_all_types(self, checked):
         if not checked:
             return
@@ -345,10 +346,10 @@ ret, res_img = cv2.threshold(src_img, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTS
 > 	- maxValue: 경계 값을 만족하는 픽셀에 적용할 값
 >  - adaptiveMethod: 경계 값 결정 방법
 >    	- cv2.ADAPTIVE_THRESH_MEAN_C: 주변 영역의 평균 값으로 결정
->       	- cv2.ADAPTIVE_THRESH_GAUSSIAN_C: 주변 영역의 Gaussian 가중 평균 값으로 결정 (가까울 수록 높은 가중치)
-> 	- thresholdType: threshold 적용 방법 (`threshold()` 와 동일)
-> 	- blockSize: 영역의 크기 (홀수만 가능 3, 5, 7, ...)
-> 	- C: 자동으로 계산된 경계 값에 가감할 상수(음수 가능)
+>     - cv2.ADAPTIVE_THRESH_GAUSSIAN_C: 주변 영역의 Gaussian 가중 평균 값으로 결정 (가까울 수록 높은 가중치)
+> - thresholdType: threshold 적용 방법 (`threshold()` 와 동일)
+> - blockSize: 영역의 크기 (홀수만 가능 3, 5, 7, ...)
+> - C: 자동으로 계산된 경계 값에 가감할 상수(음수 가능)
 
 
 
@@ -356,7 +357,7 @@ ret, res_img = cv2.threshold(src_img, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTS
 
 Threshold 자동화 기능을 방금 코드에 적용해보자. 적응형 알고리즘은기본 threshold 타입과는 독립적으로 작용하므로 새로운 버튼 그룹을 만들었다.
 
-![threshold-gui-adv](/ian-lecture/assets/opencv-color/threshold-gui-adv.png)
+![threshold-gui-adv](../assets/opencv-color/threshold-gui-adv.png)
 
 - `None`: 적응형 알고리즘을 적용하지 않음
 - `OTSU`: Otsu 알고리즘으로 전역 경계 값 결정
@@ -389,7 +390,7 @@ class MyWindow(QMainWindow):
             print("threshold", ret)
         else:
             self.res_img = cv2.adaptiveThreshold(self.src_img, 255, adaptive, thr_type, 9, 5)
-        cv2.imshow(self.res_title, self.res_img)
+        cv2.imshow("result image", self.res_img)
         cv2.waitKey(1)
 
     def get_params(self):
@@ -415,7 +416,7 @@ class MyWindow(QMainWindow):
 
 다음은 네 가지 적응형 알고리즘 옵션을 적용한 결과이다. 영역에 따라 영상의 조명상태가 달라지기 때문에 이러한 영상에서 숫자를 잘 보려면 `adaptiveThreshold()` 함수를 써야한다. 아래 이미지를 만든 코드도 붙인다.
 
-![thresh-adap](/ian-lecture/assets/opencv-color/thresh-adap.png)
+![thresh-adap](../assets/opencv-color/thresh-adap.png)
 
 ```python
     def setup_ui(self):
