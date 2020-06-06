@@ -1,8 +1,8 @@
 ---
 layout: post
 title:  "[Python] Image Filters"
-date:   2019-05-24 09:00:01
-categories: 2019-1-systprog
+date:   2020-05-24 09:00:01
+categories: 2020-1-systprog
 ---
 
 
@@ -13,7 +13,7 @@ categories: 2019-1-systprog
 
 필터에는 주변의 픽셀 값을 이용하는 공간 영역 필터와 픽셀 값들을 주파수 영역으로 변환해서 처리하는 주파수 영역 필터가 있는데 주로 쉽고 단순한 공간 영역 필터가 많이 쓰인다. 공간 영역 필터는 주로 **컨볼루션(convolution)** 연산을 이용하여 구현한다. 컨볼루션은 모든 픽셀에 대해 주변 영역 픽셀 값과의 일정한 연산을 반복하여 결과 영상을 얻어내는 방법을 말한다. 컨볼루션을 연산 방법은 아래 그림과 같다. 
 
-![convolution](/ian-lecture/assets/opencv-filter/convolution.gif)
+![convolution](../assets/opencv-filter/convolution.gif)
 
 가운데 움직이는 배열을 **커널(kernel)**이라 하며, 윈도우(window), 필터(filter), 마스크(mask)라고도 부른다. 커널은 슬라이딩 윈도우(sliding window) 방식으로 모든 픽셀을 돌아가며 주변 픽셀과 곱한 후 합산한다. 다음은 OpenCV C++ 스타일로 구현한 컨볼루션 예시다.
 
@@ -38,7 +38,7 @@ void filter(srcimg, kernel, anchor, dstimg) {
 > dst = **cv2.filter2D**(src, ddepth, kernel[, dst, anchor, delta, borderType])
 >
 > - src: 입력 영상
-> - ddepth: 출력 영상의 dtype, -1이면 입력 영상과 동일한 타입이고, 선택할 수 있는 cv2.CV_8U, cv2.16U, CV_32F 등의 값을 [이곳](<https://docs.opencv.org/4.1.0/d4/d86/group__imgproc__filter.html#filter_depths>)에서 확인할 수 있다.
+> - ddepth: 출력 영상의 dtype, 커널에 따라 컨볼루션 결과가 음수가 나오거나 255가 넘을 수 있으므로 값 범위를 생각해서 출력 데이터 타입을 정해줘야 한다. -1이면 입력 영상과 동일한 타입이고, 선택할 수 있는 cv2.CV_8U, cv2.16U, CV_32F 등의 값을 [이곳](<https://docs.opencv.org/4.1.0/d4/d86/group__imgproc__filter.html#filter_depths>)에서 확인할 수 있다.
 > - kernel: 컨볼루션 커널, 보통 커널은 3 x 3, 5 x 5 등의 홀수 정사각형 모양을 쓴다.
 > - dst: 결과 영상
 > - anchor: 커널의 기준점
@@ -66,12 +66,12 @@ $$
 > dst = **cv2.blur**(src, ksize[, dst, anchor, borderType])
 >
 > - src: 입력 영상
-> - ksize: 커널의 크기 (너비, 높이)
+> - ksize: 커널의 크기 (너비, 높이), 일반적인 배열의 크기는 (높이, 너비) 순서지만 'ksize'는 (너비, 높이) 순서로 입력한다.
 > - dst: 결과 영상
 
-같은 영상에 두 가지 함수를 사용해서 다양한 크기의 평균 필터를 적용한 결과를 비교해보자. 결과를 보면 커널의 크기가 커질수록 그림이 더 흐려지는 것을 볼 수 있다. (1x1) 커널은 원본 영상과 같다. (7x1) 커널은 세로로 평균을 내므로 가로선이 흐릿해지고 (1x7) 커널은 가로로 평균을 내므로 세로선이 흐릿해진다. 크롬에서 우클릭하여 "새 탭에서 이미지 열기"를 누르면 원본 크기로 볼 수 있다.
+같은 영상에 두 가지 함수를 사용해서 다양한 크기의 평균 필터를 적용한 결과를 비교해보자. 결과를 보면 커널의 크기가 커질수록 그림이 더 흐려지는 것을 볼 수 있다. (1, 1) 커널은 원본 영상과 같다. (7, 1) 커널은 가로로 평균을 내므로 가로선이 흐릿해지고 (1, 7) 커널은 세로로 평균을 내므로 세로선이 흐릿해진다. 크롬에서 우클릭하여 "새 탭에서 이미지 열기"를 누르면 원본 크기로 볼 수 있다.
 
-![yumi-blur](/ian-lecture/assets/opencv-filter/yumi-blur.jpg)
+![yumi-blur](../assets/opencv-filter/yumi-blur.jpg)
 
 
 
@@ -117,7 +117,7 @@ if __name__ == "__main__":
 
 아래 그림에서 `cv2.blur()`의 결과와 비교해 보면 평균 필터는 잔상이 퍼지는 느낌이 있지만 가우시안 필터는 영상이 부드럽게 흐릿해진다. 커널의 사이즈는 같지만 가우시안 필터가 원본에 더 가까움을 볼 수 있다.
 
-![yumi-gaussian](/ian-lecture/assets/opencv-filter/yumi-gaussian.jpg)
+![yumi-gaussian](../assets/opencv-filter/yumi-gaussian.jpg)
 
 ```python
 # blur() 함수 뒤에
@@ -139,7 +139,7 @@ def gaussian():
 
 먼저 결과를 보면서 이해해 보자. 왼쪽 원본 영상에는 검고 흰 점들이 무수히 찍혀 있는게 거기에 가우시안 필터를 적용해도 노이즈가 뭉개질 뿐 사라지진 않는다. 하지만 오른쪽의 미디언 필터를 적용한 결과는 아직 남아있는 점도 있지만 상당수의 점들이 사라진 것을 볼 수 있다. 미디언 필터도 영상이 부드러워지긴 하는데 가우시안 블러링과는 느낌이 다르다. 미디언 필터는 경계가 흐릿해지진 않지만 경계선이 단순해지는 효과가 있어서 마치 물감으로 그린듯한 효과가 난다.
 
-![snp-median](/ian-lecture/assets/opencv-filter/snp-median.jpg)
+![snp-median](../assets/opencv-filter/snp-median.jpg)
 
 
 
@@ -163,7 +163,7 @@ def median():
     result_img = si.show_imgs(median_imgs, "Median Filter", 3)
 ```
 
-![ann-median](/ian-lecture/assets/opencv-filter/ann-median.jpg)
+![ann-median](../assets/opencv-filter/ann-median.jpg)
 
 여기서는 점의 크기가 좀 있기 때문에 3x3 커널로는 주근깨를 충분히 없애지 못 했지만 5x5에서는 주근깨가 거의 사라진 것을 볼 수 있다. 대신 얇은 눈썹 부분이 더 얇아지게 되었다.
 
@@ -171,9 +171,9 @@ def median():
 
 ## 2.4 Bilateral Filter
 
-블러링 필터는 노이즈를 약화시키는데 효과가 있지만 경계(edge)도 흐릿하게 만든다. 바이래터럴(bilateral) 필터는 노이즈는 줄이면서 경계는 살리기 위해 중심 픽셀과의 거리 뿐만 아니라 색상 차이까지 고려하여 커널을 만든다. 가우시안 커널은 중심 픽셀과의 거리를 기준으로 일정한 커널을 만들어 영상 전체에 적용하지만 바이래터럴 필터는 주변 픽셀과의 밝기 차이도 고려해서 차이가 클수록 낮은 가중치로 곱하므로 **모든 픽셀마다 다른 커널이 적용**된다. 이는 다음 그림에 표현되어 있다. 왼쪽이 원본 영상이고 중앙이 컬러만을 고려해서 만든 커널, 오른쪽은 컬러 커널에 공간적 거리를 고려한 가우시안 커널을 곱한 커널이다.
+블러링 필터는 노이즈를 약화시키는데 효과가 있지만 경계(edge)도 흐릿하게 만든다. 바이래터럴(bilateral) 필터는 노이즈는 줄이면서 경계는 살리기 위해 중심 픽셀과의 거리 뿐만 아니라 색상 차이까지 고려하여 커널을 만든다. 가우시안 커널은 중심 픽셀과의 거리를 기준으로 일정한 커널을 만들어 영상 전체에 적용하지만 바이래터럴 필터는 주변 픽셀과의 밝기 차이도 고려해서 차이가 클수록 낮은 가중치로 곱하므로 **모든 픽셀마다 다른 커널이 적용**된다. 이는 다음 그림에 표현되어 있다. 왼쪽이 원본 영상이고 중앙이 컬러 차이에 따라 가중치를 준 커널, 오른쪽은 컬러 커널에 공간적 거리를 고려한 가우시안 커널을 곱한 커널이다.
 
-![bilateral-kernel](/ian-lecture/assets/opencv-filter/bilateral-kernel.jpg)
+![bilateral-kernel](../assets/opencv-filter/bilateral-kernel.jpg)
 
 OpenCV에서는 바이래터럴 필터를 구현한 `cv2.bilateralFilter()` 함수를 제공한다.
 
@@ -181,13 +181,13 @@ OpenCV에서는 바이래터럴 필터를 구현한 `cv2.bilateralFilter()` 함�
 >
 > - src: 원본 영상
 > - d: 필터링에 들어갈 주변 픽셀 반경, -1을 넣으면 sigmaSpace에 의해 자동 결정된다.
-> - sigmaColor: 주변 픽셀의 밝기 차이에 따른 가중치 반영 지수, 이 값이 높을 수록 큰 차이가 나는 주변 픽셀 값도 높은 가중치를 갖게 된다. (가우시안 필터에 가까워 진다.)
+> - sigmaColor: 주변 픽셀의 밝기 차이에 따른 가중치 반영 지수, 이 값이 높을 수록 큰 차이가 나는 주변 픽셀 값도 높은 가중치를 갖게 된다.
 > - sigmaSpace: 주변 픽셀과의 거리에 따른 가중치 반영 지수, 이 값이 클수록 멀리 있는 픽셀도 높은 가중치를 갖게 된다.
 
 
 필터를 비교한 영상을 보면 가우시안 필터를 적용한 영상에서는 원본에 비해 모든 것이 흐릿하게 보인다. 반면 바이래터럴 필터를 적용한 영상에서는 아래의 흙, 아스팔트, 초원의 자잘한 변화는 부드럽게 처리가 됐지만 도로선이나 하늘과 바다의 경계, 집의 윤곽선은 원본 영상처럼 선명하게 남아있다. 두 개의 sigma 값이 낮게 들어간 영상(왼쪽 아래)에서는 흙 바닥에 밝거나 검은 튀는 픽셀들이 하나씩 남아있는데 비해 sigma 값이 높게 들어간 영상(오른쪽 아래)에서는 아주 강한 경계면을 제외하고는 대부분 블러링이 심해졌다.
 
-![road-bilateral](/ian-lecture/assets/opencv-filter/road-bilateral.jpg)
+![road-bilateral](../assets/opencv-filter/road-bilateral.jpg)
 
 ```python
 def bilateral():
@@ -260,15 +260,13 @@ IMG_PATH = "../sample_imgs"
 
 def sobel():
     image = cv2.imread(IMG_PATH + "/yumi-cells.jpg", cv2.IMREAD_GRAYSCALE)
-    image = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
     sobel_imgs = {"original": image}
-    sobel_imgs["Sobel dx"] = cv2.Sobel(image, -1, 1, 0, 3)
-    sobel_imgs["Sobel dy"] = cv2.Sobel(image, -1, 0, 1, 3)
+    sobel_imgs["Sobel dx"] = cv2.Sobel(image, ddepth=-1, dx=1, dy=0, ksize=3)
+    sobel_imgs["Sobel dy"] = cv2.Sobel(image, ddepth=-1, dx=0, dy=1, ksize=3)
     sobel_imgs["Sobel dx+dy"] = cv2.add(sobel_imgs["Sobel dx"], sobel_imgs["Sobel dy"])
-    sobel_imgs["Scharr dx"] = cv2.Scharr(image, -1, 1, 0)
-    sobel_imgs["Scharr dy"] = cv2.Scharr(image, -1, 0, 1)
+    sobel_imgs["Scharr dx"] = cv2.Scharr(image, ddepth=-1, dx=1, dy=0)
+    sobel_imgs["Scharr dy"] = cv2.Scharr(image, ddepth=-1, dx=0, dy=1)
     result_img = si.show_imgs(sobel_imgs, "Sobel & Scharr", 3)
-    cv2.imwrite(IMG_PATH + "/yumi-sobel.jpg", result_img)
 
 if __name__ == "__main__":
     sobel()
@@ -276,7 +274,7 @@ if __name__ == "__main__":
 
 결과를 보면 "Sobel dx"에서는 세로 엣지 위주로 검출이 되었고 "Sobel dy"에서는 가로 엣지 위주로 검출이 되었다. 두 가지다 대각선 엣지까지는 검출하여 두 영상을 더한 "Sobel dx+dy"에서는 모든 방향의 엣지가 선명하게 드러난다. 샤르 필터를 적용한 나머지 영상을 보면 커널의 값들이 크기 때문에 엣지들이 전반적으로 더 진하게 나오는 것을 볼 수 있다.
 
-![yumi-edges](/ian-lecture/assets/opencv-filter/yumi-edges.jpg)
+![yumi-edges](../assets/opencv-filter/yumi-edges.jpg)
 
 
 
@@ -307,10 +305,9 @@ OpenCV에서 라플라시안 필터를 적용한 `cv2.Laplacian()` 함수 선언
 ```python
 def laplacian():
     image = cv2.imread(IMG_PATH + "/yumi-cells.jpg", cv2.IMREAD_GRAYSCALE)
-    image = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
     lapla_imgs = {"original": image}
-    sobel_dx = cv2.Sobel(image, -1, 1, 0, 3)
-    sobel_dy = cv2.Sobel(image, -1, 0, 1, 3)
+    sobel_dx = cv2.Sobel(image, ddepth=-1, dx=1, dy=0, ksize=3)
+    sobel_dy = cv2.Sobel(image, ddepth=-1, dx=0, dy=1, ksize=3)
     lapla_imgs["Sobel dx+dy"] = cv2.add(sobel_dx, sobel_dy)
     lapla_imgs["Laplacian"] = cv2.Laplacian(image, -1)
     result_img = si.show_imgs(lapla_imgs, "Laplacian", 3)
@@ -320,7 +317,7 @@ def laplacian():
 
 결과에서 라플라시안 필터 결과를 소벨 엣지와 비교해보면 커널에 대각선 성분이 없기 때문에 엣지가 더 얇게 나오는 것을 볼 수 있다.
 
-![yumi-laplacian](/ian-lecture/assets/opencv-filter/yumi-laplacian.jpg)
+![yumi-laplacian](../assets/opencv-filter/yumi-laplacian.jpg)
 
 
 
@@ -333,7 +330,7 @@ def laplacian():
 3. Non-maximum supression: 가장 강한 엣지만 남기고 나머지 제거
 4. Hysteresis Thresholding(이력 스레시홀딩): 두 개의 경계 값(Max, Min)을 지정해 중간 영역의 엣지 중 Max보다 큰 엣지와 연결된 엣지만 남기고 제거
 
-![canny_minmax](/ian-lecture/assets/opencv-filter/canny_minmax.jpg)
+![canny_minmax](../assets/opencv-filter/canny_minmax.jpg)
 
 OpenCV에서 이를 구현한 `cv2.Canny()` 함수 선언과 이를 사용한 코드는 다음과 같다.
 
@@ -353,12 +350,11 @@ def canny():
     canny_imgs["Canny (100, 200)"] = cv2.Canny(image, 100, 200)
     canny_imgs["Canny (200, 255)"] = cv2.Canny(image, 150, 255)
     result_img = si.show_imgs(canny_imgs, "Canny", 2)
-    cv2.imwrite(IMG_PATH + "/arya-canny.jpg", result_img)
 ```
 
 그림을 보면 캐니 엣지의 두 threshold에 따라 값이 낮으면 자잘한 엣지들이 많이 검출되고 높으면 선명한 선들만 나타나는 것을 볼 수 있다. 라플라시안 등의 커널 기반 필터와의 차이점은 결과가 이진 영상으로 나오는 것과 엣지의 연속성이 강하다는 것이다.
 
-![arya-canny](/ian-lecture/assets/opencv-filter/arya-canny.jpg)
+![arya-canny](../assets/opencv-filter/arya-canny.jpg)
 
 
 
@@ -370,9 +366,9 @@ def canny():
 
 ## 4.1 Erosion and Dilation
 
-침식(erosion)과 팽창(dilation)이란 말 그대로 영상에서 밝은 영역을 기준으로 형태를 깎거나 확장하는 연산이다. 여기에는 다른 필터의 커널 역할을 하는 구조화 요소(structuring element)가 필요하다. 구조화 요소는 0과 1로 채워진 커널인데 정하기에 따라 다양한 크기와 모양을 가질 수 있다. 침식 연산의 경우 어떤 픽셀 주변의 커널 영역에서 전체를 0이 아닌 값으로 채울 수 없으면 그 픽셀을 0으로 채운다. 반대로 팽창 연산은 어떤 픽셀 주변의 커널 영역에서 하나라도 0이 아닌 값이 있으면 그 값으로 픽셀을 채운다. 아래 그림은 3x3 사각형 커널을 이용한 침식 연산의 예시다.
+침식(erosion)과 팽창(dilation)이란 말 그대로 영상에서 밝은 영역을 기준으로 형태를 깎거나 확장하는 연산이다. 여기에는 다른 필터의 커널 역할을 하는 구조화 요소(structuring element)가 필요하다. 구조화 요소는 0과 1로 채워진 커널인데 정하기에 따라 다양한 크기와 모양을 가질 수 있다. 침식 연산의 경우 어떤 픽셀 주변의 커널 영역에서 전체를 0이 아닌 값으로 채울 수 없으면 그 픽셀을 0으로 채운다. 반대로 팽창 연산은 어떤 픽셀 주변의 커널 영역에서 하나라도 0이 아닌 값이 있으면 그 값으로 픽셀을 채운다. 아래 그림은 3x3 사각형 커널을 이용한 침식 연산의 예시다. 팽창 연산은 반대 방향의 연산이라고 볼 수 있다.
 
-![erosion](/ian-lecture/assets/opencv-filter/erosion.gif)
+![erosion](../assets/opencv-filter/erosion.gif)
 
 OpenCV에서 침식 연산과 팽창 연산을 위해 필요한 함수는 세 가지다.
 
@@ -432,7 +428,7 @@ if __name__ == "__main__":
 
 결과를 보면 "original" 영상에는 검은 점과 흰 점 모두가 있다. "erode" 영상에서는 검은 점이 확대되었지만 흰 점은 사라졌고 글자는 얇아졌다. 반대로 "dilate" 영상에서는 흰 점이 확대되었지만 검은 점은 사라졌고 글자는 두꺼워졌다.
 
-![erode-dilate](/ian-lecture/assets/opencv-filter/erode-dilate.jpg)
+![erode-dilate](../assets/opencv-filter/erode-dilate.jpg)
 
 
 
@@ -474,9 +470,9 @@ def morphologies():
     result_img = si.show_imgs(images, "Morphology Ops", 2)
 ```
 
-결과 영상에서 "opening"은 형태를 유지하면서 흰 점들을 없앴다. "closing"도 형태를 유지하면서 검은 점들을 없앴다. 또한 "closing" 연산은 가까운 흰 색 객체를 연결시켜준다. "MARVEL"의 **"EL"**이 붙었고 아래 문자열의 **'S'**의 선 끝이 중간으로 붙었다. "open" 연산도 "STUD10S" 위쪽 선에 생긴 검은 점이 위아래 검은 색을 연결시켜준다. 두 영상의 차이인 "gradient" 영상은 마치 엣지 필터를 적용한 것처럼 경계면을 찾아주었다.
+결과 영상에서 "opening"은 형태를 유지하면서 흰 점들을 없앴다. "closing"도 형태를 유지하면서 검은 점들을 없앴다. 또한 "closing" 연산은 가까운 흰 색 객체를 연결시켜준다. "MARVEL"의 **"EL"**이 붙었고 아래 문자열의 **'S'**의 선 끝이 중간으로 붙었다. "opening" 연산도 "STUD10S" 위쪽 선에 생긴 검은 점이 위아래 검은 색을 연결시켜준다. 두 영상의 차이인 "gradient" 영상은 마치 엣지 필터를 적용한 것처럼 경계면을 찾아주었다.
 
-![morphologies](/ian-lecture/assets/opencv-filter/morphologies.jpg)
+![morphologies](../assets/opencv-filter/morphologies.jpg)
 
 
 
