@@ -344,12 +344,12 @@ ret, res_img = cv2.threshold(src_img, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTS
 >
 > 	- src: 입력 영상
 > 	- maxValue: 경계 값을 만족하는 픽셀에 적용할 값
->  - adaptiveMethod: 경계 값 결정 방법
->    	- cv2.ADAPTIVE_THRESH_MEAN_C: 주변 영역의 평균 값으로 결정
->     - cv2.ADAPTIVE_THRESH_GAUSSIAN_C: 주변 영역의 Gaussian 가중 평균 값으로 결정 (가까울 수록 높은 가중치)
-> - thresholdType: threshold 적용 방법 (`threshold()` 와 동일)
-> - blockSize: 영역의 크기 (홀수만 가능 3, 5, 7, ...)
-> - C: 자동으로 계산된 경계 값에 가감할 상수(음수 가능)
+>  - adaptiveMethod: 경계 값 결정 방법  
+>    	- cv2.ADAPTIVE_THRESH_MEAN_C: 주변 영역의 평균 값으로 결정  
+>     - cv2.ADAPTIVE_THRESH_GAUSSIAN_C: 주변 영역의 Gaussian 가중 평균 값으로 결정 (가까울 수록 높은 가중치)  
+> - thresholdType: threshold 적용 방법 (`threshold()` 와 동일)  
+> - blockSize: 영역의 크기 (홀수만 가능 3, 5, 7, ...)  
+> - C: 자동으로 계산된 경계 값에 가감할 상수(음수 가능)  
 
 
 
@@ -358,6 +358,8 @@ ret, res_img = cv2.threshold(src_img, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTS
 Threshold 자동화 기능을 방금 코드에 적용해보자. 적응형 알고리즘은기본 threshold 타입과는 독립적으로 작용하므로 새로운 버튼 그룹을 만들었다.
 
 ![threshold-gui-adv](../assets/opencv-color/threshold-gui-adv.png)
+
+
 
 - `None`: 적응형 알고리즘을 적용하지 않음
 - `OTSU`: Otsu 알고리즘으로 전역 경계 값 결정
