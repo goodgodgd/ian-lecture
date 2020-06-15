@@ -113,14 +113,15 @@ def hough_circles():
         # 알고리즘에 들어가진 않지만 중간과정을 이해하기 위한 엣지 영상
         cannyimg = cv2.Canny(gray, 100, 200)
         images[f"canny{i+1}"] = cannyimg
-        # hough circle
+        # hough circle transform
         circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT, 1, 30, None,
                                    param1=200, param2=50, maxRadius=60)
+        # result: 1xNx3 float -> Nx3 uint16
         circles = np.around(circles).astype(np.uint16)
         circles = circles[0]
+        print("circles\n", circles)
         result = srcimg.copy()
-        print("circles", circles)
-        for circle in circles:
+        for circle in circles:  # circle: (x, y, r)
             result = cv2.circle(result, (circle[0], circle[1]), circle[2], (0,0,255), 2)
         images[f"houghcircle{i+1}"] = result
 
@@ -142,19 +143,22 @@ if __name__ == "__main__":
 
 ![flood_fill](../assets/opencv-segment/flood_fill.gif)
 
-OpenCV에서는 이를 구현한 `cv2.floodFill()` 함수를 제공한다. `cv2.floodFill()` 함수는 영역 분할이나 영역별 영상 분석에 정말 유용한 함수이므로 사용법을 잘 알아두는 것이 좋다.
+OpenCV에서는 이를 구현한 `cv2.floodFill()` 함수를 제공한다. `cv2.floodFill()` 함수는 영역 분할이나 영역별 영상 분석에 정말 유용한 함수이므로 사용법을 잘 알아두는 것이 좋다. 함수 사용시 주의할 점은 `image, mask`는 입력으로만 넣어도 입력 변수 값이 변하므로 두 입출력 인자는 입력과 출력을 같은 변수로 두는것이 좋다.
 
-> retval, img, mask, rect = cv2.floodFill(img, mask, seedPoint, newVal[, loDiff, upDiff, flags])
+> retval, image, mask, rect = cv2.floodFill(image, mask, seedPoint, newVal[, loDiff, upDiff, flags])
 >
-> - img: 1- or 3-channel, 8-bit or floating-point image,`flags`에  `cv2.FLOODFILL_MASK_ONLY`를 지정하지 않은 경우 입력으로만 넣어도 해당 영역에 `newVal`이 채워진다.
-> - mask: 입력 영상보다 2 픽셀씩 더 큰 배열, mask가 0인 곳에서만 flood fill을 적용하며 색을 채운 픽셀에는 1을 저장한다.
+> seedPoint에서 시작하여 주변에 image 픽셀 값이 비슷한 영역을 반복적으로 확장해 나간다. mask가 0인 픽셀로만 확장할수 있다. 지정된 영역에서 image에는 newVal 값이 채워지고 mask에는 1 또는 (flags>>8) 값이 채워진다.
+>
+> - image: 1- or 3-channel, 8-bit or floating-point image,`flags`에  `cv2.FLOODFILL_MASK_ONLY`를 지정하지 않은 경우 입력으로만 넣어도 해당 영역에 `newVal`이 채워진다.
+> - mask: 입력 영상의 크기가 (H, W)라면 maks에는 (H+2, W+2) 사이즈의 single-channel 8-bit image를 입력해야 한다.
 > - seedPoint: 시작점
 > - newVal: 채우기에 들어갈 색상 값
-> - loDiff, upDiff: 주변 픽셀을 채울지 결정하는 최대 픽셀 값 차이, 기존 영역의 픽셀이`(x', y')`이고 주변의 새로운 픽셀이 `(x, y)` 일 때, `img(x', y') - loDiff <= img(x, y) <= img(x', y') + upDiff` 를 만족해야 새로운 픽셀이 채워진다.
-> - flags: 채우기 방식 지정, 여러 값을 비트별로 조합해서 사용한다.
+> - loDiff, upDiff: 주변 픽셀을 채울지 결정하는 최대 픽셀 값 차이, 기준 픽셀이`(x, y)`이고 주변의 새로운 픽셀이 `(x', y')` 일 때, `img(x, y) - loDiff <= img(x', y') <= img(x, y) + upDiff` 를 만족해야 새로운 픽셀을 영역에 추가할 수 있다.
+> - flags: 채우기 방식 지정, 여러 값을 비트별로 조합해서 사용한다. 0~7bit는 채우기 방식을 지정하고 8~15bit는 mask에 채우는 값을 지정한다.
 >   - 4 or 8: 주변 4방향을 채울지 8방향을 채울지 결정
 >   - cv2.FLOODFILL_MASK_ONLY: img가 아닌 mask에만 채우기 적용, 이때 mask에 채우는 값은 1을 쓰지 않고 (flags>>8)을 사용
 >   - cv2. FLOODFILL_FIXED_RANGE: 주변 픽셀이 아닌 seed 픽셀과 픽셀 값 비교
+>   - flags의 8~15bit(=flags>>8)에 0이 아닌 값이 있으면 mask가 1이 아닌 (flags>>8) 값으로 채워짐, 예를 들어 `flags=(4 | 128<<8)` 이면 mask를 1이 아닌 128로 채우게 됨
 > - retval: 채우기 한 픽셀의 개수 (영역의 넓이)
 > - rect: 채워진 영역을 감싸는 사각영역 (x, y, width, height)
 
@@ -177,7 +181,9 @@ def fill_lake():
     # 아무 처리하지 않고 바로 호수에 flood fill 적용
     fill_direct = srcimg.copy()
     mask = np.zeros((srcimg.shape[0]+2, srcimg.shape[1]+2), dtype=np.uint8)
-    retval, fill_direct, mask, rect = cv2.floodFill(fill_direct, mask, seed, (0,255,255), (2,2,2), (2,2,2), flags=8)
+    retval, fill_direct, mask, rect = \
+        cv2.floodFill(fill_direct, mask, seed, newVal=(0, 255, 255),
+                      loDiff=(2, 2, 2), upDiff=(2, 2, 2), flags=8)
     print(f"pixel area of lake WITHOUT preprocess={retval}, rect={rect}")
     fill_direct = cv2.circle(fill_direct, seed, 1, (0,0,255), 2)
     images["direct_floodfill"] = fill_direct
@@ -186,7 +192,9 @@ def fill_lake():
     fill_blur = cv2.GaussianBlur(fill_blur, (3,3), 0)
     fill_blur = cv2.medianBlur(fill_blur, 3)
     mask = np.zeros((srcimg.shape[0] + 2, srcimg.shape[1] + 2), dtype=np.uint8)
-    retval, fill_blur, mask, rect = cv2.floodFill(fill_blur, mask, seed, (0,255,255), (2,2,2), (2,2,2), flags=8 | (255 << 8))
+    retval, fill_blur, mask, rect = \
+        cv2.floodFill(fill_blur, mask, seed, newVal=(0, 255, 255),
+                      loDiff=(2, 2, 2), upDiff=(2, 2, 2), flags=8 | (255 << 8))
     print(f"pixel area of lake WITH preprocess=   {retval}, rect={rect}")
     fill_blur = cv2.circle(fill_blur, seed, 1, (0,0,255), 2)
     images["blur_n_floodfill"] = fill_blur
@@ -217,9 +225,11 @@ if __name__ == "__main__":
 ```python
 import cv2
 import numpy as np
+import show_imgs as si
 IMG_PATH = "../sample_imgs"
 
-def count_puzzle(img):
+def count_puzzle():
+    img = cv2.imread(IMG_PATH + "/puzzle.jpg")
     ih, iw, ch = img.shape
     mask = np.zeros((ih+2, iw+2), dtype=np.uint8)
     images = {"original": img.copy()}
@@ -230,15 +240,15 @@ def count_puzzle(img):
         for x in range(img.shape[1]):
             if mask[y+1, x+1] == 0:
                 # flood fill로 채울 랜덤 색상 생성
-                color = np.random.randint(50, 256, 3).tolist()
-                color[0] = 255
-                ret, img, mask, rect = cv2.floodFill(img, mask, (x,y), color, (10,10,10), (10,10,10), flags=8)
+                color = np.random.randint(20, 256, 3).tolist()
+                ret, img, mask, rect = cv2.floodFill(img, mask, (x,y), color, 
+                                loDiff=(10,10,10), upDiff=(10,10,10), flags=8)
                 mask_show = mask*255
                 print(f"area={ret}, rect={rect}, mask value={mask[y+1, x+1]}")
                 if ret > 500:   # 영역이 넓은 것만 퍼즐 조각으로 인정
                     cv2.imshow("image", img)
                     cv2.imshow("mask", mask_show)
-                    cv2.waitKey(200)
+                    cv2.waitKey(100)
                     count += 1
     print("total puzzle count:", count)
     cv2.destroyAllWindows()
@@ -247,11 +257,10 @@ def count_puzzle(img):
     cv2.imwrite(IMG_PATH + "/floodfill_puzzle.jpg", result_img)
 
 if __name__ == "__main__":
-    image = cv2.imread(IMG_PATH + "/puzzle.jpg")
-    count_puzzle(image)
+    count_puzzle()
 ```
 
-결과를 보면 퍼즐 조각들이 모두 새로운 색으로 칠해졌고 각 퍼즐은 한가지 색으로만 칠해진 것을 볼 수 있다. 컬러 영상에서는 세 개 채널에서 모두 조건을 만족해야 하므로  `loDiff, upDiff` 값을 크게 줘야한다. 텍스트로 프린트 된 값들을 보면 퍼즐 사이에서는 `ret` 값이 1로 나온 경우가 대부분이다. 한 픽셀도 확장하지 못 한 것이다. 하지만 색이 균일한 퍼즐 안에서는 1000 픽셀 이상 나오는 것을 볼 수 있다. 이러한 성질을 이용해서 채워진 픽셀 영역이 500 이상일 때만 퍼즐로 인정하여 `count` 변수를 증가시켰다. 결과가 80이 나왔는데 실제로 영상의 퍼즐도 10x8로 배치되어 있어 정확하게 개수를 센 것을 알 수 있다.
+결과를 보면 퍼즐 조각들이 모두 새로운 색으로 칠해졌고 각 퍼즐은 한가지 색으로만 칠해진 것을 볼 수 있다. 컬러 영상에서는 세 개 채널에서 모두 조건을 만족해야 하므로  `loDiff, upDiff` 값을 크게 줘야한다. 텍스트로 프린트 된 값들을 보면 퍼즐 사이에서는 `ret` 값이 1로 나온 경우가 대부분이다. 한 픽셀도 확장하지 못 한 것이다. 하지만 색이 균일한 퍼즐 안에서는 1000 픽셀 이상 나오는 것을 볼 수 있다. 이러한 성질을 이용해서 채워진 **픽셀 영역이 500 이상일 때만 퍼즐로 인정**하여 `count` 변수를 증가시켰다. 결과가 80이 나왔는데 실제로 영상의 퍼즐도 10x8로 배치되어 있어 정확하게 개수를 센 것을 알 수 있다.
 
 ![floodfill_puzzle](../assets/opencv-segment/floodfill_puzzle.jpg)
 
@@ -274,7 +283,7 @@ import cv2
 import numpy as np
 import show_imgs as si
 IMG_PATH = "../sample_imgs"
-NON_REGION = 50
+NO_REGION = 50
 AREA_THR = 100
 LABEL_BEGIN = 100
 
@@ -284,39 +293,33 @@ def count_balls():
     result_img = si.show_imgs(images, "floodfill", 3)
 
 def prepare_mask(srcimg):
-    ih, iw, ch = srcimg.shape
     images = {"original": srcimg}
     hsvimg = cv2.cvtColor(srcimg, cv2.COLOR_BGR2HSV)
     images["hue"] = hsvimg[:, :, 0]
-    images["saturation"] = hsvimg[:, :, 1]
     images["value"] = hsvimg[:, :, 2]
-    # create nonregion mask by saturtion and value to set borders of balls
+    # canny edge와 value 값을 이용해서 no-region mask 만들기
     canny = cv2.Canny(images["value"], 80, 160)
-    ret, nonregion = cv2.threshold(canny, 10, NON_REGION, cv2.THRESH_BINARY)
-    nonregion[images["value"] < 70] = NON_REGION
-    images["nonregion mask"] = nonregion
-    # create floodfill mask with size of (ih+2, iw+2)
-    mask = np.zeros((ih+2, iw+2), dtype=np.uint8)
-    mask[1:-1, 1:-1] = nonregion
+    images["canny"] = canny
+    mask = np.zeros(canny.shape, np.uint8)
+    mask[canny > 10] = NO_REGION
+    mask[images["value"] < 70] = NO_REGION
+    images["mask mask"] = mask
+    # 상하좌우에 1픽셀씩 추가 (H, W) -> (H+2, W+2)
+    mask = np.pad(mask, ((1, 1), (1, 1)))
     return images, mask
-
-if __name__ == "__main__":
-    count_balls()
 ```
 
 
 
 #### Step 2. Apply Flood Fill
 
-mask가 준비되었다면 이제 flood fill을 적용할 차례다. Hue 영상에 flood fill을 적용하는데 영상에 직접 색을 칠하지 않고 mask에만 공마다 다른 값을 채울 것이다. Hue 영상은 gray 영상이라서 직접 값을 채우면 이후의 flood fill에 영향을 줄 수 있고 채우더라도 gray 값으로만 채울수 있어 시각적인 효과가 적다. 일단 공마다 mask에 다른 값을 채운 후에 mask를 이용해 공들을 다른 색으로 표현해보자.  
+mask가 준비되었다면 이제 flood fill을 적용할 차례다. Hue 영상에 flood fill을 적용하는데 영상에 직접 색을 칠하지 않고 mask에만 공마다 다른 값을 채울 것이다. 원본 영상에 직접 값을 채우면 이후의 flood fill에 영향을 줄 수 있다. 일단 공마다 mask에 다른 값을 채운 후에 mask를 이용해 공들을 다른 색으로 표현해보자.  
 
 - `range(0, ih, 5)`로 5 픽셀마다 확인하는 이유는 공의 크기가 확실히 5x5 보다는 크기 때문에 굳이 모든 픽셀을 채울 필요는 없기 때문이다. 5 픽셀 간격으로 flood fill을 해도 모든 공을 채울 수 있다.  
 
 - flood fill을 적용할 때 `mask`를 바로 넣지 않고 복사본인 `mask_tmp`를 넣는 이유는 flood fill을 한 후 공의 영역이 아니면 다른 값으로 mask를 채우기 위해서다.
 
-- `mask`를 특정 값(value)으로 채울 때는 `flags`를 다음과 같이 줘야 한다. 
-
-  `flags = (4 | cv2.FLOODFILL_MASK_ONLY | (value << 8))`
+- `mask`를 1이 아닌 특정 값(value)으로 채울 때는 `flags`에 `(value << 8)`을 추가해야 한다.
 
 - `label`은 mask를 채울 값으로서 채워진 영역의 넓이가 `AREA_THR` 보다 넓으면 `mask`를 `label`로 채우고 `label` 값을 1 증가시킨다.
 
@@ -324,31 +327,32 @@ mask가 준비되었다면 이제 flood fill을 적용할 차례다. Hue 영상�
 
 ```python
 def count_balls():
-    # .. 중략 ..
+    srcimg = cv2.imread(IMG_PATH + "/ballpool.jpg", cv2.IMREAD_COLOR)
+    images, mask = prepare_mask(srcimg)
+    result_img = si.show_imgs(images, "floodfill", 3)
+    mask, label = find_balls(images, mask)
+    print("number of balls:", label - LABEL_BEGIN)
+
+def find_balls(images, mask):
     label = LABEL_BEGIN
-    ih, iw, ch = srcimg.shape
+    ih, iw, ch = images["original"].shape
     hueimg = images["hue"].copy()
     for v in range(0, ih, 5):
         for u in range(0, iw, 5):
-            if mask[v+1, u+1] == 0:
-                hueimg, mask, area = fill_image(hueimg, mask, (u, v), label)
+            if mask[v+1, u+1] > 0:
+                continue
+            flags = (4 | cv2.FLOODFILL_MASK_ONLY | (label << 8))
+            area, hueimg, mask, rect = \
+                cv2.floodFill(hueimg, mask, (u, v), None, 1, 1, flags)
+            print(f"floodfill at {(u, v)}, pixels={area}, rect={rect}, label={label}")
+            if area > AREA_THR:
+                label += 1
                 cv2.imshow("floodfill mask", mask)
-                if area > AREA_THR:
-                    label += 1
-                    cv2.waitKey(100)
+                cv2.waitKey(100)
+            else:   # 영역이 너무 작으면 mask를 다시 NO_REGION 으로 채우기
+                mask[mask == label] = NO_REGION
     cv2.waitKey()
-
-def fill_image(hueimg, mask, pt, label):
-    flags = (4 | cv2.FLOODFILL_MASK_ONLY | (label << 8))
-    mask_tmp = mask.copy()
-    ret, hueimg, mask_tmp, rect = cv2.floodFill(hueimg, mask_tmp, pt, None, 1, 1, flags=flags)
-    print(f"floodfiil at {pt}, pixels={ret}, rect={rect}, label={label}")
-    if ret > AREA_THR:
-        mask = mask_tmp
-    else:   # if region is too small, fill it with NON_REGION
-        flags = (4 | cv2.FLOODFILL_MASK_ONLY | (NON_REGION << 8))
-        ret, hueimg, mask, rect = cv2.floodFill(hueimg, mask, pt, None, 1, 1, flags=flags)
-    return hueimg, mask, ret
+    return mask, label
 ```
 
 
@@ -359,14 +363,17 @@ def fill_image(hueimg, mask, pt, label):
 
 ```python
 def count_balls():
-    # .. 중략 ..
-    labeled = colorize_regions(mask, label)
-    images["labeled balls"] = labeled
+    srcimg = cv2.imread(IMG_PATH + "/ballpool.jpg", cv2.IMREAD_COLOR)
+    images, mask = prepare_mask(srcimg)
+    result_img = si.show_imgs(images, "floodfill", 3)
+    mask, label = find_balls(images, mask)
+    print("number of balls:", label - LABEL_BEGIN)
+    images["labeled balls"] = colorize_regions(mask, label)
     result_img = si.show_imgs(images, "floodfill", 3)
 
-def colorize_regions(mask, max_label):
+def colorize_regions(mask, label_max):
     image = np.zeros((mask.shape[0], mask.shape[1], 3), np.uint8)
-    for label in range(LABEL_BEGIN, max_label, 1):
+    for label in range(LABEL_BEGIN, label_max, 1):
         image[mask==label, :] = np.random.randint(50, 256, 3)
     return image[1:-1, 1:-1, :]
 ```
