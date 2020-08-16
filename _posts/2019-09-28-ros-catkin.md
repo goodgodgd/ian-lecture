@@ -242,7 +242,7 @@ target_link_libraries(${PROJECT_NAME}_node ${catkin_LIBRARIES})
 
 `PKG_ROOT/src/hello_ros_node.cpp`를 다음과 같이 작성해보자. "hello ROS" 라는 메시지를 지속적으로 퍼블리시하는 노드다. 
 
-```
+```python
 #include "ros/ros.h"
 #include "std_msgs/String.h"
 #include <sstream>

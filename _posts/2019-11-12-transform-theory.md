@@ -208,23 +208,23 @@ $$R$$은 rotation matrix로 점을 회전시키고, $$\mathbf{t}$$는 translatio
 각도 $$\theta$$만큼 회전한 X', Y' 축의 방향을 계산해보면 다음과 같다.  
 
 $$
-\mathbf{x}' = \begin{bmatrix} cos\theta \\ sin\theta \end{bmatrix}, \quad 
-\mathbf{y}' = \begin{bmatrix} -sin\theta \\ cos\theta \end{bmatrix}
+X' = \begin{bmatrix} cos\theta \\ sin\theta \end{bmatrix}, \quad 
+Y' = \begin{bmatrix} -sin\theta \\ cos\theta \end{bmatrix}
 $$
 
 기준 좌표계에서의 좌표가 $$\mathbf{p}=(x,y)$$일 때 회전된 좌표계에서 좌표 $$\mathbf{p}'=(x',y')$$는 원점에서 점을 향하는 벡터 $$\vec{\mathbf{p}}$$를 새로운 좌표 축인 X', Y'에 사영(projection)하여 구할 수 있다. 사영한다는 것이 결국엔 앞서 말한대로 벡터와 좌표축을 내적하는 것이다.
 
 
 $$
-x' = \mathbf{x}' \cdot \vec{\mathbf{p}} = (\mathbf{x}')^T \vec{\mathbf{p}}  \\
-y' = \mathbf{y}' \cdot \vec{\mathbf{p}} = (\mathbf{y}')^T \vec{\mathbf{p}}
+x' = X' \cdot \vec{\mathbf{p}} = (X')^T \vec{\mathbf{p}}  \\
+y' = Y' \cdot \vec{\mathbf{p}} = (Y')^T \vec{\mathbf{p}}
 $$
 
 위 식을 행렬로 정리하면 다음과 같다.  
 
 $$
 \mathbf{p}' = \begin{bmatrix} x' \\ y' \end{bmatrix}
-= \begin{bmatrix} (\mathbf{x}')^T \\ (\mathbf{y}')^T \end{bmatrix} \mathbf{p}
+= \begin{bmatrix} (X')^T \\ (Y')^T \end{bmatrix} \mathbf{p}
 = \begin{bmatrix} cos\theta & sin\theta \\ -sin\theta & cos\theta \end{bmatrix} \mathbf{p}
 $$
 

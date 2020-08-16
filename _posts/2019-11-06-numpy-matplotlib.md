@@ -400,11 +400,11 @@ else:
 - x: 2차원 데이터의 x축 좌표를 나타낸다. `list`나 `np.array` 등의 형식으로 입력할 수 있다.
 - y: 2차원 데이터의 y축 좌표를 나타내고 `x`와 같은 형식의 데이터를 받는다. `x`를 입력하지 않으면 첫 번째 인자를 `y`로 인식한다.
 - fmt: 그래프의 모양이나 색상을 지정한다. '\[marker]\[line]\[color]' 혹은 '\[color]\[marker]\[line]' 형식의 string으로 입력한다. 각 요소는 모두 생략 가능하며 생략시 기본 스타일로 지정된다. 다음은 `fmt`에 따른 그래프 스타일 예시다. 자세한 내용은 공식 문서(위 링크)에서 확인할 수 있다.
-  - 'b'    # blue markers with default shape
-  - 'or'   # red circles
-  - '-g'   # green solid line
-  - '--'   # dashed line with default color
-  - '^k:'  # black triangle_up markers connected by a dotted line
+  - `'b'`    : blue markers with default shape
+  - `'or'`   : red circles
+  - `'-g'`   : green solid line
+  - `'--'`    : dashed line with default color
+  - `'^k:'`  : black triangle_up markers connected by a dotted line
 
 입력 인자 중 `y`만 필수 인자고 나머지는 선택 인자다. 다음 예시를 그려보자.
 
