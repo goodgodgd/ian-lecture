@@ -141,7 +141,7 @@ ttf-unfonts-core를 설치하면 한글을 볼 수는 있다. 다음과 같이 i
 
 ## 3.3 코딩 폰트 설치 (Optional)
 
-무릇 코딩 좀 하는 사람은 폰트에도 신경 쓰기 마련이다. 일반적인 폰트에서는 o(알파벳)과 0(숫자), l(알파벳)과 1(숫자)이 헷갈리므로 이런 것들이 명확하게 구분되고 글자의 크기도 일정하게 맞춰서 코드가 가지런하게 보이도록 만든 코딩 전용 폰트들이 있다.  ㄴㄹㄴㄹ
+무릇 코딩 좀 하는 사람은 폰트에도 신경 쓰기 마련이다. 일반적인 폰트에서는 o(알파벳)과 0(숫자), l(알파벳)과 1(숫자)이 헷갈리므로 이런 것들이 명확하게 구분되고 글자의 크기도 일정하게 맞춰서 코드가 가지런하게 보이도록 만든 코딩 전용 폰트들이 있다.  
 
 ... 문제는 대부분 이런 폰트들이 영어 전용 폰트라는 것인데 한글을 쓰면 다른 한글 폰트로 써진다. 같이 쓰면 영어와 한글이 줄간격이 달라서 한글이 들어간 줄은 위아래로 더 넓게 차지해서 한글 주석을 쓰고 나면 코드 줄이 들쭉날쭉해진다.  
 
@@ -161,4 +161,24 @@ ttf-unfonts-core를 설치하면 한글을 볼 수는 있다. 다음과 같이 i
 
 Pi에서 작업할 때마다 모니터 키보드 마우스를 모두 연결하기는 번거롭다. Pi에서 작업을 하다가도 윈도우에서 해야할 일이 생기면 Pi를 끄고 윈도우 PC를 켜야하는건 더욱 번거롭다. 그래서 윈도우에서 원격 데스크톱으로 Pi에 접속하면 키보드 마우스를 갈아끼우지 않아도 되고 윈도우도 동시에 쓸수 있으니 편리하다. 단 Pi를 부팅할 때 모니터는 연결되어있어야 한다.
 
-Raspberry Pi OS는 원격 데스크톱 설정이 매우 쉽다. 
+Raspberry Pi OS는 원격 데스크톱 설정이 매우 쉽다. 먼저 Pi에서 Menu - Preference - Raspberry Pi Configuration 으로 들어간다. "Interfaces" 탭에서 "VNC" 항목의 "Enable"을 선택한다.  
+
+![vnc1](D:/Work/ian-lecture/assets/robotics-raspberry/vnc1.png)
+
+터미널을 열어서 `ifconfig` 명령을 실행하여 IP 주소를 확인한다. 아래 그림에서는 `192.168.35.60`이 IP 주소다. 이와 비슷한 형식을 가진 주소를 찾아서 기록해둔다.
+
+![ifconfig](D:/Work/ian-lecture/assets/robotics-raspberry/ifconfig.png)
+
+
+
+다음으로, 원격 접속을 할 윈도우 PC에서 VNC Viewer를 설치한다. 아래 주소에서 설치파일을 받아서 설치한다.  
+
+<https://www.realvnc.com/en/connect/download/viewer/>
+
+VNC Viewer를 실행하여 아래 그림처럼 Pi의 IP 주소를 입력하고 엔터를 친다. 로그인을 해야하는데 Username은 "pi"로 지정이 되어있고 Password는 여러분이 처음 Pi를 켤때 설정한 비밀번호를 입력하면 된다.
+
+![vnc2](D:/Work/ian-lecture/assets/robotics-raspberry/vnc2.png)
+
+이제 윈도우에서 원격으로 GUI를 사용하여 편리하게 Pi를 제어할 수 있다!
+
+![vnc3](D:/Work/ian-lecture/assets/robotics-raspberry/vnc3.jpg)
