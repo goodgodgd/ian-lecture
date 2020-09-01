@@ -165,9 +165,10 @@ empty_tuple2 = tuple()
 basic_tuple1 = ("Hello", 1234, 1.234, True)
 basic_tuple2 = "Hello", 1234, 1.234, True
 depth2_tuple = ("Hello", 1234, (1.234, True))
-print("read tuple", basic_tuple1[0])
-print("read tuple", basic_tuple2[1])
-print("read tuple", basic_tuple[:3])
+print("tuple1", basic_tuple1[0])
+print("tuple1", basic_tuple1[2:])
+print("tuple2", basic_tuple2[1])
+print("tuple3", depth2_tuple[2][0])
 ```
 
 튜플은 여러 값을 하나에 담았다가 다시 여러 변수에 나눠줄 수 있어서 경우에 따라 유용하게 쓸 수 있다.

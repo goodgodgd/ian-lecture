@@ -1,15 +1,15 @@
 ---
 layout: post
 title:  "Python Containers"
-date:   2019-09-08 09:00:13
-categories: 2019-2-robotics
+date:   2020-09-02 09:00:13
+categories: 2020-2-robotics
 ---
 
 
 
 # 컨테이너 (Container)
 
-파이썬에는 네 가지 기본 컨테이너(container) 타입이 있다. 컨테이너란 말 그대로 무언가를 담을 수 있는 것을 말하고 파이썬에서는 여러 데이터를 담을 수 있는 데이터 타입을 뜻한다. 기본 컨테이너로는 `List, Dictionary, Tuple, Set` 이 있다. 이 네 가지 컨테이너는 파이썬이 가진 편리함의 원천이다. 파이썬이 동적 타입이므로 서로 다른 종류의 데이터도 상관없이 하나의 컨테이너에 담을 수 있다. 네 가지 타입은 List > Dictionary >> Tuple > Set 순서로 많이 쓰인다. 특히 List와 Dictionary는 많이 쓰이기도 하고 정말 쉽고 유용하기 때문에 잘 알아야한다. Set은 자주 쓰이지 않기 때문에 여기서는 생략한다.
+파이썬에는 네 가지 기본 컨테이너(container) 타입이 있다. 컨테이너란 말 그대로 무언가를 담을 수 있는 것을 말하고 파이썬에서는 여러 데이터를 담을 수 있는 데이터 타입을 뜻한다. 기본 컨테이너로는 **List, Dictionary, Tuple, Set** 이 있다. 이 네 가지 컨테이너는 파이썬이 가진 편리함의 원천이다. 파이썬이 동적 타입이므로 서로 다른 종류의 데이터도 상관없이 하나의 컨테이너에 담을 수 있다. 네 가지 타입은 List > Dictionary > Tuple >> Set 순서로 많이 쓰인다. 특히 List와 Dictionary는 많이 쓰이기도 하고 정말 쉽고 유용하기 때문에 잘 알아야한다. Set은 자주 쓰이지 않기 때문에 여기서는 생략한다.
 
 
 
@@ -185,7 +185,7 @@ print("len of {}:".format(mylist), len(mylist))
 # => len of [1, 2, 3, 4]: 4
 ```
 
-- `del`: 객체를 삭제하는 함수로 자료 구조에서 특정 원소를 삭제할 때 쓰인다. `del()`이 아님에 유의하자.
+- `del`: 객체를 삭제하는 키워드로 자료 구조에서 특정 원소를 삭제할 때 쓰인다. `del()`이 아님에 유의하자.
 
 ```python
 mylist = [1, 2, 3, 4, 5]
@@ -254,7 +254,7 @@ print("tigers's age is", tigger[1])
 
 ```python
 mydict = {Key1:Value1, Key2:Value2, ...}
-print("call value from key1", mydict[Key1])
+print("read value1 by key1", mydict[Key1])
 ```
 
 곰돌이 푸우 예제를 이해하기 쉽게 다시 써보자. 타이핑하는데 손은 더 들지만 코드를 명시적으로 이해할 수 있다. 특히 여럿이 같이 작업할 때는 남들이 편하게 이해할 수 있게 쓰는 것이 중요하다.
@@ -268,7 +268,7 @@ print("pooh's weight is", pooh["weight"])
 print("tigers's age is", tigger["age"])
 ```
 
-딕셔러너리를 만들 때 `Value`에는 어떤 객체가 들어가도 상관없다. 리스트가 들어갈 수도, 또 다른 딕셔너리가 들어가도 된다. 하지만 `Key`는 숫자나 문자열 (혹은 그 변수)을 써야한다. 딕셔너리는 `Key`로 들어온 값을 `hash()` 함수를 통해 hash를 생성하고 이를 기록해 두었다가 특정 키를 찾을 때 활용한다. `Key` 값을 직접 비교하지 않고 hash로 변환해서 검색하기 때문에 검색 속도가 빠르다. 다음 예시를 실행해보자.
+딕셔러너리를 만들 때 `Value`에는 어떤 객체가 들어가도 상관없다. 리스트가 들어갈 수도, 또 다른 딕셔너리가 들어가도 된다. 하지만 `Key`는 숫자나 문자열 (혹은 그 변수)을 써야한다. 딕셔너리는 key로 들어온 값을 `hash()` 함수를 통해 hash를 생성하고 이를 기록해 두었다가 특정 키를 찾을 때 활용한다. key 값을 직접 비교하지 않고 hash로 변환해서 검색하기 때문에 검색 속도가 빠르다. 대신 `hash()` 함수에 들어갈 수 있는 기본 타입만 key로 사용가능하다. 다음 예시를 실행해보자.
 
 ```python
 print("\nhash example")
@@ -284,7 +284,7 @@ except TypeError as te:
 
 ### 2.1  기본 사용법
 
-딕셔너리의 기본 특징은 **순서가 없다**는 것이다.(Unordered) 보통은 입력한 순서가 그대로 유지되는 것 처럼 보이지만 값을 넣고 빼고 하다보면 `print()` 했을 때 순서가 뒤바뀔 때도 있다. 사실 딕셔너리는 오직 `Key`로만 `Value`에 접근할 수 있으니 순서는 상관없다. 다음 예제를 통해 기본 사용법을 익혀보도록 하자.
+딕셔너리의 기본 특징은 **순서가 없다**는 것이다.(Unordered) Python 3.5까지는 딕셔너리를 만든 순서와 프린트 혹은 for loop에서의 순서가 달라질때도 있었으나 Python 3.6부터는 가급적 만들때의 순서를 지킨다. 사실 딕셔너리는 오직 `Key`로만 `Value`에 접근할 수 있으니 순서는 상관없다. 다음 예제를 통해 기본 사용법을 익혀보도록 하자.
 
 ```python
 print("\nbasic usage")
@@ -312,7 +312,7 @@ pooh: {'species': 'bear', 'age': 10, 'weight': 50, 'height': 1.2}
 pooh: {'species': 'bear', 'age': 10, 'height': 1.2}
 ```
 
-만약 없는 키를 입력하면 `KeyError`가 발생한다. 해당 키가 있는지 확신이 없을 때는 `get()` 함수를 쓰거나 `in` 연산자를 통해 키의 존재유무를 확인 후 쓸 수도 있다. `get()`을 쓰면 키가 없을 경우 `None`을 출력하는데 `None`은 말 그대로 아무것도 아니라는 뜻으로 True, False 처럼 파이썬에 지정된 키워드다.
+만약 없는 키를 입력하면 `KeyError`가 발생한다. 해당 키가 있는지 확신이 없을 때는 `in` 연산자를 통해 키의 존재유무를 확인 후 쓸 수도 있다.
 
 ```python
 pooh = {"species": "bear", "age": 5, "weight": 50}
@@ -322,7 +322,6 @@ try:
 except KeyError as ke:
     print("[KeyError]", ke)
 
-print("pooh's color?", pooh.get("color"))
 if "color" in pooh:
     print("pooh's color is", pooh["color"])
 else:
@@ -390,9 +389,10 @@ empty_tuple2 = tuple()
 basic_tuple1 = ("Hello", 1234, 1.234, True)
 basic_tuple2 = "Hello", 1234, 1.234, True
 depth2_tuple = ("Hello", 1234, (1.234, True))
-print("read tuple", basic_tuple1[0])
-print("read tuple", basic_tuple2[1])
-print("read tuple", basic_tuple[:3])
+print("tuple1", basic_tuple1[0])
+print("tuple1", basic_tuple1[2:])
+print("tuple2", basic_tuple2[1])
+print("tuple3", depth2_tuple[2][0])
 ```
 
 튜플은 여러 값을 하나에 담았다가 다시 여러 변수에 나눠줄 수 있어서 경우에 따라 유용하게 쓸 수 있다.
