@@ -259,9 +259,9 @@ bar is goo True
 
 ```python
 value = 10
-if value % 2 == 0 and value < 12:
+if (value % 2 == 0) and (value < 12):
     print("value is even and less than 12")
-if value % 2 != 0 or value < 0:
+if (value % 2 != 0) or (value < 0):
     print("value is odd or negative")
 ```
 

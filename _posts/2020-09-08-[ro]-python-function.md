@@ -1,8 +1,8 @@
 ---
 layout: post
 title:  "Python Control Statements and Function"
-date:   2019-09-08 09:10:13
-categories: 2019-2-robotics
+date:   2020-09-08 09:10:13
+categories: 2020-2-robotics
 ---
 
 
