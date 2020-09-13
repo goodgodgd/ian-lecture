@@ -118,7 +118,11 @@ for mv, dc in zip(marvel_heroes, dc_heroes):
 
 ## 4. for for dict
 
-지금까지 주로 리스트를 이용한 `for`문을 보았는데 딕셔너리도 반복문에 자주 사용된다. 딕셔너리 자체로는 `for`문을 통해 반복할 수 없고 `Key`가 필요한지, `Value`가 필요한지, 둘 다 필요한지에 따라 맞는 함수를 통해 반복가능한(iterable) 자료형으로 바꾸어 쓰면 된다.
+지금까지 주로 리스트를 이용한 `for`문을 보았는데 딕셔너리도 반복문에 자주 사용된다. 딕셔너리는 key와 value가 있기 때문에 둘 중 어떤 것이 필요한지, 혹은 둘 다 필요한지에 따라 `for`문에 들어가는 객체가 달라진다.
+
+- Key만 사용: dict 객체 자체, `keys()` 함수
+- Value만 사용: `values()` 함수
+- 둘 다 사용: `items()` 함수
 
 ```python
 hero_names = {"iron man": "로다주", "thor": "햄식이"}
