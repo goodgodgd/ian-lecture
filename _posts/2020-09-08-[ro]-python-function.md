@@ -39,11 +39,11 @@ all_heros = marvel_heroes + dc_heroes
 
 myhero = "batman"
 if myhero in marvel_heroes:
-    print("{}: Avengers are super cool!".format(myhero))
+    print(f"{myhero}: Avengers are super cool!")
 elif myhero in dc_heroes:
-    print("{}: We save martha...".format(myhero))
+    print(f"{myhero}: We save martha...")
 else:
-    print("{}: We are villains!!".format(myhero))
+    print(f"{myhero}: We are villains!!")
 
 print("list of marvel heroes")
 for hero in marvel_heroes:
