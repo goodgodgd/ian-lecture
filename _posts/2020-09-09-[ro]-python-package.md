@@ -1,8 +1,8 @@
 ---
 layout: post
 title:  "Python Module and Package"
-date:   2019-09-09 09:00:13
-categories: 2019-2-robotics
+date:   2020-09-09 09:00:13
+categories: 2020-2-robotics
 ---
 
 
@@ -189,211 +189,156 @@ print("BMI:", bmi)
 
 
 
-## HW1. 행렬 연산 패키지 만들기
+## HW1. DBMS 만들기
 
-`matrix`라는 패키지를 만들고 그 아래 `dense_matrix.py`와 `sparse_matrix.py`라는 두 개의 모듈을 만드시오.
+DBMS (Database Management System)은 말 그대로 데이터베이스를 관리하는 시스템이다. 여기서는 아주 간단한 DBMS를 구현해보고자 한다. 전통적인 DBMS에서는 데이터를 표(table) 형식으로 관리한다.
 
-- 제출기한: 10.01 (화) 수업시간
+![database](../assets/robotics-python/database.png)
+
+DBMS는 위 그림과 같은 표를 여러개를 관리하는데 여러 표가 독립적이기 보다는 서로 ''관계"를 가지고 표와 표를 연결해서 사용할 수 있다. 여기서는 표들 사이의 관계를 다루지는 않고 하나의 표에 데이터를 추가하고 제거하고 검색하고 합치는 기능만 구현해보고자 한다.  
+
+여러분들은 아래의 "main.py" 가 잘 작동하도록 "dbms.py" 의 함수들을 구현하면 된다. 함수의 사용법이나 예시들은 코드에 주석으로 설명했다.
+
+### main.py
+
+```python
+import dbms
+
+
+def main():
+    columns = ['name', 'age', 'gender', 'country']
+    data = dbms.init_columns(columns)
+    data = dbms.append(data, name='tom', age=3, gender='male', country='usa')
+    data = dbms.append(data, name='lee', age=4, gender='female', country='china')
+    data = dbms.append(data, name='kim', age=5, gender='male', country='korea')
+    try:
+        data = dbms.append(data, name='jane', age=6, gender='female')
+    except AssertionError as ae:
+        print(ae)
+
+    # data = {'name': ['tom', 'lee', 'kim'], 'age': [3, 4, 5], 'gender': ..., 'country': ...}
+    dbms.print_data(data)
+
+    # query_result = {'name': ['kim', 'tom'], 'age': [5, 3], 'gender': ..., 'country': ...}
+    query_result = dbms.query_by_name(data, ['kim', 'tom'])
+    dbms.print_data(query_result)
+
+    # query_result = {'name': ['tom', 'lee'], 'age': [3, 4], 'gender': ..., 'country': ...}
+    query_result = dbms.query_by_age(data, 2, 5)
+    dbms.print_data(query_result)
+
+    # merged_data = ['tom', 'lee', 'kim', 'jame'], 'age': [3, 4, 5, 6], 'gender': ..., 'country': ...}
+    newdata = {'name': ['jane'], 'age': [6], 'gender': 'female', 'country': 'uk'}
+    merged_data = dbms.merge(data, newdata)
+    dbms.print_data(merged_data)
+
+
+if __name__ == "__main__":
+    main()
+
+```
+
+
+
+### dbms.py
+
+```python
+def init_columns(col_names):
+    """
+    col_names: list of column titles (string) e.g.=['name', 'age']
+    return: empty database e.g.={'name': [], 'age': []}
+    """
+    pass
+
+
+def append(data, **kwargs):
+    """
+    data: database object (dict of lists) e.g.={'name': ['tom', 'lee'], 'age': [3, 4]}
+    kwargs: new data to be appended (dict) e.g.={'name': 'kim', 'age': 5}
+    return: appended database e.g.={'name': ['tom', 'lee', 'kim'], 'age': [3, 4, 5]}
+    [Note] if one of keys of 'kwargs' is NOT in 'data', print WARNING message
+    e.g. kwargs={'name': 'kim', 'gender': 'male'}
+        -> print("'gender' is NOT in this database")
+    [Note] if 'kwargs' does NOT have all keys in 'data', raise error using assert
+    e.g. kwargs={'name': 'kim'}
+        assert 'age' in kwargs, "'age' is NOT in kwargs"
+    """
+    pass
+
+
+def remove_by_name(data, names):
+    """
+    data: database object (dict of lists) e.g.={'name': ['tom', 'lee', 'kim'], 'age': [3, 4, 5]}
+    names: list of names e.g.=['kim', 'tom']
+    return: reduced database e.g.={'name': ['lee'], 'age': [4]}
+    """
+    pass
+
+
+def query_by_name(data, names):
+    """
+    data: database object (dict of lists) e.g.={'name': ['tom', 'lee', 'kim'], 'age': [3, 4, 5]}
+    names: list of names e.g.=['kim', 'tom']
+    return: extracted database e.g.={'name': ['kim', 'tom'], 'age': [5, 3]}
+    """
+    pass
+
+
+def query_by_age(data, age_min, age_max):
+    """
+    extract database of which age_min <= age < age_max
+    data: database object (dict of lists) e.g.={'name': ['tom', 'lee', 'kim'], 'age': [3, 4, 5]}
+    age_min: minimum age e.g.=2
+    age_max: maximum age e.g.=5
+    return: extracted database e.g.={'name': ['tom', 'lee'], 'age': [3, 4]}
+    """
+    pass
+
+
+def merge(data, newdata):
+    """
+    data: database object (dict of lists) e.g.={'name': ['tom', 'kim'], 'age': [3, 5]}
+    newdata: database object (dict of lists) e.g.={'name': ['lee'], 'age': [4]}
+    return: merged database e.g.={'name': ['tom', 'kim', 'lee'], 'age': [3, 5, 4]}
+    [Note] if 'newdata' has the same names with 'data', ignore the duplicated data
+    e.g. data={'name': ['tom', 'kim'], 'age': [3, 5]}
+        newdata={'name': ['lee', 'kim'], 'age': [4, 6]}
+        -> {'name': ['tom', 'kim', 'lee'], 'age': [3, 5, 4]}
+    """
+    pass
+
+
+def print_data(data):
+    """
+    data: database object (dict of lists) e.g.={'name': ['tom', 'kim'], 'age': [3, 5]}
+    print database vertically
+    e.g.
+    name    age
+    ----    ---
+    tom     3
+    kim     5
+    """
+    pass
+
+```
+
+
+
+### 제출
+
+- 제출기한: 10.07 (수)
 - 제출방식: LMS 수업페이지에 "HW1"이라는 게시판에 제출
-- 제출내용: 아래 파일들을 묶어 압축한  `HW1_이름.zip`  제출
-    1. `HW1.py`: 패키지 실행 코드 
-    2. `matrix`: 패키지 폴더
-    3. `result.txt`: `HW1.py`의 실행 결과
+- 제출내용: 아래 파일들을 묶어 압축한  "HW1\_이름\_학번.zip" 제출
+    1. "main.py"
+    2. "dbms.py"
+    3. "result.txt": 실행 결과 드래그하여 텍스트 파일로 저장
 
 
 
-### 1. 리스트 2차원 행렬 연산
+### 평가
 
-다음과 같은 코드가 동작하도록 `dense_matrix.py`에 리스트로 이루어진 두개의 행렬을 더하는 `add`와 곱하는 `multiply` 함수를 구현하시오. 
-
-```python
-import matrix.dense_matrix as dm
-
-print("="*30 + "\nProblem 1")
-dm1 = [[1, 2], [3, 4], [5, 6]]
-dm2 = [[1, 2], [3, 4]]
-
-res = dm.add(dm1[:2], dm2)
-print("add:", res)
-res = dm.multiply(dm1, dm2)
-print("multiply:", res)
-```
-
-결과
-
-```
-==============================
-Problem 1
-add: [[2, 4], 
-	  [6, 8]]
-multiply: [[7, 10], 
-           [15, 22], 
-           [23, 34]]
-```
-
-
-
-### 2. 딕셔너리 2차원 행렬 연산
-
-행렬 중에 대부분 값이 0이고 일부에서만 값을 갖는 행렬을 sparse matrix 라고 한다. Sparse matrix는 대부분 크기가 굉장히 크고 일부만 값을 가지고 있기 때문에 모든 값을 메모리에 올리는 건 비효율적이다. 그래서 `eigen`같은 수학 라이브러리에서는 sparse matrix를 위한 클래스를 따로 만들어 값을 가지고 있는 원소들만 저장한다. 아래 예시는 같은 행렬을 리스트로 만든 dense matrix와 딕셔너리로 만든 sparse matrix를 비교한 것이다.
-
-```python
-dense_mat = [[1, 0, 0], 
-             [0, 2, 0], 
-             [0, 0, 3]]
-sparse_mat = {'rows': 3, 'cols': 3, '00':1, '11':2, '22':3}
-```
-
-딕셔너리의 키 값으로 좌표('yx')를 문자로 입력하고 그곳에 값을 넣는 방식이다.  
-
-1. `sparse_matrix.py`에 딕셔너리 기반 두 개의 sparse matrix를 더하는 `add` 함수를 구현하시오. 출력 또한 딕셔너리 기반 sparse matrix로 출력하시오.
-2. `sparse_matrix.py`에 딕셔너리 기반 sparse matrix를 리스트 기반 dense matrix로 변환하는 `dense`라는 함수를 구현하시오.
-
-```python
-import matrix.sparse_matrix as sm
-
-print("="*30 + "\nProblem 2")
-sm1 = {'rows': 3, 'cols': 3, '00': 1, '11': 2, '22': 3}
-sm2 = {'rows': 3, 'cols': 3, '01': 1, '11': 2, '21': 3}
-res = sm.add(sm1, sm2)
-print("add:", res)
-res = sm.dense(res)
-print("dense:", res)
-```
-
-결과
-
-```
-==============================
-Problem 2
-add: {'rows': 3, 'cols': 3, '00': 1, '11': 4, '22': 3, '01': 1, '21': 3}
-dense: [[1, 1, 0], 
-        [0, 4, 0], 
-        [0, 3, 3]]
-```
-
-
-
-### 3. 예외 처리 (심화)
-
-`matrix` 패키지의 모든 함수에서 행렬의 크기가 맞지 않을 때의 예외처리 코드를 추가한 함수들을 새로 만드시오. 새로운 함수 이름은 기존 함수 이름에 `_handle_exception`이란 접미사를 붙여 만든다. (예를 들어 `add`는 `add_handle_exception`이 된다.) 예외처리는 다음 코드를 참고한다.
-
-```python
-def example(num):
-    if num > 10:
-        raise Exception("number > 10")
-
-try:
-    example(11)
-except Exception as ex:
-    print("[Exception]", ex)
-```
-
-다음은 각 함수에 대한 예외 상황들이다.
-
-1. `dense_matrix.add_handle_exception(m1, m2)`: m1의 크기와 m2의 크기가 다를 때
-2. `dense_matrix.add_handle_exception(m1, m2)`: m1이나 m2의 열의 개수가 일정하지 않을 때 e.g. `[[1, 2], [3]]`
-3. `dense_matrix.multiply_handle_exception(m1, m2)`: m1의 너비와 m2의 높이가 다를때
-4. `dense_matrix.multiply_handle_exception(m1, m2)`: m1이나 m2의 열의 개수가 일정하지 않을 때 e.g. `[[1, 2], [3]]`
-5. `sparse_matrix.add_handle_exception(m1)`: m1이나 m2에 `rows, cols` 키가 없을 때
-6. `sparse_matrix.add_handle_exception(m1, m2)`: m1이나 m2에 `rows, cols` 범위를 벗어나는 인덱스(키)가 있을 때
-7. `sparse_matrix.add_handle_exception(m1, m2)`: m1의 크기와 m2의 크기가 다를 때
-8. `sparse_matrix.dense_handle_exception(m1)`: m1에 `rows, cols` 키가 없을 때
-9. `sparse_matrix.dense_handle_exception(m1)`: m1에 `rows, cols` 범위를 벗어나는 인덱스(키)가 있을 때
-
-
-
-`dense_matrix`에서 행렬의 열의 개수가 일정한지를 확인하는 기능은 반복적으로 쓰이므로 아래와 같은 함수를 구현하여 사용하시오.
-
-```python
-def check_consistent_cols(mat):
-    ...
-    if not consistent:
-        raise Exception("matrix columns are not consistent")
-```
-
-`sparse_matrix`에서 인덱스(키)가 `rows, cols`의 범위를 벗어나는지를 확인하는 기능은 반복적으로 쓰이므로 아래와 같은 함수를 구현하여 사용하시오.
-
-```python
-def check_indices(sparse):
-    ...
-    if out of bound:
-        raise Exception("index out of bound")
-```
-
-다음은 각 예외 상황을 확인하는 코드다.
-
-```python
-print("="*30 + "\nProblem 3")
-dm1 = [[1, 2], [3, 4], [6]]
-dm2 = [[1, 2], [3, 4]]
-dm3 = [[1, 2]]
-
-try:
-    res = dm.add_handle_exception(dm2, dm3)
-except Exception as ex:
-    print("[Exception] 1:", ex)
-
-try:
-    res = dm.add_handle_exception(dm1, dm2)
-except Exception as ex:
-    print("[Exception] 2:", ex)
-
-try:
-    res = dm.multiply_handle_exception(dm2, dm3)
-except Exception as ex:
-    print("[Exception] 3:", ex)
-
-try:
-    res = dm.multiply_handle_exception(dm1, dm2)
-except Exception as ex:
-    print("[Exception] 4:", ex)
-
-
-sm1 = {'rows': 3, '00': 1, '11': 2, '22': 3, '33': 4}
-sm2 = {'rows': 3, 'cols': 2, '00': 1, '11': 2, '22': 3}
-sm3 = {'rows': 3, 'cols': 2, '00': 1, '11': 2}
-sm4 = {'rows': 3, 'cols': 3, '01': 1, '11': 2, '21': 3}
-
-try:
-    res = sm.add_handle_exception(sm1, sm2)
-except Exception as ex:
-    print("[Exception] 5:", ex)
-
-try:
-    res = sm.add_handle_exception(sm2, sm4)
-except Exception as ex:
-    print("[Exception] 6:", ex)
-
-try:
-    res = sm.add_handle_exception(sm3, sm4)
-except Exception as ex:
-    print("[Exception] 7:", ex)
-
-try:
-    res = sm.dense_handle_exception(sm1)
-except Exception as ex:
-    print("[Exception] 8:", ex)
-
-try:
-    res = sm.dense_handle_exception(sm2)
-except Exception as ex:
-    print("[Exception] 9:", ex)
-```
-
-이를 구현하여 실행한 결과는 다음과 같다. 예외 메시지는 상황에 맞춰 임의로 작성하였다.
-
-```
-==============================
-Problem 3
-[Exception] 1: different matrix size
-[Exception] 2: matrix columns are not consistent
-[Exception] 3: cannot multiply (2,2) x (1,2)
-[Exception] 4: matrix columns are not consistent
-[Exception] 5: either 'rows' or 'cols' is not in keys
-[Exception] 6: index out of bound
-[Exception] 7: different matrix size
-[Exception] 8: either 'rows' or 'cols' is not in keys
-[Exception] 9: index out of bound
-```
+- 총점 20점
+- 주석과 예시로 표시된 기능 중 잘 못 작동하는 기능 하나 당 -1점
+- 제출방식을 지키지 않을 경우 -1점
+- 평가시에는 "main.py"는 다르게 만들어 테스트 할 것이므로 주어진 케이스 외에 다양한 케이스를 스스로 만들어 테스트 해봐야 함
 
