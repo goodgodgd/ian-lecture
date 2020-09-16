@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Linux Installation on Raspberry Pi 4"
-date:   2020-09-29 09:00:13
+date:   2020-09-15 09:00:13
 categories: 2020-2-robotics
 ---
 
@@ -33,7 +33,11 @@ Raspberry Pi OS는 Raspberry Pi(이하 줄여서 Pi)를 위한 전용 운영체�
 
 <https://www.raspberrypi.org/downloads/>
 
-![rpi4](../assets/robotics-raspberry/rpi-os-setup1.gif)
+
+
+<img src="../assets/robotics-raspberry/rpi-os-write1.png" alt="rpi-os-write1" width="350"/> <img src="../assets/robotics-raspberry/rpi-os-write2.png" alt="rpi-os-write2" width="350"/>
+
+
 
 설치할 OS와 SD CARD를 선택하고 "WRITE"를 누르면 SD 카드에 Raspberry Pi OS가 설치된다. OS는 맨위에 있는 Raspberry Pi OS (32-bit)를 선택한다. Raspberry Pi 4는 원래 64-bit processor를 가지고 있지만 OS는 기존 기기들과의 호환을 고려해서인지 32-bit를 제공하고 있다. 64-bit Ubuntu를 설치할 수도 있지만 설치방법이 복잡하거나 소프트웨어 호환 문제가 있어서 이 수업에서는 가장 간단히 설치할 수 있는 32-bit Raspberry Pi OS를 사용한다.  
 
@@ -151,7 +155,7 @@ ttf-unfonts-core를 설치하면 한글을 볼 수는 있다. 다음과 같이 i
 
 `~/Downloads` 폴더에서 압축을 풀고 `D2Coding-Ver xxx/D2CodingAll` 폴더로 들어가 `*.ttf` 파일을 더블클릭하면 폰트 샘플이 보이고 "Install"을 누르면 설치된다. 설치된 폰트는 재부팅이나 재로그인을 하면 쓸 수 있다.
 
-![ubuntu_install_font](D:/Work/ian-lecture/assets/robotics-linux/ubuntu_install_font.jpg)
+![ubuntu_install_font](../assets/robotics-linux/ubuntu_install_font.jpg)
 
 
 
@@ -163,11 +167,11 @@ Pi에서 작업할 때마다 모니터 키보드 마우스를 모두 연결하�
 
 Raspberry Pi OS는 원격 데스크톱 설정이 매우 쉽다. 먼저 Pi에서 Menu - Preference - Raspberry Pi Configuration 으로 들어간다. "Interfaces" 탭에서 "VNC" 항목의 "Enable"을 선택한다.  
 
-![vnc1](D:/Work/ian-lecture/assets/robotics-raspberry/vnc1.png)
+![vnc1](../assets/robotics-raspberry/vnc1.png)
 
 터미널을 열어서 `ifconfig` 명령을 실행하여 IP 주소를 확인한다. 아래 그림에서는 `192.168.35.60`이 IP 주소다. 이와 비슷한 형식을 가진 주소를 찾아서 기록해둔다.
 
-![ifconfig](D:/Work/ian-lecture/assets/robotics-raspberry/ifconfig.png)
+![ifconfig](../assets/robotics-raspberry/ifconfig.png)
 
 
 
@@ -177,8 +181,8 @@ Raspberry Pi OS는 원격 데스크톱 설정이 매우 쉽다. 먼저 Pi에서 
 
 VNC Viewer를 실행하여 아래 그림처럼 Pi의 IP 주소를 입력하고 엔터를 친다. 로그인을 해야하는데 Username은 "pi"로 지정이 되어있고 Password는 여러분이 처음 Pi를 켤때 설정한 비밀번호를 입력하면 된다.
 
-![vnc2](D:/Work/ian-lecture/assets/robotics-raspberry/vnc2.png)
+![vnc2](../assets/robotics-raspberry/vnc2.png)
 
 이제 윈도우에서 원격으로 GUI를 사용하여 편리하게 Pi를 제어할 수 있다!
 
-![vnc3](D:/Work/ian-lecture/assets/robotics-raspberry/vnc3.jpg)
+![vnc3](../assets/robotics-raspberry/vnc3.jpg)
