@@ -232,6 +232,10 @@ def main():
     merged_data = dbms.merge(data, other)
     dbms.print_data(merged_data)
 
+    # reduced_data = ['kim', 'jame'], 'age': [5, 6], 'gender': ..., 'country': ...}
+    reduced_data = dbms.remove_by_name(merged_data, ['tom', 'lee'])
+    dbms.print_data(reduced_data)
+
 
 if __name__ == "__main__":
     main()
