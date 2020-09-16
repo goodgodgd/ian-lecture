@@ -94,9 +94,9 @@ except Exception as e:
 import list_ops as lo
 
 goo = lo.subtract(foo, bar)
-print("{} + {} = {}".format(foo, bar, goo))
+print("{} - {} = {}".format(foo, bar, goo))
 goo = lo.divide(bar, foo)
-print("{} * {} = {}".format(bar, foo, goo))
+print("{} / {} = {}".format(bar, foo, goo))
 ```
 
 
@@ -117,7 +117,7 @@ print("spam = {}".format(spam))
 
 
 
-## 3. 패키지 만들기
+## 패키지 만들기
 
 패키지는 여러 모듈이 폴더 단위로 모인 것으로 폴더 안에 폴더를 넣으면 계층적인 패키지를 만들 수도 있다. 여러 모듈을 모은 패키지를 만들기 위해 `package`란 폴더를 만들자. 위에서 만든 `list_op.py`를 그 아래로 옮기고 폴더 내부에서 `dict_ops.py`도 다음과 같이 만들어보자. 함수를 만들 때 원래는 함수 이름을 `list_add`나 `dict_add`처럼 함수 이름에 기능이 모두 표현되는 것이 좋으나 앞에 붙은 접미사는 모듈명으로 대체 가능하기 때문에 함수 이름을 간단하게 지어도 된다.
 
