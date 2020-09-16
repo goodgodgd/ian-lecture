@@ -208,11 +208,11 @@ import dbms
 def main():
     columns = ['name', 'age', 'gender', 'country']
     data = dbms.init_columns(columns)
-    data = dbms.append(data, name='tom', age=3, gender='male', country='usa')
-    data = dbms.append(data, name='lee', age=4, gender='female', country='china')
-    data = dbms.append(data, name='kim', age=5, gender='male', country='korea')
+    data = dbms.append(data, {'name': 'tom', 'age': 3, 'gender': 'male', 'country': 'usa'})
+    data = dbms.append(data, {'name': 'lee', 'age': 4, 'gender': 'female', 'country': 'china'})
+    data = dbms.append(data, {'name': 'kim', 'age': 5, 'gender': 'male', 'country': 'korea'})
     try:
-        data = dbms.append(data, name='jane', age=6, gender='female')
+        data = dbms.append(data, {'name': 'jane', 'age': 6, 'gender': 'female'})
     except AssertionError as ae:
         print(ae)
 
@@ -228,8 +228,8 @@ def main():
     dbms.print_data(query_result)
 
     # merged_data = ['tom', 'lee', 'kim', 'jame'], 'age': [3, 4, 5, 6], 'gender': ..., 'country': ...}
-    newdata = {'name': ['jane'], 'age': [6], 'gender': 'female', 'country': 'uk'}
-    merged_data = dbms.merge(data, newdata)
+    other = {'name': ['jane'], 'age': [6], 'gender': ['female'], 'country': ['uk']}
+    merged_data = dbms.merge(data, other)
     dbms.print_data(merged_data)
 
 
@@ -251,17 +251,17 @@ def init_columns(col_names):
     pass
 
 
-def append(data, **kwargs):
+def append(data, newdata):
     """
     data: database object (dict of lists) e.g.={'name': ['tom', 'lee'], 'age': [3, 4]}
-    kwargs: new data to be appended (dict) e.g.={'name': 'kim', 'age': 5}
+    newdata: new data to be appended (dict) e.g.={'name': 'kim', 'age': 5}
     return: appended database e.g.={'name': ['tom', 'lee', 'kim'], 'age': [3, 4, 5]}
-    [Note] if one of keys of 'kwargs' is NOT in 'data', print WARNING message
-    e.g. kwargs={'name': 'kim', 'gender': 'male'}
+    [Note] if one of keys of 'newdata' is NOT in 'data', print WARNING message
+    e.g. newdata={'name': 'kim', 'gender': 'male'}
         -> print("'gender' is NOT in this database")
-    [Note] if 'kwargs' does NOT have all keys in 'data', raise error using assert
-    e.g. kwargs={'name': 'kim'}
-        assert 'age' in kwargs, "'age' is NOT in kwargs"
+    [Note] if 'newdata' does NOT have all keys in 'data', raise error using assert
+    e.g. newdata={'name': 'kim'}
+        assert 'age' in newdata, "'age' is NOT in newdata"
     """
     pass
 
@@ -295,14 +295,14 @@ def query_by_age(data, age_min, age_max):
     pass
 
 
-def merge(data, newdata):
+def merge(data, other):
     """
     data: database object (dict of lists) e.g.={'name': ['tom', 'kim'], 'age': [3, 5]}
-    newdata: database object (dict of lists) e.g.={'name': ['lee'], 'age': [4]}
+    other: database object (dict of lists) e.g.={'name': ['lee'], 'age': [4]}
     return: merged database e.g.={'name': ['tom', 'kim', 'lee'], 'age': [3, 5, 4]}
-    [Note] if 'newdata' has the same names with 'data', ignore the duplicated data
+    [Note] if 'other' has the same names with 'data', ignore the duplicated data
     e.g. data={'name': ['tom', 'kim'], 'age': [3, 5]}
-        newdata={'name': ['lee', 'kim'], 'age': [4, 6]}
+        other={'name': ['lee', 'kim'], 'age': [4, 6]}
         -> {'name': ['tom', 'kim', 'lee'], 'age': [3, 5, 4]}
     """
     pass
