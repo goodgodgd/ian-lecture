@@ -527,7 +527,7 @@ gedit-common/bionic-updates,bionic-updates,now 3.28.1-1ubuntu1.2 all [installed,
 ## 패키지 설치 및 삭제
 
 ```bash
-# 패키지 설치 (예시: unity-tweak-tool)
+# 패키지 설치
 # sudo apt install [package names]
 $ sudo apt install python3-dev python3-pip python3-numpy
 
@@ -541,27 +541,6 @@ $ sudo apt purge python3-numpy
 
 # 패키지 삭제 후에는 쓰이지 않게된 의존 패키지들을 삭제한다.
 $ sudo apt autoremove
-```
-
-
-
-## 저장소 추가
-
-우분투를 설치하면 기본적으로 우분투의 저장소의 패키지만 검색 가능하다. 하지만 저장소 목록에 PPA (Personal Package Archive)를 추가하면 사설 저장소의 패키지도 설치할 수 있다. 일반적으로 우분투 저장소의 패키지는 안정(stable) 버전의 패키지만 올라오기 때문에 해당 소프트웨어의 최신 버전이 아닌 경우가 많다. 혹은 호환성 문제로 구버전의 리눅스에는 일부러 낮은 버전의 패키지만 올려놓기도 한다. 그래서 패키지가 기본 저장소에 있더라도 최신버전을 쓰고 싶거나 기본 저장소에 없는 패키지를 설치하고 싶을 때는 해당 패키지의 개발자의 PPA를 추가하여 그곳의 최신 패키지를 설치한다.  
-
-**Note**: Ubuntu 16까지는 `add-apt-repository`를 실행한 후 `apt update`를 해줘야 PPA의 패키지 목록을 받을 수 있었지만 Ubuntu 18부터는 `add-apt-repository`를 실행하면 자동으로 `apt update`까지 실행한다.
-
-```bash
-# atom editor 설치 예시 (기본 저장소에 없는 패키지)
-$ sudo add-apt-repository ppa:webupd8team/atom
-$ sudo apt install atom
-
-# python 3.7 설치 (기본 저장소 버전은 3.6)
-$ sudo add-apt-repository ppa:deadsnakes/ppa
-$ sudo apt search python3.*-dev
-
-# 추가한 저장소 삭제
-$ sudo add-apt-repository --remove ppa:deadsnakes/ppa
 ```
 
 
