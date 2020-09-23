@@ -1,8 +1,8 @@
 ---
 layout: post
 title:  "Linux Commands"
-date:   2019-09-03 09:00:13
-categories: 2019-2-robotics
+date:   2020-09-22 09:00:13
+categories: 2020-2-robotics
 ---
 
 
@@ -32,14 +32,14 @@ categories: 2019-2-robotics
 > **cd [상대/절대경로]**
 >
 > 아래와 같은 폴더 구조가 있을 때   
-> /home/ian  
+> /home/pi  
 > /usr/local/bin/  
->     /include/X11  
+>     /usr/include/X11  
 
 ```bash
 # 현재의 절대경로 확인
 $ pwd
-/home/ian
+/home/pi
 
 # 절대경로 활용해 이동 
 ~$ cd /usr/local
@@ -70,7 +70,7 @@ $ cd /usr/local
 /usr$
 
 # 사용자 홈 디렉토리를 상대경로를 이용하여 이동 (ian은 자신의 사용자명으로 대체)
-/usr$ cd ../home/ian
+/usr$ cd ../home/pi
 ~$
 ```
 
@@ -132,21 +132,21 @@ $ cd ~
 > **mkdir [디렉토리명]**
 
 ```bash
-# workplace 라는 디렉토리 만들기
-~$ mkdir workplace
-~$ cd workplace
-~/workplace$ cd ..
+# workspace 라는 디렉토리 만들기
+~$ mkdir workspace
+~$ cd workspace
+~/workspace$ cd ..
 
 # 존재하는 폴더 다시 만들면 에러
-~$ mkdir workplace
-> mkdir: cannot create directory ‘workplace’: File exists
+~$ mkdir workspace
+> mkdir: cannot create directory ‘workspace’: File exists
 
 # 하위 폴더까지 폴더 경로 생성
-~$ mkdir -p workplace/foo/bar
+~$ mkdir -p workspace/foo/bar
 
 # -p 옵션을 줄 시 기존 폴더가 있어도 에러를 출력하지 않음
-~$ mkdir -p workplace/foo/bar
-~$ mkdir -p workplace
+~$ mkdir -p workspace/foo/bar
+~$ mkdir -p workspace
 ```
 
 
@@ -158,35 +158,33 @@ $ cd ~
 
 ```bash
 # 임시 파일/디렉토리 생성
-~$ cd workplace
-~/workplace$ mkdir dirA dirB dirC
-~/workplace$ touch fileA fileB fileC
-~/workplace$ ls
+~$ cd workspace
+~/workspace$ mkdir dirA dirB dirC
+~/workspace$ touch fileA fileB fileC
+~/workspace$ ls
 dirA  dirB  dirC  fileA  fileB  fileC
 
 # 파일 삭제
-~/workplace$ rm fileA
-~/workplace$ ls
+~/workspace$ rm fileA
+~/workspace$ ls
 dirA  dirB  dirC  fileB  fileC
 
 # 패턴으로 파일 삭제
-~/workplace$ rm file*
-~/workplace$ ls
+~/workspace$ rm file*
+~/workspace$ ls
 dirA  dirB  dirC
 
 # 디렉토리 삭제: -r 옵션
-~/workplace$ rm -r dirA
-~/workplace$ ls
+~/workspace$ rm -r dirA
+~/workspace$ ls
 dirB  dirC
 
 # 패턴으로 디렉토리 삭제: -r 옵션
-~/workplace$ rm -r dir*
-~/workplace$ ls
- 
+~/workspace$ rm -r dir*
+~/workspace$ ls
 
 # 임시 파일/디렉토리 다시 생성
-~$ cd workplace
-~/workplace$ mkdir dirA dirB
+~/workspace$ mkdir dirA dirB
 ~/workplace$ touch fileA fileB
 
 # 현재 디렉토리 아래 모든 파일/디렉토리 삭제
@@ -206,7 +204,7 @@ dirB  dirC
 ~/workplace$ rm -r *
 # apple 이란 디렉토리 생성
 ~/workplace$ mkdir apple
-# banann 란 파일 생성
+# banana 란 파일 생성
 ~/workplace$ touch banana
 
 # 파일을 다른 이름으로 복사: cp [파일] [파일]
@@ -233,7 +231,7 @@ apple  banana  cherry  grape
 ~/workplace$ ls
 apple  banana  cherry  grape
 ~/workplace$ ls cherry
-banana  banana2  cherry
+apple  banana  banana2
 ```
 
 
@@ -351,7 +349,7 @@ hello world
 
 # 환경 변수 출력
 ~/workplace$ echo $PATH
-/home/ian/bin:/home/ian/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+/home/pi/bin:/home/pi/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
 
 # echo를 이용한 간단한 텍스트 파일 생성 >
 ~/workplace$ echo "hello sweetie!" > mango
@@ -514,7 +512,7 @@ $ sudo apt list --upgradable
 ```bash
 # 패키지 저장소의 패키지 검색
 # sudo apt search [package name or pattern]
-$ sudo apt search unity-tweak-*
+$ sudo apt search gedit-*
 
 # 설치된 패키지 검색
 # sudo apt list --installed [package name or pattern]
