@@ -9,28 +9,26 @@ categories: 2020-2-robotics
 
 ## ROS 설치
 
-SBC에 ROS Melodic을 설치하는 과정은 Remote PC와 유사하지만 조금씩 다르니 아래 가이드를 따라 설치한다.
+여기서는 Raspberry Pi에 Raspberry Pi OS가 설치된 상태에서 ROS를 설치하는 방법을 설명한다. 주요한 내용은 아래 링크를 참고하였다.
+
+<http://wiki.ros.org/ROSberryPi/Installing%20ROS%20Melodic%20on%20the%20Raspberry%20Pi>
 
 
 
 ### 1. ROS 패키지 저장소 추가
 
-ROS 패키지들은 `apt`를 통해서 설치할 수 있는데 그러려면 ROS 저장소를 추가해야 한다.
+ROS 패키지들은 `apt`를 통해서 설치할 수 있는데 그러려면 ROS 저장소를 추가해야 한다. 그리고 ROS 패키지를 신뢰할만한 패키지로 검증하는데 필요한 키를 등록한다.
 
 ```
-$ sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" \
-> /etc/apt/sources.list.d/ros-latest.list'
-$ sudo apt update
+$ sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
+$ sudo apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
 ```
 
-ROS 패키지를 신뢰할만한 패키지로 검증하는데 필요한 키를 등록한다.
+패키지 상태를 업데이트한다.
 
 ```
-$ sudo apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
-Executing: /tmp/apt-key-gpghome.BoHU3zyXWt/gpg.1.sh --keyserver hkp://keyserver.ubuntu.com:80 --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
-gpg: key F42ED6FBAB17C654: public key "Open Robotics <info@osrfoundation.org>" imported
-gpg: Total number processed: 1
-gpg:               imported: 1
+$ sudo apt-get update
+$ sudo apt-get upgrade
 ```
 
 "Open Robotics"가 키 리스트에 추가됐음을 확인한다.
@@ -43,41 +41,60 @@ uid           [ unknown] Open Robotics <info@osrfoundation.org>
 
 
 
-### 2. 패키지 /설치
+### 2. 기반 패키지 설치
 
-PC들 사이에 통신을 하려면 시간이 서버와 동기화 되어있어야 한다. 동기화에 필요한 `ntpdate`와 원격 접속에 필요한 `openssh` 등 필요한 패키지들을 미리 설치한다.
-
-```
-$ sudo apt install -y build-essential chrony ntpdate net-tools gedit git openssh-server openssh-client
-$ sudo ntpdate ntp.ubuntu.com
-```
-
-
-
-### 3. ROS 패키지 설치
-
-`ros-melodic-desktop-full`은 ROS, [rqt](http://wiki.ros.org/rqt), [rviz](http://wiki.ros.org/rviz), robot-generic libraries, 2D/3D simulators, navigation and 2D/3D perception 등의 패키지들을 한꺼번에 설치할 수 있는 메타패키지다. `python-catkin-tools`는 catkin workspace를 효과적으로 관리할 수 있는 툴이다.
+Ubuntu 같은 배포판에서는 ROS를 단순히 apt 명령어를 이용해서 설치해야 하지만 Pi에서는 ROS를 소스부터 받아서 설치해야 한다. 하지만 소스를 하나씩 직접 받아야 하는 것은 아니고 이 과정을 자동으로 진행해주는 `rosinstall-generator`와 `rosdep`이 있다. 이들은 ROS 패키지를 설치하기 위해 설치해야 하는 패키지며 apt로 설치할 수 있다.
 
 ```
-$ sudo apt install ros-melodic-desktop-full python-catkin-tools
-```
-
-
-
-### 4. rosdep 초기화
-
-`rosdep`은 소스 코드로부터 컴파일시 필요한 시스템 dependency를 자동으로 설치해주는 유틸이다.
-
-```
+$ sudo apt install -y python-rosdep python-rosinstall-generator python-wstool python-rosinstall build-essential cmake
 $ sudo rosdep init
 $ rosdep update
 ```
 
 
 
+### 3. ROS 소스 다운로드
+
+ROS를 빌드하기 위해서는 ROS Workspace를 만들어야한다. ros_melodic이라는 workspace를 만들고 여기에 ROS 소스를 받아보자. ROS는 GUI Tool들을 제외한 ROS-Comm 버전과 `rqt, rviz` 등의 다양한 툴들을 담은 ROS-Deskop 버전이 있다. 여기서는 ROS-Desktop 버전을 설치한다.
+
+```
+$ cd ~
+~ $ mkdir ros_melodic
+~ $ cd ros_melodic
+~/ros_melodic $ rosinstall_generator desktop --rosdistro melodic --deps --wet-only --tar > melodic-desktop-wet.rosinstall
+~/ros_melodic $ wstool init src melodic-desktop-wet.rosinstall -j4
+```
+
+위 명령어를 실행 후 `~/ros_melodic/src` 디렉토리를 보면 다양한 ROS 패키지들을 볼 수 있다. 하지만 이것들은 아직 '설치'된 것이 아니라 그냥 소스 코드를 다운받은 것이다. 이 패키지들을 빌드해서 설치해야 ROS를 쓸 수 있다.  
+
+하지만 그전에 ROS 패키지들이 의존하는 (apt로 설치가능한) 패키지들을 먼저 설치를 해야한다. 수십개의 패키지의 의존성을 일일이 파악하여 하나씩 설치하는건 무척 고된일이지만 다행히도 ROS에는 이를 한번에 해결해주는 명령어가 있다. `rosdep`으로 `src` 디렉토리 아래 있는 모든 패키지의 의존성을 검사하여 한번에 모두 설치한다.
+
+```
+~/ros_melodic $ rosdep install -y --from-paths src --ignore-src --rosdistro melodic -r --os=debian:buster
+```
+
+
+
+### 4. ROS 빌드 및 설치
+
+이제 `src` 디렉토리의 패키지들을 빌드해보자. 여기서는 `catkin_make_isolated`라는 빌드 시스템을 이용한다. 빌드 후 결과물은 `/opt/ros/melodic` 경로에 설치한다. Ubuntu에서 apt에 의해 ROS가 설치되는 경로이다.
+
+```
+~/ros_melodic $ sudo ./src/catkin/bin/catkin_make_isolated --install -DCMAKE_BUILD_TYPE=Release --install-space /opt/ros/melodic -j3
+```
+
+설치가 됐다면 이제 시스템에서 ROS를 활성화한다. ROS 활성화 명령어를 `~/.bashrc`에도 등록하여 항상 ROS를 쓸 수 있도록 세팅한다. 당장 ROS를 사용할게 아니라면 아래 명령어를 건너뛰고 6까지 쭉 진행하면 된다.
+
+```
+source /opt/ros/melodic/setup.bash
+echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc
+```
+
+
+
 ### 5. Catkin Workspace 초기화
 
-패키지를 만들고 빌드할 워크스페이스 디렉토리를 만들고 워크스페이스를 초기화한다. 초기화에 사용되는 `catkin` 유틸에 대한 설명은 다음 시간에 한다.
+우리가 직접 ROS 패키지를 만들고 작업할 워크스페이스 디렉토리를 만들고 워크스페이스를 초기화한다. 초기화에 사용되는 `catkin` 유틸에 대한 설명은 다음 시간에 한다.
 
 ```
 $ source /opt/ros/melodic/setup.bash
@@ -99,7 +116,7 @@ $ cd ~/catkin_ws
 $ gedit ~/.bashrc
 # .bashrc 아래에 다음 텍스트 추가 후 저장하고(ctrl+s) 닫기
 alias cw='cd ~/catkin_ws'
-alias cm='cd ~/catkin_ws && catkin_make'
+alias cm='cd ~/catkin_ws && catkin build'
 source /opt/ros/melodic/setup.bash
 source ~/catkin_ws/devel/setup.bash
 export ROS_MASTER_URI=http://localhost:11311
