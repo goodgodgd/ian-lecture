@@ -43,10 +43,11 @@ uid           [ unknown] Open Robotics <info@osrfoundation.org>
 
 ### 2. 기반 패키지 설치
 
-Ubuntu 같은 배포판에서는 ROS를 단순히 apt 명령어를 이용해서 설치해야 하지만 Pi에서는 ROS를 소스부터 받아서 설치해야 한다. 하지만 소스를 하나씩 직접 받아야 하는 것은 아니고 이 과정을 자동으로 진행해주는 `rosinstall-generator`와 `rosdep`이 있다. 이들은 ROS 패키지를 설치하기 위해 설치해야 하는 패키지며 apt로 설치할 수 있다.
+Ubuntu 같은 배포판에서는 ROS를 단순히 apt 명령어를 이용해서 설치할 수 있지만 Pi에서는 ROS를 소스부터 받아서 빌드해야 한다. 하지만 소스를 하나씩 직접 받아야 하는 것은 아니고 이 과정을 자동으로 진행해주는 `rosinstall-generator`와 `rosdep`이 있다. 이들은 ROS 패키지를 설치하기 위해 설치해야 하는 패키지며 apt로 쉽게 설치할 수 있다.
 
 ```
-$ sudo apt install -y python-rosdep python-rosinstall-generator python-wstool python-rosinstall build-essential cmake
+$ sudo apt install -y python-rosdep python-rosinstall python-rosinstall-generator
+$ sudo apt install -y python-wstool python-catkin-tools build-essential cmake 
 $ sudo rosdep init
 $ rosdep update
 ```
@@ -55,7 +56,7 @@ $ rosdep update
 
 ### 3. ROS 소스 다운로드
 
-ROS를 빌드하기 위해서는 ROS Workspace를 만들어야한다. ros_melodic이라는 workspace를 만들고 여기에 ROS 소스를 받아보자. ROS는 GUI Tool들을 제외한 ROS-Comm 버전과 `rqt, rviz` 등의 다양한 툴들을 담은 ROS-Deskop 버전이 있다. 여기서는 ROS-Desktop 버전을 설치한다.
+ROS를 빌드하기 위해서는 ROS Workspace를 만들어야한다. ros_melodic이라는 작업공간 디렉토리를 만들고 여기에 ROS 소스를 받아보자. ROS는 GUI Tool들을 제외한 ROS-Comm 버전과 `rqt, rviz` 등의 다양한 툴들을 담은 ROS-Deskop 버전이 있다. 여기서는 ROS-Desktop 버전을 설치한다.
 
 ```
 $ cd ~
@@ -102,7 +103,7 @@ $ mkdir -p ~/catkin_ws/src
 $ cd ~/catkin_ws
 ~/catkin_ws$ catkin init
 ~/catkin_ws$ catkin build
-~/catkin_ws$ ls -al
+~/catkin_ws$ ls -l
 ```
 
 
@@ -140,8 +141,6 @@ $ git clone https://github.com/ROBOTIS-GIT/turtlebot3_msgs.git
 $ git clone https://github.com/ROBOTIS-GIT/turtlebot3.git
 $ cd ~/catkin_ws/src/turtlebot3
 $ sudo rm -r turtlebot3_description/ turtlebot3_teleop/ turtlebot3_navigation/ turtlebot3_slam/ turtlebot3_example/
-$ sudo apt install ros-melodic-rosserial-python ros-melodic-tf
-$ source /opt/ros/melodic/setup.bash
 $ cd ~/catkin_ws
 $ catkin build
 ```
@@ -149,6 +148,7 @@ $ catkin build
 OpenCR이 루트 권한을 얻지 않아도 rosrun를 이용할 수 있도록 설정한다.
 
 ```
+$ source ~/.bashrc
 $ rosrun turtlebot3_bringup create_udev_rules
 ```
 
@@ -156,7 +156,15 @@ $ rosrun turtlebot3_bringup create_udev_rules
 
 ### 8. ROS 동작 테스트
 
-아래 명령어를 각각 다른 터미널에서 실행하여 거북이를 조종해본다. 터미널을 열고(ctrl+alt+T) 한 명령을 실행한 후 새 탭을 열어(ctrl+shift+T) 다음 명령어를 실행한다.
+ROS를 실행해보기 전에 ROS를 실행할 새로운 터미널을 설치해보자. Terminator라는 터미널 프로그램인데 창을 여러칸으로 나눌수 있어서 ROS의 여러 노드를 실행할 때 사용하면 편리하다. 아래 명령어로 설치할 수 있다.
+
+```
+$ sudo apt install terminator
+```
+
+Menu - System Tools - Terminator 에서 실행할 수 있고 창을 좌우로 나누는 단축키는 `Ctrl+Shift+E`이고 상하로 나누는 단축키는 `Ctrl+Shift+O`이다.  
+
+아래 명령어를 각각 Terminator의 다른 칸에서 실행하여 거북이를 조종해본다.  
 
 ```
 $ roscore
@@ -165,6 +173,14 @@ $ rosrun turtlesim turtle_teleop_key
 $ rosrun rqt_graph rqt_graph
 $ rostopic echo /turtle1/cmd_vel
 ```
+
+모두 다른 칸에서 순서대로 실행 후 `turtle_teleop_key`를 실행한 칸에서 방향키를 누르면 그에 따라 거북이가 움직일 것이다. 다음은 터미널 창과 TurtleSim 실행화면, rqt_graph 실행화면을 캡쳐한 것이다.
+
+![turtlesim1](../assets/robotics-ros/turtlesim1.png)
+
+<img src="../assets/robotics-ros/turtlesim2.png" alt="turtlesim2" width="300"/>
+
+![turtlesim3](../assets/robotics-ros/turtlesim3.png)
 
 
 
