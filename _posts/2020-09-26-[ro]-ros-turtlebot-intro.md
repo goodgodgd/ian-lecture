@@ -76,7 +76,7 @@ ROS는 최초의 1.0 Box Turtle 이후로 매년 새로운 버전이 나오고 �
 
 2017년에는 국내 로보티즈라는 회사에서 터틀봇3(Turtlebot 3)를 출시했다. 터틀봇3는 모듈형 판넬을 이용하여 조립식으로 층을 쌓아갈 수 있어 기존의 정형화된 확장 프레임을 벗어나 사용자가 자유롭게 원하는 모양을 조립할 수 있도록 설계했다. 저렴한 Raspberry Pi와 360도 Lidar 센서가 기본 장착되어 주행 어플리케이션을 더 쉽게 만들수 있게되었다.
 
-![turtlebot](D:/Work/ian-lecture/assets/robotics-ros/turtlebot_family.png)
+![turtlebot](../assets/robotics-ros/turtlebot_family.png)
 
 **출처**
 
