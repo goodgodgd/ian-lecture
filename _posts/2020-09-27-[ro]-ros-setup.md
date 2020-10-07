@@ -217,3 +217,53 @@ $ rm -rf build/ devel/
 $ cd ~/catkin_ws && catkin_make -j1
 ```
 
+
+
+## HW2. ROS 설치 확인
+
+ROS 설치를 확인하기 위한 숙제입니다. 다음 내용을 진행하는 모습을 화면 녹화를 해서 LMS에 업로드해주세요. 화면을 스마트폰으로 동영상 녹화를 해도 되고 아니면 VNC로 원격 접속해서 윈도우에서 녹화해도 됩니다. 녹화는 아래 내용 전체를 한번에 찍어야 합니다. HW2 동영상 예시를 같이 올려줄테니 설치가 잘 됐다면 그대로 따라하기만 하면 됩니다.
+
+### 1. 본인 확인
+
+1. text editor를 열어 "Hello? I am 20123456(학번) Choi Hyukdoo(이름)." 라고 쓴다.
+2. 터미널에서 `cat /proc/cpuinfo | grep Serial` 명령어를 내려 CPU 시리얼 번호를 확인한다.
+
+### 2. ROS 설치 확인
+
+다음 명령어 실행 후 10정도 기다리다 `ctrl+c`로 중지
+
+```
+~ $ cd ~/ros_melodic
+~/ros_melodic $ sudo ./src/catkin/bin/catkin_make_isolated --install -DCMAKE_BUILD_TYPE=Release --install-space /opt/ros/melodic -j3
+```
+
+### 3. catkin_ws 확인
+
+다음 명령어 실행 후 10정도 기다리다 `ctrl+c`로 중지
+
+```
+~ $ cm
+```
+
+### 4. turtlesim 실행
+
+아래 명령어를 각각 Terminator의 다른 칸에서 실행하여 거북이를 조종해본다.  
+
+```
+$ roscore
+$ rosrun turtlesim turtlesim_node
+$ rosrun turtlesim turtle_teleop_key
+$ rosrun rqt_graph rqt_graph
+$ rostopic echo /turtle1/cmd_vel
+```
+
+
+
+### 제출
+
+- 제출기한: 10월 19일 (월)  
+
+- 제출형식: LMS 제출 HW2 게시판에 "이름\_학번" 제목으로 동영상 파일을 "이름\_학번" 이름으로 지정해 첨부파일로 업로드
+
+- 채점방식: HW2 동영상 예시처럼 모든 내용을 빠짐없이 실행하고 잘 작동하면 20점, 빠진 내용마다 1~2점씩 감점, 제출 형식을 지키지 않으면 1점 감점
+
