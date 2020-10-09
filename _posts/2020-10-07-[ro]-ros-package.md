@@ -1,8 +1,8 @@
 ---
 layout: post
 title:  "Create ROS Package"
-date:   2019-10-05 09:00:13
-categories: 2019-2-robotics
+date:   2020-10-07 09:00:13
+categories: 2020-2-robotics
 ---
 
 
@@ -12,6 +12,8 @@ categories: 2019-2-robotics
 ROS 기반의 로봇 프로그래밍의 핵심은 노드들 사이의 통신을 활용하는 것이다. 통신 방법에는 토픽, 서비스, 액션 세 가지 방법이 있는데 여기서는 토픽과 서비스의 기본적인 사용방법과 새로운 메시지 타입을 만들어 통신하는 방법을 알아볼 것이다. ROS 메시지들은 `int32, float32, string` 등과 같은 기본 타입들의 조합으로 구성되며 기본 타입으로 만들어진 메시지를 묶어서 고수준의 메시지를 만들수도 있다. 기본 메시지 타입은 이곳(<http://wiki.ros.org/msg>)에서 확인할 수 있다. 
 
 토픽 메시지는 패키지의 `msg` 디렉토리 아래 `.msg` 파일 형식으로 저장되어야 하고 서비스 메시지는 `srv` 디렉토리 아래 `.srv` 파일 형식으로 저장되어야 한다. 메시지 타입 빌드에 관한 공식 튜토리얼은 이곳(<http://wiki.ros.org/ROS/Tutorials/CreatingMsgAndSrv>)에 있다.
+
+
 
 # Simple Topic Comm.
 
@@ -122,7 +124,7 @@ rospy.init_node('topic_publisher')
 pub = rospy.Publisher('counter', Int32, queue_size=1)
 ```
 
-`rospy.init_node()`는 이 실행 파일을 ROS의 노드로 만들어준다. 여기에 들어가는 인자는 노드의 기본 네임(Name)이다. 실행할 때 네임을 바꾸지 않으면 이 `topic_publisher`라는 이름으로 노드가 생성된다.  
+`rospy.init_node()`는 이 실행 파일을 ROS의 노드로 만들어준다. 여기에 들어가는 인자는 노드의 기본 네임(Name)이다. 실행할 때 네임을 바꾸지 않으면 이 "topic_publisher"라는 이름으로 노드가 생성된다.  
 
 `rospy.Publisher()`는 퍼블리셔 객체를 만들어준다. 입력인자로 발행할 토픽의 네임(counter), 메시지 타입(Int32), queue_size(1)가 들어간다. queue_size는 ROS가 데이터를 보내는 속도보다 코드에서 퍼블리시를 실행하는 속도가 빨라서 전송되지 못한 메시지가 쌓일 경우 최대 몇 개까지 쌓아둘지를 결정한다.
 
@@ -159,15 +161,9 @@ sub = rospy.Subscriber('counter', Int32, callback)
 rospy.spin()
 ```
 
-한 줄씩 의미를 알아보자. 위 세 줄은 `topic_publisher.py`와 같다.
+한 줄씩 의미를 알아보자. 위 세 줄은 `topic_publisher.py`와 같다.  
 
-```python
-rospy.init_node('topic_subscriber')
-sub = rospy.Subscriber('counter', Int32, callback)
-rospy.spin()
-```
-
-퍼블리셔와 마찬가지로 서브스크라이버 노드도 `rospy.init_node()`를 통해 프로세스를 ROS 노드로 등록해야한다. `rospy.Subscriber()`로 서브스크라이버 객체(`sub`)를 만드는데 인자로 구독할 토픽의 네임(counter), 토픽의 메시지 타입(Int32), 메시지가 왔을 때 이를 처리할 콜백 함수(callback)을 지정한다. 콜백 함수는 메시지가 도착할 때마다 실행된다. `ros.spin()`는 콜백 함수를 기다리는 동안 프로세스가 종료되지 않도록 잡아두는 역할을 한다.
+퍼블리셔와 마찬가지로 서브스크라이버 노드도 `rospy.init_node()`를 통해 프로세스를 ROS 노드로 등록해야한다. `rospy.Subscriber()`로 서브스크라이버 객체(`sub`)를 만드는데 인자로 구독할 토픽의 네임('counter'), 토픽의 메시지 타입(Int32), 메시지가 왔을 때 이를 처리할 콜백 함수(`callback`)를 지정한다. 콜백 함수는 메시지가 도착할 때마다 실행된다. `ros.spin()`는 콜백 함수를 기다리는 동안 프로세스가 종료되지 않도록 잡아두는 역할을 한다.
 
 
 

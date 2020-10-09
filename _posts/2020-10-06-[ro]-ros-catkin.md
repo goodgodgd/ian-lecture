@@ -1,8 +1,8 @@
 ---
 layout: post
 title:  "Catkin Build System"
-date:   2019-09-28 09:00:13
-categories: 2019-2-robotics
+date:   2020-10-06 09:00:13
+categories: 2020-2-robotics
 ---
 
 
@@ -127,7 +127,7 @@ ROS의 기본 철학이 최소 단위 기능만을 가지고 있는 여러 노�
 - 타겟 이름이나 cmake 변수가 중복되어 예상치 않은 버그나 에러가 발생할 수 있다.
 - 오직 catkin으로 생성한 패키지만 빌드할 수 있다.
 
-이러한 문제를 해결하고자 `catkin_make_isolated`라는 툴도 나왔으나 부작용으로 병렬 빌드가 되지 않는 등의 문제가 있었다. 그래서 `catkin` 이라는 툴이 새로 나오게 됐다. `catkin`이란 하나의 명령어로 verb에 따라 워크스페이스 초기화, 빌드, 패키지 생성 등을 할 수 있는 통합 툴이다. 특히 빌드를 하는 `catkin build`가 기존 `catkin_make`에 비해 크게 개선되었다. 기존에 모든 패키지를 하나의 프로젝트로 묶는 최상위 `CMakeLists.txt`가 사라지고 개별 패키지를 독립적으로 그러면서도 병렬로 빌드한다. 캐킨으로 생성하지 않은 plain CMake 프로젝트도 함께 빌드가 가능해지고 그 외에 다양한 사용자 인터페이스가 개선되었다.
+이러한 문제를 해결하고자 `catkin_make_isolated`라는 툴도 나왔으나 부작용으로 병렬 빌드가 잘 되지 않는 등의 문제가 있었다. 그래서 `catkin` 이라는 툴이 새로 나오게 됐다. `catkin`이란 하나의 명령어로 verb에 따라 워크스페이스 초기화, 빌드, 패키지 생성 등을 할 수 있는 통합 툴이다. 특히 빌드를 하는 `catkin build`가 기존 `catkin_make`에 비해 크게 개선되었다. 기존에 모든 패키지를 하나의 프로젝트로 묶는 최상위 `CMakeLists.txt`가 사라지고 개별 패키지를 독립적으로 그러면서도 병렬로 빌드한다. 캐킨으로 생성하지 않은 plain CMake 프로젝트도 함께 빌드가 가능해지고 그 외에 다양한 사용자 인터페이스가 개선되었다.
 
 
 
@@ -511,6 +511,7 @@ Finished  <<< turtlebot3_slam                       [ 0.3 seconds ]
 
 ```
 $ roscore
+# 새 탭에서
 ~/catkin_ws$ rosrun hello_ros hello_ros_node
 [ INFO] [1569946100.153906358]: hello ROS 0
 [ INFO] [1569946100.254060324]: hello ROS 1
@@ -554,7 +555,7 @@ find_package(<package_name1>, <package_name2>, ...)
 
 `find_package(<package_name> REQUIRED)`처럼  `REQUIRED`를 붙이면 필수 패키지란 뜻으로 이 패키지를 찾지 못하면 에러가 난다. 의존 패키지가 있는지 확인하는 용도로도 많이 쓰인다.   
 
-`COMPONENT`는 여러개의 구성요소를 가진 패키지에서 특정 요소만 요구할 때 쓴다. 예를 들어 `find_package(Boost REQUIRED COMPONENTS system)` 는 `Boost`라는 패키지에서 `system`이라는 패키지만 필요하다는 것이다.  
+`COMPONENT`는 여러개의 구성요소를 가진 패키지에서 특정 요소만 요구할 때 쓴다. 예를 들어 `find_package(Boost REQUIRED COMPONENTS system)` 는 `Boost`라는 패키지에서 `system`이라는 내부 패키지만 필요하다는 것이다.  
 
 캐킨 패키지를 찾을 때도 아래 예시처럼 `catkin`이라는 패키지의 하위 구성요소로서 찾는다. 캐킨 패키지를 독립적인 패키지가 아니라 하위 요소로서 검색하는 이유는 이후의 편의를 위한 것이다. 아래와 같은 경우 자동 생성되는 `catkin_INCLUDE_DIRS`변수 하나에 구성요소(roscpp, std_msgs)의 헤더 경로가 모두 포함되고 마찬가지로 `catkin_LIBRARIES`에 구성요소의 라이브러리들이 모두 포함된다. 따라서 하위 패키지를 각각 설정해 줄 필요없이 `catkin` 하나만 설정해주면 하위 요소는 자동으로 설정이 된다.
 
@@ -590,6 +591,116 @@ message("_LIB: " ${catkin_LIBRARIES})
 > _FOUND: 1
 > _INCLUDE: /opt/ros/melodic/include/opt/ros/melodic/share/xmlrpcpp/cmake/../../../include/xmlrpcpp/usr/include
 > _LIB: /opt/ros/melodic/lib/libroscpp.so/usr/lib/x86_64-linux-gnu/libboost_filesystem.so/usr/lib/x86_64-linux-gnu/libboost_signals.so/opt/ros/melodic/lib/librosconsole.so/opt/ros/melodic/lib/librosconsole_log4cxx.so/opt/ros/melodic/lib/librosconsole_backend_interface.so/usr/lib/x86_64-linux-gnu/liblog4cxx.so/usr/lib/x86_64-linux-gnu/libboost_regex.so/opt/ros/melodic/lib/libxmlrpcpp.so/opt/ros/melodic/lib/libroscpp_serialization.so/opt/ros/melodic/lib/librostime.so/opt/ros/melodic/lib/libcpp_common.so/usr/lib/x86_64-linux-gnu/libboost_system.so/usr/lib/x86_64-linux-gnu/libboost_thread.so/usr/lib/x86_64-linux-gnu/libboost_chrono.so/usr/lib/x86_64-linux-gnu/libboost_date_time.so/usr/lib/x86_64-linux-gnu/libboost_atomic.so/usr/lib/x86_64-linux-gnu/libpthread.so/usr/lib/x86_64-linux-gnu/libconsole_bridge.so.0.4
+
+
+
+
+
+### include_directories()
+
+C++에서 `#include "some_header.h" ` 를 컴파일 할 때 `some_header.h`를 검색하는 디렉토리를 추가한다. 패키지 내부에 헤더 파일이 있는 경로를 지정하고 (주로 `include`) 다른 ROS 패키지의 헤더 파일도 쓸 수 있도록 `${catkin_INCLUDE_DIRS}`도 추가한다. ROS외에 다른 라이브러리를 쓰는 경우에는 여기서 다른 라이브러리의 헤더 파일 경로를 추가해야한다.
+
+```cmake
+include_directories(
+# include
+  ${catkin_INCLUDE_DIRS}
+)
+```
+
+
+
+### add_library()
+
+라이브러리 타겟을 추가한다. 라이브러리 파일을 만드는 경우에만 사용한다. 일반적으로 노드 실행 파일을 만드는 패키지에서는 쓰지 않는다. 아래 스크립트는 사용 방법과 예시다. 라이브러리 이름 다음에는 라이브러리를 빌드하는데 필요한 모든 소스파일을 나열해야 한다. 헤더 파일은 쓰지 않아도 된다. 파일이 많은 경우 소스 파일 목록을 변수로 만들고 변수를 함수에 입력한다.
+
+```cmake
+# add_library(<library_name> <src_file1> <src_file2> ...)
+add_library(${PROJECT_NAME} src/${PROJECT_NAME}/hello_ros.cpp)
+```
+
+
+
+### add_executable()
+
+실행 파일 타겟을 추가한다. 타겟을 추가한다는 것은 cmake를 실행해서 생기는 `Makefile`이 타겟 결과물을 만들도록 자동 생성된다는 뜻이다. ROS에서 노드는 실행 파일으므로 노드를 만든다고 보면 된다. 아래 스크립트는 사용 방법과 예시다. 라이브러리 이름 다음에는 라이브러리를 빌드하는데 필요한 모든 소스파일을 나열해야 한다. 헤더 파일은 쓰지 않아도 된다. 파일이 많은 경우 소스 파일 목록을 변수로 만들고 변수를 함수에 입력한다.
+
+```cmake
+# add_executable(<executable_name> <src_file1> <src_file2> ...)
+add_executable(${PROJECT_NAME}_node src/hello_ros_node.cpp)
+```
+
+
+
+### target_link_libraries()
+
+특정 타겟을 위한 라이브러리를 링크한다. 실행파일이나 라이브러리를 빌드하는데 필요한 외부 라이브러리를 지정하는 것이다. 캐킨 패키지의 라이브러리는 `${catkin_LIBRARIES}`로 한번에 링크할 수 있다.
+
+```cmake
+# target_link_libraries(<target-name> <library1> <library2> ...)
+target_link_libraries(${PROJECT_NAME}_node ${catkin_LIBRARIES})
+```
+
+
+
+### add_dependencies()
+
+타겟에 필요한 다른 의존 타겟을 지정한다. 타겟은 빌드로 만들어지는 모든 최종 결과물을 말하는 것인데 실행파일, 라이브러리, 언어별 메시지 타겟도 포함된다. 의존성을 추가하는 이유는 **빌드 순서를 정하기 위함**이다. 의존하는 타겟을 먼저 빌드하고 의존 타겟을 사용하는 타겟을 나중에 빌드해야 빌드 과정에서 에러가 발생하지 않는다.  
+
+예를들어 내가 만든 메시지 타입으로 토픽을 퍼블리시하려면 먼저 메시지 헤더 파일이 빌드되어야 퍼블리시 노드를 빌드할 수 있다. C++을 쓰는 경우에는 메시지 파일로부터 헤더 파일이 생성되고 파이썬을 쓰는 경우에는 메시지 파일로부터 파이썬 스크립트가 생성된다.    
+
+함수는 `add_dependencies(<target_name> <dependent_targets>)` 형식으로 사용하며 의미는 `<target_name>` 타겟에 대해 `<dependent_targets>`에 대한 의존성을 추가하는 것이다.   
+
+그래서 ROS 패키지에서 `add_dependencies()`는 거의 모든 `add_library()`와 `add_executable()` 아래에 들어간다. 아래 예시는 라이브러리와 실행 파일 타겟을 만든 후 각각에 의존성을 추가하는 스크립트다. `${PROJECT_NAME}_EXPORTED_TARGETS`는 THIS_PKG에서 만드는 `EXPORTED_TARGET`이고 `${catkin_EXPORTED_TARGETS}`는 캐킨 전체의 `EXPORTED_TARGET`을 말한다. `EXPORTED_TARGET`은 언어별 메시지, 서비스, 액션, dynamic configure 등과 같이 외부에 설치되는 타겟을 말한다. 
+
+```cmake
+add_library(${PROJECT_NAME} src/hello_ros_lib.cpp)
+add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+
+add_executable(${PROJECT_NAME}_node src/hello_ros_node.cpp)
+add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+```
+
+
+
+### 메시지 추가
+
+토픽, 서비스, 액션 통신 방식에 따라 각기 다른 경로에 다른 메시지 파일 형식이 존재한다. 사용자가 작성한 메시지 파일 형식에 맞는 함수로 메시지 파일을 추가하고 메시지를 생성한다.
+
+- **add_message_files(FILES message_file.msg)**: 메시지 파일을 빌드 타겟에 추가한다. msg 파일은 반드시 `PKG_ROOT/msg` 디렉토리에 있어야 한다.
+- **add_service_files(FILES service_file.srv)**: 서비스 파일을 빌드 타겟에 추가한다. srv 파일은 반드시 `PKG_ROOT/srv` 디렉토리에 있어야 한다.
+- **add_action_files(FILES action_file.action)**: 서비스 파일을 빌드 타겟에 추가한다. action 파일은 반드시 `PKG_ROOT/action` 디렉토리에 있어야 한다.
+
+모든 메시지를 추가한 후 아래 줄을 붙여야 한다. 새로운 메시지의 의존 타입을 적는데 주로 기본 메시지인 `std_msgs`를 쓰거나  다른 메시지가 들어있는 패키지 이름을 쓴다.
+
+```cmake
+generate_messages(DEPENDENCIES std_msgs)
+```
+
+메시지를 사용하는 경우 반드시 `package.xml`에서 `message_generation`을 build dependency로, `message_runtime`을 runtime dependency로 추가해야 한다. 또한 다음에 나오는 `catkin_package()`에 `CATKIN_DEPENDS message_runtime` 이 포함되어 있어야한다.
+
+
+
+### catkin_package()
+
+`catkin_package()`는 다른 패키지가 THIS_PKG를 사용하려 할때 필요한 사항을 정리한다.
+
+- INCLUDE_DIRS: THIS_PKG의 헤더 파일이 있는 경로
+- LIBRARIES: THIS_PKG에서 만드는 라이브러리
+- CATKIN_DEPENDS: THIS_PKG가 의존하는 캐킨 패키지로서 THIS_PKG를 사용하는 다른 패키지도 필요하게 되는 캐킨 패키지 지정
+- DEPENDS: THIS_PKG가 의존하는 시스템 패키지로서 THIS_PKG를 사용하는 다른 패키지도 필요하게 되는 시스템 패키지 지정
+
+```cmake
+catkin_package(
+#  INCLUDE_DIRS include
+#  LIBRARIES hello_ros
+#  CATKIN_DEPENDS roscpp std_msgs
+#  DEPENDS system_lib
+)
+```
+
+
+
+---
 
 
 
@@ -632,106 +743,4 @@ catkin_install_python(PROGRAMS bin/hello
 참고: <http://wiki.ros.org/rospy_tutorials/Tutorials/Makefile>  
 
 하지만 파이썬 기반 ROS 코딩을 할 때 항상 `setup.py`를 만들어야 하는 것은 아니다. 하나의 디렉토리에 모든 파일을 담으면 굳이 `setup.py`를 쓰거나 `CMakeLists.txt`에 위와 같은 두 줄을 추가할 필요가 없다.
-
-
-
-### 메시지 추가 함수
-
-토픽, 서비스, 액션 통신 방식에 따라 각기 다른 경로에 다른 메시지 파일 형식이 존재한다. 사용자가 작성한 메시지 파일 형식에 맞는 함수로 메시지 파일을 추가하고 메시지를 생성한다.
-
-- **add_message_files(FILES message_file.msg)**: 메시지 파일을 빌드 타겟에 추가한다. msg 파일은 반드시 `PKG_ROOT/msg` 디렉토리에 있어야 한다.
-- **add_service_files(FILES service_file.srv)**: 서비스 파일을 빌드 타겟에 추가한다. srv 파일은 반드시 `PKG_ROOT/srv` 디렉토리에 있어야 한다.
-- **add_action_files(FILES action_file.action)**: 서비스 파일을 빌드 타겟에 추가한다. action 파일은 반드시 `PKG_ROOT/action` 디렉토리에 있어야 한다.
-
-모든 메시지를 추가한 후 아래 줄을 붙여야 한다. 새로운 메시지의 의존 타입을 적는데 주로 기본 메시지인 `std_msgs`를 쓰거나  다른 메시지가 들어있는 패키지 이름을 쓴다.
-
-```cmake
-generate_messages(DEPENDENCIES std_msgs)
-```
-
-메시지를 사용하는 경우 반드시 `package.xml`에서 `message_generation`을 build dependency로, `message_runtime`을 runtime dependency로 추가해야 한다. 또한 다음에 나오는 `catkin_package()`에 `CATKIN_DEPENDS message_runtime` 이 포함되어 있어야한다.
-
-
-
-### catkin_package()
-
-`catkin_package()`는 다른 패키지가 THIS_PKG를 사용하려 할때 필요한 사항을 정리한다.
-
-- INCLUDE_DIRS: THIS_PKG의 헤더 파일이 있는 경로
-- LIBRARIES: THIS_PKG에서 만드는 라이브러리
-- CATKIN_DEPENDS: THIS_PKG가 의존하는 캐킨 패키지로서 THIS_PKG를 사용하는 다른 패키지도 필요하게 되는 캐킨 패키지 지정
-- DEPENDS: THIS_PKG가 의존하는 시스템 패키지로서 THIS_PKG를 사용하는 다른 패키지도 필요하게 되는 시스템 패키지 지정
-
-```cmake
-catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES hello_ros
-#  CATKIN_DEPENDS roscpp std_msgs
-#  DEPENDS system_lib
-)
-```
-
-
-
-### include_directories()
-
-C++에서 `#include "some_header.h" ` 를 컴파일 할 때 `some_header.h`를 검색하는 디렉토리를 추가한다. 패키지 내부에 헤더 파일이 있는 경로를 지정하고 (주로 `include`) 다른 ROS 패키지의 헤더 파일도 쓸 수 있도록 `${catkin_INCLUDE_DIRS}`도 추가한다. ROS외에 다른 라이브러리를 쓰는 경우에는 여기서 다른 라이브러리의 헤더 파일 경로를 추가해야한다.
-
-```cmake
-include_directories(
-# include
-  ${catkin_INCLUDE_DIRS}
-)
-```
-
-
-
-### add_library()
-
-라이브러리 타겟을 추가한다. 라이브러리 파일을 만드는 경우에만 사용한다. 일반적으로 노드 실행 파일을 만드는 패키지에서는 쓰지 않는다. 아래 스크립트는 사용 방법과 예시다. 라이브러리 이름 다음에는 라이브러리를 빌드하는데 필요한 모든 소스파일을 나열해야 한다. 헤더 파일은 쓰지 않아도 된다. 파일이 많은 경우 소스 파일 목록을 변수로 만들고 변수를 함수에 입력한다.
-
-```cmake
-# add_library(<library_name> <src_file1> <src_file2> ...)
-add_library(${PROJECT_NAME} src/${PROJECT_NAME}/hello_ros.cpp)
-```
-
-
-
-### add_executable()
-
-실행 파일 타겟을 추가한다. 타겟을 추가한다는 것은 cmake를 실행해서 생기는 `Makefile`이 타겟 결과물을 만들도록 자동 생성된다는 뜻이다. ROS에서 노드는 실행 파일으므로 노드를 만든다고 보면 된다. 아래 스크립트는 사용 방법과 예시다. 라이브러리 이름 다음에는 라이브러리를 빌드하는데 필요한 모든 소스파일을 나열해야 한다. 헤더 파일은 쓰지 않아도 된다. 파일이 많은 경우 소스 파일 목록을 변수로 만들고 변수를 함수에 입력한다.
-
-```cmake
-# add_executable(<executable_name> <src_file1> <src_file2> ...)
-add_executable(${PROJECT_NAME}_node src/hello_ros_node.cpp)
-```
-
-
-
-### add_dependencies()
-
-타겟에 필요한 다른 의존 타겟을 지정한다. 타겟은 빌드로 만들어지는 모든 최종 결과물을 말하는 것인데 실행파일, 라이브러리, 언어별 메시지 타겟도 포함된다. 그 중에서도 `EXPORTED_TARGET`은 언어별 메시지, 서비스, 액션의 타겟, dynamic configure 등과 같이 외부에 설치되는 타겟을 말한다. C++을 쓰는 경우에는 메시지 파일로부터 헤더 파일이 생성되고 파이썬을 쓰는 경우에는 메시지 파일로부터 파이썬 스크립트가 생성된다. 만약 내가 만든 메시지 타입으로 토픽을 퍼블리시하려면 먼저 메시지 헤더 파일이 빌드되어야 퍼블리시 노드를 빌드할 수 있다. 함수는 `add_dependencies(<target_name> <dependent_targets>)` 형식으로 사용하며 의미는 `<target_name>` 타겟에 대해 `<dependent_targets>`에 대한 의존성을 추가하는 것이다.  
-
-의존성을 추가하는 이유는 빌드 순서를 정하기 위함이다. 의존하는 타겟을 먼저 빌드하고 의존 타겟을 사용하는 타겟을 나중에 빌드해야 빌드 과정에서 에러가 발생하지 않는다.  
-
-그래서 ROS 패키지에서 `add_dependencies()`는 거의 모든 `add_library()`와 `add_executable()` 아래에 들어간다. 아래 예시는 라이브러리와 실행 파일 타겟을 만든 후 각각에 의존성을 추가하는 스크립트다. `${${PROJECT_NAME}_EXPORTED_TARGETS`는 THIS_PKG에서 만드는 `EXPORTED_TARGET`이고 `${catkin_EXPORTED_TARGETS}`는 캐킨 전체의 `EXPORTED_TARGET`을 말한다.
-
-```cmake
-add_library(${PROJECT_NAME} src/${PROJECT_NAME}/hello_ros.cpp)
-add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_executable(${PROJECT_NAME}_node src/hello_ros_node.cpp)
-add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-```
-
-
-
-### target_link_libraries()
-
-특정 타겟을 위한 라이브러리를 링크한다. 실행파일이나 라이브러리를 빌드하는데 필요한 외부 라이브러리를 지정하는 것이다. 캐킨 패키지의 라이브러리는 `${catkin_LIBRARIES}`로 한번에 링크할 수 있다.
-
-```cmake
-# target_link_libraries(<target-name> <library1> <library2> ...)
-target_link_libraries(${PROJECT_NAME}_node ${catkin_LIBRARIES})
-```
-
 
