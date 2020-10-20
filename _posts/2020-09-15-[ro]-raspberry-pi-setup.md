@@ -120,7 +120,7 @@ pycharm
 
 ```
 sudo apt install ibus ibus-hangul
-sudo apt install ttf-unfonts-core
+sudo apt install fonts-unfonts-core
 ```
 
 여기까지 한 후 재부팅해주는 것이 좋다. 아래 그림에서처럼 왼쪽 위의 라즈베리 모양의 메뉴를 클릭하고 맨 아래 "Logout"을 선택하면 "Reboot" 메뉴를 볼 수 있다. 재부팅 후 아래 과정을 따라한다.

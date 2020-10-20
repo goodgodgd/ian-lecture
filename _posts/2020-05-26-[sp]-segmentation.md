@@ -150,7 +150,7 @@ OpenCV에서는 이를 구현한 `cv2.floodFill()` 함수를 제공한다. `cv2.
 > seedPoint에서 시작하여 주변에 image 픽셀 값이 비슷한 영역을 반복적으로 확장해 나간다. mask가 0인 픽셀로만 확장할수 있다. 지정된 영역에서 image에는 newVal 값이 채워지고 mask에는 1 또는 (flags>>8) 값이 채워진다.
 >
 > - image: 1- or 3-channel, 8-bit or floating-point image,`flags`에  `cv2.FLOODFILL_MASK_ONLY`를 지정하지 않은 경우 입력으로만 넣어도 해당 영역에 `newVal`이 채워진다.
-> - mask: 입력 영상의 크기가 (H, W)라면 maks에는 (H+2, W+2) 사이즈의 single-channel 8-bit image를 입력해야 한다.
+> - mask: 입력 영상의 크기가 (H, W)라면 mask에는 (H+2, W+2) 사이즈의 single-channel 8-bit image를 입력해야 한다.
 > - seedPoint: 시작점
 > - newVal: 채우기에 들어갈 색상 값
 > - loDiff, upDiff: 주변 픽셀을 채울지 결정하는 최대 픽셀 값 차이, 기준 픽셀이`(x, y)`이고 주변의 새로운 픽셀이 `(x', y')` 일 때, `img(x, y) - loDiff <= img(x', y') <= img(x, y) + upDiff` 를 만족해야 새로운 픽셀을 영역에 추가할 수 있다.
@@ -236,8 +236,8 @@ def count_puzzle():
     cv2.imshow("image", img)
     cv2.waitKey()
     count = 0
-    for y in range(img.shape[0]):
-        for x in range(img.shape[1]):
+    for y in range(0, img.shape[0], 5):
+        for x in range(0, img.shape[1], 5):
             if mask[y+1, x+1] == 0:
                 # flood fill로 채울 랜덤 색상 생성
                 color = np.random.randint(20, 256, 3).tolist()
@@ -303,7 +303,7 @@ def prepare_mask(srcimg):
     mask = np.zeros(canny.shape, np.uint8)
     mask[canny > 10] = NO_REGION
     mask[images["value"] < 70] = NO_REGION
-    images["mask mask"] = mask
+    images["no region mask"] = mask
     # 상하좌우에 1픽셀씩 추가 (H, W) -> (H+2, W+2)
     mask = np.pad(mask, ((1, 1), (1, 1)))
     return images, mask
