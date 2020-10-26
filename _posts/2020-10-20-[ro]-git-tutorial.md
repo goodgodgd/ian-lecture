@@ -1,8 +1,8 @@
 ---
 layout: post
 title:  "Git Tutorial"
-date:   2019-10-08 09:00:13
-categories: 2019-2-robotics
+date:   2020-10-20 09:00:13
+categories: 2020-2-robotics
 ---
 
 
@@ -46,7 +46,7 @@ CVCS의 단점은 중앙 서버가 고장나면 모두가 망한다는 것이다
 - 오프라인에서도 과거 이력 조회와 commit 가능
 - ... 등 다 적을 수 없다.
 
-그러나 Git에 대한 이러한 찬양은 구식 시스템을 써본 옛날 사람의 "옛날에는 말이야~" 라는 식이라서 Git으로 버전 관리를 시작하는 젊은이들은 공감하기 어렵다. (CVCS가 전화기라면 Git은 스마트폰이다. 요즘 아이들은 스마트폰이 없던 세상을 공감할 수 없다.)  오늘날에는 Git이 공기처럼 당연히 쓰이고 있으므로 소프트웨어를 개발하는 사람이라면 당연히 Git을 쓸 줄 알아야 한다.
+그러나 Git에 대한 이러한 찬양은 구식 시스템을 써본 옛날 사람의 "옛날에는 말이야~" 라는 식이라서 Git으로 버전 관리를 시작하는 젊은이(?)들은 공감하기 어렵다. (CVCS가 전화기라면 Git은 스마트폰이다. 요즘 아이들은 스마트폰이 없던 세상을 공감할 수 없다.)  오늘날에는 Git이 공기처럼 당연히 쓰이고 있으므로 소프트웨어를 개발하는 사람이라면 당연히 Git을 쓸 줄 알아야 한다.
 
 
 
@@ -87,7 +87,7 @@ Git은 혼자 쓸 때는 단순히 버전 관리 시스템이지만 팀으로 �
 
 ### git clone
 
-> `git clone <repository_url> [dir_name]` : `repository_url` 주소의 원격 저장소를 복사한다. 기본적으로는 저장소 이름과 같은 디렉토리가 생기고 뒤에 `dir_name`을 지정하면 그 이름으로 디렉토리가 생긴다.
+> `git clone <repository_url> <dir_name>` : `repository_url` 주소의 원격 저장소를 복사한다. 기본적으로는 저장소 이름과 같은 디렉토리가 생기고 뒤에 `dir_name`을 지정하면 그 이름으로 디렉토리가 생긴다.
 
 방금 깃헙에 만든 원격 저장소를 `~/workspace` 아래 `robotics-schl` 이란 디렉토리로 복제해보자. 저장소 디렉토리가 생겼는지 확인하고 그곳으로 이동한다.
 
@@ -180,13 +180,13 @@ $ git status
 
 > 로컬 저장소의 새로운 commit을 원격 저장소로 올린다. 현재 로컬 저장소의 파일 상태나 Stage 여부에 상관없이 오직 commit에 들어간 변경 사항만 원격 저장소로 올린다.
 >
-> `git push origin master` : Git 초보자들이 가장 많이 쓰는 명령어 중 하나이다. 저장소를 clone 받으면 `master`라는 기본 branch가 선택되고 원격 저장소는 자동으로 `origin`이란 이름으로 저장된다. 그래서 `master` branch에서 작업 후 commit을 원격 저장소로 업로드 할 때 이 명령어를 쓰게된다.
+> `git push origin master` : Git 초보자들이 가장 많이 쓰는 명령어 중 하나이다. 저장소를 clone 받으면 `master`라는 기본 브랜치(branch)가 선택되고 원격 저장소는 자동으로 `origin`이란 이름으로 저장된다. 그래서 `master` 브랜치에서 작업 후 commit을 원격 저장소로 업로드 할 때 이 명령어를 쓰게된다.
 >
-> `git push <remote_repository> <local_branch>` : local_branch의 commit들을 원격 저장소의 같은 이름의 branch에 올린다. 예를 들어 `git push origin master`는 로컬 저장소의 `master` branch의 commit들을 원격 저장소의 `master` branch(origin/master)에 올린다는 것이다. 원격 저장소에 local_branch가 없을 경우 GitHub에서 자동으로 같은 이름의 branch를 만들어준다.
+> `git push <remote_repository> <local_branch>` : local_branch의 commit들을 원격 저장소의 같은 이름의 브랜치에 올린다. 예를 들어 `git push origin master`는 로컬 저장소의 `master` 브랜치에 쌓인 commit들을 원격 저장소의 `master` 브랜치(origin/master)에 올린다는 것이다. 원격 저장소에 local_branch가 없을 경우 GitHub에서 자동으로 같은 이름의 브랜치를 만들어준다.
 >
 > `git push <remote_repository> <local_branch>:<remote_branch>` : local_branch의 commit들을 원격 저장소의 remote_branch에 반영한다.
 >
-> `git push --all` : 모든 로컬 branch를 한번에 push 한다.
+> `git push --all` : 모든 로컬 브랜치를 한번에 push 한다.
 
 커밋을 통해 저장된 파일의 상태를 원격 저장소로 올린다. 명령 실행 후 깃헙 저장소에서 추가된 파일을 확인해보자.
 
@@ -239,7 +239,9 @@ Git 저장소 안에서 파일은 그림처럼 네 가지 상태를 가질 수 �
 
 
 
-## 4. 다른 곳에서 이어서 작업하기 (집)
+## 4. git 활용
+
+### 4.1. 다른 곳에서 이어서 작업하기 (집)
 
 Git/GitHub은 여럿이 협동하여 작업할 때 가장 유용하지만 혼자 작업할 때도 유용하게 쓸 수 있다. 일단 Git을 통해 기본적인 버전관리를 할 수 있는 것은 물론이고 마치 파일 클라우드에 올려놓으면 어느 PC에서나 파일에 접근할 수 있듯이 깃헙을 사용하면 어디서나 소스코드를 받아서 작업을 이어서 할 수 있다. 여기서는 여러 PC에서 작업을 이어서 하는 방법을 설명하고 그러면서 git의 다양한 명령어에 대해 알아볼 것이다.  
 
@@ -299,7 +301,7 @@ if __name__ == "__main__":
 >
 > `git diff HEAD` : 작업 트리와 저장소(HEAD)의 차이점 보기
 >
-> `git diff <start> [end]` : start로부터의 변경 사항이나 start와 end 사이의 변경 사항을 본다. start와 end는 commit hash나 HEAD~n, branch 명, 태그 명이 될 수 있다.
+> `git diff <start> [end]` : start로부터의 변경 사항이나 start와 end 사이의 변경 사항을 본다. start와 end는 commit hash나 HEAD~n, 브랜치 명, 태그 명이 될 수 있다.
 
 `git diff`를 통해서 변경사항을 확인할 수 있다. `git add` 하지 않은 변경사항은 `git diff`로 보고 `git add`가 된 변경사항은 `git diff --cached`로 확인할 수 있다. 변경사항 확인 후 커밋까지 한다.
 
@@ -330,7 +332,7 @@ if __name__ == "__main__":
 
 > rm은 remove의 약자로 파일을 삭제하고 삭제한 상태를 stage한다. 즉 파일을 삭제한 후 `git add .` 한 것과 같다.  Git으로 버전 관리되는 파일은 가급적 rm을 이용해 삭제하는 것이 좋다.
 >
-> `git rm <file_name>` : 지정한 파일을 삭제하고 stage한다.
+> `git rm <file_name>` : 지정한 파일을 삭제하고 삭제한 상태를 stage한다.
 >
 > `git rm <file_pattern>` : 패턴과 일치하는 모든 파일을 삭제하고 stage한다. 예를들어 `git rm *.txt` 라고 하면 모든 텍스트 파일을 삭제하는 것이다.
 >
@@ -347,11 +349,11 @@ pyc 파일이 들어있는 `__pycache__` 디렉토리를 삭제해보자. 그냥
 
 ### .gitignore
 
-하지만 삭제를 하더라도 또다시 `python3 anything.py`를 실행하면 pyc 파일이 다시 생길 것이다. 매번 삭제할 수는 없으므로 git에서 이런 파일들을 "무시"하도록 해야한다. 이때 무시해야할 파일(이나 디렉토리)의 이름(이나 패턴)의 목록을 `.gitignore`라는 파일에 저장한다.
+하지만 삭제를 하더라도 또다시 `python3 anything.py`를 실행하면 pyc 파일이 다시 생길 것이다. 매번 삭제할 수는 없으므로 git에서 이런 파일들을 **무시**하도록 해야한다. 이때 무시해야할 파일(이나 디렉토리)의 이름(이나 패턴)의 목록을 `.gitignore`라는 파일에 저장한다.
 
 ```bash
 ~/workspace/robotics-home$ gedit .gitignore
-# 파일 내용 작성
+# 파일 내용 작성 후 닫기
 __pycache__
 *.pyc
 
@@ -386,7 +388,7 @@ Untracked files:
 
 
 
-## 5. 다시 돌아와서 작업하기 (학교)
+### 4.1. 다시 돌아와서 작업하기 (학교)
 
 "집"에서 작업 후 다시 "학교" 돌아와서 작업을 재개하고자 한다. 아직 "집"에서 작업하여 원격 저장소에 올린 내용을 "학교" 로컬 저장소에 반영하지는 않았다. 여기는 아직 `anything.py` 밖에 없는 상태다.  
 
@@ -412,9 +414,9 @@ if __name__ == "__main__":
 
 > 원격 저장소의 새로운 변경 사항(commit)들을 로컬 저장소에 내려받고 작업 트리에 그 내용을 반영한다. Pull을 실행하기 전에 반드시 로컬 저장소의 상태는 모든 것이 commit이 된 "Unmodified" 상태여야 pull을 할 수 있다. Pull은 사실 모든 commit을 내려받는 `git fetch`와 내려받은 commit들과 현재 로컬 파일에 반영하는 (합치는) `git merge FETCH_HEAD` 두 명령어를 결합한 것이다. 따라서 pull에는 merge와 관련된 옵션들이 있다.
 >
-> `git pull` : 원격 저장소의 모든 branch의 commit들을 로컬 저장소에 받고 각 branch를 모두 merge 한다. 원격의 master는 로컬의 master와 합치고 원격의 some_branch는 로컬의 some_branch와 합친다.
+> `git pull` : 원격 저장소의 모든 브랜치의 commit들을 로컬 저장소에 받고 각 브랜치를 모두 merge 한다. 원격의 master는 로컬의 master와 합치고 원격의 some_branch는 로컬의 some_branch와 합친다.
 >
-> `git pull <remote> <local_branch>` : local_branch만 변경 사항(commit)을 내려받고 합친다.
+> `git pull <remote> <local_branch>` : 특정 local_branch만 변경 사항(commit)을 내려받고 합친다.
 >
 > `git pull [--ff / --no-ff / --only-ff]` : merge 방식에 fast-forward 방식과 non-fast-forward 방식이 있는데 두 방식에 대한 설명은 [이곳](<https://backlog.com/git-tutorial/kr/stepup/stepup1_4.html>)에서 확인할 수 있다. `--only-ff`는 fast-forward 방식이 가능할 때만 merge를 하라는 것이다.
 
@@ -516,7 +518,7 @@ if __name__ == "__main__":
 
 ## 1. 브랜치(Branch) 개념
 
-브랜치는 여러 사람이 협업하는데 있어서 필수적인 기법이다. 지금까지 실습한 내용은 모두 `master`라는 메인 브랜치에서만 작업을 한 것이다. 하지만 여러 사람이 하나의 브랜치에서 동시에 작업을 하게 되면 여러 문제가 발생할 것이다. 여러 사람이 작업중에 누군가 완성되지 않은 코드를 원격 저장소에 올리고 그걸 다른 작업중인 사람들이 받게되면 에러가 날 수도 있고 동작이 달라질 수 있다. 어쨌든 다른 사람이 작업중에 불필요한 영향을 많이 받아 작업 효율이 크게 저하된다.  
+브랜치는 여러 사람이 협업하는데 있어서 필수적인 기법이다. 지금까지 실습한 내용은 모두 `master`라는 메인 브랜치에서만 작업을 한 것이다. 하지만 여러 사람이 하나의 브랜치에서 동시에 작업을 하게 되면 여러 문제가 발생할 것이다. 여러 사람이 작업중에 누군가 완성되지 않은 코드를 원격 저장소에 올리고 그걸 다른 작업중인 사람들이 받게되면 에러가 날 수도 있고 동작이 달라질 수 있다. 다른 사람이 작업중에 불필요한 영향을 많이 받아 작업 효율이 크게 저하된다.  
 
 브랜치를 쓰면 이러한 문제를 해결할 수 있다. 브랜치는 메인 브랜치의 특정 버전에서 분기(branching)하여 새로운 기능을 넣거나 이슈를 해결하는 등의 하나의 **작업 단위**를 진행하며 자유롭게 commit할 수 있는 **독립적인 작업공간**이다. 자신의 브랜치를 만들어 그곳에서 작업하는 동안에는 남의 눈치를 보지 않고 마음껏 코딩을 해도 된다. 기능이 어느정도 완성되면 코드 정리와 동작 테스트를 한 후 다른 사람들의 동의를 얻어 자신이 만든 변경사항을 메인 브랜치에 합친다. 그리고 다시 새로운 브랜치를 만들어 새로운 기능을 만들거나 이슈를 해결한다. 이것이 일반적인 git을 활용한 작업 흐름이다.  
 
@@ -536,25 +538,25 @@ if __name__ == "__main__":
 
 ### git branch
 
-> Git을 이용한 협업의 핵심인 branch를 관리하는 verb다.
+> Git을 이용한 협업의 핵심인 브랜치를 관리하는 verb다.
 >
-> `git branch` : 로컬 저장소의 branch 목록을 보여준다.
+> `git branch` : 로컬 저장소의 브랜치 목록을 보여준다.
 >
-> `git branch -r` : 원격 저장소의 branch 목록을 보여준다.
+> `git branch -r` : 원격 저장소의 브랜치 목록을 보여준다.
 >
-> `git branch <branch_name>` : 새로운 branch를 만든다. 
+> `git branch <branch_name>` : 새로운 브랜치를 만든다. 
 >
-> `git branch -m <old_name> <new_name>` : branch의 이름을 변경한다.
+> `git branch -m <old_name> <new_name>` : 브랜치의 이름을 변경한다.
 >
-> `git branch -d <branch_name>` : branch를 삭제한다. HEAD에 병합되지 않은 branch를 삭제하려면 (즉 branch의 commit을 영구적으로 삭제하려면) -D 옵션을 준다.
+> `git branch -d <branch_name>` : 브랜치를 삭제한다. HEAD에 병합되지 않은 브랜치를 삭제하려면 (즉 브랜치의 commit을 영구적으로 삭제하려면) `-D` 옵션을 준다.
 
 ### git checkout
 
-> HEAD를 다른 commit 혹은 branch로 옮기고 작업 트리를 그 commit의 snapshot으로 복원한다. 목적지를 다른 branch로 지정하면 그 branch의 최신 commit으로 HEAD가 옮겨지고 작업 트리가 바뀐다. 그래서 주로 작업 branch를 변경하는데 주로 쓰인다.
+> HEAD를 다른 commit 혹은 브랜치로 옮기고 작업 트리를 그 commit의 snapshot으로 복원한다. 목적지를 다른 브랜치로 지정하면 그 브랜치의 최신 commit으로 HEAD가 옮겨지고 작업 트리가 바뀐다. 그래서 주로 작업 브랜치를 변경하는데 주로 쓰인다.
 >
-> `git checkout <other_branch>` : other_branch로 작업 branch를 바꾸고 작업 트리 영역을 other_branch의 최신 commit 상태로 복원한다.
+> `git checkout <other_branch>` : other_branch로 작업 브랜치를 바꾸고 작업 트리 영역을 other_branch의 최신 commit 상태로 복원한다.
 >
-> `git checkout -b <new_branch>` : 현재 상태에서 새로운 branch를 생성하고 그곳으로 branch를 옮긴다. HEAD의 commit이 변하지 않고 단지 branch만 바뀐다. 그래서 작업 트리도 변하지 않는다.
+> `git checkout -b <new_branch>` : 현재 상태에서 새로운 브랜치를 생성하고 그곳으로 브랜치를 옮긴다. HEAD의 commit이 변하지 않고 단지 브랜치만 바뀐다. 그래서 작업 트리도 변하지 않는다.
 >
 > `git checkout HEAD -- <filename>` : 파일의 상태를 HEAD (최신 commit)으로 복원하는 명령어다. 잘못된 변경 사항이 있을 때 주로 쓴다.
 
@@ -721,11 +723,11 @@ Date:   Mon Oct 14 01:09:47 2019 +0900
 
 ## 3. Pull Request 만들기
 
-앞에서는 커맨드에서 직접 `git merge`를 통해 브랜치를 병합시켰지만 현업에서 일하는 개발자들은 이렇게 하지 않는다. 브랜치를 만드는 이유는 기능을 변경/추가하거나 어떤 이슈를 해결하기 위함이다. 브랜치를 만들 때 이루고자하는 목적이 있는 것이다. 브랜치의 목적을 달성하고 메인 브랜치에 합칠 때 어떤 목적을 위해 어떻게 구현을 했는지 문서를 만들어 공유해야 다른 사람들이 쉽게 이해하고 받아들일 수 있다. 단순히 커밋 메시지와 코드만 보고는 브랜치의 기능을 쉽게 파악할 수 없다.  
+앞에서는 커맨드에서 직접 `git merge`를 통해 브랜치를 병합시켰지만 여러 개발자들이 협력할 때는 이렇게 하지 않는다. 브랜치를 만드는 이유는 기능을 변경/추가하거나 어떤 이슈를 해결하기 위함이다. 브랜치를 만들 때 이루고자하는 목적이 있는 것이다. 브랜치의 목적을 달성하고 메인 브랜치에 합칠 때 어떤 목적을 위해 어떻게 구현을 했는지 다른 사람들에게 알리고 동의를 얻어야 메인 브랜치에 합칠수 있다. 이때 단순히 커밋 메시지와 코드만 보고는 브랜치의 기능을 쉽게 파악할 수 없기 때문에 간단한 설명을 담은 문서가 필요하다.  
 
-그래서 팀으로 일하는 개발자들은 브랜치를 합칠 때 자신이 임의로 합치지 않고 **Pull Request (PR)**라는 문서를 작성하여 저장소 관리자나 동료들에게 공유하고 동의를 구한다. git에서 "pull"이란 다른 저장소의 변경사항을 내 저장소에 반영한다는 의미가 있으므로 "Pull Request"란 내가 만든 브랜치의 변경사항을 메인 브랜치에 반영할 수 있도록 요청한다는 뜻이다.  
+그래서 팀으로 일하는 개발자들은 브랜치를 합칠 때 자신이 임의로 합치지 않고 **Pull Request (PR)**라는 문서를 작성하여 저장소 관리자나 동료들에게 공유하고 동의를 구한다. git에서 "pull"이란 다른 저장소의 변경사항을 내 저장소에 반영한다는 의미가 있으므로 "Pull Request"란 내가 만든 브랜치의 변경사항을 원격의 메인 브랜치에 반영할 수 있도록 요청한다는 뜻이다.  
 
-"문서"라는 것이 워드나 슬라이드처럼 거창한 것이 아니라 깃헙 게시판에 내가 이 브랜치에서 이러이러한 작업을 했다고 설명하는 글을 쓰는 것이다. 깃헙에서는 관리 권한을 가진 사람이 깃헙 원격 저장소에서 병합(merge)할 수 있는 기능도 제공한다. 그래서 커맨드에서 `git merge`를 사용할 일이 별로 없다.  
+"문서"라는 것이 워드나 슬라이드처럼 거창한 것이 아니라 깃헙(GitHub) 게시판에 내가 이 브랜치에서 이러이러한 작업을 했다고 설명하는 글을 쓰는 것이다. 깃헙에서는 관리 권한을 가진 사람이 깃헙 원격 저장소에서 병합(merge)할 수 있는 기능도 제공한다. 그래서 커맨드에서 `git merge`를 사용할 일이 별로 없다.  
 
 PR을 작성하게 되면 프로젝트의 개발 이력도 자연스럽게 기록이 된다. 누가 이 프로젝트에 언제 무엇을 기여했는지는 커밋 이력보다 PR을 보면 더 쉽게 알 수 있다. PR을 평소에 잘 작성해두면 회사에서 나중에 워드나 슬라이드 같은 공식 보고서를 만드는데도 큰 도움이 된다.  
 
@@ -881,11 +883,9 @@ Fast-forward
 
 ---
 
-여기까지 git과 깃헙의 사용법을 알아보았다. 세부적으로 들어가면 더 배워야 할것들이 많지만 일단은 여기있는 내용들을 숙지한다면 사용에 큰 문제는 없을 것이고 자세한 사항은 구글에 검색하면서 공부해보길 바란다.
+여기까지 git과 깃헙의 사용법을 알아보았다. 세부적으로 들어가면 더 배워야 할것들이 많지만 일단은 여기있는 내용들을 숙지한다면 사용에 큰 문제는 없을 것이고 자세한 사항은 구글에 ~~영어로~~ 검색하면 다 나온다.
 
-
-
-# HW2
+# HW3
 
 
 
@@ -893,7 +893,7 @@ Fast-forward
 
 ### 1.1 저장소 준비
 
-각자의 깃헙에 `robotics-hw2`라는 저장소를 만든다.  
+각자의 깃헙에 `robotics-hw3`라는 저장소를 만든다.  
 
 저장소를 `~/catkin_ws/src`에 clone 받는다.  
 
@@ -901,7 +901,7 @@ Fast-forward
 
 ### 1.2 패키지 구현
 
-세 개의 패키지를 만든다.  
+ `robotics-hw3` 저장소 내부에서 세 개의 패키지를 만든다.  
 
 - common_msgs: 다른 패키지에서 사용할 공통의 메시지 타입을 정의하는 패키지
 - sensor: 센서 정보를 주기적으로 보내주는 패키지
@@ -926,7 +926,7 @@ GitHub에서 Pull Request(PR)를 작성한다. PR에는 두 가지 요소가 있
 
 기능이 온전히 작동한다면 `Merge pull request` 버튼을 눌러 `topic_comm` 브랜치를 `master`로 합친다.
 
-로컬에서 `~/catkin_ws/src/robotics-hw2`로 가서 `master`로 브랜치를 전환한다.
+로컬에서 `~/catkin_ws/src/robotics-hw3`로 가서 `master`로 브랜치를 전환한다.
 
 `git pull`로 병합된 내용을 내려받는다.
 
@@ -936,13 +936,13 @@ GitHub에서 Pull Request(PR)를 작성한다. PR에는 두 가지 요소가 있
 
 ### 2.1 브랜치 생성
 
-`service_comm`이라는 새 브랜치를 만들어 현재 브랜치를 그곳으로 전환한다.  
+로컬 저장소에서 `service_comm`이라는 새 브랜치를 만들어 현재 브랜치를 그곳으로 전환한다.  
 
 ### 2.2 패키지 수정
 
 각 패키지에 다음과 같이 기능을 추가한다.
 
-- common_msgs: 서비스 메시지를 새로 정의한다.
+- common_msgs: 서비스 메시지를 추가한다.
 - sensor: 일시적으로 발생하는 사건을 서비스 요청을 통해 알린다.
 - algorithm: 서비스 요청을 받아들여 처리 후 응답을 보낸다.
 
@@ -966,4 +966,21 @@ GitHub에서 Pull Request(PR)를 작성한다. PR에는 두 가지 요소가 있
 
 숙제 게시판에 자신의 저장소 주소를 올리면 끝!
 
-그곳에서 PR과 커밋 로그 등을 보고 채점한다.
+그곳에서 PR과 커밋 로그 등을 보고 채점한다. (총 26점)
+
+1. common_msgs 패키지 구현
+    - common_msgs 패키지를 적절한 `--catkin-deps` 의존성을 지정하여 생성 (2점)
+    - common_msgs에 토픽 메시지 타입 정의, CMakeLists.txt 에 메시지 빌드 스크립트 작성 (3점)
+    - common_msgs에 서비스 메시지 타입 정의, CMakeLists.txt 에 메시지 빌드 스크립트 작성 (3점)
+2. sensor 패키지 구현
+    - sensor 패키지를 적절한 `--catkin-deps` 의존성을 지정하여 생성하고 노드 기본 코드 구현 (2점)
+    - sensor에서 토픽 퍼블리셔로 메시지 송신 (2점)
+    - sensor에서 적절한 상황을 정하여 서비스 클라이언트로 메시지 전송 후 응답 받기 (2점)
+3. algorithm 패키지 구현
+    - algorithm패키지를 적절한 `--catkin-deps` 의존성을 지정하여 생성하고 노드 기본 코드 구현 (2점)
+    - algorithm에서 토픽 서브스크라이버로 메시지 수신 (2점)
+    - algorithm에서 서비스 서버로 메시지 수신 후 응답 보내기 (2점)
+4. git/github 활용
+    - 2개의 PR 작성 후 master 병합 (6점)
+    - PR 내용 상세히 성의있게 쓸것
+
