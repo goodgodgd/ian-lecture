@@ -420,7 +420,6 @@ plt.plot(x, y)
 plt.show()
 plt.plot(x, y, 'r.')
 plt.show()
-
 ```
 
 아래 그림은 세 번의 plot 결과를 모은 것이다. 첫 번째와 두 번째 그래프는 같아보이지만 x 축의 범위가 다르다.  
