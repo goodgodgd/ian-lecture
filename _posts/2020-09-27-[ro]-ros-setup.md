@@ -62,7 +62,7 @@ ROS를 빌드하기 위해서는 ROS Workspace를 만들어야한다. ros_melodi
 $ cd ~
 ~ $ mkdir ros_melodic
 ~ $ cd ros_melodic
-~/ros_melodic $ rosinstall_generator desktop --rosdistro melodic --deps --wet-only --tar > melodic-desktop-wet.rosinstall
+~/ros_melodic $ rosinstall_generator desktop rosserial --rosdistro melodic --deps --wet-only --tar > melodic-desktop-wet.rosinstall
 ~/ros_melodic $ wstool init src melodic-desktop-wet.rosinstall -j4
 ```
 
@@ -139,8 +139,9 @@ $ cd ~/catkin_ws/src
 $ git clone https://github.com/ROBOTIS-GIT/hls_lfcd_lds_driver.git
 $ git clone https://github.com/ROBOTIS-GIT/turtlebot3_msgs.git
 $ git clone https://github.com/ROBOTIS-GIT/turtlebot3.git
+$ git clone -b noetic-devel https://github.com/ros/joint_state_publisher.git
 $ cd ~/catkin_ws/src/turtlebot3
-$ sudo rm -r turtlebot3_description/ turtlebot3_teleop/ turtlebot3_navigation/ turtlebot3_slam/ turtlebot3_example/
+$ sudo rm -r turtlebot3_navigation/ turtlebot3_slam/ 
 $ cd ~/catkin_ws
 $ catkin build
 ```
