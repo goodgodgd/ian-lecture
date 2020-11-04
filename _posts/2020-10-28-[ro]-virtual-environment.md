@@ -1,8 +1,8 @@
 ---
 layout: post
 title:  "Python Virtual Environment"
-date:   2019-10-20 09:00:13
-categories: 2019-2-robotics
+date:   2020-10-28 09:00:13
+categories: 2020-2-robotics
 ---
 
 
@@ -71,7 +71,7 @@ Collecting numpy
 Installing collected packages: numpy
 Successfully installed numpy-1.17.3
 
-$ python3 -c "import numpy; print(numpy.version.version)"
+$ python3 -c "import numpy; print(numpy.__version__)"
 1.17.3
 
 $ pip3 uninstall numpy
@@ -116,7 +116,7 @@ pip3 install -r requirements.txt
 
 두 개의 프로젝트를 하려고 PC를 두 대를 쓰거나 운영체제를 두 개를 설치하는 것은 너무 비효율적이다. 그래서 "가상 환경 (virtual environment)"이란 개념이 필요해졌다. 가상 환경은 패키지를 시스템에 직접 설치하는 대신 특정 프로젝트를 위한 전용의 가상 시스템(환경)을 만들어 운용하는 것이다. 이 가상 환경에 파이썬 인터프리터와 pip를 따로 설치하고 패키지도 시스템이 아닌 가상 환경에 설치한다. 이곳의 파이썬, pip, 모든 패키지들이 시스템의 것들과는 독립적이다.
 
-가상 환경의 개념은 파이썬 개발이 대부분 시스템 라이브러리가 아닌 PyPI의 패키지들에 의존하기 때문에 가능하다. 파이썬 패키지는 `apt`로도 일부 설치할 수는 있지만 `pip`로 거의 다 설치 가능하다. C++에도 비슷한 시도들은 있지만 정착되지 못 했다. 가상 환경을 사용하면 하나의 시스템 안에서 여러 개의 파이썬을 운영할수 있기 때문에 여러 프로젝트를 하기 위해 다수의 시스템을 운용할 필요가 없다.
+파이썬 개발은 시스템에 설치하는 라이브러리에 의존하지 않고 파이썬 패키지만 활용하므로 가상 환경과 같은 독립적인 개발환경 구성이 가능하다. 파이썬 패키지는 `apt`로도 일부 설치할 수는 있지만 `pip`로 거의 다 설치 가능하다. C++에도 이러한 독립적인 개발환경을 만드려는 비슷한 시도들은 있지만 정착되지 못 했다. 가상 환경을 사용하면 하나의 시스템 안에서 여러 개의 파이썬을 운영할수 있기 때문에 여러 프로젝트를 하기 위해 다수의 시스템을 운용할 필요가 없다.
 
 
 
@@ -126,10 +126,10 @@ pip3 install -r requirements.txt
 
 - virtualenv, virtualenvwrapper : 가장 오래되고 많이 쓰이기도 하는 가상 환경 툴이다. 파이참에서도 기본 툴로 쓴다.
 - venv: Python3.3부터 기본 내장된 패키지인데 virtualenv와 사용법이 비슷하다.
-- pyenv: 원래는 여러 파이썬 버전을 동시에 사용하기 위한 툴인데 가상 환경 기능을 플러그인을 통해 추가 할 수 있다. 여러 프로젝트를 동시에 개발할 때 인기있는 옵션이다.
+- pyenv: 원래는 여러 파이썬 버전을 동시에 사용하기 위한 툴인데 가상 환경 기능을 플러그인을 통해 추가 할 수 있다.  
 - conda: conda는 Anaconda 설치시 포함되는 패키지 관리 툴로 가상 환경 관리 기능도 있다. Anaconda는 의존성 문제가 없고 많이 쓰이는 패키지들을 잘 조합해서 미리 다 설치해버리기 위해 나온 일종의 메타 메키지다. 초보자를 위한 튜토리얼엔 conda를 많이 쓰지만 Anaconda에는 불필요한 패키지가 많아 용량을 많이 차지하기 때문에 별로 추천하지 않는다.
 - pipenv: 가상 환경 관리 뿐만 아니라 패키지 설치 및 삭제, 파이썬 버전 선택, 의존성 문제 해결, 같은 환경 복구 등 같은 다양한 기능을 하나의 툴에 담은 실험적인 툴이다. (pipenv = pip + virtualenv) 하지만 설치 속도가 느리고 UI가 불친절하고 현재 개발이 멈춘 것 같다. 그래도 대부분의 경우에는 잘 작동해서 하나로 모든 것을 해결하기에 좋다. 
-- poetry: 요즘 '핫'한 툴인것 같다. pipenv와 비슷한데 pipenv보다 더 나은 의존성 문제 해결 능력을 보여주고 터미널에 뜨는 메시지도 현재 상황을 친절하게 알려준다. 하지만 파이썬 버전을 선택하는 기능은 없다.
+- poetry: pipenv와 비슷한데 pipenv보다 더 나은 의존성 문제 해결 능력을 보여주고 터미널에 뜨는 메시지도 현재 상황을 친절하게 알려준다. 하지만 파이썬 버전을 선택하는 기능은 없다.
 
 여기서는 가장 안정적인 virtualenv, virtualenvwrapper, venv, pyenv에 대해서 사용법을 알아보겠다.
 
@@ -156,7 +156,7 @@ $ virtualenv --version
 
 새 터미널을 열고 기본 virtualenv 사용법부터 알아보자. 
 
-### 1.1 가상환경 만들기
+### 1.1. 가상환경 만들기
 
 실제 작업을 할 `~/workspace/vework` 디렉토리 아래  `virtual_py36`라는 가상 환경을 만들고자 한다. `--python` 옵션을 통해 기반 인터프리터를 선택할 수 있다. `python3`나 `python3.6`을 사용할 수 있다. 혹은 옵션을 쓰지 않으면 시스템 기본 Python3를 사용한다.
 
@@ -180,7 +180,7 @@ done.
 
 
 
-### 1.2 가상 환경 활성화
+### 1.2. 가상 환경 활성화
 
 가상 환경을 활성화 하면 그때부터 `python`이나 `pip` 등은 더 이상 `/usr/bin`에 설치된 시스템 실행파일이 아니라 가상 환경에 설치된 실행파일이 사용된다. 터미널에는 가상 환경의 이름이 표시되어 현재 가상 환경이 활성화 됐음을 알려준다.
 
@@ -337,7 +337,7 @@ wheel           0.33.6
 
 ## 2. virtualenvwrapper
 
-virtualenv는 쓰기 간단하고 독립적인 환경을 만들 수 있어서 인기가 많지만 타이핑이 좀 귀찮다는 단점이 있다. 매번 작업을 시작할 때마다 가상 환경 경로로 이동해서(cd) 가상 환경을 활성화(activate)하는 것이 귀찮은데 이것을 virtualenvwrapper는 `work on <env_name>` 하나로 줄여준다.
+virtualenv는 쓰기 간단하고 독립적인 환경을 만들 수 있어서 인기가 많지만 타이핑이 좀 귀찮다는 단점이 있다. 매번 작업을 시작할 때마다 가상 환경 경로로 이동해서(cd) 가상 환경을 활성화(activate)하는 것이 귀찮은데 이것을 virtualenvwrapper는 `workon <env_name>` 하나로 줄여준다.
 
 또한 인터프리터나 패키지 설치 파일들이 프로젝트 디렉토리에 위치하기 때문에 git을 쓰는 경우 `venv` 디렉토리를 `.gitignore`에 추가해줘야 하는 것도 조금 번거로운 일이다. virtualenvwrapper는 가상 환경 파일들을 한 곳에 모아서 관리하기 때문에 프로젝트 디렉토리를 깨끗하게 쓸 수 있다.
 
@@ -397,10 +397,12 @@ virtualenvwrapper.user_scripts creating /home/ian/.virtualenvs/get_env_details
 - wipeenv : 현재 가상 환경에 설치된 3rd party 패키지들이 모두 삭제된다. 가상 환경을 처음 만든 상태로 초기화 한다고 보면 된다.
 - rmvirtualenv [venv_name] : 가상 환경을 삭제한다.
 
-다음 명령어를 통해 실습을 해보자.
+다음 명령어를 통해 실습을 해보자. 파이썬 버전은 지속적으로 업데이트되고 있으므로 현재 파이썬 버전을 확인 후 아래 명령어를 버전에 맞춰 수정하여 실행한다.
 
 ```bash
 ~$ cd ~/workspace/vework/
+# 현재 파이썬 버전 확인
+~$ cd ~/workspace/vework/$ python -V
 
 # 가상 환경 만들기
 ~/workspace/vework$ mkvirtualenv --python=python3.6 vewrapper_py36
@@ -436,18 +438,18 @@ Setting project for vewrapper_py36 to /home/ian/workspace/vework
 
 # 비활성화
 vewrapper_py36) ~/workspace/vework$ deactivate
-~/workspace/vework$ cd /usr/
 
-# workon <venv_name>하면 이제 가상 환경 활성화 + 경로 이동까지 실행
+# 다른 위치에 있어도 workon <venv_name>하면 이제 가상 환경 활성화 + 경로 이동까지 실행
+~$ cd ~/workspace/vework/
 /usr$ workon vewrapper_py36
 (vewrapper_py36) ~/workspace/vework$ 
 
-# 가상 환경이 활성화 된 상태에서 cdproject를 통해 프로젝트 경로로 돌아옴
+# 가상 환경이 활성화 된 상태에서는 cdproject를 통해 프로젝트 경로로 돌아옴
 (vewrapper_py36) ~/workspace/vework$ cd /usr/
 (vewrapper_py36) /usr$ cdproject 
 (vewrapper_py36) ~/workspace/vework$ 
 
-# 3rd party 패키지 모두 삭제
+# 3rd party 패키지 모두 삭제 (가상환경 초기화)
 (vewrapper_py36) ~/workspace/vework$ wipeenv
 Uninstalling packages:
 numpy==1.17.3
@@ -518,6 +520,10 @@ pyenv는 본래 여러 파이썬 버전을 함께 운용하기 위해 만들어�
 설치는 다음 스크립트를 실행하면 된다. 설치 과정을 보면 pyenv-virtualenv과 같은 플러그인도 설치되는 것을 볼 수 있다.
 
 ```bash
+$ sudo apt install -y build-essential libssl-dev zlib1g-dev libbz2-dev \
+libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev \
+xz-utils tk-dev libffi-dev liblzma-dev python-openssl git
+
 ~$ curl -L https://raw.githubusercontent.com/yyuu/pyenv-installer/master/bin/pyenv-installer | bash
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
@@ -543,9 +549,9 @@ eval "$(pyenv virtualenv-init -)"
 # 저장 후 닫기
 ```
 
-pyenv의 원리를 간단히 설명해보면 `~/.bashrc`에서 `pyenv init -`를 실행하면 `PATH`의 앞에 pyenv 경로가 추가된다. 우리가 어떤 명령어를 쉘에 입력할 때 `PATH`의 앞 쪽에 있는 경로부터 명령어를 찾는다. 그래서 `PATH` 앞 쪽에 pyenv 경로를 추가하고 그곳에 `python, pip, python3, pip3` 등의 실행 가능한 스크립트를 만든다. 스크립트는 현재 pyenv에서 지정한 버전의 명령어로 연결되게 하면 시스템 전체에서 사용되는 파이썬을 바꿔치기 할 수 있다.  
+pyenv의 원리를 간단히 설명해보면 `~/.bashrc`에서 `pyenv init -`를 실행하면 `PATH`의 앞에 pyenv 경로가 추가된다. 우리가 어떤 명령어를 쉘에 입력할 때 `PATH`의 앞 쪽에 있는 경로부터 명령어를 찾는다. 그래서 `PATH` 앞 쪽에 pyenv 경로를 추가하고 그곳에 python, pip, python3, pip3 등의 실행 파일들을 넣으면 시스템의 python 대신 pyenv의 python을 우선적으로 사용하게 된다.
 
-실행 스크립트는 `/.pyenv/shims`에 있는데 모두다 실제 인터프리터가 아닌 인터프리터를 실행해주는 스크립트다. 'shim'이란 "틈새에 끼우는 끼움쇠, 쐐기"라는 뜻인데 pyenv에서는 사용자의 명령어와 실제 인터프리터 사이에 끼어있는 역할을 뜻하는 것 같다.
+실행 스크립트는 `/.pyenv/shims`에 있는데 모두다 실제 인터프리터가 아닌 인터프리터를 실행해주는 스크립트다. 'shim'이란 "틈새에 끼우는 끼움쇠, 쐐기"라는 뜻인데 pyenv에서는 사용자의 명령어와 시스템 python 사이에 pyenv를 끼워넣었다는 뜻인것 같다.
 
 ```
 $ echo $PATH
@@ -565,7 +571,7 @@ easy_install-3.7  pip3     pydoc3.7  python3.6m        python3.7m-config
 
 pyenv는 다양한 sub-command를 통해 다양한 기능을 제공한다. 그 중 파이썬 버전 선택과 관련된 동작들을 알아보자.
 
-- install [version]: 특정 버전의 파이썬을 `~/.pyenv/versions` 경로에 설치한다. 버전은 .으로 구분된 세 개의 숫자로 써야한다. 현재 최신 버전은 `3.7.5`다.
+- install [version]: 특정 버전의 파이썬을 `~/.pyenv/versions` 경로에 설치한다. 버전은 `.`으로 구분된 세 개의 숫자로 써야한다. 현재 최신 버전은 `3.7.5`다.
 - uninstall [version]: `install`로 설치한 특정 버전의 파이썬을 삭제한다.
 - versions: 현재 pyenv에 설치된 버전들을 보여준다.
 - version: 현재 사용중인 버전을 보여준다.
@@ -622,7 +628,7 @@ Python 3.6.8
 
 pyenv를 설치할 때 이미 가상 환경 플러그인도 설치되었으므로 따로 설치하지 않아도 된다. 다음은 가상환경과 관련된 sub-command들이다.
 
-- virtualenv [version] [env_name] : 특정 [version]의 환경을 [env_name]이란 이름으로 생성한다. `pyenv install`을 통해 설치된 버전이어야 한다. virtualenvwrapper처럼 현재 디렉토리에 만드는 것이 아니라 `~/.pyenv/versions/[version]/env/[env_name]` 아래에 새로운 환경이 만들어진다.
+- virtualenv [version] [env_name] : 특정 [version]의 환경을 [env_name]이란 이름으로 생성한다. `pyenv install`을 통해 설치된 버전이어야 한다. 가상환경을 현재 디렉토리에 만드는 것이 아니라 `~/.pyenv/versions/[version]/env/[env_name]` 아래에 새로운 환경이 만들어진다.
 - virtualenv-delete [env_name] : [env_name] 환경을 삭제한다.
 - activate [env_name] : [env_name] 환경을 활성화 시킨다.
 - deactivate : 환경을 비활성화 시킨다.
@@ -783,7 +789,7 @@ $ echo $PYTHONPATH
 /home/ian/catkin_ws/devel/lib/python2.7/dist-packages:/opt/ros/melodic/lib/python2.7/dist-packages
 ```
 
-우리가 만든 캐킨 워크스페이스와 시스템에 설치된 ROS 경로가 모두 세팅이 되어있다. 이것은 앞서 주석을 해제한 `~/.bashrc`에 들어있는 두 줄의 `source ~~/setup.bash`를 실행해서 만들어진 것이다. `PYTHONPATH` 변수는 파이썬의 버전을 가리지 않고 모두 적용된다. Python2, 3 모두 적용이 된다. 그래서 ROS 개발을 하지 않을 때는 `~/.bashrc`의 두 줄의 `source ~~/setup.bash`를 주석처리 하는 것이 낫다.  
+우리가 만든 캐킨 워크스페이스와 시스템에 설치된 ROS 경로가 모두 세팅이 되어있다. 이것은 앞서 주석을 해제한 `~/.bashrc`에 들어있는 두 줄의 `source XXX/setup.bash`를 실행해서 만들어진 것이다. `PYTHONPATH` 변수는 파이썬의 버전을 가리지 않고 모두 적용된다. Python2, 3 모두 적용이 된다. 그래서 ROS 개발을 하지 않을 때는 `~/.bashrc`의 두 줄의 `source ~~/setup.bash`를 주석처리 하는 것이 낫다.  
 
 그런데 왜 파이참에서는 rospy를 찾지 못 했을까? 파이참에서는 `PYTHONPATH`가 설정되어 있지 않기 때문이다. `check_env.py`에 다음과 같은 스크립트를 써서 확인해보자.
 
@@ -800,7 +806,7 @@ print(os.getenv('PYTHONPATH'))
 
 두 가지 해결 방법이 있다. 첫 번째는 파이참의 내부 설정에서 `PYTHONPATH`에 있는 경로를 추가해 주는 것이다. 하지만 이 방법은 패키지 경로가 바뀌거나 새로운 PC에서 작업을 재개할 때마다 파이참 세팅을 해야 하므로 번거롭다.  
 
-간단한 방법은 **터미널에서 파이참을 실행하는 것이다.** bash 터미널에서는 이미 환경 설정이 되어있으므로 터미널에서 파이참을 실행하면 환경 변수도 그대로 가져올 수 있다. 터미널이 하나 떠있어야 하긴 하지만 간단하게 문제를 해결할 수 있다. 터미널에서 파이참을 실행하는 명령어는 다음과 같다. 
+간단한 방법은 **터미널에서 파이참을 실행하는 것이다.** bash 터미널에서는 이미 환경 설정이 되어있으므로 터미널에서 파이참을 실행하면 환경 변수도 그대로 가져올 수 있다. (터미널이 하나 떠있어야 하긴 하지만...) 터미널에서 파이참을 실행하는 명령어는 다음과 같다. 
 
 ```
 $ pycharm-community
@@ -821,15 +827,15 @@ import rospy
 > Traceback (most recent call last):
 >   File "/home/ian/catkin_ws/src/test_py3/src/check_env.py", line 3, in <module>
 >     import rospy
->   File "/opt/ros/melodic/lib/python2.7/dist-packages/rospy/__init__.py", line 49, in <module>
+>   File "/opt/ros/melodic/lib/python2.7/dist-packages/rospy/\_\_init\_\_.py", line 49, in <module>
 >     from .client import spin, myargv, init_node, \
 >   File "/opt/ros/melodic/lib/python2.7/dist-packages/rospy/client.py", line 52, in <module>
 >     import roslib
->   File "/opt/ros/melodic/lib/python2.7/dist-packages/roslib/__init__.py", line 50, in <module>
+>   File "/opt/ros/melodic/lib/python2.7/dist-packages/roslib/\_\_init\_\_.py", line 50, in <module>
 >     from roslib.launcher import load_manifest
 >   File "/opt/ros/melodic/lib/python2.7/dist-packages/roslib/launcher.py", line 42, in <module>
 >     import rospkg
-> ModuleNotFoundError: No module named 'rospkg'
+> ModuleNotFoundError: **No module named 'rospkg'**
 
 여전히 에러가 나긴 하지만 약간의 진전이 있다. `PYTHONPATH`에 ROS 패키지 경로가 추가가 됐다. 그리고 에러 메시지도 변했다. 원래는 rospy 자체를 가져오지 못 했는데 이제는 그 내부에서 "rospkg"를 가져오지 못 한다고 한다. 이제 rospkg만 가져올 수 있으면 파이참에서 ROS를 쓸 수 있다.
 
@@ -892,7 +898,7 @@ $ cd ~/catkin_ws/src/test_py3/src
 
 ```python
 #!/home/ian/.pyenv/versions/ros_py36/bin/python
-# 사용자명(ian) 교체!
+# !!! 첫줄에서 사용자명(ian) 교체할것 !!!
 import rospy
 from sensor_msgs.msg import Image
 import cv2
@@ -936,7 +942,7 @@ if __name__ == "__main__":
 
 ```python
 #!/home/ian/.pyenv/versions/ros_py36/bin/python
-# 사용자명(ian) 교체!
+# !!! 첫줄에서 사용자명(ian) 교체할것 !!!
 import rospy
 from sensor_msgs.msg import Image
 import cv2
@@ -1102,5 +1108,5 @@ $ rqt_graph
 
 ---
 
-여기까지 배우면 ROS를 개발할 준비가 된 것이다. 이제 가상 환경에 Python 3 + ROS 패키지를 설치하고 이를 PyCharm에서 개발할 수 있다. 파이참을 쓰면 자동 완성이 되서 작업 효율이 올라가고 Python 3를 쓰면 최신 문법과 외부 패키지를 활용할 수 있다.
+여기까지 배우면 ROS를 개발할 준비가 된 것이다. 이제 가상 환경에 Python 3 + ROS 패키지를 설치하고 이를 PyCharm에서 개발할 수 있다. 파이참을 쓰면 자동 완성이 되서 작업 효율이 올라가고 Python 3를 쓰면 최신 문법과 최신 패키지를 활용할 수 있다.
 

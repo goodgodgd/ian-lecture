@@ -180,9 +180,9 @@ $ git status
 
 > 로컬 저장소의 새로운 commit을 원격 저장소로 올린다. 현재 로컬 저장소의 파일 상태나 Stage 여부에 상관없이 오직 commit에 들어간 변경 사항만 원격 저장소로 올린다.
 >
-> `git push origin master` : Git 초보자들이 가장 많이 쓰는 명령어 중 하나이다. 저장소를 clone 받으면 `master`라는 기본 브랜치(branch)가 선택되고 원격 저장소는 자동으로 `origin`이란 이름으로 저장된다. 그래서 `master` 브랜치에서 작업 후 commit을 원격 저장소로 업로드 할 때 이 명령어를 쓰게된다.
+> `git push origin main` : Git 초보자들이 가장 많이 쓰는 명령어 중 하나이다. 저장소를 clone 받으면 `main`라는 기본 브랜치(branch)가 선택되고 원격 저장소는 자동으로 `origin`이란 이름으로 저장된다. 그래서 `main` 브랜치에서 작업 후 commit을 원격 저장소로 업로드 할 때 이 명령어를 쓰게된다.
 >
-> `git push <remote_repository> <local_branch>` : local_branch의 commit들을 원격 저장소의 같은 이름의 브랜치에 올린다. 예를 들어 `git push origin master`는 로컬 저장소의 `master` 브랜치에 쌓인 commit들을 원격 저장소의 `master` 브랜치(origin/master)에 올린다는 것이다. 원격 저장소에 local_branch가 없을 경우 GitHub에서 자동으로 같은 이름의 브랜치를 만들어준다.
+> `git push <remote_repository> <local_branch>` : local_branch의 commit들을 원격 저장소의 같은 이름의 브랜치에 올린다. 예를 들어 `git push origin main`는 로컬 저장소의 `main` 브랜치에 쌓인 commit들을 원격 저장소의 `main` 브랜치(origin/main)에 올린다는 것이다. 원격 저장소에 local_branch가 없을 경우 GitHub에서 자동으로 같은 이름의 브랜치를 만들어준다.
 >
 > `git push <remote_repository> <local_branch>:<remote_branch>` : local_branch의 commit들을 원격 저장소의 remote_branch에 반영한다.
 >
@@ -191,7 +191,7 @@ $ git status
 커밋을 통해 저장된 파일의 상태를 원격 저장소로 올린다. 명령 실행 후 깃헙 저장소에서 추가된 파일을 확인해보자.
 
 ```bash
-$ git push origin master
+$ git push origin main
 ```
 
 ![git-first-push](../assets/robotics-devel/git-first-push.png)
@@ -379,7 +379,7 @@ Untracked files:
 ```bash
 ~/workspace/robotics-home$ git add .
 ~/workspace/robotics-home$ git commit -m 'remove and ignore pyc files'
-~/workspace/robotics-home$ git push origin master
+~/workspace/robotics-home$ git push origin main
 ```
 
 다시 깃헙으로 돌아가서 페이지를 리프레시 해보자. 파일 구성이 변한것을 확인할 수 있다.
@@ -414,7 +414,7 @@ if __name__ == "__main__":
 
 > 원격 저장소의 새로운 변경 사항(commit)들을 로컬 저장소에 내려받고 작업 트리에 그 내용을 반영한다. Pull을 실행하기 전에 반드시 로컬 저장소의 상태는 모든 것이 commit이 된 "Unmodified" 상태여야 pull을 할 수 있다. Pull은 사실 모든 commit을 내려받는 `git fetch`와 내려받은 commit들과 현재 로컬 파일에 반영하는 (합치는) `git merge FETCH_HEAD` 두 명령어를 결합한 것이다. 따라서 pull에는 merge와 관련된 옵션들이 있다.
 >
-> `git pull` : 원격 저장소의 모든 브랜치의 commit들을 로컬 저장소에 받고 각 브랜치를 모두 merge 한다. 원격의 master는 로컬의 master와 합치고 원격의 some_branch는 로컬의 some_branch와 합친다.
+> `git pull` : 원격 저장소의 모든 브랜치의 commit들을 로컬 저장소에 받고 각 브랜치를 모두 merge 한다. 원격의 main은 로컬의 main와 합치고 원격의 some_branch는 로컬의 some_branch와 합친다.
 >
 > `git pull <remote> <local_branch>` : 특정 local_branch만 변경 사항(commit)을 내려받고 합친다.
 >
@@ -423,11 +423,11 @@ if __name__ == "__main__":
 `git pull`을 하면 두 저장소의 수정사항이 서로 상충하기 때문에 "CONFLICT"라는 메시지가 뜬다.
 
 ```bash
-# master의 경우는 'git pull'만 해도 된다.
-~/workspace/robotics-schl$ git pull origin master
+# main의 경우는 'git pull'만 해도 된다.
+~/workspace/robotics-schl$ git pull origin main
 ...
 From https://github.com/goodgodgd/sch-robotics
-   834f2d3..512fb8d  master     -> origin/master
+   834f2d3..512fb8d  main     -> origin/main
 Auto-merging anything.py
 CONFLICT (content): Merge conflict in anything.py
 Automatic merge failed; fix conflicts and then commit the result.
@@ -501,7 +501,7 @@ if __name__ == "__main__":
 
 ```bash
 ~/workspace/robotics-schl$ git commit -m 'move files to git practice'
-~/workspace/robotics-schl$ git push origin master
+~/workspace/robotics-schl$ git push origin main
 
 ~/workspace/robotics-schl$ cd ~/workspace/robotics-home
 ~/workspace/robotics-home$ git pull
@@ -518,7 +518,7 @@ if __name__ == "__main__":
 
 ## 1. 브랜치(Branch) 개념
 
-브랜치는 여러 사람이 협업하는데 있어서 필수적인 기법이다. 지금까지 실습한 내용은 모두 `master`라는 메인 브랜치에서만 작업을 한 것이다. 하지만 여러 사람이 하나의 브랜치에서 동시에 작업을 하게 되면 여러 문제가 발생할 것이다. 여러 사람이 작업중에 누군가 완성되지 않은 코드를 원격 저장소에 올리고 그걸 다른 작업중인 사람들이 받게되면 에러가 날 수도 있고 동작이 달라질 수 있다. 다른 사람이 작업중에 불필요한 영향을 많이 받아 작업 효율이 크게 저하된다.  
+브랜치는 여러 사람이 협업하는데 있어서 필수적인 기법이다. 지금까지 실습한 내용은 모두 `main`라는 메인 브랜치에서만 작업을 한 것이다. 하지만 여러 사람이 하나의 브랜치에서 동시에 작업을 하게 되면 여러 문제가 발생할 것이다. 여러 사람이 작업중에 누군가 완성되지 않은 코드를 원격 저장소에 올리고 그걸 다른 작업중인 사람들이 받게되면 에러가 날 수도 있고 동작이 달라질 수 있다. 다른 사람이 작업중에 불필요한 영향을 많이 받아 작업 효율이 크게 저하된다.  
 
 브랜치를 쓰면 이러한 문제를 해결할 수 있다. 브랜치는 메인 브랜치의 특정 버전에서 분기(branching)하여 새로운 기능을 넣거나 이슈를 해결하는 등의 하나의 **작업 단위**를 진행하며 자유롭게 commit할 수 있는 **독립적인 작업공간**이다. 자신의 브랜치를 만들어 그곳에서 작업하는 동안에는 남의 눈치를 보지 않고 마음껏 코딩을 해도 된다. 기능이 어느정도 완성되면 코드 정리와 동작 테스트를 한 후 다른 사람들의 동의를 얻어 자신이 만든 변경사항을 메인 브랜치에 합친다. 그리고 다시 새로운 브랜치를 만들어 새로운 기능을 만들거나 이슈를 해결한다. 이것이 일반적인 git을 활용한 작업 흐름이다.  
 
@@ -575,8 +575,8 @@ $ cd ~/workspace/robotics-schl
 # 'new-feature'를 'new-topic'으로 이름 바꾸기
 ~/workspace/robotics-schl$ git branch -m new-feature new-topic
 ~/workspace/robotics-schl$ git branch
-# 'master'로 브랜치 전환하기
-~/workspace/robotics-schl$ git checkout master
+# 'main'으로 브랜치 전환하기
+~/workspace/robotics-schl$ git checkout main
 ~/workspace/robotics-schl$ git branch
 # 'new-topic'로 브랜치 삭제하기
 ~/workspace/robotics-schl$ git branch -D new-topic
@@ -671,7 +671,7 @@ if __name__ == "__main__":
 ~/workspace/robotics-schl/git_practice$ git add .
 ~/workspace/robotics-schl/git_practice$ git commit -m 'change main to use list ops'
 ~/workspace/robotics-schl/git_practice$ git log
-commit e97a572fda2c2eb127a7f4c09eb3828daa9272e2 (HEAD -> master, make-list-operators)
+commit e97a572fda2c2eb127a7f4c09eb3828daa9272e2 (HEAD -> main, make-list-operators)
 Author: goodgodgd <goodgodgd@yonsei.ac.kr>
 Date:   Mon Oct 14 12:46:32 2019 +0900
     change main to use list ops
@@ -686,7 +686,7 @@ Author: goodgodgd <goodgodgd@yonsei.ac.kr>
 Date:   Mon Oct 14 12:45:14 2019 +0900
     implement add and subtract
 
-commit 2cbd36fdf533fcd6cf879146dbc9b877ca0536d8 (origin/master, origin/HEAD)
+commit 2cbd36fdf533fcd6cf879146dbc9b877ca0536d8 (origin/main, origin/HEAD)
 Author: goodgodgd <goodgodgd@yonsei.ac.kr>
 Date:   Mon Oct 14 01:09:47 2019 +0900
     move files to git practice
@@ -706,16 +706,16 @@ Date:   Mon Oct 14 01:09:47 2019 +0900
 
 ```bash
 ~/workspace/robotics-schl/git_practice$ cd ..
-~/workspace/robotics-schl/git_practice$ git checkout master
+~/workspace/robotics-schl/git_practice$ git checkout main
 ~/workspace/robotics-schl$ git pull
 ~/workspace/robotics-schl$ git merge make-list-operators
 ~/workspace/robotics-schl$ git status
-~/workspace/robotics-schl$ git push origin master
+~/workspace/robotics-schl$ git push origin main
 ```
 
 이때도 두 개의 브랜치가 서로 같은 줄을 다르게 수정했다면 `git pull`에서 경험했던 충돌(conflict)이 일어날 수 있다. 사실 `git pull`도 알고 보면 원격 저장소의 내용을 내려받는 `git fetch`와 브랜치를 흡수하는 `git merge` 두 명령어를 한번에 실행하는 것이다.
 
-병합을 하고 나면 두 `master` 브랜치에도 변경사항이 반영됐음을 확인할 수 있다.  
+병합을 하고 나면 두 `main` 브랜치에도 변경사항이 반영됐음을 확인할 수 있다.  
 
 여러사람이 협력하는 프로젝트에서는 이렇게 새로운 브랜치를 만들어 독립적으로 작업하고 단위 작업이 마무리가 됐을 때 메인 브랜치에 합치는 일이 동시다발적으로 일어난다.
 
@@ -743,8 +743,8 @@ PR을 작성하게 되면 프로젝트의 개발 이력도 자연스럽게 기�
 $ cd ~/workspace/robotics-schl
 ~/workspace/robotics-schl$ git status
 # 이렇게 나오는 상태여야 한다.
-On branch master
-Your branch is up to date with 'origin/master'.
+On branch main
+Your branch is up to date with 'origin/main'.
 
 nothing to commit, working tree clean
 
@@ -752,7 +752,7 @@ nothing to commit, working tree clean
 ~/workspace/robotics-schl$ git branch
 * make-dict-operators
   make-list-operators
-  master
+  main
 ~/workspace/robotics-schl$ gedit git_practice/dict_ops.py
 ```
 
@@ -832,7 +832,7 @@ if __name__ == "__main__":
 
 ### GitHub에 PR 작성하기
 
-이제 작업한 브랜치를 원격 저장소로 올린다. 바로 `master` 브랜치에 합치지 않고 원격 저장소에 브랜치를 Pull Request와 함께 올려서 내가 한 일을 정리하고 다른 사람의 리뷰를 받을 수 있게 하는 것이다.  
+이제 작업한 브랜치를 원격 저장소로 올린다. 바로 `main` 브랜치에 합치지 않고 원격 저장소에 브랜치를 Pull Request와 함께 올려서 내가 한 일을 정리하고 다른 사람의 리뷰를 받을 수 있게 하는 것이다.  
 
 원격 저장소로 브랜치를 올리려면 `git push origin <branch_name>` 명령어를 쓴다. `origin`은 `git clone`을 할 때 자동지정된 원격 저장소의 이름인데 `git remote -v` 명령어를 통해 `origin`의 실제 주소를 볼 수 있다.
 
@@ -858,19 +858,19 @@ To https://github.com/goodgodgd/sch-robotics.git
 
 ![writing-pull-request](../assets/robotics-devel/writing-pull-request.png)
 
-`Create pull request`를 누르면 PR이 완성된다. 다른 사람들은 여기서 PR을 읽고 커밋을 확인하고 코드 변경사항을 확인해서 리뷰 후 댓글을 남기거나 관리권한을 가진 사람이 `Merge pull request`를 눌러 `master` 브랜치에 합쳐줄 수도 있다.
+`Create pull request`를 누르면 PR이 완성된다. 다른 사람들은 여기서 PR을 읽고 커밋을 확인하고 코드 변경사항을 확인해서 리뷰 후 댓글을 남기거나 관리권한을 가진 사람이 `Merge pull request`를 눌러 `main` 브랜치에 합쳐줄 수도 있다.
 
 ![written-pull-request](../assets/robotics-devel/written-pull-request.png)
 
-merge를 하고 나면 다음과 같이 화면이 바뀌고 master 브랜치의 코드도 변했음을 볼 수 있다.
+merge를 하고 나면 다음과 같이 화면이 바뀌고 main 브랜치의 코드도 변했음을 볼 수 있다.
 
 ![pull-request-merged](../assets/robotics-devel/pull-request-merged.png)
 
-로컬 저장소의 `master` 브랜치도 업데이트 하고 싶다면 `master` 브랜치에서 `git pull`을 실행한다.
+로컬 저장소의 `main` 브랜치도 업데이트 하고 싶다면 `main` 브랜치에서 `git pull`을 실행한다.
 
 ```bash
-~/workspace/robotics-schl$ git checkout master
-~/workspace/robotics-schl$ git pull origin master
+~/workspace/robotics-schl$ git checkout main
+~/workspace/robotics-schl$ git pull origin main
 Updating e97a572..7f2ae54
 Fast-forward
  git_practice/dict_ops.py | 27 +++++++++++++++++++++++++++
@@ -924,9 +924,9 @@ GitHub에서 Pull Request(PR)를 작성한다. PR에는 두 가지 요소가 있
 - 어떤 패키지를 만들었고 어떤 기능을 하는지 개발 내용을 코드가 아닌 글로 자세히 설명
 - 터미널에서 출력된 통신 내용을 캡쳐한 사진 (우분투의 screenshot 앱 사용)
 
-기능이 온전히 작동한다면 `Merge pull request` 버튼을 눌러 `topic_comm` 브랜치를 `master`로 합친다.
+기능이 온전히 작동한다면 `Merge pull request` 버튼을 눌러 `topic_comm` 브랜치를 `main`로 합친다.
 
-로컬에서 `~/catkin_ws/src/robotics-hw3`로 가서 `master`로 브랜치를 전환한다.
+로컬에서 `~/catkin_ws/src/robotics-hw3`로 가서 `main`로 브랜치를 전환한다.
 
 `git pull`로 병합된 내용을 내려받는다.
 
@@ -981,6 +981,6 @@ GitHub에서 Pull Request(PR)를 작성한다. PR에는 두 가지 요소가 있
     - algorithm에서 토픽 서브스크라이버로 메시지 수신 (2점)
     - algorithm에서 서비스 서버로 메시지 수신 후 응답 보내기 (2점)
 4. git/github 활용
-    - 2개의 PR 작성 후 master 병합 (6점)
+    - 2개의 PR 작성 후 main 병합 (6점)
     - PR 내용 상세히 성의있게 쓸것
 
