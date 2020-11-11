@@ -573,7 +573,7 @@ easy_install-3.7  pip3     pydoc3.7  python3.6m        python3.7m-config
 
 pyenv는 다양한 sub-command를 통해 다양한 기능을 제공한다. 그 중 파이썬 버전 선택과 관련된 동작들을 알아보자.
 
-- install [version]: 특정 버전의 파이썬을 `~/.pyenv/versions` 경로에 설치한다. 버전은 `.`으로 구분된 세 개의 숫자로 써야한다. 현재 최신 버전은 `3.7.5`다.
+- install [version]: 특정 버전의 파이썬을 `~/.pyenv/versions` 경로에 설치한다. 버전은 `.`으로 구분된 세 개의 숫자로 써야한다. 
 - uninstall [version]: `install`로 설치한 특정 버전의 파이썬을 삭제한다.
 - versions: 현재 pyenv에 설치된 버전들을 보여준다.
 - version: 현재 사용중인 버전을 보여준다.
@@ -593,24 +593,20 @@ Installing Python-3.7.9...
 WARNING: The Python readline extension was not compiled. Missing the GNU readline lib?
 Installed Python-3.7.9 to /home/ian/.pyenv/versions/3.7.9
 
-# 최신 버전인 3.7.5를 pyenv 경로에 설치
-$ pyenv install 3.7.5
-...
-
 # 설치된 버전 목록 확인
 $ pyenv versions
 * system (set by /home/ian/.pyenv/version)
   3.7.9
 
 # 전역 파이썬 버전 변경
-$ pyenv global 3.7.5
+$ pyenv global 3.7.9
 # 현재 사용중인 버전 확인
 $ pyenv version
-3.7.5 (set by /home/ian/.pyenv/version)
+3.7.9 (set by /home/ian/.pyenv/version)
 $ which python
 /home/ian/.pyenv/shims/python
 $ python --version
-Python 3.7.5
+Python 3.7.9
 
 # 특정 디렉토리로 이동
 $ cd ~/workspace/vework
@@ -635,11 +631,11 @@ pyenv를 설치할 때 이미 가상 환경 플러그인도 설치되었으므�
 - deactivate : 환경을 비활성화 시킨다.
 
 ```bash
-# 3.7.5 버전의 'pyenv_py37'이라는 가상 환경 만들기
-~/workspace/vework$ pyenv virtualenv 3.7.5 pyenv_py37
+# 3.7.9 버전의 'pyenv_py37'이라는 가상 환경 만들기
+~/workspace/vework$ pyenv virtualenv 3.7.9 pyenv_py37
 Looking in links: /tmp/tmph8o2x4g9
-Requirement already satisfied: setuptools in /home/ian/.pyenv/versions/3.7.5/envs/pyenv_py37/lib/python3.7/site-packages (41.2.0)
-Requirement already satisfied: pip in /home/ian/.pyenv/versions/3.7.5/envs/pyenv_py37/lib/python3.7/site-packages (19.2.3)
+Requirement already satisfied: setuptools in /home/ian/.pyenv/versions/3.7.9/envs/pyenv_py37/lib/python3.7/site-packages (41.2.0)
+Requirement already satisfied: pip in /home/ian/.pyenv/versions/3.7.9/envs/pyenv_py37/lib/python3.7/site-packages (19.2.3)
 # 'pyenv_py37' 환경 활성화
 ~/workspace/vework$ pyenv activate pyenv_py37 
 # 가상 환경에 numpy 설치
@@ -649,7 +645,7 @@ Requirement already satisfied: pip in /home/ian/.pyenv/versions/3.7.5/envs/pyenv
 (pyenv_py37) ~/workspace/vework$ pyenv deactivate 
 # 가상 환경 삭제
 ~/workspace/vework$ pyenv virtualenv-delete pyenv_py37 
-pyenv-virtualenv: remove /home/ian/.pyenv/versions/3.7.5/envs/pyenv_py37? y
+pyenv-virtualenv: remove /home/ian/.pyenv/versions/3.7.9/envs/pyenv_py37? y
 ```
 
 
