@@ -585,13 +585,13 @@ pyenv는 다양한 sub-command를 통해 다양한 기능을 제공한다. 그 �
 ```bash
 # 설치 가능한 모든 파이썬 버전 보기
 $ pyenv install --list
-# 현재 시스템 버전인 3.6.8을 pyenv 경로에 설치
-$ pyenv install 3.6.8
-Downloading Python-3.6.8.tar.xz...
--> https://www.python.org/ftp/python/3.6.8/Python-3.6.8.tar.xz
-Installing Python-3.6.8...
+# 현재 시스템 버전인 3.7.9을 pyenv 경로에 설치
+$ pyenv install 3.7.9
+Downloading Python-3.7.9.tar.xz...
+-> https://www.python.org/ftp/python/3.7.9/Python-3.7.9.tar.xz
+Installing Python-3.7.9...
 WARNING: The Python readline extension was not compiled. Missing the GNU readline lib?
-Installed Python-3.6.8 to /home/ian/.pyenv/versions/3.6.8
+Installed Python-3.7.9 to /home/ian/.pyenv/versions/3.7.9
 
 # 최신 버전인 3.7.5를 pyenv 경로에 설치
 $ pyenv install 3.7.5
@@ -600,8 +600,7 @@ $ pyenv install 3.7.5
 # 설치된 버전 목록 확인
 $ pyenv versions
 * system (set by /home/ian/.pyenv/version)
-  3.6.8
-  3.7.5
+  3.7.9
 
 # 전역 파이썬 버전 변경
 $ pyenv global 3.7.5
@@ -616,12 +615,12 @@ Python 3.7.5
 # 특정 디렉토리로 이동
 $ cd ~/workspace/vework
 # 현재 디렉토리에서만 다른 버전 지정
-~/workspace/vework$ pyenv local 3.6.8
+~/workspace/vework$ pyenv local 3.7.9
 ~/workspace/vework$ python --version
-Python 3.6.8
+Python 3.7.9
 # 버전 설정 파일 확인
 ~/workspace/vework$ cat .python-version 
-3.6.8
+3.7.9
 ```
 
 
@@ -678,22 +677,24 @@ source ~/catkin_ws/devel/setup.bash
 
 ## 1. ROS를 위한 가상 환경 만들기
 
-pyenv를 이용해 `ros_py36`이란 가상 환경을 만든다. pyenv 가상 환경은 특정 경로에 종속된 것이 아니기 때문에 만들어진 가상 환경을 어디서나 쓸 수 있다는 장점이 있다. 가상 환경을 활성화하여 그곳에 ROS 관련 패키지와 메시지 관련 패키지를 설치한다.
+pyenv를 이용해 `rospy3`란 가상 환경을 만든다. pyenv 가상 환경은 특정 경로에 종속된 것이 아니기 때문에 만들어진 가상 환경을 어디서나 쓸 수 있다는 장점이 있다. 가상 환경을 활성화하여 그곳에 ROS 관련 패키지와 메시지 관련 패키지를 설치한다.
 
 ```bash
 # 가상 환경 만들기
-$ pyenv virtualenv 3.6.8 ros_py36
+$ pyenv virtualenv 3.7.9 rospy3
 Looking in links: /tmp/tmp86spyxlz
-Requirement already satisfied: setuptools in /home/ian/.pyenv/versions/3.6.8/envs/ros_py36/lib/python3.6/site-packages (40.6.2)
-Requirement already satisfied: pip in /home/ian/.pyenv/versions/3.6.8/envs/ros_py36/lib/python3.6/site-packages (18.1)
+Requirement already satisfied: setuptools in /home/ian/.pyenv/versions/3.7.9/envs/rospy3/lib/python3.7/site-packages (40.6.2)
+Requirement already satisfied: pip in /home/ian/.pyenv/versions/3.7.9/envs/rospy3/lib/python3.7/site-packages (18.1)
 # 가상 환경 활성화
-$ pyenv activate ros_py36
+$ pyenv activate rospy3
 # ROS에 필요한 패키지
-$ pip install rosinstall msgpack empy defusedxml netifaces
+$ pip install rosinstall msgpack empy defusedxml netifaces 
+# (opencv 직접 빌드할 때만)
+$ pip install scikit-build
 # 외부 패키지 설치
 $ pip install numpy opencv-python
 # 가상 환경 비활성화
-$ pyenv deactivate ros_py36
+$ pyenv deactivate rospy3
 ```
 
 
@@ -824,7 +825,7 @@ import rospy
 
 결과는 다음과 같다.
 
-> /usr/bin/python3.6 /home/ian/catkin_ws/src/test_py3/src/check_env.py
+> /usr/bin/python3.7 /home/ian/catkin_ws/src/test_py3/src/check_env.py
 > PYTHONPATH: /home/ian/catkin_ws/src/test_py3:/home/ian/catkin_ws/devel/lib/python2.7/dist-packages:/opt/ros/melodic/lib/python2.7/dist-packages
 > Traceback (most recent call last):
 >   File "/home/ian/catkin_ws/src/test_py3/src/check_env.py", line 3, in <module>
@@ -845,20 +846,20 @@ import rospy
 
 ### 인터프리터 설정
 
-rospkg를 가져오지 못 하는 이유는 현재 인터프리터를 시스템에 설치된 Python3인 `/usr/bin/python3.6`을 쓰고 있기 때문이다. rospkg가 어디에 설치되어 있는지 찾아보자.
+rospkg를 가져오지 못 하는 이유는 현재 인터프리터를 시스템에 설치된 Python3인 `/usr/bin/python3.7`을 쓰고 있기 때문이다. rospkg가 어디에 설치되어 있는지 찾아보자.
 
 ```
 $ find /usr/lib/python2.7 -name "rospkg"
 /usr/lib/python2.7/dist-packages/rospkg
 $ find /opt/ros/melodic/lib/python2.7 -name "rospkg"
-$ find /usr/lib/python3.6 -name "rospkg"
+$ find /usr/lib/python3.7 -name "rospkg"
 ```
 
-ROS 설치 경로인 `/opt/ros/melodic/lib/python2.7`이 아닌 `/usr/lib/python2.7`에 설치된 것을 확인할 수 있다. `/usr/lib/python3.6`에는 당연히 없다. 이것은 ROS 설치시 `ros-melodic-desktop-full`를 설치하면서 설치된 수많은 패키지들 중 하나다.  
+ROS 설치 경로인 `/opt/ros/melodic/lib/python2.7`이 아닌 `/usr/lib/python2.7`에 설치된 것을 확인할 수 있다. `/usr/lib/python3.7`에는 당연히 없다. 이것은 ROS 설치시 `ros-melodic-desktop-full`를 설치하면서 설치된 수많은 패키지들 중 하나다.  
 
 사실 Python 3를 위한 rospkg는 앞서 가상 환경을 만들면서 이미 설치했다. `pip install rosinstall`을 실행하면 rospkg 등 ROS와 관련된 다양한 패키지가 설치된다. 이제 해야할 일은 파이참에서 쓰는 인터프리터를 앞서 만든 가상 환경의 인터프리터로 바꾸는 것이다. 다음 순서를 따라가 파이참에서 인터프리터를 바꿔준다.
 
-> File -> Settings -> Project: test_py3 -> Project Interpreter -> 오른쪽 상단의 톱니 모양 클릭 ->  "Add..." 클릭 -> Existing environment 체크 -> "Interpreter"에서 `/home/[user-name]/.pyenv/versions/ros_py36/bin/python` 선택 -> "Ok" -> "Ok"
+> File -> Settings -> Project: test_py3 -> Project Interpreter -> 오른쪽 상단의 톱니 모양 클릭 ->  "Add..." 클릭 -> Existing environment 체크 -> "Interpreter"에서 `/home/[user-name]/.pyenv/versions/rospy3/bin/python` 선택 -> "Ok" -> "Ok"
 
 이제 파이참에서 `check_env.py`를 실행해도 에러가 나지 않는다. ROS를 개발할 준비가 된 것이다. 파이참에서 자동 완성을 통해 ROS 패키지 내부의 함수 목록이나 함수 입력 인자를 보면서 코딩할 수 있다.
 
@@ -875,7 +876,7 @@ ROS 설치 경로인 `/opt/ros/melodic/lib/python2.7`이 아닌 `/usr/lib/python
 지금까지 여러가지 경로가 나왔는데 간단히 정리하면 다음과 같다.
 
 - `/usr/bin/python, /usr/lib/python2.7`: 시스템 기본 Python 2와 그것에 연결된 패키지 경로
-- `/usr/bin/python3, /usr/lib/python3.6`: 시스템 기본 Python 3와 그것에 연결된 패키지 경로
+- `/usr/bin/python3, /usr/lib/python3.7`: 시스템 기본 Python 3와 그것에 연결된 패키지 경로
 - `/opt/ros/melodic/lib/python2.7` : 시스템에 설치된 Python 기반 ROS 패키지 경로
 - `/home/[user-name]/catkin_ws/devel/lib/python2.7` : 사용자가 만든 Python 기반 ROS 패키지 경로
 - `/home/[user-name]/.pyenv/versions/[env-name]/lib` : 가상 환경의 패키지 경로
@@ -899,7 +900,7 @@ $ cd ~/catkin_ws/src/test_py3/src
 퍼블리셔는 다음과 같이 구현한다.
 
 ```python
-#!/home/ian/.pyenv/versions/ros_py36/bin/python
+#!/home/ian/.pyenv/versions/rospy3/bin/python
 # !!! 첫줄에서 사용자명(ian) 교체할것 !!!
 import rospy
 from sensor_msgs.msg import Image
@@ -943,7 +944,7 @@ if __name__ == "__main__":
 부분별로 나눠서 살펴보자.
 
 ```python
-#!/home/ian/.pyenv/versions/ros_py36/bin/python
+#!/home/ian/.pyenv/versions/rospy3/bin/python
 # !!! 첫줄에서 사용자명(ian) 교체할것 !!!
 import rospy
 from sensor_msgs.msg import Image
@@ -1029,7 +1030,7 @@ uint8[] data
 서브스크라이버는 다음과 같이 구현한다.
 
 ```python
-#!/home/ian/.pyenv/versions/ros_py36/bin/python
+#!/home/ian/.pyenv/versions/rospy3/bin/python
 # 사용자명(ian) 교체!
 import rospy
 from sensor_msgs.msg import Image
@@ -1056,7 +1057,7 @@ if __name__ == "__main__":
 역시 부분별로 나눠서 살펴보자.
 
 ```python
-#!/home/ian/.pyenv/versions/ros_py36/bin/python
+#!/home/ian/.pyenv/versions/rospy3/bin/python
 # 사용자명(ian) 교체!
 import rospy
 from sensor_msgs.msg import Image
