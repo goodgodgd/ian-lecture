@@ -388,7 +388,7 @@ Untracked files:
 
 
 
-### 4.1. 다시 돌아와서 작업하기 (학교)
+### 4.2. 다시 돌아와서 작업하기 (학교)
 
 "집"에서 작업 후 다시 "학교" 돌아와서 작업을 재개하고자 한다. 아직 "집"에서 작업하여 원격 저장소에 올린 내용을 "학교" 로컬 저장소에 반영하지는 않았다. 여기는 아직 `anything.py` 밖에 없는 상태다.  
 
@@ -706,7 +706,7 @@ Date:   Mon Oct 14 01:09:47 2019 +0900
 
 ```bash
 ~/workspace/robotics-schl/git_practice$ cd ..
-~/workspace/robotics-schl/git_practice$ git checkout main
+~/workspace/robotics-schl$ git checkout main
 ~/workspace/robotics-schl$ git pull
 ~/workspace/robotics-schl$ git merge make-list-operators
 ~/workspace/robotics-schl$ git status

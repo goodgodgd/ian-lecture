@@ -140,7 +140,7 @@ pip3 install -r requirements.txt
 먼저 설치부터 해보자. virtualenv는 pip로 설치할 수 있다.
 
 ```
-$ pip3 install virtualenv virtualenv
+$ pip3 install virtualenv
 $ virtualenv --version
 16.7.6
 ```
@@ -521,8 +521,10 @@ pyenv는 본래 여러 파이썬 버전을 함께 운용하기 위해 만들어�
 
 ```bash
 $ sudo apt install -y build-essential libssl-dev zlib1g-dev libbz2-dev \
-libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev \
+libreadline-dev libsqlite3-dev wget curl libncurses5-dev libncursesw5-dev \
 xz-utils tk-dev libffi-dev liblzma-dev python-openssl git
+# raspberry pi OS가 아닌 일반 우분투라면
+$ sudo apt install -ll llvm
 
 ~$ curl -L https://raw.githubusercontent.com/yyuu/pyenv-installer/master/bin/pyenv-installer | bash
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
