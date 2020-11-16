@@ -821,20 +821,20 @@ import rospy
 
 결과는 다음과 같다.
 
-> /usr/bin/python3.7 /home/ian/catkin_ws/src/test_py3/src/check_env.py
-> PYTHONPATH: /home/ian/catkin_ws/src/test_py3:/home/ian/catkin_ws/devel/lib/python2.7/dist-packages:/opt/ros/melodic/lib/python2.7/dist-packages
-> Traceback (most recent call last):
->   File "/home/ian/catkin_ws/src/test_py3/src/check_env.py", line 3, in <module>
->     import rospy
->   File "/opt/ros/melodic/lib/python2.7/dist-packages/rospy/\_\_init\_\_.py", line 49, in <module>
->     from .client import spin, myargv, init_node, \
->   File "/opt/ros/melodic/lib/python2.7/dist-packages/rospy/client.py", line 52, in <module>
->     import roslib
->   File "/opt/ros/melodic/lib/python2.7/dist-packages/roslib/\_\_init\_\_.py", line 50, in <module>
->     from roslib.launcher import load_manifest
->   File "/opt/ros/melodic/lib/python2.7/dist-packages/roslib/launcher.py", line 42, in <module>
->     import rospkg
-> ModuleNotFoundError: **No module named 'rospkg'**
+> /usr/bin/python3.7 /home/ian/catkin_ws/src/test_py3/src/check_env.py  
+> PYTHONPATH: /home/ian/catkin_ws/src/test_py3:/home/ian/catkin_ws/devel/lib/python2.7/dist-packages:/opt/ros/melodic/lib/python2.7/dist-packages  
+> Traceback (most recent call last):  
+>   File "/home/ian/catkin_ws/src/test_py3/src/check_env.py", line 3, in <module>  
+>     import rospy  
+>   File "/opt/ros/melodic/lib/python2.7/dist-packages/rospy/\_\_init\_\_.py", line 49, in <module>  
+>     from .client import spin, myargv, init_node, \  
+>   File "/opt/ros/melodic/lib/python2.7/dist-packages/rospy/client.py", line 52, in <module>  
+>     import roslib  
+>   File "/opt/ros/melodic/lib/python2.7/dist-packages/roslib/\_\_init\_\_.py", line 50, in <module>  
+>     from roslib.launcher import load_manifest  
+>   File "/opt/ros/melodic/lib/python2.7/dist-packages/roslib/launcher.py", line 42, in <module>  
+>     import rospkg  
+> ModuleNotFoundError: **No module named 'rospkg' ** 
 
 여전히 에러가 나긴 하지만 약간의 진전이 있다. `PYTHONPATH`에 ROS 패키지 경로가 추가가 됐다. 그리고 에러 메시지도 변했다. 원래는 rospy 자체를 가져오지 못 했는데 이제는 그 내부에서 "rospkg"를 가져오지 못 한다고 한다. 이제 rospkg만 가져올 수 있으면 파이참에서 ROS를 쓸 수 있다.
 
@@ -896,8 +896,7 @@ $ cd ~/catkin_ws/src/test_py3/src
 퍼블리셔는 다음과 같이 구현한다.
 
 ```python
-#!/home/ian/.pyenv/versions/rospy3/bin/python
-# !!! 첫줄에서 사용자명(ian) 교체할것 !!!
+#!/home/pi/.pyenv/versions/rospy3/bin/python
 import rospy
 from sensor_msgs.msg import Image
 import cv2
@@ -940,8 +939,7 @@ if __name__ == "__main__":
 부분별로 나눠서 살펴보자.
 
 ```python
-#!/home/ian/.pyenv/versions/rospy3/bin/python
-# !!! 첫줄에서 사용자명(ian) 교체할것 !!!
+#!/home/pi/.pyenv/versions/rospy3/bin/python
 import rospy
 from sensor_msgs.msg import Image
 import cv2
@@ -967,8 +965,8 @@ def main():
 
 파이썬에서 다른 파일을 읽을 때는 절대 경로로 접근하는 것이 좋다. 영상 파일이 패키지 내부에 있기 때문에 `image_publisher.py`의 절대 경로로부터 영상의 경로를 만들어내는 과정이다. `os.path.dirname(somepath)` 함수는 `somepath`의 가장 하부 경로를 하나씩 잘라낸다. 위 코드에서 출력된 내용은 다음과 같다.
 
-> this file: /home/ian/catkin_ws/src/test_py3/src/image_publisher.py 
-> package path: /home/ian/catkin_ws/src/test_py3
+> this file: /home/pi/catkin_ws/src/test_py3/src/image_publisher.py   
+> package path: /home/pi/catkin_ws/src/test_py3  
 
 `cv2.imread()`는 영상 파일을 읽어서 numpy array로 출력하는 함수다. OpenCV나 Numpy에 대한 내용은 일단 여기서는 중요한 것이 아니니 넘어가도록 하자.
 
@@ -1026,8 +1024,7 @@ uint8[] data
 서브스크라이버는 다음과 같이 구현한다.
 
 ```python
-#!/home/ian/.pyenv/versions/rospy3/bin/python
-# 사용자명(ian) 교체!
+#!/home/pi/.pyenv/versions/rospy3/bin/python
 import rospy
 from sensor_msgs.msg import Image
 import cv2
@@ -1053,8 +1050,7 @@ if __name__ == "__main__":
 역시 부분별로 나눠서 살펴보자.
 
 ```python
-#!/home/ian/.pyenv/versions/rospy3/bin/python
-# 사용자명(ian) 교체!
+#!/home/pi/.pyenv/versions/rospy3/bin/python
 import rospy
 from sensor_msgs.msg import Image
 import cv2
