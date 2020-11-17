@@ -1,8 +1,8 @@
 ---
 layout: post
 title:  "ROS Name and Roslaunch"
-date:   2019-11-04 09:00:13
-categories: 2019-2-robotics
+date:   2020-11-10 09:00:13
+categories: 2020-2-robotics
 ---
 
 
