@@ -80,7 +80,7 @@ categories: 2020-2-robotics
 
 #### Point vs Coordinates (singluar vs plural)
 
-3차원 공간 상의 한 "점(point)"을 표현하기 위해서는 x, y, z 축의 3개의 "좌표(coordinate)"가 필요하다. 점은 전체 공간상의 한 위치를 말하는 것이고 좌표는 1차원 축을 기준으로 점의 위치를 하나의 숫자로 표현한 것이다. 그래서 Euclidean n-space의 한 점은 n개의 좌표로 표현된다. $$p=(p_1,...,p_n)$$
+3차원 공간 상의 한 "점(point)"을 표현하기 위해서는 x, y, z 축의 3개의 "좌표(coordinate)"가 필요하다. 점은 전체 공간상의 한 위치를 말하는 것이고 좌표는 특정 축을 기준으로 점의 위치를 하나의 숫자로 표현한 것이다. 그래서 Euclidean n-space의 한 점은 n개의 좌표로 표현된다. $$p=(p_1,...,p_n)$$
 
 #### Point vs Vector
 
@@ -132,7 +132,7 @@ $$
 
 - Cross product is orthogonal to both vectors: $$\left\langle \mathbf{u} \times \mathbf{v}, \mathbf{u} \right\rangle = \left\langle \mathbf{u} \times \mathbf{v}, \mathbf{v} \right\rangle = 0$$
 - Anticommutativity: $$\mathbf{u} \times \mathbf{v} = - \mathbf{u} \times \mathbf{v}$$
-- Angle between two vectors: $$sin\theta = {\left\langle \mathbf{u}, \mathbf{v} \right\rangle \over \|\mathbf{u}\| \|\mathbf{v}\|}$$
+- Angle between two vectors: $$sin\theta = {\|\mathbf{u} \times \mathbf{v} \| \over \|\mathbf{u}\| \|\mathbf{v}\|}$$
 
 
 
@@ -186,7 +186,6 @@ $$
 ## 5. 2-D Rigid Transformation
 
 3차원 강체 변환은 상당히 복잡하므로 2차원 평면 상의 변환부터 자세히 다뤄보자. 2차원 강체 변환은 2차원 좌표에 회전과 이동을 적용하여 새로운 2차원 좌표를 만드는 것을 말한다.  
-
 
 $$
 \mathbf{p}_h = \begin{bmatrix} x \\ y \\ 1 \end{bmatrix}
@@ -274,7 +273,11 @@ $$
 \mathbf{p}^A = R^A_B \mathbf{p}^B + \mathbf{t}^A_B \\
 \mathbf{p}_h^A 
 = \begin{bmatrix} R^A_B & \mathbf{t}^A_B \\ 
-\mathbf{0} & 1 \end{bmatrix} \mathbf{p}_h^B 
+                  \mathbf{0} & 1 \end{bmatrix} \mathbf{p}_h^B 
+= \begin{bmatrix} cos\theta & -sin\theta & t_x \\ 
+                  sin\theta &  cos\theta & t_y \\
+                  0 & 0 & 1
+                  \end{bmatrix} \mathbf{p}_h^B 
 = T^A_B\mathbf{p}_h^B \\
 $$
 
@@ -291,12 +294,12 @@ $$
 
 
 
-위 예시는 3차원 좌표계지만 2차원 좌표계에서도 마찬가지다. 아래 그림에서 로봇은 이동하면서 일정 시간마다 자신이 직전 위치로부터 **상대적으로** 얼마나 이동하고 회전했는지를 기록했다. 예를 들어 $$\mathbf{t}_B^A, \ \theta_B^A$$는 각각 로봇이 Pose A의 좌표계를 기준으로 Pose B가 얼마나 이동했는지를 표현한다.  
+위 예시는 3차원 좌표계지만 2차원 좌표계에서도 마찬가지다. 아래 그림에서 로봇은 이동하면서 일정 시간마다 자신이 직전 위치로부터 **상대적으로** 얼마나 이동하고 회전했는지를 기록한다. 예를 들어 $$\mathbf{t}_B^A, \ \theta_B^A$$는 각각 로봇이 Pose A의 좌표계를 기준으로 Pose B가 얼마나 이동하고 회전하는지를 표현한다.  
 
 > 로보틱스에서 **Pose**는 위치(position)와 자세(orientation)을 합쳐 부르는 말이다. 2차원에서는 2차원 좌표$$(x,y)$$와 방향 각도 $$\theta$$가 Pose라고 할 수 있다. Pose에 좌표계 정의에 필요한 요소가 다 들어있기 때문에 Pose마다 좌표계를 만들수 있다. 로봇의 위치를 원점으로하고 로봇의 전방을 x축, 왼쪽을 y축으로 하는 좌표계를 만들면 로봇을 기준으로 다른 좌표나 Pose를 다시 계산할 수 있다.  
 >
 > Pose는 $$(x,y,\theta)$$로 표현할 수도 있고 $$T^A_B = \begin{bmatrix} R^A_B & \mathbf{t}^A_B \\ 
-> \mathbf{0} & 1 \end{bmatrix}$$ 처럼 변환 행렬로 표현할 수도 있다. $$T^A_B$$의 의미는 Pose A에서 바라본 Pose B의 상대적인 포즈다. 즉 A 좌표계를 기준으로 하여 Pose B의 위치와 방향을 표시한 것이다.
+> \mathbf{0} & 1 \end{bmatrix}$$ 처럼 변환 행렬로 표현할 수도 있다. $$T^A_B$$의 의미는 Pose A에서 바라본 Pose B의 상대적인 포즈다. 즉 A 좌표계를 기준으로 하여 Pose B의 상대적인 위치와 방향을 표시한 것이다.
 
 ![consec-transform](../assets/robotics-transform/consec-transform.png)
 
@@ -315,3 +318,38 @@ $$
 Pose D에서 전역(G) 좌표계로 가는 변환($$T_D^G$$)은 네 번의 좌표계 변환으로 구할 수 있고 좌표에 변환 행렬을 곱할 때마다 전역 좌표계에 가까운 좌표계로 변환된다.
 
 
+
+### 5.4 Example
+
+이번엔 실제 값을 넣어 계산해보자. 다음과 같이 로봇이 이동하면서 4개의 포즈가 생겼고 마지막에 빨간 점 $$\mathbf{p}^D=(-1.3038, 2.5981)$$을 발견했다. 이 점을 전역좌표계로 변환해보자.
+
+![transform_example](../assets/robotics-transform/transform_example.png)
+
+로봇의 단계별 이동과 이동에 따른 변환 행렬은 다음과 같다.
+
+$$
+\begin{align}
+PoseA &= \left(1, 1, \pi/6 \right), \quad
+T_A^G = \begin{bmatrix} \sqrt{3}/2 & -1/2 & 1 \\ 1/2 & \sqrt{3}/2 & 1 \\ 0 & 0 & 1 \end{bmatrix} \\
+PoseB &= \left(3, 1, \pi/6 \right), \quad
+T_B^A =  \begin{bmatrix} \sqrt{3}/2 & -1/2 & 3 \\ 1/2 & \sqrt{3}/2 & 1 \\ 0 & 0 & 1 \end{bmatrix} \\
+PoseC &= \left(2, -2, -\pi/3 \right), \quad
+T_C^B = \begin{bmatrix} 1/2 & \sqrt{3}/2 & 2 \\ -\sqrt{3}/2 & 1/2 & -2 \\ 0 & 0 & 1 \end{bmatrix} \\
+PoseD &= \left(2, -1, -\pi/6 \right), \quad
+T_D^C = \begin{bmatrix} \sqrt{3}/2 & 1/2 & 1 \\ -1/2 & \sqrt{3}/2 & 1 \\ 0 & 0 & 1 \end{bmatrix} \\
+\end{align}
+$$
+
+저 변환행렬들을 동차 좌표 $$\mathbf{p}_h^D = \left[-1.3038, 2.5981, 1 \right]^T$$와 곱하면 전역 좌표를 구할 수 있다.
+
+$$
+\begin{align}
+\mathbf{p}_h^G &= T_A^G T_B^A T_C^B T_D^C \left[-1.3038, 2.5981, 1 \right]^T \\
+&= T_A^G T_B^A T_C^B \left[2.1699, 1.9019, 1 \right]^T \\
+&= T_A^G T_B^A \left[4.7321, -2.9282,  1 \right]^T \\
+&= T_A^G \left[8.5622, 0.8301, 1 \right]^T \\
+&= [8, 6, 1]
+\end{align}
+$$
+
+계산된 단계별 좌표들을 그림을 보면서 확인해보자. 각 포즈에서 점 $$\mathbf{p}$$를 바라본 좌표라는 것을 눈으로도 확인할 수 있다.
