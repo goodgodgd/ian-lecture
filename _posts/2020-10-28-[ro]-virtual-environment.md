@@ -140,7 +140,7 @@ pip3 install -r requirements.txt
 먼저 설치부터 해보자. virtualenv는 pip로 설치할 수 있다.
 
 ```
-$ pip3 install virtualenv virtualenv
+$ pip3 install virtualenv
 $ virtualenv --version
 16.7.6
 ```
@@ -521,8 +521,10 @@ pyenv는 본래 여러 파이썬 버전을 함께 운용하기 위해 만들어�
 
 ```bash
 $ sudo apt install -y build-essential libssl-dev zlib1g-dev libbz2-dev \
-libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev \
+libreadline-dev libsqlite3-dev wget curl libncurses5-dev libncursesw5-dev \
 xz-utils tk-dev libffi-dev liblzma-dev python-openssl git
+# raspberry pi OS가 아닌 일반 우분투라면
+$ sudo apt install -ll llvm
 
 ~$ curl -L https://raw.githubusercontent.com/yyuu/pyenv-installer/master/bin/pyenv-installer | bash
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
@@ -571,7 +573,7 @@ easy_install-3.7  pip3     pydoc3.7  python3.6m        python3.7m-config
 
 pyenv는 다양한 sub-command를 통해 다양한 기능을 제공한다. 그 중 파이썬 버전 선택과 관련된 동작들을 알아보자.
 
-- install [version]: 특정 버전의 파이썬을 `~/.pyenv/versions` 경로에 설치한다. 버전은 `.`으로 구분된 세 개의 숫자로 써야한다. 현재 최신 버전은 `3.7.5`다.
+- install [version]: 특정 버전의 파이썬을 `~/.pyenv/versions` 경로에 설치한다. 버전은 `.`으로 구분된 세 개의 숫자로 써야한다. 
 - uninstall [version]: `install`로 설치한 특정 버전의 파이썬을 삭제한다.
 - versions: 현재 pyenv에 설치된 버전들을 보여준다.
 - version: 현재 사용중인 버전을 보여준다.
@@ -583,43 +585,38 @@ pyenv는 다양한 sub-command를 통해 다양한 기능을 제공한다. 그 �
 ```bash
 # 설치 가능한 모든 파이썬 버전 보기
 $ pyenv install --list
-# 현재 시스템 버전인 3.6.8을 pyenv 경로에 설치
-$ pyenv install 3.6.8
-Downloading Python-3.6.8.tar.xz...
--> https://www.python.org/ftp/python/3.6.8/Python-3.6.8.tar.xz
-Installing Python-3.6.8...
+# 현재 시스템 버전인 3.7.9을 pyenv 경로에 설치
+$ pyenv install 3.7.9
+Downloading Python-3.7.9.tar.xz...
+-> https://www.python.org/ftp/python/3.7.9/Python-3.7.9.tar.xz
+Installing Python-3.7.9...
 WARNING: The Python readline extension was not compiled. Missing the GNU readline lib?
-Installed Python-3.6.8 to /home/ian/.pyenv/versions/3.6.8
-
-# 최신 버전인 3.7.5를 pyenv 경로에 설치
-$ pyenv install 3.7.5
-...
+Installed Python-3.7.9 to /home/ian/.pyenv/versions/3.7.9
 
 # 설치된 버전 목록 확인
 $ pyenv versions
 * system (set by /home/ian/.pyenv/version)
-  3.6.8
-  3.7.5
+  3.7.9
 
 # 전역 파이썬 버전 변경
-$ pyenv global 3.7.5
+$ pyenv global 3.7.9
 # 현재 사용중인 버전 확인
 $ pyenv version
-3.7.5 (set by /home/ian/.pyenv/version)
+3.7.9 (set by /home/ian/.pyenv/version)
 $ which python
 /home/ian/.pyenv/shims/python
 $ python --version
-Python 3.7.5
+Python 3.7.9
 
 # 특정 디렉토리로 이동
 $ cd ~/workspace/vework
 # 현재 디렉토리에서만 다른 버전 지정
-~/workspace/vework$ pyenv local 3.6.8
+~/workspace/vework$ pyenv local 3.7.9
 ~/workspace/vework$ python --version
-Python 3.6.8
+Python 3.7.9
 # 버전 설정 파일 확인
 ~/workspace/vework$ cat .python-version 
-3.6.8
+3.7.9
 ```
 
 
@@ -634,11 +631,11 @@ pyenv를 설치할 때 이미 가상 환경 플러그인도 설치되었으므�
 - deactivate : 환경을 비활성화 시킨다.
 
 ```bash
-# 3.7.5 버전의 'pyenv_py37'이라는 가상 환경 만들기
-~/workspace/vework$ pyenv virtualenv 3.7.5 pyenv_py37
+# 3.7.9 버전의 'pyenv_py37'이라는 가상 환경 만들기
+~/workspace/vework$ pyenv virtualenv 3.7.9 pyenv_py37
 Looking in links: /tmp/tmph8o2x4g9
-Requirement already satisfied: setuptools in /home/ian/.pyenv/versions/3.7.5/envs/pyenv_py37/lib/python3.7/site-packages (41.2.0)
-Requirement already satisfied: pip in /home/ian/.pyenv/versions/3.7.5/envs/pyenv_py37/lib/python3.7/site-packages (19.2.3)
+Requirement already satisfied: setuptools in /home/ian/.pyenv/versions/3.7.9/envs/pyenv_py37/lib/python3.7/site-packages (41.2.0)
+Requirement already satisfied: pip in /home/ian/.pyenv/versions/3.7.9/envs/pyenv_py37/lib/python3.7/site-packages (19.2.3)
 # 'pyenv_py37' 환경 활성화
 ~/workspace/vework$ pyenv activate pyenv_py37 
 # 가상 환경에 numpy 설치
@@ -648,7 +645,7 @@ Requirement already satisfied: pip in /home/ian/.pyenv/versions/3.7.5/envs/pyenv
 (pyenv_py37) ~/workspace/vework$ pyenv deactivate 
 # 가상 환경 삭제
 ~/workspace/vework$ pyenv virtualenv-delete pyenv_py37 
-pyenv-virtualenv: remove /home/ian/.pyenv/versions/3.7.5/envs/pyenv_py37? y
+pyenv-virtualenv: remove /home/ian/.pyenv/versions/3.7.9/envs/pyenv_py37? y
 ```
 
 
@@ -676,22 +673,24 @@ source ~/catkin_ws/devel/setup.bash
 
 ## 1. ROS를 위한 가상 환경 만들기
 
-pyenv를 이용해 `ros_py36`이란 가상 환경을 만든다. pyenv 가상 환경은 특정 경로에 종속된 것이 아니기 때문에 만들어진 가상 환경을 어디서나 쓸 수 있다는 장점이 있다. 가상 환경을 활성화하여 그곳에 ROS 관련 패키지와 메시지 관련 패키지를 설치한다.
+pyenv를 이용해 `rospy3`란 가상 환경을 만든다. pyenv 가상 환경은 특정 경로에 종속된 것이 아니기 때문에 만들어진 가상 환경을 어디서나 쓸 수 있다는 장점이 있다. 가상 환경을 활성화하여 그곳에 ROS 관련 패키지와 메시지 관련 패키지를 설치한다.
 
 ```bash
 # 가상 환경 만들기
-$ pyenv virtualenv 3.6.8 ros_py36
+$ pyenv virtualenv 3.7.9 rospy3
 Looking in links: /tmp/tmp86spyxlz
-Requirement already satisfied: setuptools in /home/ian/.pyenv/versions/3.6.8/envs/ros_py36/lib/python3.6/site-packages (40.6.2)
-Requirement already satisfied: pip in /home/ian/.pyenv/versions/3.6.8/envs/ros_py36/lib/python3.6/site-packages (18.1)
+Requirement already satisfied: setuptools in /home/ian/.pyenv/versions/3.7.9/envs/rospy3/lib/python3.7/site-packages (40.6.2)
+Requirement already satisfied: pip in /home/ian/.pyenv/versions/3.7.9/envs/rospy3/lib/python3.7/site-packages (18.1)
 # 가상 환경 활성화
-$ pyenv activate ros_py36
+$ pyenv activate rospy3
 # ROS에 필요한 패키지
-$ pip install rosinstall msgpack empy defusedxml netifaces
+$ pip install rosinstall msgpack empy defusedxml netifaces 
+# (opencv 직접 빌드할 때만)
+$ pip install scikit-build
 # 외부 패키지 설치
 $ pip install numpy opencv-python
 # 가상 환경 비활성화
-$ pyenv deactivate ros_py36
+$ pyenv deactivate rospy3
 ```
 
 
@@ -822,20 +821,20 @@ import rospy
 
 결과는 다음과 같다.
 
-> /usr/bin/python3.6 /home/ian/catkin_ws/src/test_py3/src/check_env.py
-> PYTHONPATH: /home/ian/catkin_ws/src/test_py3:/home/ian/catkin_ws/devel/lib/python2.7/dist-packages:/opt/ros/melodic/lib/python2.7/dist-packages
-> Traceback (most recent call last):
->   File "/home/ian/catkin_ws/src/test_py3/src/check_env.py", line 3, in <module>
->     import rospy
->   File "/opt/ros/melodic/lib/python2.7/dist-packages/rospy/\_\_init\_\_.py", line 49, in <module>
->     from .client import spin, myargv, init_node, \
->   File "/opt/ros/melodic/lib/python2.7/dist-packages/rospy/client.py", line 52, in <module>
->     import roslib
->   File "/opt/ros/melodic/lib/python2.7/dist-packages/roslib/\_\_init\_\_.py", line 50, in <module>
->     from roslib.launcher import load_manifest
->   File "/opt/ros/melodic/lib/python2.7/dist-packages/roslib/launcher.py", line 42, in <module>
->     import rospkg
-> ModuleNotFoundError: **No module named 'rospkg'**
+> /usr/bin/python3.7 /home/ian/catkin_ws/src/test_py3/src/check_env.py  
+> PYTHONPATH: /home/ian/catkin_ws/src/test_py3:/home/ian/catkin_ws/devel/lib/python2.7/dist-packages:/opt/ros/melodic/lib/python2.7/dist-packages  
+> Traceback (most recent call last):  
+>   File "/home/ian/catkin_ws/src/test_py3/src/check_env.py", line 3, in <module>  
+>     import rospy  
+>   File "/opt/ros/melodic/lib/python2.7/dist-packages/rospy/\_\_init\_\_.py", line 49, in <module>  
+>     from .client import spin, myargv, init_node, \  
+>   File "/opt/ros/melodic/lib/python2.7/dist-packages/rospy/client.py", line 52, in <module>  
+>     import roslib  
+>   File "/opt/ros/melodic/lib/python2.7/dist-packages/roslib/\_\_init\_\_.py", line 50, in <module>  
+>     from roslib.launcher import load_manifest  
+>   File "/opt/ros/melodic/lib/python2.7/dist-packages/roslib/launcher.py", line 42, in <module>  
+>     import rospkg  
+> ModuleNotFoundError: **No module named 'rospkg' ** 
 
 여전히 에러가 나긴 하지만 약간의 진전이 있다. `PYTHONPATH`에 ROS 패키지 경로가 추가가 됐다. 그리고 에러 메시지도 변했다. 원래는 rospy 자체를 가져오지 못 했는데 이제는 그 내부에서 "rospkg"를 가져오지 못 한다고 한다. 이제 rospkg만 가져올 수 있으면 파이참에서 ROS를 쓸 수 있다.
 
@@ -843,20 +842,20 @@ import rospy
 
 ### 인터프리터 설정
 
-rospkg를 가져오지 못 하는 이유는 현재 인터프리터를 시스템에 설치된 Python3인 `/usr/bin/python3.6`을 쓰고 있기 때문이다. rospkg가 어디에 설치되어 있는지 찾아보자.
+rospkg를 가져오지 못 하는 이유는 현재 인터프리터를 시스템에 설치된 Python3인 `/usr/bin/python3.7`을 쓰고 있기 때문이다. rospkg가 어디에 설치되어 있는지 찾아보자.
 
 ```
 $ find /usr/lib/python2.7 -name "rospkg"
 /usr/lib/python2.7/dist-packages/rospkg
 $ find /opt/ros/melodic/lib/python2.7 -name "rospkg"
-$ find /usr/lib/python3.6 -name "rospkg"
+$ find /usr/lib/python3.7 -name "rospkg"
 ```
 
-ROS 설치 경로인 `/opt/ros/melodic/lib/python2.7`이 아닌 `/usr/lib/python2.7`에 설치된 것을 확인할 수 있다. `/usr/lib/python3.6`에는 당연히 없다. 이것은 ROS 설치시 `ros-melodic-desktop-full`를 설치하면서 설치된 수많은 패키지들 중 하나다.  
+ROS 설치 경로인 `/opt/ros/melodic/lib/python2.7`이 아닌 `/usr/lib/python2.7`에 설치된 것을 확인할 수 있다. `/usr/lib/python3.7`에는 당연히 없다. 이것은 ROS 설치시 `ros-melodic-desktop-full`를 설치하면서 설치된 수많은 패키지들 중 하나다.  
 
 사실 Python 3를 위한 rospkg는 앞서 가상 환경을 만들면서 이미 설치했다. `pip install rosinstall`을 실행하면 rospkg 등 ROS와 관련된 다양한 패키지가 설치된다. 이제 해야할 일은 파이참에서 쓰는 인터프리터를 앞서 만든 가상 환경의 인터프리터로 바꾸는 것이다. 다음 순서를 따라가 파이참에서 인터프리터를 바꿔준다.
 
-> File -> Settings -> Project: test_py3 -> Project Interpreter -> 오른쪽 상단의 톱니 모양 클릭 ->  "Add..." 클릭 -> Existing environment 체크 -> "Interpreter"에서 `/home/[user-name]/.pyenv/versions/ros_py36/bin/python` 선택 -> "Ok" -> "Ok"
+> File -> Settings -> Project: test_py3 -> Project Interpreter -> 오른쪽 상단의 톱니 모양 클릭 ->  "Add..." 클릭 -> Existing environment 체크 -> "Interpreter"에서 `/home/[user-name]/.pyenv/versions/rospy3/bin/python` 선택 -> "Ok" -> "Ok"
 
 이제 파이참에서 `check_env.py`를 실행해도 에러가 나지 않는다. ROS를 개발할 준비가 된 것이다. 파이참에서 자동 완성을 통해 ROS 패키지 내부의 함수 목록이나 함수 입력 인자를 보면서 코딩할 수 있다.
 
@@ -873,7 +872,7 @@ ROS 설치 경로인 `/opt/ros/melodic/lib/python2.7`이 아닌 `/usr/lib/python
 지금까지 여러가지 경로가 나왔는데 간단히 정리하면 다음과 같다.
 
 - `/usr/bin/python, /usr/lib/python2.7`: 시스템 기본 Python 2와 그것에 연결된 패키지 경로
-- `/usr/bin/python3, /usr/lib/python3.6`: 시스템 기본 Python 3와 그것에 연결된 패키지 경로
+- `/usr/bin/python3, /usr/lib/python3.7`: 시스템 기본 Python 3와 그것에 연결된 패키지 경로
 - `/opt/ros/melodic/lib/python2.7` : 시스템에 설치된 Python 기반 ROS 패키지 경로
 - `/home/[user-name]/catkin_ws/devel/lib/python2.7` : 사용자가 만든 Python 기반 ROS 패키지 경로
 - `/home/[user-name]/.pyenv/versions/[env-name]/lib` : 가상 환경의 패키지 경로
@@ -897,8 +896,7 @@ $ cd ~/catkin_ws/src/test_py3/src
 퍼블리셔는 다음과 같이 구현한다.
 
 ```python
-#!/home/ian/.pyenv/versions/ros_py36/bin/python
-# !!! 첫줄에서 사용자명(ian) 교체할것 !!!
+#!/home/pi/.pyenv/versions/rospy3/bin/python
 import rospy
 from sensor_msgs.msg import Image
 import cv2
@@ -941,8 +939,7 @@ if __name__ == "__main__":
 부분별로 나눠서 살펴보자.
 
 ```python
-#!/home/ian/.pyenv/versions/ros_py36/bin/python
-# !!! 첫줄에서 사용자명(ian) 교체할것 !!!
+#!/home/pi/.pyenv/versions/rospy3/bin/python
 import rospy
 from sensor_msgs.msg import Image
 import cv2
@@ -968,8 +965,8 @@ def main():
 
 파이썬에서 다른 파일을 읽을 때는 절대 경로로 접근하는 것이 좋다. 영상 파일이 패키지 내부에 있기 때문에 `image_publisher.py`의 절대 경로로부터 영상의 경로를 만들어내는 과정이다. `os.path.dirname(somepath)` 함수는 `somepath`의 가장 하부 경로를 하나씩 잘라낸다. 위 코드에서 출력된 내용은 다음과 같다.
 
-> this file: /home/ian/catkin_ws/src/test_py3/src/image_publisher.py 
-> package path: /home/ian/catkin_ws/src/test_py3
+> this file: /home/pi/catkin_ws/src/test_py3/src/image_publisher.py   
+> package path: /home/pi/catkin_ws/src/test_py3  
 
 `cv2.imread()`는 영상 파일을 읽어서 numpy array로 출력하는 함수다. OpenCV나 Numpy에 대한 내용은 일단 여기서는 중요한 것이 아니니 넘어가도록 하자.
 
@@ -1027,8 +1024,7 @@ uint8[] data
 서브스크라이버는 다음과 같이 구현한다.
 
 ```python
-#!/home/ian/.pyenv/versions/ros_py36/bin/python
-# 사용자명(ian) 교체!
+#!/home/pi/.pyenv/versions/rospy3/bin/python
 import rospy
 from sensor_msgs.msg import Image
 import cv2
@@ -1054,8 +1050,7 @@ if __name__ == "__main__":
 역시 부분별로 나눠서 살펴보자.
 
 ```python
-#!/home/ian/.pyenv/versions/ros_py36/bin/python
-# 사용자명(ian) 교체!
+#!/home/pi/.pyenv/versions/rospy3/bin/python
 import rospy
 from sensor_msgs.msg import Image
 import cv2

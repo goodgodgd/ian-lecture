@@ -103,43 +103,13 @@ for ani in animals:
 
 
 
-## Activate Topics
-
-자율주행 알고리즘을 구현하기 전에 먼저 로봇에서 센서 값을 읽고 바퀴를 제어하는 방법을 알아야한다. 터틀봇을 ROS로 제어하기 위해서는 세 가지 launch 파일을 실행해야 한다.
-
-- `turtlebot3_robot.launch` : 로봇의 바퀴 회전으로부터 계산한 로봇의 움직임과 LDS 센서 출력을 토픽으로 발행해준다. (필수)
-- `turtlebot3_teleop_key.launch` : 터미널에서 키보드 입력을 통해 터틀봇의 속도를 제어할 수 있다.
-- `turtlebot3_model.launch` : rqt 앱을 통해 터틀봇의 경로와 LDS로 스캔한 주변 점들을 시각화하여 보여준다.
-
-
-
-```bash
-# 현재 마스터가 없다면 실행
-$ roscore
-
-# 로봇에서 odometry와 lds 토픽 발행
-$ roslaunch turtlebot3_bringup turtlebot3_robot.launch
-
-# 새 탭 열고(ctrl+shit+T), 터틀봇을 조종할 수 있는 노드, 실행 후 키보드 입력으로 속도를 제어
-$ roslaunch turtlebot3_teleop turtlebot3_teleop_key.launch --screen
-
-# 새 탭 열고(ctrl+shit+T), 터틀봇의 경로와 LiDAR 정보를 볼 수 있는 rqt 실행
-$ roslaunch turtlebot3_bringup turtlebot3_model.launch
-```
-
-세 가지 launch 파일이 모두 실행되어 있으면 터미널에서 'w, a, d, s' 키를 이용해 로봇의 속도를 제어할 수 있고 LDS로 스캔한 주변 환경의 형태를 rqt를 통해 볼 수 있다.  
-
-여러분이 직접 로봇을 제어하는 패키지를 개발할 때는 `turtlebot3_robot.launch`가 실행되고 있어야 토픽으로 센서 데이터를 받을 수 있다. 나머지는 필요에 따라 사용한다.  
-
-
-
 ## Create Package
 
 다음 명령어를 통해 패키지와 노드 스크립트를 생성한다.
 
 ```
 $ cd ~/catkin_ws/src
-$ catkin create pkg self_drive --catkin-deps roscpp std_msgs sensor_msgs geometry_msgs
+$ catkin create pkg self_drive --catkin-deps rospy std_msgs sensor_msgs geometry_msgs
 $ cd self_drive/src
 $ touch self_drive.py
 $ chmod a+x self_drive.py
@@ -210,7 +180,7 @@ self_drive 노드에서는 서브스크라이버에 `SelfDrive` 클래스의 `ld
 
 # Final Project
 
-자율주행 로봇을 만들어보세요. 사전 평가 11월 19일, 최종 평가 11월 26일, 보고서 제출 기한 12월 3일 입니다.  
+자율주행 로봇을 만들어보세요. 사전 평가 11월 30일, 최종 평가 12월 7일, 보고서 제출 기한 12월 11일 입니다.  
 
 평가 점수는 총 60점으로 주행 성능 평가 최대 30점, 그외 공통 평가 기준 30점 입니다.
 
