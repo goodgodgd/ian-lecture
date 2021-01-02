@@ -922,11 +922,11 @@ Fast-forward
 GitHub에서 Pull Request(PR)를 작성한다. PR에는 두 가지 요소가 있어야 한다.
 
 - 어떤 패키지를 만들었고 어떤 기능을 하는지 개발 내용을 코드가 아닌 글로 자세히 설명
-- 터미널에서 출력된 통신 내용을 캡쳐한 사진 (우분투의 screenshot 앱 사용)
+- 터미널에서 출력된 통신 내용을 캡쳐한 사진 (screenshot 앱 사용)
 
 기능이 온전히 작동한다면 `Merge pull request` 버튼을 눌러 `topic_comm` 브랜치를 `main`로 합친다.
 
-로컬에서 `~/catkin_ws/src/robotics-hw3`로 가서 `main`로 브랜치를 전환한다.
+로컬에서 `~/catkin_ws/src/robotics-hw3`로 가서 `main`로 브랜치로 전환한다.
 
 `git pull`로 병합된 내용을 내려받는다.
 
@@ -966,7 +966,7 @@ GitHub에서 Pull Request(PR)를 작성한다. PR에는 두 가지 요소가 있
 
 숙제 게시판에 자신의 저장소 주소를 올리면 끝!
 
-그곳에서 PR과 커밋 로그 등을 보고 채점한다. (총 26점)
+그곳에서 PR과 커밋 로그 등을 보고 채점한다. (총 30점)
 
 1. common_msgs 패키지 구현
     - common_msgs 패키지를 적절한 `--catkin-deps` 의존성을 지정하여 생성 (2점)
@@ -980,7 +980,10 @@ GitHub에서 Pull Request(PR)를 작성한다. PR에는 두 가지 요소가 있
     - algorithm패키지를 적절한 `--catkin-deps` 의존성을 지정하여 생성하고 노드 기본 코드 구현 (2점)
     - algorithm에서 토픽 서브스크라이버로 메시지 수신 (2점)
     - algorithm에서 서비스 서버로 메시지 수신 후 응답 보내기 (2점)
-4. git/github 활용
-    - 2개의 PR 작성 후 main 병합 (6점)
-    - PR 내용 상세히 성의있게 쓸것
+4. 독창성
+    - 수업 예제와는 달라야 하고 구현 동작과 네이밍이 일치 해야함 (e.g. AddTwoNum 이란 서비스로 숫자를 빼기해서 반환) (4점)
+5. git/github 활용
+    - 2개의 PR 작성 후 main 병합 (4점)
+    - 각 PR당 3개 이상의 commit을 의미있는 메시지와 함께 만들기
+    - PR 내용 10줄 이상 상세히 쓸것
 
