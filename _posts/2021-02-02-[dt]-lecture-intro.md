@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Lecture Introduction"
+title:  "[Det] Lecture Introduction"
 date:   2021-02-02 09:00:13
 categories: 2021-1-detector
 ---
