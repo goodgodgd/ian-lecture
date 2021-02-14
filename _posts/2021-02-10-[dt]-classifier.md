@@ -154,11 +154,660 @@ Eager 모드에서는 일반 파이썬 프로그램처럼 한줄씩 실행하므
 
 
 
-### 1.2. Image Classification
+### 1.2. Keras Classifier
+
+여기서는 텐서플로 내부의 Keras를 이용한 영상 분류 방법을 소개한다. Keras의 잘 만들어진 모듈들을 활용하면 간단한 분류 모델은 아주 짧은 코드로도 모델 정의, 학습, 평가까지 가능하다. 아래는 참고자료다.
+
+- <https://www.tensorflow.org/tutorials/quickstart/beginner>
+- <https://www.tensorflow.org/guide/keras/sequential_model>
 
 
 
-<https://www.tensorflow.org/tutorials/quickstart/beginner>
+#### a) 코드 구조
+
+모든 프로그래밍을 할 때는 먼저 생각나는 것을 짜는 것이 아니라 최상위 구조를 먼저 정하고 점차 하부구조를 정하면서 구체적인 알고리즘까지 작성해야한다. 그래야 오류도 적고 코드를 수정할 일이 적어진다. 여기서 최상위 구조는 다음과 같이 작성한다. 이와같이 대강의 상위 함수들과 입출력 데이터만 정하고나서 함수들을 기계적으로 코딩하면 프로그램을 완성할 수 있다.  
+
+```python
+import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras import layers
+import numpy as np
+import pprint
+from timeit import default_timer as timer
+
+"""
+Common utils
+"""
+class DurationTime:
+    pass
+
+def gpu_config():
+    pass
+
+def load_dataset():
+    pass
+
+"""
+Classifier
+"""
+def tf2_keras_classifier():
+    gpu_config()
+    train_data, test_data = load_dataset()
+    model = create_model(train_data)
+    train_model(model, train_data)
+    test_model(model, test_data)
+
+def load_dataset():
+    pass
+
+def create_model(dataset):
+    pass
+
+def train_model(model, train_data, split_ratio=0.8):
+	pass
+
+def test_model(model, test_data):
+	pass
+
+if __name__ == "__main__":
+    tf2_keras_classifier()
+```
+
+
+
+테스트 할 때 `Conv2D` 레이어 사용시 다음과 같은 에러가 나서 프로그램 시작시 `gpu_config()` 함수를 실행하였다. 
+
+> tensorflow.python.framework.errors_impl.NotFoundError:  No algorithm worked!
+> 	 [[node sequential/conv1/Conv2D (defined at /workspace/detlec/01_classifiers/tf_classifier_minimal.py:76) ]] [Op:__inference_train_function_760]
+
+ `gpu_config()` 함수 내용은 학습하면서 사용하는 GPU 메모리를 확장할 수 있게 해준다.
+
+```python
+def gpu_config():
+    gpus = tf.config.experimental.list_physical_devices('GPU')
+    if gpus:
+        try:
+            # Currently, memory growth needs to be the same across GPUs
+            for gpu in gpus:
+                tf.config.experimental.set_memory_growth(gpu, True)
+            logical_gpus = tf.config.experimental.list_logical_devices('GPU')
+            print(len(gpus), "Physical GPUs,", len(logical_gpus), "Logical GPUs")
+        except RuntimeError as e:
+            # Memory growth must be set before GPUs have been initialized
+            print(e)
+```
+
+
+
+#### b) 데이터 불러오기
+
+`tf.keras.datasets`에는 머신러닝에서 예제로 많이 사용되는 다양한 데이터셋을 자체 제공한다. 데이터 목록은 아래 링크를 참고한다. 여기서는 **CIFAR-10** 데이터셋을 사용한다.
+
+<https://www.tensorflow.org/api_docs/python/tf/keras/datasets>  
+
+아래 `load_data` 함수에서는 일단 CIFAR-10 데이터셋만 불러올 수 있도록 만들었지만 MNIST 같은 다른 데이터셋으로도 확장 가능하다.
+
+```python
+def load_data(dataname="cifar10"):
+    if dataname == "cifar10":
+        dataset = tf.keras.datasets.cifar10
+    else:
+        raise ValueError(f"Invalid dataset name: {dataname}")
+
+    (x_train, y_train), (x_test, y_test) = dataset.load_data()
+    x_train, x_test = x_train / 255.0, x_test / 255.0
+    print(f"Load {dataname} dataset:", x_train.shape, y_train.shape, x_test.shape, y_test.shape)
+    return (x_train, y_train), (x_test, y_test)
+```
+
+
+
+#### c) 모델 정의 (Sequential Model)
+
+텐서플로에서 모델을 정의하는 방법은 크게 두 가지가 있다. `tf.keras.Sequential` 클래스를 사용하는 모델과 직접 텐서 연산의 흐름을 지정해주는 Functional API가 있다. Sequential 클래스를 사용하는 순차 모델은 매우 간단하게 모델을 정의할 수 있지만 일렬로 연결된 레이어로 이루어진 단순한 모델만 정의할 수 있다. 반면 Functional API를 사용하면 코드가 조금 늘어나지만 제약없이 원하는 형태의 모델을 정의할 수 있다. 텐서플로에서 다양한 Layer 클래스를 제공하므로 Functional API도 그렇게 어렵진 않다.
+
+여기서는 간편한 순차 모델을 구현한다.  
+
+```python
+def create_model(dataset, use_add=True):
+    x, y = dataset
+    input_shape = tf.shape(x)[1:].numpy()
+    num_class = tf.reduce_max(y).numpy() + 1
+    print(f"[create_model] input shape={input_shape}, num_class={num_class}")
+
+    if use_add:
+        model = keras.Sequential(name="tf-classifier")
+        model.add(layers.Input(shape=input_shape))
+        model.add(layers.Conv2D(filters=32, kernel_size=3, padding="same", activation="relu", name="conv1"))
+        model.add(layers.MaxPool2D(pool_size=(2, 2), name="pooling1"))
+        model.add(layers.Conv2D(filters=64, kernel_size=3, padding="same", activation="relu", name="conv2"))
+        model.add(layers.MaxPool2D(pool_size=(2, 2), name="pooling2"))
+        model.add(layers.Flatten(name="flatten"))
+        model.add(layers.Dense(units=100, activation="relu", name="dense1"))
+        model.add(keras.layers.Dropout(0.2))
+        model.add(layers.Dense(units=num_class, activation="softmax", name="dense2"))
+    else:
+        model = keras.Sequential([
+            layers.Conv2D(filters=32, kernel_size=3, padding="same", activation="relu", input_shape=input_shape, name="conv1"),
+            layers.MaxPool2D(pool_size=(2, 2), name="pooling1"),
+            layers.Conv2D(filters=64, kernel_size=3, padding="same", activation="relu", name="conv2"),
+            layers.MaxPool2D(pool_size=(2, 2), name="pooling2"),
+            layers.Flatten(name="flatten"),
+            layers.Dense(units=100, activation="relu", name="dense1"),
+            keras.layers.Dropout(0.2),
+            layers.Dense(units=num_class, activation="softmax", name="dense2"),
+            ],
+            name="tf-classifier")
+    model.summary()
+    keras.utils.plot_model(model, "tf-clsf-model.png")
+    return model
+```
+
+**순차 모델을 정의하는 방법**도 두 가지가 있다. 위 함수에서는 `use_add` 옵션을 통해 둘 중 하나를 고를 수 있게 했다.  
+
+- `model.add()` 함수를 통해 레이어를 하나씩 추가하기
+- `keras.Sequential` 클래스 생성자에 레이어 객체들을 `list`로 한번에 넣기
+
+모델을 정의할 때 입력 shape을 정할수도 있고 않을수도 있는데, 정하지 않으면 모델 내부의 텐서 크기가 결정되지 않으므로 밑에서 `model.summary()`에서 에러가 난다. **입력 shape을 지정하는 방법**도 두 가지가 있다.
+
+- `layers.Input`을 첫 번째 레이어로 추가
+- 첫 번째 연산 레이어에서 `input_shape` 옵션을 지정
+
+레이어의 **activation**은 `tf.keras.activations` 아래의 클래스 객체를 입력해도 되고 각 클래스를 나타내는 문자열을 입력해도 된다. 입력가능한 activation 종류는 아래 링크에 있다. activation의 기본 값은 "linear"로 출력된 값을 그대로 내보내는 것이다.
+
+<https://keras.io/api/layers/activations/>  
+
+`model.summary()`를 실행하면 현재 정의된 모델의 구조를 깔끔하게 터미널에서 보여준다. 실행 결과는 다음과 같다.
+
+```
+Model: "tf-classifier"
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+conv1 (Conv2D)               (None, 32, 32, 32)        896       
+_________________________________________________________________
+pooling1 (MaxPooling2D)      (None, 16, 16, 32)        0         
+_________________________________________________________________
+conv2 (Conv2D)               (None, 16, 16, 64)        18496     
+_________________________________________________________________
+pooling2 (MaxPooling2D)      (None, 8, 8, 64)          0         
+_________________________________________________________________
+flatten (Flatten)            (None, 4096)              0         
+_________________________________________________________________
+dense1 (Dense)               (None, 100)               409700    
+_________________________________________________________________
+dropout (Dropout)            (None, 100)               0         
+_________________________________________________________________
+dense2 (Dense)               (None, 10)                1010      
+=================================================================
+Total params: 430,102
+Trainable params: 430,102
+Non-trainable params: 0
+_________________________________________________________________
+```
+
+
+
+`keras.utils.plot_model` 함수는 모델의 그래프 구조를 그림으로 그려준다. 실행 결과는 다음과 같다.
+
+![plot_model](../assets/detector/tf-clsf-model.png)
+
+
+
+#### d) 학습
+
+Keras에서 분류 모델은 `model.fit()` 함수로 간단히 학습이 가능하다. 그 전에 학습 데이터를 실제 학습용과 검증(validation)용으로 나누어 학습중에 overfitting이 일어나는지 확인한다. 모델을 학습시킬 loss와 optimizer는 `model.compile()` 함수에서 미리 입력한다.  
+
+```python
+def train_model(model, train_data, split_ratio=0.8):
+    x, y = train_data
+    trainlen = int(tf.shape(x)[0].numpy() * split_ratio)
+    x_train, y_train = x[:trainlen], y[:trainlen]
+    x_val, y_val = x[trainlen:], y[trainlen:]
+
+    model.compile(
+        loss=keras.losses.SparseCategoricalCrossentropy(),
+        optimizer=keras.optimizers.RMSprop(),
+        metrics=[keras.metrics.SparseCategoricalAccuracy()],
+    )
+
+    with DurationTime("** training time") as duration:
+        history = model.fit(x_train, y_train, batch_size=32, epochs=5, validation_data=(x_val, y_val))
+    history = {key: np.array(values) for key, values in history.history.items()}
+    np.set_printoptions(precision=4, suppress=True)
+    pp = pprint.PrettyPrinter(indent=2, width=100, compact=True)
+    print("[train_model] training history:")
+    pp.pprint(history)
+```
+
+
+
+학습을 하고 나면 history 객체가 나오는데 `history.history`에는 학습하면서 epoch마다 계산한 평균 loss와 metric(accuracy)이 저장되어 있다. 실행 결과는 다음과 같다. 결과를 보면 학습이 진행됨에 따라 학습 데이터와 검증 데이터에서 모두 loss는 줄어들고 accuracy는 늘어나는 것을 볼 수 있다.
+
+```
+Epoch 1/5
+1250/1250 [==============================] - 4s 2ms/step - loss: 1.7264 - sparse_categorical_accuracy: 0.3778 - val_loss: 1.1578 - val_sparse_categorical_accuracy: 0.5921
+Epoch 2/5
+1250/1250 [==============================] - 2s 2ms/step - loss: 1.1409 - sparse_categorical_accuracy: 0.5991 - val_loss: 0.9853 - val_sparse_categorical_accuracy: 0.6565
+Epoch 3/5
+1250/1250 [==============================] - 2s 2ms/step - loss: 0.9722 - sparse_categorical_accuracy: 0.6597 - val_loss: 1.0722 - val_sparse_categorical_accuracy: 0.6253
+Epoch 4/5
+1250/1250 [==============================] - 2s 2ms/step - loss: 0.8693 - sparse_categorical_accuracy: 0.6976 - val_loss: 0.9583 - val_sparse_categorical_accuracy: 0.6853
+Epoch 5/5
+1250/1250 [==============================] - 2s 2ms/step - loss: 0.7831 - sparse_categorical_accuracy: 0.7288 - val_loss: 0.9265 - val_sparse_categorical_accuracy: 0.6882
+** training time: 13.19
+[train_model] training history:
+{ 'loss': array([1.5012, 1.1168, 0.9691, 0.8737, 0.8066]),
+  'sparse_categorical_accuracy': array([0.4628, 0.608 , 0.6622, 0.6961, 0.7221]),
+  'val_loss': array([1.1578, 0.9853, 1.0722, 0.9583, 0.9265]),
+  'val_sparse_categorical_accuracy': array([0.5921, 0.6565, 0.6253, 0.6853, 0.6882])}
+```
+
+
+
+##### Context Manager
+
+`train_model()` 함수에서는 학습에 걸린 시간을 context manager를 이용해 측정한다. Context manager를 이용하면 `with` 블럭의 시작과 종료시에 할 일을 정의할 수 있다. 주로 파일 입출력을 할 때처럼 시작할 때 자원을 할당하고 나갈때 자원을 해제하는 용도로 쓰이지만 필요에 따라 다양하게 응용할 수 있다.  
+
+Context manager는 주로 클래스로 구현되며 다음 두 개의 매직 메소드(magic method)를 반드시 구현해야 한다.
+
+- `__enter__()`: `with` 블럭을 들어갈 때 실행되고 함수의 리턴 값이 `as` 뒤에 붙는 변수로 들어간다.
+- `__exit__(type, value, trace_back)`: `with` 블럭을 나가거나 내부에서 예외 발생시 실행된다. 주로 할당한 자원을 해제하거나 예외처리 기능을 한다.
+
+Context manager 예제는 다음 링크에서 볼 수 있다: <https://planbs.tistory.com/entry/Python-Context-Manager>  
+
+여기서는 `DurationTime`이라는 context manager를 만들어서 학습에 걸린 시간을 측정했는데 관련 코드는 다음과 같다.
+
+```python
+class DurationTime:
+    def __init__(self, context):
+        self.start = 0
+        self.context = context
+
+    def __enter__(self):        # entering 'with' context
+        self.start = timer()
+        return self             # pass object by 'as'
+
+    def __exit__(self, type, value, trace_back):    # exiting 'with' context
+        print(f"{self.context}: {timer() - self.start:1.2f}")
+
+def train_model(model, train_data, split_ratio=0.8):
+    ...
+    with DurationTime("** training time") as duration:
+        history = model.fit(x_train, y_train, batch_size=32, epochs=5, validation_data=(x_val, y_val))
+```
+
+만약 context manager를 쓰지 않았다면 이렇게 시간을 측정했을 것이다.
+
+```python
+def train_model(model, train_data, split_ratio=0.8):
+    ...
+    start = timer()
+    history = model.fit(x_train, y_train, batch_size=32, epochs=5, validation_data=(x_val, y_val))
+    print(f"** trainig time: {timer() - start:1.2f}")
+```
+
+이게 코드가 덜 들어가는 것처럼 보이지만 시간을 측정해야 하는 상황이 여러번 생긴다면 측정해야 하는 라인들 앞뒤로 짝을 맞춰서 두 줄씩 코딩을 해야한다. 아래 예시를 보자.  
+
+**짝 맞춰 코딩**
+
+```python
+def some_func():
+    start_total = timer()
+    start = timer()
+    sub_func1()
+    print(f"elapsed time1:", timer() - start)
+    start = timer()
+    sub_func1()
+    print(f"elapsed time2:", timer() - start)
+    print(f"total elapsed time:", timer() - start_total)
+```
+
+**Context Manager 사용**
+
+```python
+def some_func():
+    with DurationTime("total elapsed time"):
+        with DurationTime("elased time1"):
+            sub_func1()
+        with DurationTime("elased time1"):
+            sub_func1()
+```
+
+어느 쪽이 보기 편하고 이해가 잘되는가? 프로그램의 중요 흐름에 상관 없는 불필요한 코드가 많아지면 보기에도 안좋고 코드의 가독성이 떨어진다. 그리고 이렇게 짝을 맞춰서 코딩하는 것은 실수를 유발하기 때문에 좋지 않다. C++에서 `new`와 `delete` 짝을 맞춰야 하는 문제 때문에 스마트 포인터가 나왔다는 것을 기억하자. Context manger를 이용하면 들여쓰기로 인해 context의 범위가 명확히 보이고 코드가 입체적으로 구조화되어 가독성이 좋아진다.
+
+
+
+#### e) 평가
+
+Keras에서 분류 모델의 정확도는 `model.evaluate()` 함수로 계산할 수 있다. 여기서는 `model.prediction()`도 실행하여 분류 결과를 확인하고 직접 분류 정확도까지 계산해보았다.
+
+```python
+def test_model(model, test_data):
+    x_test, y_test = test_data
+    print("[test_model] evaluate by model.evaluate()")
+    loss, accuracy = model.evaluate(x_test, y_test)
+    print(f"  test loss: {loss:1.4f}")
+    print(f"  test accuracy: {accuracy:1.4f}")
+    print("[test_model] predict by model.predict()")
+    predicts = model.predict(x_test)
+    print("  prediction shape:", predicts.shape, y_test.shape)
+    print("  first 5 predicts:\n", predicts[:5])
+    print("  check probability:", np.sum(predicts[:5], axis=1))
+    print("  manual accuracy:", np.mean(np.argmax(predicts, axis=1) == y_test[:, 0]))
+```
+
+실행 결과는 다음과 같다.
+
+```
+[test_model] evaluate by model.evaluate()
+313/313 [==============================] - 0s 1ms/step - loss: 0.9836 - sparse_categorical_accuracy: 0.6900
+  test loss: 0.9836
+  test accuracy: 0.6900
+[test_model] predict by model.predict()
+  prediction shape: (10000, 10) (10000, 1)
+  first 5 predicts:
+ [[0.     0.0001 0.0002 0.8378 0.     0.1569 0.0015 0.     0.0033 0.    ]
+ [0.0061 0.6021 0.     0.     0.     0.     0.     0.     0.386  0.0059]
+ [0.1751 0.0102 0.0009 0.     0.0001 0.     0.     0.0001 0.8116 0.0021]
+ [0.8108 0.0005 0.0021 0.     0.0002 0.     0.     0.     0.1864 0.    ]
+ [0.     0.     0.0117 0.0177 0.273  0.0005 0.6971 0.     0.     0.    ]]
+  check probability: [1. 1. 1. 1. 1.]
+  manual accuracy: 0.69
+```
+
+
+
+### 1.3. Advanced Model
+
+Keras를 활용하면 편리한 점도 있지만 학습 과정이 `model.fit()`이란 함수 안에서 일어나기 때문에 학습이 잘못됐을 때 어디서 무엇이 잘못됐는지 알기 어렵다. 학습 과정 중에 중간 결과물을 저장하고 싶거나 체크포인트를 저장하고 싶으면 `model.fit()` 함수에 callback 객체들을 넣으면 되긴된다. 하지만 여러가지 callback 객체의 사용법을 익히는것도 번거롭고 딱 내가 원하는대로 하기 어려운 경우도 있다. Keras에서 주어지는 loss나 metric도 검출 모델을 학습하는데는 적합하지 않기 때문에 어차피 따로 만들어줘야 한다. 다음은 관련된 Keras 링크다.
+
+- <https://keras.io/api/callbacks/>
+- <https://keras.io/api/losses/>
+- <https://keras.io/api/metrics/>
+
+그러므로 검출 모델과 같이 복잡한 모델을 구현할 때는 Keras API는 모델을 정의하는 레이어 객체를 만드는 정도에만 사용하고 loss나 metric 등의 계산은 텐서플로의 함수들을 사용한다. 검출기와 같이 복잡한 모델을 학습하기 위해서는 아래와 같은 텐서플로의 고급 사용법들을 익혀야 한다.
+
+1. Keras functional API: 일렬 연결이 아닌 복잡한 구조의 모델 정의
+2. tf.GradientTape: loss에 대한 미분을 명시적으로 계산하여 모델 weight 업데이트
+3. tf.function: 모델을 eager 모드가 아닌 정적 그래프에서 실행하여 학습 속도 증가
+4. tf.data.Dataset: 파일이나 메모리에서 데이터를 불러와 반복 가능한 객체로 만들어 학습 과정에 데이터 주입
+
+
+
+#### a) 코드 구조
+
+코드의 전체적인 흐름은 Keras Classifier와 유사하다. 하지만 이번에는 `AdvancedClassifier`라는 클래스를 만들어서 분류 모델에 관련된 코드들을 응집시켰다. Common Utils 아래의 코드는 전과 동일하다. 또 한가지 차이점은 `@tf.function` 데코레이터를 사용했다는 것이다. 자세한 내용은 아래 내용을 참고한다.  
+
+```python
+import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras import layers
+import numpy as np
+from timeit import default_timer as timer
+
+"""
+Common utils
+"""
+class DurationTime:
+    pass
+
+def gpu_config():
+    pass
+
+def load_dataset(dataname="cifar10"):
+    pass
+
+"""
+Classifier
+"""
+class AdvancedClassifier:
+    def __init__(self, batch_size=32, val_ratio=0.2):
+        pass
+    
+    def build_model(self, x, y):
+        pass
+    
+    def train(self, x, y, epochs, eager_mode=True):
+        pass
+    
+    def train_batch_eager(self, x_batch, y_batch):
+        pass
+    
+    @tf.function
+    def train_batch_graph(self, x_batch, y_batch):
+        self.train_batch_eager(x_batch, y_batch)
+
+    def evaluate(self, x, y_true, verbose=True):
+        pass
+
+def tf2_advanced_classifier():
+    gpu_config()
+    (x_train, y_train), (x_test, y_test) = load_dataset("cifar10")
+    clsf = AdvancedClassifier()
+    clsf.build_model(x_train, y_train)
+    clsf.train(x_train, y_train, 5, eager_mode=False)
+    clsf.evaluate(x_test, y_test)
+
+if __name__ == "__main__":
+    tf2_advanced_classifier()
+```
+
+
+
+#### b) 클래스 초기화
+
+생성자 함수에서는 학습에 필요한 객체를 생성하고 설정 값들을 저장한다. 모델은 이후 `build_model()`이란 함수에서 정의할 것이지만 파이참의 자동완성을 위해 생성자에서 기본 객체를 만들어둔다. Loss와 optimizer 객체는 이전 코드와 동일하게 선택하였다. 
+
+```python
+    def __init__(self, batch_size=32, val_ratio=0.2):
+        self.model = keras.Model()
+        self.loss_object = tf.keras.losses.SparseCategoricalCrossentropy()
+        self.optimizer = tf.keras.optimizers.RMSprop()
+        self.batch_size = batch_size
+        self.val_ratio = val_ratio
+```
+
+
+
+#### c) 모델 정의 (Functional API)
+
+여기서는 모델을 순차 모델이 아닌 Funtional API를 이용해 구현한다. Funtional API는 각 레이어의 입력과 출력을 명시적으로 지정하므로 어느 레이어의 출력이 어느 레이어의 입력이 되는지 명확히 볼 수 있다. 또한 레이어 사이의 연결이 자유로워져서 Inception 모듈처럼 여러 갈래로 갈라지는 모델이나 출력이 여러 개인 모델도 만들 수 있다.  
+
+여기서 레이어 객체들을 마치 함수처럼 쓰는 것을 볼 수 있는데 이런 것을 callable 객체, 혹은 functor라고도 한다. 클래스 내부에 `__call__()` 함수가 정의되어 있으면 함수 이름없이 바로 `__call__()`의 입력인자를 넣으면 `__call__()`이 실행된다. 텐서플로에는 어떤 클래스에서 외부에서 사용되는 함수가 하나뿐인 경우 이렇게 callable을 사용하는 경우가 많다. `tf.keras.Model` 클래스도 `model.predict(x)` 함수를 이용해 출력을 계산할 수 있지만 `model(x)`도 동일하게 작동한다. 이는 객체지향의 단일 책임 원칙(SRP, Single Responsibility Principle)에도 부합하며 클래스의 의도를 명확하게 보여준다.  
+
+레이어를 다 연결하고 나서 `tf.keras.Model` 클래스를 이용해 모델의 입력과 출력 텐서를 지정하면 그 사이의 연산 그래프가 모델 내부로 들어가서 특정한 연산을 하는 모델이 정의된다.
+
+```python
+    def build_model(self, x, y):
+        input_shape = x.shape[1:]
+        num_class = tf.reduce_max(y).numpy() + 1
+        input_tensor = layers.Input(shape=input_shape)
+        x = layers.Conv2D(filters=32, kernel_size=3, padding="same", activation="relu", name="conv1")(input_tensor)
+        x = layers.MaxPool2D(pool_size=(2, 2), name="pooling1")(x)
+        x = layers.Conv2D(filters=64, kernel_size=3, padding="same", activation="relu", name="conv2")(x)
+        x = layers.MaxPool2D(pool_size=(2, 2), name="pooling2")(x)
+        x = layers.Flatten(name="flatten")(x)
+        x = layers.Dense(units=100, activation="relu", name="dense1")(x)
+        x = layers.Dropout(0.2)(x)
+        output_tensor = layers.Dense(units=num_class, activation="softmax", name="dense2")(x)
+        self.model = keras.Model(inputs=input_tensor, outputs=output_tensor, name="tf-classifier")
+        self.model.summary()
+        keras.utils.plot_model(self.model, "tf-clsf-model-adv.png")
+```
+
+실행 결과는 이전 결과와 같다.
+
+```
+Model: "tf-classifier"
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+input_1 (InputLayer)         [(None, 32, 32, 3)]       0         
+_________________________________________________________________
+conv1 (Conv2D)               (None, 32, 32, 32)        896       
+_________________________________________________________________
+pooling1 (MaxPooling2D)      (None, 16, 16, 32)        0         
+_________________________________________________________________
+conv2 (Conv2D)               (None, 16, 16, 64)        18496     
+_________________________________________________________________
+pooling2 (MaxPooling2D)      (None, 8, 8, 64)          0         
+_________________________________________________________________
+flatten (Flatten)            (None, 4096)              0         
+_________________________________________________________________
+dense1 (Dense)               (None, 100)               409700    
+_________________________________________________________________
+dropout (Dropout)            (None, 100)               0         
+_________________________________________________________________
+dense2 (Dense)               (None, 10)                1010      
+=================================================================
+Total params: 430,102
+Trainable params: 430,102
+Non-trainable params: 0
+_________________________________________________________________
+```
+
+
+
+#### d) 학습
+
+이전 코드에서는 `model.fit()`만 사용하면 학습이 되었지만 학습 과정을 자세히 들여다보긴 어려웠다. Loss 함수가 복잡해지고 학습 과정을 디버깅해야 한다면 `tf.GradientTape()`을 이용해 학습 과정을 직접 프로그래밍 해주는 것이 나을 것이다. 아래  `train()` 함수에서는 주로 학습 전후의 데이터 준비 및 성능 평가를 하고 실제 학습은 `train_batch_func()` 함수에서 일어난다. 코드의 의미는 주석을 참고한다.
+
+```python
+    def train(self, x, y, epochs, eager_mode=True):
+        # self.val_ratio에 따라 학습 데이터와 검증 데이터로 나누기
+        trainlen = int(x.shape[0] * (1 - self.val_ratio))
+        x_train, y_train = x[:trainlen], y[:trainlen]
+        x_val, y_val = x[trainlen:], y[trainlen:]
+        # eager_mode 옵션에 따라 학습 함수 고르기
+        train_batch_func = self.train_batch_eager if eager_mode else self.train_batch_graph
+        # numpy 데이터로부터 Dataset 객체 만들기
+        dataset = tf.data.Dataset.from_tensor_slices((x_train, y_train))
+        # Dataset에서 나오는 데이터 순서 섞기, batch 단위로 데이터 묶기
+        dataset = dataset.shuffle(200).batch(self.batch_size)
+        with DurationTime("** training time") as duration:
+            for epoch in range(epochs):		# 여러 epoch 반복
+                for x_batch, y_batch in dataset:	# batch 단위로 반복
+                    train_batch_func(x_batch, y_batch)	# batch 단위로 학습
+                # epoch 단위로 성능평가
+                loss, accuracy = self.evaluate(x_val, y_val, verbose=False)
+                print(f"[Training] epoch={epoch}, val_loss={loss}, val_accuracy={accuracy}")
+```
+
+실행 결과
+
+```
+[Training] epoch=0, val_loss=1.2970373630523682, val_accuracy=0.5541
+[Training] epoch=1, val_loss=1.0697484016418457, val_accuracy=0.6177
+[Training] epoch=2, val_loss=0.9729103446006775, val_accuracy=0.6611
+[Training] epoch=3, val_loss=0.9531869292259216, val_accuracy=0.6713
+[Training] epoch=4, val_loss=0.9794153571128845, val_accuracy=0.6702
+** training time: 17.34
+```
+
+
+
+##### tf.data.Dataset
+
+`train()` 함수에서 눈여겨 봐야 할 것은 `tf.data.Dataset` 객체다. `Dataset`은 텐서플로에서 데이터 입력 파이프라인을 최적화시켜주는 클래스다. 다양한 형태의 입력 데이터를 일정한 단위로 뽑아서 사용할 수 있게 해주고 다양한 전처리를 적용할 수 있다.
+
+메모리에 올려진 List나 Numpy 데이터를 사용할 경우 `tensor_from_slices()` 함수를 이용한다. 리턴된 `dataset` 객체는 for문에서 반복이 가능하다. 그리고 `shuffle()` 이나 `batch()` 함수를 통해 데이터를 섞거나 배치 단위로 묶을수 있다. 위 코드에서는 학습 데이터의 순서를 섞고 `self.batch_size` (32개) 단위로 데이터를 묶어서 보낸다. 학습은 5 에폭을 반복하는데 이것도 사실 `repeat(5)` 함수까지 붙이면 `dataset` 객체가 한번의 for문에서 5 에폭을 반복할 수 있다. 하지만 1에폭이 끝날때마다 성능을 확인하기 위해 사용하지 않았다.  
+
+`Dataset`에 대한 자세한 내용은 아래 링크에서 볼 수 있고 다음 강의에서 더 자세히 다룰 예정이다.
+
+<https://www.tensorflow.org/guide/data>
+
+ 
+
+##### tf.function
+
+학습함수는 `eager_mode` 옵션에 따라 다른 함수를 선택한다.
+
+- train_batch_eager(): 텐서플로 기본 모드인 eager 모드에서 학습이 진행된다.
+- train_batch_graph(): eager 모드와 학습 코드는 같지만 `tf.function` 데코레이터를 사용하여 graph 모드에서 학습이 진행된다.  
+
+텐서플로에서 eager 모드는 마치 Numpy 연산을 하듯 모든 라인을 한줄씩 파이썬 인터프리터에서 실행하고 모든 중간 결과를 확인할 수 있다. 반면 어떤 함수에 `@tf.function` 데코레이터가 붙으면...
+
+- 해당 함수와 그 아래에서 불러지는 모든 함수에서 실행되는 모든 텐서 연산들이 텐서플로 내부적으로 최적화된다. 연산 과정 자체가 더 빠르게 실행될 수 있도록 변한다.
+- 매 연산마다 그때그때 메모리를 준비하는 것이 아니라 전체 연산에 필요한 모든 메모리를 미리 준비해서 정적 그래프를 만들어놓고 입력 데이터가 연산 그래프를 따라 흘러가게 한다. 
+- GPU 연산을 하는 경우 eager 모드에서는 매 연산마다 메인 메모리(RAM)에서 GPU로 데이터를 보내고 결과를 다시 받아와야 하지만 graph 모드에서는 연산을 모두 마친 후에 최종 결과만 받는다.
+
+작은 모델에서는 graph 모드가 효과가 없거나 더 느려질수도 있지만 복잡한 모델에서는 graph 모드의 속도가 훨씬 빨라질 수 있다. 모델마다 다르지만 개인적인 경험으로 많이 사용되는 CNN에서 2배 이상 빨라지는 것을 경험했다. 하지만 현재 예제에서는 모델이 작기 때문에 오히려 속도가 느려지는 것을 확인하였다. 그리고 `Dataset` 객체를 만드는 과정까지 graph 모드에 넣으면 추가적인 최적화를 할 수 있다. 참고로 `model.fit()` 함수에서는 모든 최적화가 이미 적용되어 있다.
+
+다음은 graph 모드와 관련된 링크다.
+
+- <https://www.tensorflow.org/guide/intro_to_graphs>
+- <https://www.tensorflow.org/guide/function>
+- <https://www.tensorflow.org/guide/graph_optimization>
+
+
+
+##### tf.GradientTape
+
+실제 학습 함수는 다음과 같다.
+
+```python
+    def train_batch_eager(self, x_batch, y_batch):
+        with tf.GradientTape() as tape:
+            # training=True is only needed if there are layers with different
+            # behavior during training versus inference (e.g. Dropout).
+            predictions = self.model(x_batch, training=True)
+            loss = self.loss_object(y_batch, predictions)
+        gradients = tape.gradient(loss, self.model.trainable_variables)
+        self.optimizer.apply_gradients(zip(gradients, self.model.trainable_variables))
+
+    @tf.function
+    def train_batch_graph(self, x_batch, y_batch):
+        self.train_batch_eager(x_batch, y_batch)
+```
+
+
+
+`train_batch_eager`에서는 `tf.GradientTape`을 이용해 학습을 진행한다. GradientTape이란 말처럼 이는 해당 context 아래서 발생하는 모든 연산의 미분값을 기록한다. 여기서는 모델의 입력에서 출력이 나오고 출력으로부터 손실 함수를 계산하는 것까지 context에서 계산하였다. 왜냐하면 loss 값을 모델의 파라미터(weights)에 대해서 미분해야하기 때문이다. `tape.gradient()` 함수에 미분의 분자 변수와 분모 변수를 지정하면 미분값들을 가져올 수 있다. 그리고 이 미분값들을 optimizer에 적용하면 모델의 파라미터가 업데이트된다.  
+
+GradientTape에 대한 자세한 내용은 다음 링크를 참조한다.  
+
+- <https://www.tensorflow.org/guide/autodiff>
+- <https://www.tensorflow.org/guide/keras/customizing_what_happens_in_fit>
+- <https://www.tensorflow.org/guide/keras/writing_a_training_loop_from_scratch>
+
+
+
+#### e) 평가
+
+성능 평가 함수는 이전과 크게 다르지 않다. 여기서는 모델의 출력을 `model.predict()` 함수가 아닌 `model.__call__()` 함수를 이용하여 객체를 직접 불렀다. Loss와 accuracy를 계산하여 리턴한다.
+
+```python
+    def evaluate(self, x, y_true, verbose=True):
+        if verbose:
+            print("[evaluate] predict by model.__call__()")
+        y_pred = self.model(x)
+        accuracy = np.mean(np.argmax(y_pred, axis=1) == y_true[:, 0])
+        loss = self.loss_object(y_true, y_pred)
+        if verbose:
+            print("  prediction shape:", y_pred.shape, y_true.shape)
+            print("  first 5 predicts:\n", y_pred[:5])
+            print("  check probability:", np.sum(y_pred[:5], axis=1))
+            print("  loss and accuracy:", loss, accuracy)
+        return loss, accuracy
+```
+
+실행 결과
+
+```
+[evaluate] predict by model.__call__()
+  prediction shape: (10000, 10) (10000, 1)
+  first 5 predicts:
+ [[0.     0.     0.     0.7727 0.     0.2271 0.0001 0.     0.     0.    ]
+ [0.0048 0.0774 0.     0.     0.     0.     0.     0.     0.9147 0.0032]
+ [0.2223 0.1069 0.0066 0.0323 0.0007 0.0035 0.0003 0.0006 0.5874 0.0393]
+ [0.7653 0.0052 0.0941 0.0004 0.0076 0.     0.     0.     0.1274 0.0001]
+ [0.     0.0009 0.0188 0.185  0.3672 0.0141 0.4137 0.     0.0001 0.0001]]
+  check probability: [1. 1. 1. 1. 1.]
+  loss and accuracy: tf.Tensor(0.9907759, shape=(), dtype=float32) 0.6779
+```
+
+
 
 
 

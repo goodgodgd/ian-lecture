@@ -90,7 +90,8 @@ cd ~/workspace/detlec
 pyenv local py38dl
 pip install --upgrade pip
 
-pip install numpy opencv-python scikit-learn matplotlib
+pip install numpy opencv-python scikit-learn matplotlib pydot
+sudo apt install graphviz
 
 pip install tensorflow==2.4
 
