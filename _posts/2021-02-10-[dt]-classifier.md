@@ -184,7 +184,10 @@ class DurationTime:
 def gpu_config():
     pass
 
-def load_dataset():
+def load_dataset(dataname="cifar10", show_imgs=True):
+    pass
+
+def show_samples(images, labels, class_names, grid=(3,4)):
     pass
 
 """
@@ -243,21 +246,39 @@ def gpu_config():
 
 `tf.keras.datasets`에는 머신러닝에서 예제로 많이 사용되는 다양한 데이터셋을 자체 제공한다. 데이터 목록은 아래 링크를 참고한다. 여기서는 **CIFAR-10** 데이터셋을 사용한다.
 
-<https://www.tensorflow.org/api_docs/python/tf/keras/datasets>  
+<https://www.tensorflow.org/api_docs/python/tf/keras/datasets>   
+
+<https://www.cs.toronto.edu/~kriz/cifar.html>  
 
 아래 `load_data` 함수에서는 일단 CIFAR-10 데이터셋만 불러올 수 있도록 만들었지만 MNIST 같은 다른 데이터셋으로도 확장 가능하다.
 
 ```python
-def load_data(dataname="cifar10"):
+def load_dataset(dataname="cifar10", show_imgs=True):
     if dataname == "cifar10":
         dataset = tf.keras.datasets.cifar10
+        class_names = ('plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
     else:
         raise ValueError(f"Invalid dataset name: {dataname}")
 
     (x_train, y_train), (x_test, y_test) = dataset.load_data()
     x_train, x_test = x_train / 255.0, x_test / 255.0
+    y_train, y_test = y_train[:, 0], y_test[:, 0]
     print(f"Load {dataname} dataset:", x_train.shape, y_train.shape, x_test.shape, y_test.shape)
+    if show_imgs:
+        show_samples(x_train, y_train, class_names)
     return (x_train, y_train), (x_test, y_test)
+
+def show_samples(images, labels, class_names, grid=(3,4)):
+    plt.figure(figsize=grid)
+    num_samples = grid[0] * grid[1]
+    for i in range(num_samples):
+        plt.subplot(grid[0], grid[1], i+1)
+        plt.xticks([])
+        plt.yticks([])
+        plt.grid(False)
+        plt.imshow(images[i])
+        plt.xlabel(class_names[labels[i]])
+    plt.show()
 ```
 
 
@@ -480,7 +501,7 @@ def some_func():
 
 #### e) 평가
 
-Keras에서 분류 모델의 정확도는 `model.evaluate()` 함수로 계산할 수 있다. 여기서는 `model.prediction()`도 실행하여 분류 결과를 확인하고 직접 분류 정확도까지 계산해보았다.
+Keras에서 분류 모델의 정확도는 `model.evaluate()` 함수로 계산할 수 있다. 여기서는 `model.predict()`도 실행하여 분류 결과를 확인하고 직접 분류 정확도까지 계산해보았다.
 
 ```python
 def test_model(model, test_data):
@@ -537,7 +558,7 @@ Keras를 활용하면 편리한 점도 있지만 학습 과정이 `model.fit()`�
 
 #### a) 코드 구조
 
-코드의 전체적인 흐름은 Keras Classifier와 유사하다. 하지만 이번에는 `AdvancedClassifier`라는 클래스를 만들어서 분류 모델에 관련된 코드들을 응집시켰다. Common Utils 아래의 코드는 전과 동일하다. 또 한가지 차이점은 `@tf.function` 데코레이터를 사용했다는 것이다. 자세한 내용은 아래 내용을 참고한다.  
+코드의 전체적인 흐름은 Keras Classifier와 유사하다. 하지만 이번에는 `AdvancedClassifier`라는 클래스를 만들어서 분류 모델에 관련된 코드들을 응집시켰다. **Common Utils** 아래의 코드는 위와 동일하다. 또 한가지 차이점은 `@tf.function` 데코레이터를 사용했다는 것이다. 자세한 내용은 아래 내용을 참고한다.  
 
 ```python
 import tensorflow as tf
@@ -552,10 +573,10 @@ Common utils
 class DurationTime:
     pass
 
-def gpu_config():
+def load_dataset(dataname="cifar10", show_imgs=True):
     pass
 
-def load_dataset(dataname="cifar10"):
+def show_samples(images, labels, class_names, grid=(3,4)):
     pass
 
 """
@@ -571,12 +592,9 @@ class AdvancedClassifier:
     def train(self, x, y, epochs, eager_mode=True):
         pass
     
-    def train_batch_eager(self, x_batch, y_batch):
-        pass
-    
     @tf.function
     def train_batch_graph(self, x_batch, y_batch):
-        self.train_batch_eager(x_batch, y_batch)
+        pass
 
     def evaluate(self, x, y_true, verbose=True):
         pass
@@ -586,7 +604,7 @@ def tf2_advanced_classifier():
     (x_train, y_train), (x_test, y_test) = load_dataset("cifar10")
     clsf = AdvancedClassifier()
     clsf.build_model(x_train, y_train)
-    clsf.train(x_train, y_train, 5, eager_mode=False)
+    clsf.train(x_train, y_train, 5)
     clsf.evaluate(x_test, y_test)
 
 if __name__ == "__main__":
@@ -671,25 +689,20 @@ _________________________________________________________________
 
 #### d) 학습
 
-이전 코드에서는 `model.fit()`만 사용하면 학습이 되었지만 학습 과정을 자세히 들여다보긴 어려웠다. Loss 함수가 복잡해지고 학습 과정을 디버깅해야 한다면 `tf.GradientTape()`을 이용해 학습 과정을 직접 프로그래밍 해주는 것이 나을 것이다. 아래  `train()` 함수에서는 주로 학습 전후의 데이터 준비 및 성능 평가를 하고 실제 학습은 `train_batch_func()` 함수에서 일어난다. 코드의 의미는 주석을 참고한다.
+이전 코드에서는 `model.fit()`만 사용하면 학습이 되었지만 학습 과정을 자세히 들여다보긴 어려웠다. Loss 함수가 복잡해지고 학습 과정을 디버깅해야 한다면 `tf.GradientTape()`을 이용해 학습 과정을 직접 프로그래밍 해주는 것이 나을 것이다. 아래  `train()` 함수에서는 주로 학습 전후의 데이터 준비 및 성능 평가를 하고 실제 학습은 `train_batch_graph()` 함수에서 일어난다. 코드의 의미는 주석을 참고한다.
 
 ```python
-    def train(self, x, y, epochs, eager_mode=True):
-        # self.val_ratio에 따라 학습 데이터와 검증 데이터로 나누기
+    def train(self, x, y, epochs):
         trainlen = int(x.shape[0] * (1 - self.val_ratio))
         x_train, y_train = x[:trainlen], y[:trainlen]
         x_val, y_val = x[trainlen:], y[trainlen:]
-        # eager_mode 옵션에 따라 학습 함수 고르기
-        train_batch_func = self.train_batch_eager if eager_mode else self.train_batch_graph
-        # numpy 데이터로부터 Dataset 객체 만들기
+
         dataset = tf.data.Dataset.from_tensor_slices((x_train, y_train))
-        # Dataset에서 나오는 데이터 순서 섞기, batch 단위로 데이터 묶기
         dataset = dataset.shuffle(200).batch(self.batch_size)
         with DurationTime("** training time") as duration:
-            for epoch in range(epochs):		# 여러 epoch 반복
-                for x_batch, y_batch in dataset:	# batch 단위로 반복
-                    train_batch_func(x_batch, y_batch)	# batch 단위로 학습
-                # epoch 단위로 성능평가
+            for epoch in range(epochs):
+                for x_batch, y_batch in dataset:
+                    self.train_batch_graph(x_batch, y_batch)
                 loss, accuracy = self.evaluate(x_val, y_val, verbose=False)
                 print(f"[Training] epoch={epoch}, val_loss={loss}, val_accuracy={accuracy}")
 ```
@@ -721,12 +734,7 @@ _________________________________________________________________
 
 ##### tf.function
 
-학습함수는 `eager_mode` 옵션에 따라 다른 함수를 선택한다.
-
-- train_batch_eager(): 텐서플로 기본 모드인 eager 모드에서 학습이 진행된다.
-- train_batch_graph(): eager 모드와 학습 코드는 같지만 `tf.function` 데코레이터를 사용하여 graph 모드에서 학습이 진행된다.  
-
-텐서플로에서 eager 모드는 마치 Numpy 연산을 하듯 모든 라인을 한줄씩 파이썬 인터프리터에서 실행하고 모든 중간 결과를 확인할 수 있다. 반면 어떤 함수에 `@tf.function` 데코레이터가 붙으면...
+텐서플로의 기본 모드인 eager 모드는 마치 Numpy 연산을 하듯 모든 라인을 한줄씩 파이썬 인터프리터에서 실행하고 모든 중간 결과를 확인할 수 있다. 반면 어떤 함수에 `@tf.function` 데코레이터가 붙으면...
 
 - 해당 함수와 그 아래에서 불러지는 모든 함수에서 실행되는 모든 텐서 연산들이 텐서플로 내부적으로 최적화된다. 연산 과정 자체가 더 빠르게 실행될 수 있도록 변한다.
 - 매 연산마다 그때그때 메모리를 준비하는 것이 아니라 전체 연산에 필요한 모든 메모리를 미리 준비해서 정적 그래프를 만들어놓고 입력 데이터가 연산 그래프를 따라 흘러가게 한다. 
@@ -747,7 +755,8 @@ _________________________________________________________________
 실제 학습 함수는 다음과 같다.
 
 ```python
-    def train_batch_eager(self, x_batch, y_batch):
+    @tf.function
+    def train_batch_graph(self, x_batch, y_batch):
         with tf.GradientTape() as tape:
             # training=True is only needed if there are layers with different
             # behavior during training versus inference (e.g. Dropout).
@@ -755,15 +764,11 @@ _________________________________________________________________
             loss = self.loss_object(y_batch, predictions)
         gradients = tape.gradient(loss, self.model.trainable_variables)
         self.optimizer.apply_gradients(zip(gradients, self.model.trainable_variables))
-
-    @tf.function
-    def train_batch_graph(self, x_batch, y_batch):
-        self.train_batch_eager(x_batch, y_batch)
 ```
 
 
 
-`train_batch_eager`에서는 `tf.GradientTape`을 이용해 학습을 진행한다. GradientTape이란 말처럼 이는 해당 context 아래서 발생하는 모든 연산의 미분값을 기록한다. 여기서는 모델의 입력에서 출력이 나오고 출력으로부터 손실 함수를 계산하는 것까지 context에서 계산하였다. 왜냐하면 loss 값을 모델의 파라미터(weights)에 대해서 미분해야하기 때문이다. `tape.gradient()` 함수에 미분의 분자 변수와 분모 변수를 지정하면 미분값들을 가져올 수 있다. 그리고 이 미분값들을 optimizer에 적용하면 모델의 파라미터가 업데이트된다.  
+위 함수에서는 `tf.GradientTape`을 이용해 학습을 진행한다. GradientTape이란 말처럼 이는 해당 context 아래서 발생하는 모든 연산의 미분값을 기록한다. 여기서는 모델의 입력에서 출력이 나오고 출력으로부터 손실 함수를 계산하는 것까지 context에서 계산하였다. 왜냐하면 loss 값을 모델의 파라미터(weights)에 대해서 미분해야하기 때문이다. `tape.gradient()` 함수에 미분의 분자, 분모 변수를 지정하면 미분값들을 가져올 수 있다. 그리고 이 미분값들을 optimizer에 적용하면 모델의 파라미터가 업데이트된다.  
 
 GradientTape에 대한 자세한 내용은 다음 링크를 참조한다.  
 
@@ -817,7 +822,18 @@ GradientTape에 대한 자세한 내용은 다음 링크를 참조한다.
 
 ### 2.1. Tensor Operation
 
+파이토치의 `torch.tensor`는 텐서플로의 `tf.Tensor`보다 더 Numpy의 `np.ndarray`를 닮아서 더욱 공부할게 없다. 텐서플로와는 달리 파이토치의 텐서는 Numpy처럼 **mutable** 객체라서 텐서의 일부를 수정할 수 있다. 그 외 사소한 차이로 일부 함수의 이름이 다르다는 것이다.
 
+| Numpy                 | Tensorflow            | Pytorch         |
+| --------------------- | --------------------- | --------------- |
+| concatenate           | concat                | cat             |
+| expand_dims           | expand_dims           | unsqueeze       |
+| tensor[np.newaxis, :] | tensor[np.newaxis, :] | tensor[None, :] |
+| transpose             | transpose             | movedim         |
+
+그리고 텐서 연산 함수를 쓰는 방법이 약간 다르다. 더하기 연산이라고 하면 `np.add(a, b)`, `tf.add(a, b)` 처럼 `torch.add(a, b)`도 가능하지만 `a.add(b)`도 가능하다.  
+
+나머지 사용법은 아래 링크를 한번 읽어보면 알 수 있다.
 
 <https://pytorch.org/tutorials/beginner/blitz/tensor_tutorial.html#sphx-glr-beginner-blitz-tensor-tutorial-py>
 
