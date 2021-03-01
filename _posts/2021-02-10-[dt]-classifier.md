@@ -787,13 +787,14 @@ GradientTape에 대한 자세한 내용은 다음 링크를 참조한다.
         if verbose:
             print("[evaluate] predict by model.__call__()")
         y_pred = self.model(x)
-        accuracy = np.mean(np.argmax(y_pred, axis=1) == y_true[:, 0])
+        accuracy = np.mean(np.argmax(y_pred, axis=1) == y_true)
         loss = self.loss_object(y_true, y_pred)
         if verbose:
+            np.set_printoptions(precision=4, suppress=True)
             print("  prediction shape:", y_pred.shape, y_true.shape)
-            print("  first 5 predicts:\n", y_pred[:5])
+            print("  first 5 predicts:\n", y_pred[:5].numpy())
             print("  check probability:", np.sum(y_pred[:5], axis=1))
-            print("  loss and accuracy:", loss, accuracy)
+            print(f"  loss={loss:1.4f}, accuracy={accuracy:1.4f}")
         return loss, accuracy
 ```
 
@@ -846,6 +847,65 @@ GradientTape에 대한 자세한 내용은 다음 링크를 참조한다.
 <https://pytorch.org/tutorials/beginner/blitz/cifar10_tutorial.html#sphx-glr-beginner-blitz-cifar10-tutorial-py>
 
 
+
+#### a) 코드 구조
+
+
+
+
+
+```python
+import torch
+import torchvision
+import torchvision.transforms as transforms
+import torch.nn as nn
+import torch.nn.functional as F
+import torch.optim as optim
+import numpy as np
+import matplotlib.pyplot as plt
+from timeit import default_timer as timer
+
+"""
+Common utils
+"""
+class DurationTime:
+    pass
+
+def load_dataset(dataname="cifar10", show_imgs=False):
+    pass
+
+def show_samples(images, labels, class_names, grid=(3,4)):
+    pass
+
+"""
+Classifier
+"""
+class TorchClsfModel(nn.Module):
+    def __init__(self):
+        pass
+
+    def forward(self, x):
+        pass
+
+class TorchClassifier:
+    def __init__(self, batch_size=32, val_ratio=0.2):
+        pass
+    
+    def train(self, x, y, epochs):
+        pass
+
+    def train_batch(self, x_batch, y_batch):
+        pass
+
+    def evaluate(self, x, y_true, verbose=True):
+        pass
+
+def pt_classifier():
+    pass
+
+if __name__ == "__main__":
+    pt_classifier()
+```
 
 
 
