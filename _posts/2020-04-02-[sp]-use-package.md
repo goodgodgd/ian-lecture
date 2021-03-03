@@ -170,38 +170,6 @@ print("subdir list in current dir:", dirlist)
 ```
 
 
-## HW2
-
-다음 [주소](<https://drive.google.com/file/d/1x_DII1VEvpdYHx8GQjAEgWsG2fsqO8L4/view?usp=sharing>)에서 압축파일을 받아 압축을 푸세요. `lyrics`라는 폴더 아래 봄 노래 세 곡의 가사가 텍스트 파일로 저장되어 있습니다. 다음 기능을 하는 파이썬 스크립트를 만들어보세요.
-
-1. `lyrics` 옆에 `lyrics_winter`라는 폴더를 만들기, 단 폴더가 있는지를 확인해서 없을때만 만들기
-2. `lyrics` 내부의 파일 목록을 만들고 한 파일씩 가사 데이터를 읽기
-3. 읽어온 가사에서 `봄`은 `겨울`로 `벚꽃`은 `눈`으로 바꾸기
-4. 수정된 가사를 `lyrics_winter` 폴더에 같은 파일명으로 저장하기 e.g. `lyrics/봄봄봄.txt` → `lyrics_winter/봄봄봄.txt`
-
-다음 스크립트에 위 기능을 채워넣어 보세요.
-
-```python
-import os
-import glob
-def chagne_lyrics_and_save(srcdir, dstdir, change_terms):
-    # create dstdir if it does not exist (os.path.isdir)
-    # create text file list (os.mkdir)
-    # for loop over file list
-        # open and read src text file (with open as fr; fr.read)
-        # replace srcterms to dstterms: for src, dst in change_terms.items()
-        # create new file name located at dstdir (replace)
-        # open and write new file (with open as fw, fw.write)
-
-if __name__ == "__main__":
-    # file url: http://naver.me/54MAmyO1
-    srcdir = "D:/path/to/lyrics"
-    dstdir = "D:/path/to/lyrics_winter"
-    change_terms = {"봄": "겨울", "벚꽃": "눈"}
-    chagne_lyrics_and_save(srcdir, dstdir, change_terms)
-```
-
-
 
 # 2. numpy
 
