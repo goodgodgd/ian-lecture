@@ -1,8 +1,8 @@
 ---
 layout: post
 title:  "[Python] Introduction to Python"
-date:   2020-02-28 09:00:13
-categories: 2020-1-systprog
+date:   2021-02-28 09:00:13
+categories: 2021-1-systprog
 ---
 
 
