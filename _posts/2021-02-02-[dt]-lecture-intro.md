@@ -202,7 +202,7 @@ def nms(boxes, scores, score_thresh, iou_thresh):
 
   for k in range(K): # for each category
     for i in range(N-1): # for each highest score box
-      if scores[order[i,k]] == 0: # skip ignored box
+      if scores[order[i,k], k] == 0: # skip ignored box
         continue
       # iou between i-th rank box and lower rank boxes [N-i-1]
       ious = batch_iou(boxes[order[i,k]], boxes[order[i+1:,k]])
