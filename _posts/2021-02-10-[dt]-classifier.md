@@ -447,27 +447,27 @@ def test_model(model, test_data):
     print("  prediction shape:", predicts.shape, y_test.shape)
     print("  first 5 predicts:\n", predicts[:5])
     print("  check probability:", np.sum(predicts[:5], axis=1))
-    print("  manual accuracy:", np.mean(np.argmax(predicts, axis=1) == y_test[:, 0]))
+    print("  manual accuracy:", np.mean(np.argmax(predicts, axis=1) == y_test))
 ```
 
 실행 결과는 다음과 같다.
 
 ```
+313/313 [==============================] - 0s 1ms/step - loss: 0.9026 - sparse_categorical_accuracy: 0.6941
 [test_model] evaluate by model.evaluate()
-313/313 [==============================] - 0s 1ms/step - loss: 0.9836 - sparse_categorical_accuracy: 0.6900
-  test loss: 0.9836
-  test accuracy: 0.6900
-  
+  test loss: 0.9026
+  test accuracy: 0.6941
+
 [test_model] predict by model.predict()
-  prediction shape: (10000, 10) (10000, 1)
+  prediction shape: (10000, 10) (10000,)
   first 5 predicts:
- [[0.     0.0001 0.0002 0.8378 0.     0.1569 0.0015 0.     0.0033 0.    ]
- [0.0061 0.6021 0.     0.     0.     0.     0.     0.     0.386  0.0059]
- [0.1751 0.0102 0.0009 0.     0.0001 0.     0.     0.0001 0.8116 0.0021]
- [0.8108 0.0005 0.0021 0.     0.0002 0.     0.     0.     0.1864 0.    ]
- [0.     0.     0.0117 0.0177 0.273  0.0005 0.6971 0.     0.     0.    ]]
+ [[0.0022 0.0002 0.0032 0.8284 0.0004 0.1584 0.0041 0.0013 0.0013 0.0004]
+ [0.0028 0.0137 0.     0.     0.     0.     0.     0.     0.9833 0.0003]
+ [0.1002 0.0556 0.0038 0.0031 0.0011 0.0003 0.0011 0.0009 0.773  0.0609]
+ [0.7456 0.0009 0.0358 0.     0.0127 0.     0.     0.     0.2047 0.0003]
+ [0.     0.0002 0.0113 0.0341 0.1521 0.0018 0.8002 0.0001 0.     0.    ]]
   check probability: [1. 1. 1. 1. 1.]
-  manual accuracy: 0.69
+  manual accuracy: 0.6941
 ```
 
 
