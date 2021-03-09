@@ -85,75 +85,6 @@ Back to Tensor: tf.Tensor(
 
 
 
-#### Shape 심화
-
-텐서플로에는 Tensor의 shape을 확인하는 세 가지 방법이 있는데 1, 2번은 같고 3번은 타입과 성질이 다르다.
-
-1. `some_tensor.shape` (TensorShape, static shape)
-2. `some_tensor.get_shape()` (TensorShape, static shape)
-3. `tf.shape(some_tensor)` (Tensor, dynamic shape)
-
-기본 설정인 *eager mode*에서는 1~3 모두 결과가 같지만 `tf.function` 아래서는 결과가 달라질 수 있다.
-
-```python
-def print_tensor_shape(tensor, title):
-    print(f"{title} 1) Tensor.shape:", tensor.shape, type(tensor.shape))
-    print(f"{title} 2) Tensor.get_shape():", tensor.get_shape())
-    print(f"{title} 3) tf.shape():", tf.shape(tensor))
-    h, w = tensor[0, 0, 1], tensor[0, 0, 2]
-    zeros = tf.zeros((h, w))
-    print(f"{title} 4) Tensor.shape:", zeros.shape)
-    print(f"{title} 5) Tensor.get_shape():", zeros.get_shape())
-    print(f"{title} 6) tf.shape():", tf.shape(zeros))
-    return tf.shape(zeros)
-
-@tf.function
-def print_tensor_shape_graph(tensor, title):
-    return print_tensor_shape(tensor, title)
-
-# Shape: The length (number of elements) of each of the axes of a tensor
-print_tensor_shape(tensor_a, "eager")
-shape6 = print_tensor_shape_graph(tensor_a, "graph")
-print("graph 6-1) shape:", shape6)
-shape6 = print_tensor_shape_graph(tensor_a, "graph")
-shape6 = print_tensor_shape_graph(tensor_a, "graph")
-```
-
-결과
-
-```
-eager 1) Tensor.shape: (2, 2, 3) <class 'tensorflow.python.framework.tensor_shape.TensorShape'>
-eager 2) Tensor.get_shape(): (2, 2, 3)
-eager 3) tf.shape(): tf.Tensor([2 2 3], shape=(3,), dtype=int32)
-eager 4) Tensor.shape: (2, 3)
-eager 5) Tensor.get_shape(): (2, 3)
-eager 6) tf.shape(): tf.Tensor([2 3], shape=(2,), dtype=int32)
-
-graph 1) Tensor.shape: (2, 2, 3) <class 'tensorflow.python.framework.tensor_shape.TensorShape'>
-graph 2) Tensor.get_shape(): (2, 2, 3)
-graph 3) tf.shape(): Tensor("Shape:0", shape=(3,), dtype=int32)
-graph 4) Tensor.shape: (None, None)
-graph 5) Tensor.get_shape(): (None, None)
-graph 6) tf.shape(): Tensor("Shape_1:0", shape=(2,), dtype=int32)
-graph 6-1) shape: tf.Tensor([2 3], shape=(2,), dtype=int32)
-```
-
-
-
-결과를 보면 1)~3)은 eager 모드건 graph 모드(tf.function)건 결과가 같다. 4)~6)은 언제든 변할수 있는 텐서의 값을 이용해 `zeros`의 shape을 결정하므로 Tensor 객체가 생성된 시점이 아닌 연산이 실행된 시점에 결정된다.  
-
-Eager 모드에서는 일반 파이썬 프로그램처럼 한줄씩 실행하므로 객체 생성과 동시에 연산을 수행한다. 그러므로 `zeros`의 shape을 바로 알 수 있다.  
-
-반면 graph 모드에서는 미리 연산을 수행할 객체들을 미리 준비한 다음 연산을 실행하는데 `print()`가 실행되는 시점은 객체를 준비하는 시점이라서 shape이 None으로 나온다. (`print_tensor_shape_graph`을 세 번 실행하지만 출력은 한번씩 밖에 되지 않는다.)  
-
-`print_tensor_shape_graph`의 return을 통해 `tf.function`을 벗어난 텐서는 실제 값을 가지게 되고 6-1) 처럼 정확한 shape이 나오는 것을 볼 수 있다. 이것은 `tf.shape()` 함수가 연산 당시의 **dynamic shape**을 출력하기 때문이다. 따라서 `tf.function`을 쓰면서 내부에서 값에 따라 크기가 달라지는 텐서를 만들때는 `tf.shape()` 함수를 쓰는게 낫다.  
-
-- Tensor.get_shape(): <https://www.tensorflow.org/api_docs/python/tf/Tensor#get_shape>
-
-- tf.shape(): <https://www.tensorflow.org/api_docs/python/tf/shape>
-
-
-
 ### 1.2. Keras Classifier
 
 여기서는 텐서플로 내부의 Keras를 이용한 영상 분류 방법을 소개한다. Keras의 잘 만들어진 모듈들을 활용하면 간단한 분류 모델은 아주 짧은 코드로도 모델 정의, 학습, 평가까지 가능하다. 아래는 참고자료다.
@@ -506,12 +437,13 @@ Keras에서 분류 모델의 정확도는 `model.evaluate()` 함수로 계산할
 ```python
 def test_model(model, test_data):
     x_test, y_test = test_data
-    print("[test_model] evaluate by model.evaluate()")
     loss, accuracy = model.evaluate(x_test, y_test)
+    print("[test_model] evaluate by model.evaluate()")
     print(f"  test loss: {loss:1.4f}")
-    print(f"  test accuracy: {accuracy:1.4f}")
-    print("[test_model] predict by model.predict()")
+    print(f"  test accuracy: {accuracy:1.4f}\n")
+
     predicts = model.predict(x_test)
+    print("[test_model] predict by model.predict()")
     print("  prediction shape:", predicts.shape, y_test.shape)
     print("  first 5 predicts:\n", predicts[:5])
     print("  check probability:", np.sum(predicts[:5], axis=1))
@@ -525,6 +457,7 @@ def test_model(model, test_data):
 313/313 [==============================] - 0s 1ms/step - loss: 0.9836 - sparse_categorical_accuracy: 0.6900
   test loss: 0.9836
   test accuracy: 0.6900
+  
 [test_model] predict by model.predict()
   prediction shape: (10000, 10) (10000, 1)
   first 5 predicts:
@@ -732,24 +665,6 @@ _________________________________________________________________
 
  
 
-##### tf.function
-
-텐서플로의 기본 모드인 eager 모드는 마치 Numpy 연산을 하듯 모든 라인을 한줄씩 파이썬 인터프리터에서 실행하고 모든 중간 결과를 확인할 수 있다. 반면 어떤 함수에 `@tf.function` 데코레이터가 붙으면...
-
-- 해당 함수와 그 아래에서 불러지는 모든 함수에서 실행되는 모든 텐서 연산들이 텐서플로 내부적으로 최적화된다. 연산 과정 자체가 더 빠르게 실행될 수 있도록 변한다.
-- 매 연산마다 그때그때 메모리를 준비하는 것이 아니라 전체 연산에 필요한 모든 메모리를 미리 준비해서 정적 그래프를 만들어놓고 입력 데이터가 연산 그래프를 따라 흘러가게 한다. 
-- GPU 연산을 하는 경우 eager 모드에서는 매 연산마다 메인 메모리(RAM)에서 GPU로 데이터를 보내고 결과를 다시 받아와야 하지만 graph 모드에서는 연산을 모두 마친 후에 최종 결과만 받는다.
-
-작은 모델에서는 graph 모드가 효과가 없거나 더 느려질수도 있지만 복잡한 모델에서는 graph 모드의 속도가 훨씬 빨라질 수 있다. 모델마다 다르지만 개인적인 경험으로 많이 사용되는 CNN에서 2배 이상 빨라지는 것을 경험했다. 하지만 현재 예제에서는 모델이 작기 때문에 오히려 속도가 느려지는 것을 확인하였다. 그리고 `Dataset` 객체를 만드는 과정까지 graph 모드에 넣으면 추가적인 최적화를 할 수 있다. 참고로 `model.fit()` 함수에서는 모든 최적화가 이미 적용되어 있다.
-
-다음은 graph 모드와 관련된 링크다.
-
-- <https://www.tensorflow.org/guide/intro_to_graphs>
-- <https://www.tensorflow.org/guide/function>
-- <https://www.tensorflow.org/guide/graph_optimization>
-
-
-
 ##### tf.GradientTape
 
 실제 학습 함수는 다음과 같다.
@@ -775,6 +690,96 @@ GradientTape에 대한 자세한 내용은 다음 링크를 참조한다.
 - <https://www.tensorflow.org/guide/autodiff>
 - <https://www.tensorflow.org/guide/keras/customizing_what_happens_in_fit>
 - <https://www.tensorflow.org/guide/keras/writing_a_training_loop_from_scratch>
+
+
+
+##### tf.function
+
+텐서플로의 기본 모드인 eager 모드는 마치 Numpy 연산을 하듯 모든 라인을 한줄씩 파이썬 인터프리터에서 실행하고 모든 중간 결과를 확인할 수 있다. 반면 어떤 함수에 `@tf.function` 데코레이터가 붙으면...
+
+- 해당 함수와 그 아래에서 불러지는 모든 함수에서 실행되는 모든 텐서 연산들이 텐서플로 내부적으로 최적화된다. 연산 과정 자체가 더 빠르게 실행될 수 있도록 변한다.
+- 매 연산마다 그때그때 메모리를 준비하는 것이 아니라 전체 연산에 필요한 모든 메모리를 미리 준비해서 정적 그래프를 만들어놓고 입력 데이터가 연산 그래프를 따라 흘러가게 한다. 
+- GPU 연산을 하는 경우 eager 모드에서는 매 연산마다 메인 메모리(RAM)에서 GPU로 데이터를 보내고 결과를 다시 받아와야 하지만 graph 모드에서는 연산을 모두 마친 후에 최종 결과만 받는다.
+
+작은 모델에서는 graph 모드가 효과가 없거나 더 느려질수도 있지만 복잡한 모델에서는 graph 모드의 속도가 훨씬 빨라질 수 있다. 모델마다 다르지만 개인적인 경험으로 많이 사용되는 CNN에서 2배 이상 빨라지는 것을 경험했다. 하지만 현재 예제에서는 모델이 작기 때문에 오히려 속도가 느려지는 것을 확인하였다. 그리고 `Dataset` 객체를 만드는 과정까지 graph 모드에 넣으면 추가적인 최적화를 할 수 있다. 참고로 `model.fit()` 함수에서는 모든 최적화가 이미 적용되어 있다.
+
+다음은 graph 모드와 관련된 링크다.
+
+- <https://www.tensorflow.org/guide/intro_to_graphs>
+- <https://www.tensorflow.org/guide/function>
+- <https://www.tensorflow.org/guide/graph_optimization>
+
+
+
+##### Shape, Eager, Graph
+
+텐서플로에는 Tensor의 shape을 확인하는 세 가지 방법이 있는데 1, 2번은 사실상 동일하고 3번은 타입이 다르다.
+
+1. `some_tensor.shape` (tf.TensorShape)
+2. `some_tensor.get_shape()` (tf.TensorShape)
+3. `tf.shape(some_tensor)` (tf.Tensor)
+
+Eager 모드에서는 뭘써도 상관없지만 Graph 모드에서는 좀 다르다. 아래 예제를 실행해보자.
+
+```python
+import tensorflow as tf
+
+def main():
+    # create Tensor from List with specific type
+    x = tf.constant([[[1, 2, 3], [4, 5, 6]], [[7, 8, 9], [10, 11, 12]]], dtype=tf.int32)
+    shape_out = print_tensor_shape(x, "eager")
+    print("eager 6) shape output:", shape_out)
+    shape_out = print_tensor_shape_graph(x, "graph")
+    print("graph 6) shape output:", shape_out)
+    shape_out = print_tensor_shape_graph(x, "graph")
+
+def print_tensor_shape(tensor, title):
+    print(f"{title} 1) Tensor.shape:", tensor.shape, type(tensor.shape))
+    print(f"{title} 2) Tensor.get_shape():", tensor.get_shape())
+    print(f"{title} 3) tf.shape():", tf.shape(tensor))
+    h, w = tensor[0, 0, 1], tensor[0, 0, 2]
+    zeros = tf.zeros((h, w))
+    print(f"{title} 4) Tensor.shape:", zeros.shape)
+    print(f"{title} 5) tf.shape():", tf.shape(zeros))
+    return tf.shape(zeros)
+
+@tf.function
+def print_tensor_shape_graph(tensor, title):
+    return print_tensor_shape(tensor, title)
+
+if __name__ == "__main__":
+    main()
+```
+
+결과
+
+```
+eager 1) Tensor.shape: (2, 2, 3) <class 'tensorflow.python.framework.tensor_shape.TensorShape'>
+eager 2) Tensor.get_shape(): (2, 2, 3)
+eager 3) tf.shape(): tf.Tensor([2 2 3], shape=(3,), dtype=int32)
+eager 4) Tensor.shape: (2, 3)
+eager 5) tf.shape(): tf.Tensor([2 3], shape=(2,), dtype=int32)
+eager 6) shape output: tf.Tensor([2 3], shape=(2,), dtype=int32)
+
+graph 1) Tensor.shape: (2, 2, 3) <class 'tensorflow.python.framework.tensor_shape.TensorShape'>
+graph 2) Tensor.get_shape(): (2, 2, 3)
+graph 3) tf.shape(): Tensor("Shape:0", shape=(3,), dtype=int32)
+graph 4) Tensor.shape: (None, None)
+graph 5) tf.shape(): Tensor("Shape_1:0", shape=(2,), dtype=int32)
+graph 6) shape output: tf.Tensor([2 3], shape=(2,), dtype=int32)
+```
+
+
+
+Eager 모드에서는 일반 파이썬 프로그램처럼 한줄씩 실행하므로 객체 생성과 동시에 연산을 수행한다. 그래서 텐서 값에 의해 shape이 결정돼도 바로 shape을 확인할 수 있다.
+
+반면 graph 모드에서는 미리 연산을 수행할 객체들을 미리 준비한 다음 연산을 실행하는데 `print()`가 실행되는 시점은 객체를 준비하는 시점이라서 텐서의 구체적인 값이 정해져있지 않다. 그래서 shape이 None으로 나온다. (`print_tensor_shape_graph`을 세 번 실행하지만 출력은 한번씩 밖에 되지 않는다.)  
+
+`Tensor.shape`이나 `tf.shape()`이나 결과적으로는 큰 차이가 없는데 print()에서 좀 차이가 난다. 그리고 `@tf.function` 함수의 출력은 오직 `tf.Tensor` 타입만 가능하므로 `tf.TensorShape` 타입은 출력으로 사용되지 못한다.
+
+- Tensor.get_shape(): <https://www.tensorflow.org/api_docs/python/tf/Tensor#get_shape>
+
+- tf.shape(): <https://www.tensorflow.org/api_docs/python/tf/shape>
 
 
 
