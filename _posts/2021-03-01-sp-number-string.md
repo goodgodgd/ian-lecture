@@ -57,7 +57,7 @@ myarray = pd.DataFrame(myarray)
 
 C언어를 배울 때 우리는 다양한 정수형과 실수형 데이터 타입을 배웠다. `short`, `int`, `unsigned int`, `float`, `double` 등... 각기 데이터의 형식과 표현 범위가 다른 다양한 타입들이 있었다. 표현 범위는 데이터가 차지하는 메모리 용량에 의해 결정됐는데 `int`, `float`은 4 byte, `double`은 8 byte 로 표현할 수 있는 숫자범위를 나타냈다.   
 
-하지만 파이썬에서는 숫자를 나타내는 built-in 타입이 세 가지 밖에 없다. `int` (정수), `float` (실수), `complex`(복소수). 물론 그렇기 때문에 메모리를 효과적으로 쓸 순 없다. 게다가 숫자 자체를 객체로 인식하기 때문에 숫자 표현외에 추가적인 메모리가 더 들어간다. 데이터의 범위는? 파이썬 공식 문서를 보자.   
+하지만 파이썬에서는 숫자를 나타내는 built-in 타입이 세 가지 밖에 없다. `int` (정수), `float` (실수), `complex`(복소수). 그렇기 때문에 메모리를 효과적으로 쓸 순 없다. 게다가 숫자 자체를 객체로 인식하기 때문에 숫자 표현외에 추가적인 메모리가 더 들어간다. 데이터의 범위는? 파이썬 공식 문서를 보자.   
 
 > There are three distinct numeric types: integers, floating point numbers, and complex numbers. In addition, Booleans are a subtype of integers. **Integers have unlimited precision. Floating point numbers are usually implemented using double in C**; information about the precision and internal representation of floating point numbers for the machine on which your program is running is available in **sys.float_info**. <https://docs.python.org/3/library/stdtypes.html#numeric-types-int-float-complex>
 
@@ -155,11 +155,11 @@ else:
 
 파이썬에는 `is, and, or, in` 처럼 단어로된 연산자들이 있다. 부호 연산자를 쓰는 것 보다 단어 연산자를 쓰면 코드가 인간의 언어에 가까워져서 자연스럽게 읽고 이해할 수 있다.  
 
-`is`는 `==`와 헷갈리기 쉽지만 전혀 다른 연산자다. `==` 앞 뒤의 두 값(value)이 같음을 비교한다면 `is`는 앞 뒤의 두 객체가 동일한 객체인지를 비교한다. 동일한 객체라는 뜻은 메모리를 공유하는, C언어로 치면 포인터 값이 같은 변수라는 뜻이다. 상수와의 비교에서는 `==` 연산자와 비슷하게 기능한다.
+`is`는 `==`와 헷갈리기 쉽지만 전혀 다른 연산자다. `==` 앞 뒤의 두 값(value)이 같음을 비교한다면 `is`는 앞 뒤의 두 객체가 동일한 객체인지를 비교한다. 동일한 객체라는 뜻은 메모리를 공유하는, C언어로 치면 포인터 값이 같은 변수라는 뜻이다. 변수와 상수 비교시에는  `==` 연산자가 정확하기 때문에 Python 3.8부터는 `is`를 쓰면 경고문이 뜬다.
 
 ```python
 print("\nWhat is difference between `is` and `==`?")
-print("little difference for built-in types(int, float, str)")
+print("variable vs constant")
 intvar = 12
 print("intvar == 12:", intvar == 12)
 print("intvar is 12:", intvar is 12)
@@ -183,26 +183,28 @@ print("bar is goo", bar is goo)
 
 ```
 What is difference between `is` and `==`?
-little difference for built-in types(int, float, str)
+variable vs constant
 intvar == 12: True
 intvar is 12: True
 boolvar == True: True
 boolvar is True: True
 big difference for object types
-foo == bar True
-foo is bar False
+foo == bar: True
+foo is bar: False
 bar, goo: [0, 2] [0, 2]
 foo == goo False
 bar is goo True
+D:/Work/systprog/hello-python.py:5: SyntaxWarning: "is" with a literal. Did you mean "=="?
+  print("intvar is 12:", intvar is 12)
 ```
 
-`and, or`는 각각 C언어의 `&&, ||`에 해당한다. 파이썬에는 비트 연산자인 `&, |`는 있으나 논리 연산자로는 `&&, ||`이 아닌 `and, or`를 사용한다.
+`and, or`는 각각 C언어의 `&&, ||`에 해당한다. 파이썬에는 비트 연산자인 `&, |`는 있으나 논리 연산자로는 `&&, ||`이 아닌 `and, or`를 사용한다. 파이썬 버전이 계속 업데이트 되고 있어서 요즘은 그런 현상을 못 보았지만 예전에는 `and, or`의 앞 뒤 조건문에 ()를 써야 의도한대로 작동하였다. 코드 가독성을 위해서도 ()를 쓰는게 좋겠다.
 
 ```python
 value = 10
-if value % 2 == 0 and value < 12:
+if (value % 2 == 0) and (value < 12):
     print("value is even and less than 12")
-if value % 2 != 0 or value < 0:
+if (value % 2 != 0) or (value < 0):
     print("value is odd or negative")
 ```
 
@@ -346,7 +348,7 @@ print(pattern.format("healer", 200, 834.79))
 
 #### c. f문자열 포매팅
 
-포맷 코드보다 `format()` 함수가 쓰기는 더 쉽지만 코드가 약간 더 옆으로 길어지는 단점도 있다. Python 3.6에서부터는 f문자열 포매팅을 지원하여 더 간결하게 구현할 수 있다. 방법은 `f'{var}'` 처럼 문자열 앞에 f를 붙이고 braket 사이에 변수명이나 값을 넣는 것이다. 대신 f문자열 포매팅을 이용할 경우 앞선 방법처럼 문자열 패턴을 변수에 넣고 반복 사용하기는 어렵다. 예시를 보자.
+포맷 코드보다 `format()` 함수가 쓰기는 더 쉽지만 코드가 약간 더 옆으로 길어지는 단점도 있다. Python 3.6에서부터는 f문자열 포매팅을 지원하여 더 간결하게 구현할 수 있다. 방법은 `f'{var}'` 처럼 문자열 앞에 f를 붙이고 {} 사이에 변수명이나 값을 넣는 것이다. 대신 f문자열 포매팅을 이용할 경우 앞선 방법처럼 문자열 패턴을 변수에 넣고 반복 사용하기는 어렵다. 예시를 보자.
 
 ```python
 print("\n" + "="*30)
@@ -375,8 +377,8 @@ print("str class functions")
 # 문자열 함수를 이용하는 두 가지 방법
 # 1. 문자열 자체에서 사용, 2. 문자열 변수에서 사용
 print("count substring")
-print("count '너무':", "날 너무너무너무".count('너무'))
 text = "날 " + ("너무" * 3 + " ")*5 + "좋아하면 그때 말해줘"
+print(text)
 print("count '너무':", text.count('너무'))
 ```
 

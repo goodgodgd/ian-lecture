@@ -182,7 +182,7 @@ IoU는 검출 모델에서 자주 사용되는 용어인데 두 개의 bounding 
 
 #### 예측(Prediction) feat. NMS
 
-학습 후 검출 결과를 출력할 때는 모든 feature map에서 나오는 bounding box를 출력하지 않고 검출된 객체만 출력한다. 일단 각 anchor box 위치에서 *objectness > $$\tau_{obj}$$*  일때 해당 위치에서 출력되는 bounding box에 객체가 있다고 볼 수 있는데 objectness만 볼 경우 비슷한 위치에서 다수의 객체가 중복으로 검출되는 문제가 발생한다. 체 하나에 검출 결과를 하나만 출력하기 위해서는 **NMS(Non-Maximum Suppression)**를 써서 중복된 객체들 중 가장 score가 높은 것만 출력하도록 한다. 객체의 존재 여부를 판단하는 score는 *(objectness x class prob.)*을 사용한다. 즉 어떤 anchor 위치에서 objectness가 0.8, *person* 클래스에 대한 확률이 0.6이라면 그 위치에서 사람 검출에 대한 score는 0.48이다.  
+학습 후 검출 결과를 출력할 때는 모든 feature map에서 나오는 bounding box를 출력하지 않고 검출된 객체만 출력한다. 일단 각 anchor box 위치에서 *objectness > $$\tau_{obj}$$*  일때 해당 위치에서 출력되는 bounding box에 객체가 있다고 볼 수 있는데 objectness만 볼 경우 비슷한 위치에서 다수의 객체가 중복으로 검출되는 문제가 발생한다. 객체 하나에 검출 결과를 하나만 출력하기 위해서는 **NMS(Non-Maximum Suppression)**를 써서 중복된 객체들 중 가장 score가 높은 것만 출력하도록 한다. 객체의 존재 여부를 판단하는 score는 *(objectness x class prob.)*을 사용한다. 즉 어떤 anchor 위치에서 objectness가 0.8, *person* 클래스에 대한 확률이 0.6이라면 그 위치에서 사람 검출에 대한 score는 0.48이다.  
 
 NMS 알고리즘은 다음과 같다. 이것은 하나의 feature map에 대해 nms를 하는것이고 YOLO에서는 세 가지 스케일의 feature map이 있으므로 이를 세 번 반복해야 한다.
 
