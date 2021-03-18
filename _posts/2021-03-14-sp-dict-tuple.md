@@ -1,9 +1,11 @@
 ---
 layout: post
 title:  "[Python] Data Structure 2: Dictionary, Tuple, Set"
-date:   2020-03-09 09:00:13
-categories: 2020-1-systprog
+date:   2021-03-14 09:00:13
+categories: 2021-1-systprog
 ---
+
+
 
 ## 2. Dictionary
 
@@ -19,7 +21,7 @@ print("pooh's weight is", pooh[2])
 print("tigers's age is", tigger[1])
 ```
 
-첫 줄의 `good_for_list`는 리스트로 저장하기 좋은 자료다. 모두가 이름을 나타내고 있다. 하지만 그 아래를 보라. 자료를 이렇게 저장하면 순서를 똑같이 맞추지 못 할 경우 잘못된 결과를 나타내기 쉽고 코드만 봐서는 왜 [0]이 종이고 [1]이 나이인지 이해하기 어렵다. 이러한 대응관계를 명시적으로 보여줄 수 있는 자료 구조가 딕셔너리(`Dictionary`)다. 사전에서 어떤 단어를 찾으면 그 단어에 대산 설명이 나오듯이 `Dictionary`는 키(Key)를 입력하면 그에 해당하는 값(Value)를 출력해주는 자료 구조다. 리스트는 `[]`(bracket)으로 만들었지만 딕셔너리는 `{}`(brace)로 만든다. `:`(colon)을 사이에 두고 앞에 Key 값을 쓰고 뒤에 Value 값을 쓴다. Key:Value 쌍은 쉼표(,)로 구분한다. 값을 꺼낼때는 리스트, 딕셔너리 모두 `[]`(bracket)를 쓰고 리스트는 인덱스 숫자를 쓰지만 딕셔너리는 키 값을 입력한다.
+첫 줄의 `good_for_list`는 리스트로 저장하기 좋은 자료다. 모두가 이름을 나타내고 있다. 하지만 그 아래를 보라. 자료를 이렇게 저장하면 순서를 똑같이 맞추지 못 할 경우 잘못된 결과를 나타내기 쉽고 코드만 봐서는 왜 [0]이 종이고 [1]이 나이인지 이해하기 어렵다. 이러한 대응관계를 명시적으로 보여줄 수 있는 자료 구조가 딕셔너리(`Dictionary`)다. 사전에서 어떤 단어를 찾으면 그 단어에 대산 설명이 나오듯이 `Dictionary`는 키(Key)를 입력하면 그에 해당하는 값(Value)를 출력해주는 자료 구조다. 리스트는 `[]`(bracket)으로 만들었지만 딕셔너리는 `{}`(brace)로 만든다. `:`(colon)을 사이에 두고 앞에 Key 값을 쓰고 뒤에 Value 값을 쓴다. Key:Value 쌍은 쉼표(,)로 구분한다. 값을 꺼낼때는 리스트, 딕셔너리 모두 `[]`(bracket)를 쓴다. 리스트는 인덱스 숫자를 쓰지만 딕셔너리는 키 값을 입력한다.
 
 ```python
 mydict = {Key1:Value1, Key2:Value2, ...}
@@ -51,22 +53,24 @@ except TypeError as te:
 
 이제 딕셔너리의 활용법에 대해 더 알아보자.
 
-### 2.1  기본 사용법
+
+
+### 2.1.  기본 사용법
 
 딕셔너리의 기본 특징은 **순서가 없다**는 것이다.(Unordered) Python 3.5까지는 딕셔너리를 만든 순서와 프린트 혹은 for loop에서의 순서가 달라질때도 있었으나 Python 3.6부터는 가급적 만들때의 순서를 지킨다. 사실 딕셔너리는 오직 `Key`로만 `Value`에 접근할 수 있으니 순서는 상관없다. 다음 예제를 통해 기본 사용법을 익혀보도록 하자.
 
 ```python
 print("\nbasic usage")
 pooh = {"species": "bear", "age": 5, "weight": 50}
-# 데이터 읽기: 특정 `key`에 연결된 `Value`를 읽기 위해서는 `[Key]`하면 된다.
+# 데이터 읽기: 특정 key에 연결된 value를 읽기 위해서는 dict[key]하면 된다.
 print("pooh's age is", pooh["age"])
-# 데이터 수정: 특정 `key`에 연결된 `Value`를 수정할 때는 그냥 값을 키에 넣으면 된다.
+# 데이터 수정: 특정 key에 연결된 value를 수정할 때는 그냥 값을 키에 넣으면 된다.
 pooh["age"] = 10
 print("pooh's age is", pooh["age"])
-# 데이터 추가: 이미 만들어진 딕셔너리에 `Key:Value` 쌍을 추가하는 방법 역시 그냥 값을 키에 넣으면 된다.
+# 데이터 추가: 이미 만들어진 딕셔너리에 'Key:Value' 쌍을 추가하는 방법 역시 그냥 값을 키에 넣으면 된다.
 pooh["height"] = 1.2
 print("pooh:", pooh)
-# 데이터 삭제: 리스트처럼 `del`을 이용한다.
+# 데이터 삭제: 리스트처럼 'del'을 이용한다.
 del pooh["weight"]
 print("pooh:", pooh)
 ```
@@ -103,7 +107,9 @@ pooh's color? None
 pooh has no color
 ```
 
-### 2.2 관련 함수
+
+
+### 2.2. 관련 함수
 
 딕셔너리를 쓰다보면 Key만 혹은 Value만 따로 쓰고 싶을 때가 있다. 예를 들어 딕셔너리를 `"이름":"점수"` 형태로 만들었는데 명단만 필요하거나 점수만 필요한 경우가 있다. 혹은 이들을 `Key:Value` 관계가 아닌 동등만 데이터 쌍(tuple)으로 받고 싶을 수도 있다. 다음 예제에서 그 답을 찾아보자.
 ```python
@@ -136,7 +142,7 @@ items: [('pooh', 80), ('tigger', 70), ('piglet', 90), ('rabbit', 85)]
 
 
 
-### 2.3 Iteration
+### 2.3. Iteration
 
 딕셔너리도 리스트처럼  for 문을 통해 반복할 수 있다. 딕셔너리 자체를 반복하면 `Key`가 하나씩 나온다. `Key`가 필요한지, `Value`가 필요한지, 둘 다 필요한지에 따라 맞는 함수를 통해 반복가능한(iterable) 자료형으로 변환하여 쓰면 된다.
 
@@ -153,6 +159,8 @@ print("\niterate over keys and values")
 for name, score in scores.items():
     print("name:score:", name, ":", score)
 ```
+
+
 
 ## 3. Tuple
 
@@ -179,6 +187,8 @@ pooh = "pooh", "bear", 5, 50
 name, species, age, weight = pooh
 print("tupled pooh info:", name, species, age, weight)
 ```
+
+
 
 ## 4. Set
 
