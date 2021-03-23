@@ -1,8 +1,8 @@
 ---
 layout: post
 title:  "[Python] Control statements: if, for and while"
-date:   2020-03-17 09:00:13
-categories: 2020-1-systprog
+date:   2021-03-17 09:00:13
+categories: 2021-1-systprog
 ---
 
 
@@ -11,7 +11,7 @@ categories: 2020-1-systprog
 
 이전 장에서도 배웠듯이 파이썬에도 `if, for, while`이 있다. 특히 파이썬은 자료구조형과 밀접하게 연계되어 자료구조에 들어있는 자료들에 대해 쉽게 반복문을 실행할 수 있다. 제어문의 기본 용법과 편리하게 쓸 수 있는 다양한 문법들을 배워보자. `if, for, while`의 기본 용법은 다음과 같다.
 
-```
+```python
 if condition1:
 	statements_when_condition1_is_true
 elif condition2:
@@ -69,7 +69,7 @@ for hero in marvel_heroes:
         print("    Peter Parker by Tobey Maguire was not a kid: \"With great power comes great responsibility.\"")
         continue
     if hero.startswith("capt"):
-        print("    one captain is enough. let me stop here")
+        print("    One captain is enough. let me stop here")
         break
     print(f"    {hero} is cool")
 
@@ -100,14 +100,12 @@ print(list(zip(marvel_heroes, dc_heroes)))
 ```
 
 ```python
-print("\nwhat does enumerate return?", enumerate(marvel_heroes), list(enumerate(marvel_heroes)))
 print("print only first 3 heroes with index")
 for index, name in enumerate(marvel_heroes):
     if index >= 3:
         break
     print("marvel hero:", index, name)
 
-print("\nwhat does zip return?", zip(marvel_heroes, dc_heroes), list(zip(marvel_heroes, dc_heroes)))
 print("print pairs of marvel and dc heroes")
 for mv, dc in zip(marvel_heroes, dc_heroes):
     print("{} vs {}".format(mv, dc))
