@@ -1024,9 +1024,9 @@ seq_modules = nn.Sequential(
 `nn.Module`과 `nn.Sequential`을 섞어서 쓰면 다음과 같은 모델 정의 클래스를 만들 수 있다. conv-pooling-relu로 반복되는 과정을 하나의 모듈로 선언하여 `forward()` 함수가 좀 더 단순해졌다. 
 
 ```python
-class TorchClsfModel(nn.Module):
+class TorchClsfModelUsingSequential(nn.Module):
     def __init__(self):
-        super(TorchClsfModel, self).__init__()
+        super(TorchClsfModelUsingSequential, self).__init__()
         self.conv_relu_pool1 = nn.Sequential(
             nn.Conv2d(in_channels=3, out_channels=32, kernel_size=3, 
                       padding=1, padding_mode='zeros'),

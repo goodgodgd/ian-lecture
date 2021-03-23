@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "[Det] Dataset and Tfrecords"
-date:   2021-03-01 09:00:13
+date:   2021-03-08 09:00:13
 categories: 2021-1-detector
 ---
 
@@ -470,7 +470,48 @@ def set_properties(dataset, shuffle: bool, epochs: int, batch_size: int):
 
 
 
-#### c) 모델 학습하기
+#### c) 데이터 확인하기
+
+데이터셋 객체로 불러오는 데이터가 의도한대로 나오는지 확인해본다. `dataset`에 대해 for loop을 돌면서 각 데이터의 shape과 값들을 확인해본다. `show_samples()` 함수를 통해 이미지와 레이블의 짝이 잘 맞는지도 확인한다.
+
+```python
+def check_data(dataset):
+    for i, features in enumerate(dataset):
+        print("sample:", i, features["image"].shape,
+              features["label_index"][:8].numpy(), features["label_name"][:8].numpy())
+        if i == 0:
+            show_samples(features["image_u8"], features["label_name"])
+        if i > 5:
+            break
+
+def show_samples(images, labels, grid=(3, 3)):
+    plt.figure(figsize=grid)
+    num_samples = grid[0] * grid[1]
+    for i in range(num_samples):
+        plt.subplot(grid[0], grid[1], i+1)
+        plt.xticks([])
+        plt.yticks([])
+        plt.grid(False)
+        plt.imshow(images[i].numpy())
+        plt.xlabel(labels[i].numpy().decode())
+    plt.show()
+```
+
+실행 결과
+
+```
+sample: 0 (32, 32, 32, 3) [8 8 4 0 0 4 9 4] [b'ship' b'ship' b'deer' b'plane' b'plane' b'deer' b'truck' b'deer']
+sample: 1 (32, 32, 32, 3) [0 2 7 3 1 8 9 6] [b'plane' b'bird' b'horse' b'cat' b'car' b'ship' b'truck' b'frog']
+sample: 2 (32, 32, 32, 3) [6 6 0 5 6 4 5 4] [b'frog' b'frog' b'plane' b'dog' b'frog' b'deer' b'dog' b'deer']
+sample: 3 (32, 32, 32, 3) [7 9 2 3 4 1 1 6] [b'horse' b'truck' b'bird' b'cat' b'deer' b'car' b'car' b'frog']
+sample: 4 (32, 32, 32, 3) [7 6 7 3 4 9 4 8] [b'horse' b'frog' b'horse' b'cat' b'deer' b'truck' b'deer' b'ship']
+sample: 5 (32, 32, 32, 3) [0 9 4 5 0 6 4 0] [b'plane' b'truck' b'deer' b'dog' b'plane' b'frog' b'deer' b'plane']
+sample: 6 (32, 32, 32, 3) [3 5 1 1 9 1 2 9] [b'cat' b'dog' b'car' b'car' b'truck' b'car' b'bird' b'truck']
+```
+
+
+
+#### d) 모델 학습하기
 
 모델에 관련된 코드는 이전 강의에서 사용한 **tf_classifier_adv.py**와 거의 유사하다. 데이터셋 객체를 numpy 배열로부터 만드느냐 파일로부터 만드느냐의 차이가 있을 뿐이다. 여기서는 이전 강의와 달라진 함수만 설명한다. 
 
@@ -484,13 +525,13 @@ def set_properties(dataset, shuffle: bool, epochs: int, batch_size: int):
             for epoch in range(epochs):
                 for i, features in enumerate(train_dataset):
                     self.train_batch_graph(features["image"], features["label_index"])
-                loss, accuracy = self.evaluate(val_dataset)
+                loss, accuracy = self.evaluate(val_dataset, verbose=False)
                 print(f"[Training] epoch={epoch}, val_loss={loss:1.4f}, val_accuracy={accuracy:1.4f}")
 ```
 
 
 
-#### d) 모델 평가하기
+#### e) 모델 평가하기
 
 `evaluate()` 함수에서는 학습할 때와 마찬가지로 Dataset 객체에 대해 for문을 돌면서 batch 단위로 모델 출력을 만들고 이를 쌓아서 평가에 사용한다. Accuracy와 loss를 계산하는 과정은 **tf_classifier_adv.py**와 거의 동일하다.
 
@@ -514,6 +555,28 @@ def set_properties(dataset, shuffle: bool, epochs: int, batch_size: int):
             print(f"  loss={loss:1.4f}, accuracy={accuracy:1.4f}")
         return loss, accuracy
 ```
+
+실행 결과
+
+```
+[Training] epoch=0, val_loss=1.1968, val_accuracy=0.5800
+[Training] epoch=1, val_loss=0.9574, val_accuracy=0.6663
+[Training] epoch=2, val_loss=0.9745, val_accuracy=0.6684
+[Training] epoch=3, val_loss=0.9576, val_accuracy=0.6842
+[Training] epoch=4, val_loss=0.8841, val_accuracy=0.6993
+** training time: 18.85
+=== evaluate result ===
+  prediction shape: (10000, 10) (10000,)
+  pred indices [3 8 8 8 6 6 1 6 3 1 0 9 6 7 9 8 5 7 8 6]
+  true indices [3 8 8 0 6 6 1 6 3 1 0 9 5 7 9 8 5 7 8 6]
+  loss=0.8841, accuracy=0.6993
+```
+
+
+
+여기까지 완성
+
+---
 
 
 
