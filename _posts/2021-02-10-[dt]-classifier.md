@@ -96,7 +96,7 @@ Back to Tensor: tf.Tensor(
 
 #### a) 코드 구조
 
-모든 프로그래밍을 할 때는 먼저 생각나는 것을 짜는 것이 아니라 최상위 구조를 먼저 정하고 점차 하부구조를 정하면서 구체적인 알고리즘까지 작성해야한다. 그래야 오류도 적고 코드를 수정할 일이 적어진다. 여기서 최상위 구조는 다음과 같이 작성한다. 이와같이 대강의 상위 함수들과 입출력 데이터만 정하고나서 함수들을 기계적으로 코딩하면 프로그램을 완성할 수 있다.  
+모든 프로그래밍을 할 때는 먼저 생각나는 것을 짜는 것이 아니라 최상위 구조를 먼저 정하고 점차 하부구조를 정하면서 구체적인 알고리즘까지 작성해야한다. 그래야 오류도 적고 코드를 수정할 일이 적어진다. 여기서 최상위 구조는 다음과 같이 작성한다. 이와같이 대강의 상위 함수들과 입출력 데이터만 정하고나서 함수들을 기계적으로 코딩하면 프로그램을 완성할 수 있다. 파일명은 **tf_classifier_basic.py**로 지정하였다.
 
 ```python
 import tensorflow as tf
@@ -130,9 +130,6 @@ def tf2_keras_classifier():
     model = create_model(train_data)
     train_model(model, train_data)
     test_model(model, test_data)
-
-def load_dataset():
-    pass
 
 def create_model(dataset):
     pass
@@ -491,7 +488,7 @@ Keras를 활용하면 편리한 점도 있지만 학습 과정이 `model.fit()`�
 
 #### a) 코드 구조
 
-코드의 전체적인 흐름은 Keras Classifier와 유사하다. 하지만 이번에는 `AdvancedClassifier`라는 클래스를 만들어서 분류 모델에 관련된 코드들을 응집시켰다. **Common Utils** 아래의 코드는 위와 동일하다. 또 한가지 차이점은 `@tf.function` 데코레이터를 사용했다는 것이다. 자세한 내용은 아래 내용을 참고한다.  
+코드의 전체적인 흐름은 Keras Classifier와 유사하다. 하지만 이번에는 `AdvancedClassifier`라는 클래스를 만들어서 분류 모델에 관련된 코드들을 응집시켰다. **Common Utils** 아래의 코드는 위와 동일하다. 또 한가지 차이점은 `@tf.function` 데코레이터를 사용했다는 것이다. 자세한 내용은 아래 내용을 참고한다. 파일명은 **tf_classifier_adv.py**로 지정하였다.
 
 ```python
 import tensorflow as tf
@@ -657,7 +654,7 @@ _________________________________________________________________
 
 `train()` 함수에서 눈여겨 봐야 할 것은 `tf.data.Dataset` 객체다. `Dataset`은 텐서플로에서 데이터 입력 파이프라인을 최적화시켜주는 클래스다. 다양한 형태의 입력 데이터를 일정한 단위로 뽑아서 사용할 수 있게 해주고 다양한 전처리를 적용할 수 있다.
 
-메모리에 올려진 List나 Numpy 데이터를 사용할 경우 `tensor_from_slices()` 함수를 이용한다. 리턴된 `dataset` 객체는 for문에서 반복이 가능하다. 그리고 `shuffle()` 이나 `batch()` 함수를 통해 데이터를 섞거나 배치 단위로 묶을수 있다. 위 코드에서는 학습 데이터의 순서를 섞고 `self.batch_size` (32개) 단위로 데이터를 묶어서 보낸다. 학습은 5 에폭을 반복하는데 이것도 사실 `repeat(5)` 함수까지 붙이면 `dataset` 객체가 한번의 for문에서 5 에폭을 반복할 수 있다. 하지만 1에폭이 끝날때마다 성능을 확인하기 위해 사용하지 않았다.  
+메모리에 올려진 List나 Numpy 데이터를 사용할 경우 `from_tensor_slices()` 함수를 이용한다. 리턴된 `dataset` 객체는 for문에서 반복이 가능하다. 그리고 `shuffle()` 이나 `batch()` 함수를 통해 데이터를 섞거나 배치 단위로 묶을수 있다. 위 코드에서는 학습 데이터의 순서를 섞고 `self.batch_size` (32개) 단위로 데이터를 묶어서 보낸다. 학습은 5 에폭을 반복하는데 이것도 사실 `repeat(5)` 함수까지 붙이면 `dataset` 객체가 한번의 for문에서 5 에폭을 반복할 수 있다. 하지만 1에폭이 끝날때마다 성능을 확인하기 위해 사용하지 않았다.  
 
 `Dataset`에 대한 자세한 내용은 아래 링크에서 볼 수 있고 다음 강의에서 더 자세히 다룰 예정이다.
 
@@ -834,7 +831,7 @@ Eager 모드에서는 일반 파이썬 프로그램처럼 한줄씩 실행하므
 | ---------------------- | --------------------- | ---------------------- |
 | concatenate            | concat                | cat                    |
 | expand_dims            | expand_dims           | unsqueeze              |
-| tensor[np.newaxis, :]  | tensor[np.newaxis, :] | tensor[None, :]        |
+| tensor[np.newaxis, :]  | tensor[tf.newaxis, :] | tensor[None, :]        |
 | transpose              | transpose             | movedim                |
 | sum, mean, min, max... | reduce_xxx            | sum, mean, min, max... |
 
@@ -856,7 +853,7 @@ Eager 모드에서는 일반 파이썬 프로그램처럼 한줄씩 실행하므
 
 #### a) 코드 구조
 
-텐서플로의 `AdvancedClassifier`와 전반적인 코드 구조는 유지하되 파이토치 스타일에 맞춰 모델 정의 부분만 `TorchClsfModel`라는 다른 클래스로 분리하였다. 유틸리티인 `DurationTime`과 `show_samples`는 위와 동일하다.
+텐서플로의 `AdvancedClassifier`와 전반적인 코드 구조는 유지하되 파이토치 스타일에 맞춰 모델 정의 부분만 `TorchClsfModel`라는 다른 클래스로 분리하였다. 유틸리티인 `DurationTime`과 `show_samples`는 위와 동일하다. 파일명은 **pt_classifier.py**로 지정하였다.
 
 ```python
 import torch
