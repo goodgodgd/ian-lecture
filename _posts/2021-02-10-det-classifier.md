@@ -96,7 +96,7 @@ Back to Tensor: tf.Tensor(
 
 #### a) 코드 구조
 
-모든 프로그래밍을 할 때는 먼저 생각나는 것을 짜는 것이 아니라 최상위 구조를 먼저 정하고 점차 하부구조를 정하면서 구체적인 알고리즘까지 작성해야한다. 그래야 오류도 적고 코드를 수정할 일이 적어진다. 여기서 최상위 구조는 다음과 같이 작성한다. 이와같이 대강의 상위 함수들과 입출력 데이터만 정하고나서 함수들을 기계적으로 코딩하면 프로그램을 완성할 수 있다.  
+모든 프로그래밍을 할 때는 먼저 생각나는 것을 짜는 것이 아니라 최상위 구조를 먼저 정하고 점차 하부구조를 정하면서 구체적인 알고리즘까지 작성해야한다. 그래야 오류도 적고 코드를 수정할 일이 적어진다. 여기서 최상위 구조는 다음과 같이 작성한다. 이와같이 대강의 상위 함수들과 입출력 데이터만 정하고나서 함수들을 기계적으로 코딩하면 프로그램을 완성할 수 있다. 파일명은 **tf_classifier_basic.py**로 지정하였다.
 
 ```python
 import tensorflow as tf
@@ -130,9 +130,6 @@ def tf2_keras_classifier():
     model = create_model(train_data)
     train_model(model, train_data)
     test_model(model, test_data)
-
-def load_dataset():
-    pass
 
 def create_model(dataset):
     pass
@@ -491,7 +488,7 @@ Keras를 활용하면 편리한 점도 있지만 학습 과정이 `model.fit()`�
 
 #### a) 코드 구조
 
-코드의 전체적인 흐름은 Keras Classifier와 유사하다. 하지만 이번에는 `AdvancedClassifier`라는 클래스를 만들어서 분류 모델에 관련된 코드들을 응집시켰다. **Common Utils** 아래의 코드는 위와 동일하다. 또 한가지 차이점은 `@tf.function` 데코레이터를 사용했다는 것이다. 자세한 내용은 아래 내용을 참고한다.  
+코드의 전체적인 흐름은 Keras Classifier와 유사하다. 하지만 이번에는 `AdvancedClassifier`라는 클래스를 만들어서 분류 모델에 관련된 코드들을 응집시켰다. **Common Utils** 아래의 코드는 위와 동일하다. 또 한가지 차이점은 `@tf.function` 데코레이터를 사용했다는 것이다. 자세한 내용은 아래 내용을 참고한다. 파일명은 **tf_classifier_adv.py**로 지정하였다.
 
 ```python
 import tensorflow as tf
@@ -657,7 +654,7 @@ _________________________________________________________________
 
 `train()` 함수에서 눈여겨 봐야 할 것은 `tf.data.Dataset` 객체다. `Dataset`은 텐서플로에서 데이터 입력 파이프라인을 최적화시켜주는 클래스다. 다양한 형태의 입력 데이터를 일정한 단위로 뽑아서 사용할 수 있게 해주고 다양한 전처리를 적용할 수 있다.
 
-메모리에 올려진 List나 Numpy 데이터를 사용할 경우 `tensor_from_slices()` 함수를 이용한다. 리턴된 `dataset` 객체는 for문에서 반복이 가능하다. 그리고 `shuffle()` 이나 `batch()` 함수를 통해 데이터를 섞거나 배치 단위로 묶을수 있다. 위 코드에서는 학습 데이터의 순서를 섞고 `self.batch_size` (32개) 단위로 데이터를 묶어서 보낸다. 학습은 5 에폭을 반복하는데 이것도 사실 `repeat(5)` 함수까지 붙이면 `dataset` 객체가 한번의 for문에서 5 에폭을 반복할 수 있다. 하지만 1에폭이 끝날때마다 성능을 확인하기 위해 사용하지 않았다.  
+메모리에 올려진 List나 Numpy 데이터를 사용할 경우 `from_tensor_slices()` 함수를 이용한다. 리턴된 `dataset` 객체는 for문에서 반복이 가능하다. 그리고 `shuffle()` 이나 `batch()` 함수를 통해 데이터를 섞거나 배치 단위로 묶을수 있다. 위 코드에서는 학습 데이터의 순서를 섞고 `self.batch_size` (32개) 단위로 데이터를 묶어서 보낸다. 학습은 5 에폭을 반복하는데 이것도 사실 `repeat(5)` 함수까지 붙이면 `dataset` 객체가 한번의 for문에서 5 에폭을 반복할 수 있다. 하지만 1에폭이 끝날때마다 성능을 확인하기 위해 사용하지 않았다.  
 
 `Dataset`에 대한 자세한 내용은 아래 링크에서 볼 수 있고 다음 강의에서 더 자세히 다룰 예정이다.
 
@@ -834,7 +831,7 @@ Eager 모드에서는 일반 파이썬 프로그램처럼 한줄씩 실행하므
 | ---------------------- | --------------------- | ---------------------- |
 | concatenate            | concat                | cat                    |
 | expand_dims            | expand_dims           | unsqueeze              |
-| tensor[np.newaxis, :]  | tensor[np.newaxis, :] | tensor[None, :]        |
+| tensor[np.newaxis, :]  | tensor[tf.newaxis, :] | tensor[None, :]        |
 | transpose              | transpose             | movedim                |
 | sum, mean, min, max... | reduce_xxx            | sum, mean, min, max... |
 
@@ -856,7 +853,7 @@ Eager 모드에서는 일반 파이썬 프로그램처럼 한줄씩 실행하므
 
 #### a) 코드 구조
 
-텐서플로의 `AdvancedClassifier`와 전반적인 코드 구조는 유지하되 파이토치 스타일에 맞춰 모델 정의 부분만 `TorchClsfModel`라는 다른 클래스로 분리하였다. 유틸리티인 `DurationTime`과 `show_samples`는 위와 동일하다.
+텐서플로의 `AdvancedClassifier`와 전반적인 코드 구조는 유지하되 파이토치 스타일에 맞춰 모델 정의 부분만 `TorchClsfModel`라는 다른 클래스로 분리하였다. 유틸리티인 `DurationTime`과 `show_samples`는 위와 동일하다. 파일명은 **pt_classifier.py**로 지정하였다.
 
 ```python
 import torch
@@ -921,7 +918,11 @@ if __name__ == "__main__":
 
 <https://pytorch.org/tutorials/beginner/data_loading_tutorial.html>
 
-Dataset과 DataLoader에 대한 자세한 내용은 다음에 다루고 여기서는 파이토치에서 제공하는 데이터셋 모듈을 이용해 데이터를 다운받고 numpy 형식의 원본 데이터를 출력한다.
+Dataset과 DataLoader에 대한 자세한 내용은 다음에 다루고 여기서는 파이토치에서 제공하는 데이터셋 모듈을 이용해 데이터를 다운받고 numpy 형식의 원본 데이터를 출력한다. 
+
+여기서 유의할 점은 **이미지를 transpose를 통해 차원 순서를 바꾼다**는 것이다. CIFAR-10 데이터는 기본적으로 (channel, height, width) 형태의 shape을 가진 *channel first* 형식을 가지고 있다. 텐서플로에서는 (height, width, channel) 형태의 *channel last* 형식을 주로 사용하지만 파이토치에서는 (channel, height, width) 형태의 *channel first* 형식을 사용한다. 하지만 opencv나 matplotlib 등 대부분의 이미지를 다루는 다른 패키지에서 channel last를 쓰기 때문에 일단 **channel first 형식으로 변환**해주기 위해 `np.transpose()` 함수를 사용했다.
+
+참고로 텐서플로에서도 channel을 앞에 두는 데이터를 처리할 수 있다. [tf.keras.layers.Conv2D](https://www.tensorflow.org/api_docs/python/tf/keras/layers/Conv2D) 클래스를 보면 `data_format`이란 옵션이 있는데 *"channel_last"*(default)나 *"channel_first"* 옵션을 넣을 수 있다. 확인해보진 않았지만 텐서플로에서도 channel_first를 쓰면 연산이 더 빨리 된다는 얘기가 있다. 
 
 ```python
 def load_dataset(dataname="cifar10", show_imgs=False):
@@ -952,8 +953,6 @@ Files already downloaded and verified
 Load cifar10 dataset: (50000, 3, 32, 32) (50000,) (10000, 3, 32, 32) (10000,)
 ```
 
-여기서 유의할 점은 **이미지를 transpose를 통해 차원 순서를 바꾼다**는 것이다. 텐서플로에서는 (batch, height, width, channel) 형태의 shape을 주로 사용하지만 파이토치에서는 (batch, channel, height, width) 형태의 shape을 사용한다. 텐서플로에서도 channel을 앞에 두는 데이터를 처리할 수 있다. [tf.keras.layers.Conv2D](https://www.tensorflow.org/api_docs/python/tf/keras/layers/Conv2D) 클래스를 보면 `data_format`이란 옵션이 있는데 **"channel_last"**(default)나 **"channel_first"** 옵션을 넣을 수 있다. 확인해보진 않았지만 텐서플로에서도 channel_first를 쓰면 연산이 더 빨리 된다는 얘기가 있다. 하지만 opencv나 matplotlib 등 대부분의 이미지를 다루는 다른 패키지에서 channel_last를 쓰기 때문에 자주 변환을 해줘야 하는 불편함이 있다.  
-
 
 
 #### c) 모델 정의
@@ -972,7 +971,8 @@ Load cifar10 dataset: (50000, 3, 32, 32) (50000,) (10000, 3, 32, 32) (10000,)
 class TorchClsfModel(nn.Module):
     def __init__(self):
         super(TorchClsfModel, self).__init__()
-        self.conv1 = nn.Conv2d(in_channels=3, out_channels=32, kernel_size=3, padding=1, padding_mode='zeros')
+        self.conv1 = nn.Conv2d(in_channels=3, out_channels=32, kernel_size=3, 
+                               padding=1, padding_mode='zeros')
         self.pool1 = nn.MaxPool2d(kernel_size=2, stride=2)
         self.conv2 = nn.Conv2d(32, 64, 3, padding=1, padding_mode='zeros')
         self.pool2 = nn.MaxPool2d(2, 2)
@@ -1004,7 +1004,7 @@ class TorchClsfModel(nn.Module):
 
 ##### Sequential model
 
-혹은 클래스를 정의하지 않고 텐서플로의 `keras.Sequential`처럼  `nn.Sequential` 클래스에 레이어 객체들을 쌓아바로 모델을 정의할 수도 있다.
+혹은 클래스를 정의하지 않고 텐서플로의 `keras.Sequential`처럼  `nn.Sequential` 클래스에 레이어 객체들을 쌓아서 바로 모델을 정의할 수도 있다.
 
 ```python
 seq_modules = nn.Sequential(
@@ -1015,7 +1015,7 @@ seq_modules = nn.Sequential(
 )
 ```
 
-그런데 이렇게 선언한 Sequential 모듈을 '모델'로 써도 되고 '레이어'로 써도 된다. 즉 모듈을 다른 모델의 레이어로 사용해도 된다는 것이다. 사실 `nn.Sequential`도 `nn.Module`을 상속받은 것인데 `nn.Module`의 하위 클래스들은 모두 모델이나 레이어로 사용될 수 있다. 이름 자체가 모듈이기 때문에 명시적으로 모델과 레이어를 구분하지 않는다. `nn.Module`은 단지 특정한 연산 과정을 정의할 뿐이다. 그래서 `nn.Module` 하위 클래스에서 모델을 정의할 때 `nn.Sequential` 객체를 레이어처럼 써도 되고 반대로 `nn.Sequential`을 선언할 때 `nn.Module` 하위 클래스를 레이어처럼 써도 된다.  
+그런데 이렇게 선언한 Sequential 모듈을 '모델'로 써도 되고 '레이어'로 써도 된다. 즉 모듈을 다른 모델의 레이어로 사용해도 된다는 것이다. `nn.Sequential`도 `nn.Module`을 상속받은 것인데 `nn.Module`의 하위 클래스들은 모두 모델이나 레이어로 사용될 수 있다. 이름 자체가 모듈이기 때문에 명시적으로 모델과 레이어를 구분하지 않는다. `nn.Module`은 단지 특정한 연산 과정을 정의할 뿐이다. 그래서 `nn.Module` 하위 클래스에서 모델을 정의할 때 `nn.Sequential` 객체를 레이어처럼 써도 되고 반대로 `nn.Sequential`을 선언할 때 `nn.Module` 하위 클래스를 레이어처럼 써도 된다.  
 
 참고로 텐서플로에서도 `tf.keras.Layer`와 `tf.keras.Model`이 기능상 큰 차이는 없다. 보통 레이어를 쌓아서 모델을 만들지만 작은 모델들을 연결하거나 기존 모델 위에 다른 레이어를 추가하여 새로운 모델을 만들수 있다. 다만 `tf.keras.Model`은 `tf.keras.Layer` 클래스를 상속하여 `predict, evaluate` 등의 모델 특화 기능을 추가한 것이다.
 
@@ -1024,9 +1024,9 @@ seq_modules = nn.Sequential(
 `nn.Module`과 `nn.Sequential`을 섞어서 쓰면 다음과 같은 모델 정의 클래스를 만들 수 있다. conv-pooling-relu로 반복되는 과정을 하나의 모듈로 선언하여 `forward()` 함수가 좀 더 단순해졌다. 
 
 ```python
-class TorchClsfModel(nn.Module):
+class TorchClsfModelUsingSequential(nn.Module):
     def __init__(self):
-        super(TorchClsfModel, self).__init__()
+        super(TorchClsfModelUsingSequential, self).__init__()
         self.conv_relu_pool1 = nn.Sequential(
             nn.Conv2d(in_channels=3, out_channels=32, kernel_size=3, 
                       padding=1, padding_mode='zeros'),
@@ -1075,7 +1075,7 @@ class TorchClassifier:
         x, y = torch.from_numpy(x).float(), torch.from_numpy(y)
         trainlen = int(x.shape[0] * (1 - self.val_ratio))
         x_train, y_train = x[:trainlen], y[:trainlen]
-        trainset = torch.utils.data.TensorDataset(x_train, y_train,)
+        trainset = torch.utils.data.TensorDataset(x_train, y_train)
         trainloader = torch.utils.data.DataLoader(trainset, batch_size=self.batch_size, shuffle=True, num_workers=2)
         x_val, y_val = x[trainlen:], y[trainlen:]
 
@@ -1086,7 +1086,11 @@ class TorchClassifier:
 
                 loss, accuracy = self.evaluate(x_val, y_val, verbose=False)
                 print(f"[Training] epoch={epoch}, val_loss={loss:1.4f}, val_accuracy={accuracy:1.4f}")
+```
 
+실제 학습 과정은 `train_batch()`에 나와있다. 먼저  `optimizer.zero_grad()`를 통해 gradient 메모리를 초기화 해야한다. 입력에 대한 모델 출력과 loss 계산결과를 바탕으로 학습을 진행한다. `loss.backward()`는 loss 계산 과정의 모든 연산에 대한 gradient를 계산한다. `optimizer.step()`은 모델의 파라미터를 업데이트 하는데 모델이 입력인자에 없다. 생성자에서 모델 파라미터의 포인터를 이미 optimizer에 전달해서 가지고 있기 때문에 학습시에는 입력인자가 없어도 된다. `loss.backward()` 함수에서 만든 모델 파라미터에 대한 gradient 계산 결과는 모델 파라미터 변수 내부에 자체적으로 저장되기 때문에 `loss`와 `optimizer`가 코드상으로 직접 연관이 없어도 파라미터를 통해 gradient가 전달될 수 있다.  
+
+```python
     def train_batch(self, x_batch, y_batch):
         # zero the parameter gradients
         self.optimizer.zero_grad()
@@ -1097,7 +1101,7 @@ class TorchClassifier:
         self.optimizer.step()
 ```
 
-실제 학습 과정은 `train_batch()`에 나와있다. 먼저  `optimizer.zero_grad()`를 통해 gradient 메모리를 초기화 해야한다. 입력에 대한 모델 출력과 loss 계산결과를 바탕으로 학습을 진행한다. `loss.backward()`는 loss 계산 과정의 모든 연산에 대한 gradient를 계산한다. `optimizer.step()`은 모델의 파라미터를 업데이트 하는데 모델이 입력인자에 없다. 생성자에서 모델 파라미터의 포인터를 이미 optimizer에 전달해서 가지고 있기 때문에 학습시에는 입력인자가 없어도 된다. `loss.backward()` 함수에서 만든 모델 파라미터에 대한 gradient 계산 결과는 모델 파라미터 변수 내부에 자체적으로 저장되기 때문에 `loss`와 `optimizer`가 코드상으로 직접 연관이 없어도 파라미터를 통해 gradient가 전달될 수 있다.  
+
 
 실행 결과는 다음과 같다.  
 
