@@ -20,7 +20,7 @@ categories: 2021-1-systprog
 C언어에서 함수의 프로토 타입을 먼저 적는 것을 함수 선언, 함수 내용을 구현하는 코드를 함수 정의라고 부르는데 파이썬에서는 이를 나누지 않고 바로 정의만하면 된다. 기본적인 함수의 구조는 다음과 같다. 파이썬은 다중 입력과 다중 출력을 지원하고 입력이나 출력이 없을 수도 있다. 
 
 ```python
-def function_name(arg1, arg2):
+def function_multi_input_multi_output(arg1, arg2):
     statement1
     statement2
     return out1, out2
@@ -155,7 +155,7 @@ matplotlib.pyplot.boxplot(x, notch=None, sym=None, vert=None, whis=None, positio
 
 ## 4. 변경 가능한 입력인자 개수
 
-### 4.1 *args
+### 4.1. *args
 
 코딩을 하다보면 함수에 들어갈 입력인자의 개수를 미리 알 수 없거나 너무 많아서 함수 선언에 다 쓰기 힘든 경우도 있다. C++ 같은 경우 모든 가능한 경우의 입력인자 개수만큼 함수 선언을 따로 해줘야 하지만 파이썬에서는 `*args`라는 입력인자 하나로 여러개의 입력인자를 받을 수 있다. `args`라는 이름은 관습적으로 많이 쓰이는 것이고 `*input`처럼 다른 이름으로 바꿀수 있고 앞에 `*`만 붙이면 된다. `*args`는 반드시 마지막 입력인자로 들어가야하며 `*args` 앞에는 일반적인 고정형 입력인자가 들어갈 수 있다.
 
@@ -202,10 +202,11 @@ def average_variable_arguments(data, multiple, *args):
     avg = average_list_with_default(data, *args)
     return avg
 
+data = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 result = average_variable_arguments(data, 10, 1, 7)
-print("average_variable_arguments(data, 1, 7) =>", result)
+print("average_variable_arguments(data, 10, 1, 7) =>", result)
 result = average_variable_arguments(data, 10, 1, 7, [3], False)
-print("average_variable_arguments(data, 1, 7, [3], True) =>", result)
+print("average_variable_arguments(data, 10, 1, 7, [3], True) =>", result)
 result = average_list_with_default(data, 1, 7)
 print("average_list_with_default(data, 1, 7) =>", result)
 result = average_list_with_default(data, 1, 7, [3], False)

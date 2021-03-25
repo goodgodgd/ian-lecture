@@ -78,7 +78,7 @@ print("Press 'q' to quit")
 while name != 'q':
     print("type dc hero's name")
     name = input()
-    if name is 'q':
+    if name == 'q':
         break
     if name not in dc_heroes:
         print(f"{name} is not dc hero")
