@@ -9,11 +9,11 @@ categories: 2021-1-detector
 
 ## Why Tfrecord?
 
-딥러닝 학습은 고속의 연산능력을 요구한다. 딥러닝 학습을 하려면 하드디스크에서 데이터를 불러와서 RAM에 올리고 CPU를 거쳐 GPU로 갈 것이다. 이 과정에서 가장 느린 장치가 하드디스크다. GPU, CPU 성능은 날로 발전하고 RAM은 용량이 늘어나면 속도도 올라갈 수 있는데 하드디스크에서 파일을 읽어오는게 느리면 GPU의 성능을 최대한으로 쓸 수 없다. 요즘은 SSD가 HDD를 대체해가고 있지만 여전히 10TB급의 대용량은 HDD의 영역이다. 갈수록 데이터셋도 대용량화되어 요즘은 TB급의 데이터셋도 있기 때문에 HDD를 써야하는 경우가 많다.  
+딥러닝 학습은 고속의 연산능력을 요구한다. 딥러닝 학습을 하려면 하드디스크에서 데이터를 불러와서 RAM에 올리고 CPU를 거쳐 GPU로 갈 것이다. 이 과정에서 가장 느린 장치가 하드디스크다. 하드디스크에서 파일을 읽어오는게 느리면 GPU의 성능을 최대한으로 쓸 수 없다. 요즘은 SSD가 HDD를 대체해가고 있지만 여전히 10TB급의 대용량은 HDD의 영역이다. 갈수록 데이터셋도 대용량화되어 요즘은 TB급의 데이터셋도 있기 때문에 HDD를 써야하는 경우가 많다.  
 
 텐서플로에서는 `tf.data.Dataset` 클래스 객체로 학습에 필요한 데이터를 받는다. `Dataset`이 원본 데이터셋 파일에서 데이터를 읽어온다면 디스크에 산재된 여러개의 파일을 찾고 읽어오는데 시간이 오래 걸릴 것이다. 하지만 데이터가 하나 혹은 소수의 파일에 학습에 필요한 세트단위로 잘 정리가 되어있다면 데이터를 읽어오는 속도가 크게 향상될 것이다.
 
-Tfrecord는 텐서플로에서 제공하는 데이터 포맷이다. 데이터를 저장할 때는 여러가지 학습 데이터를 스텝단위로 잘 정리하여 소수의 파일에 저장할 수 있게 한다. 데이터를 읽어올 때는 다수의 개별 파일을 읽어오는 것보다 빠른 읽기 속도를 제공하고 추가적으로 앞으로 사용할 데이터를 미리 읽는다던가 다수의 스레드에서 읽는 등의 최적화도 적용할 수 있다. 그래서 텐서플로에서 대용량 학습데이터를 다루러면 먼저 Tfrecord 파일을 만들고 읽을 줄 알아야 한다.
+Tfrecord는 텐서플로에서 제공하는 데이터 포맷이다. 데이터를 저장할 때는 여러가지 학습 데이터를 스텝단위로 잘 정리하여 소수의 파일에 저장할 수 있게 한다. 데이터를 읽어올 때는 다수의 개별 파일을 읽어오는 것보다 빠른 읽기 속도를 제공하고 추가적으로 앞으로 사용할 데이터를 미리 읽는다던가 다수의 스레드에서 읽는 등의 최적화도 적용할 수 있다. 그래서 텐서플로에서 대용량 학습데이터를 다루러면 먼저 Tfrecord 파일을 만들고 읽을 줄 아는게 좋다.
 
 #### 참고자료
 
@@ -30,15 +30,11 @@ https://www.tensorflow.org/guide/data
 
 ### 1.1. TfrecordWriter
 
-Tfrecord는 여러가지 크기와 종류의 데이터들을 serialize 하여 단순히 byte들의 나열로 저장한다. 이해를 위해 대략적으로 표현하면 이런 형태로 저장된다.
+Tfrecord는 여러가지 크기와 종류의 데이터들을 dictionary에 담은 후 dictionary 전체 데이터를 serialize 하여 단순히 byte들의 나열로 저장한다. 문자열 key와 데이터가 dictionary로 묶여서 하나의 *Example*을 이루고 example들이 차례로 디스크에 저장된다. Example은 tfrecord 데이터를 저장하고 읽는 최소 단위다. 문자열, 정수, 실수(의 배열) 등 다양한 타입을 저장하고 읽을 수 있다. Tfrecord 파일을 만드는 과정은 다음과 같다.
 
-> [{str_key1: bytes1, str_key2: bytes2, ...}, {...}, ...]
-
-문자열 key와 bytes 데이터들이 dictionary로 묶여서 하나의 *Example*을 이루고 example들이 차례로 디스크에 저장된다. Example은 tfrecord 데이터를 저장하고 읽는 최소 단위다. 문자열, 정수, 실수(의 배열) 등 다양한 타입을 저장하고 읽을 수 있다. Tfrecord 파일을 만드는 과정은 다음과 같다.
-
-1. 하나의 example에 필요한 데이터 불러오기 (numpy, list, str 등)
-2. example 데이터를 dictionary로 묶기
-3. dictionary의 value들을 serialize 하기
+1. 하나의 example에 필요한 데이터 불러오기 (numpy, int, float, list, str 등)
+2. 데이터를 dictionary로 묶어 example 원본 만들기
+3. example을 serialize 하기
 4. serialized example을 파일에 쓰기
 5. 모든 데이터에 대해 1~4를 반복
 
@@ -106,8 +102,9 @@ class TfrSerializer:
 
 if __name__ == "__main__":
     write_cifar10_tfrecord()
-
 ```
+
+실제 개발시에는 Config과 TfrSerializer를 독립적인 파일에 만들어주는 것이 좋다.
 
 
 
@@ -136,8 +133,8 @@ def load_cifar10_dataset(data_path, img_shape):
     return (train_images, train_labels), (test_images, test_labels)
 
 def read_data(file, img_shape):
-    with open(file, 'rb') as fo:
-        data = pickle.load(fo, encoding='bytes')
+    with open(file, 'rb') as fr:
+        data = pickle.load(fr, encoding='bytes')
         labels = data[b"labels"]    # list of category indices, [10000], int
         images = data[b"data"]      # numpy array, [10000, 3072(=32x32x3)], np.uint8
         # CIFAR dataset is encoded in channel-first format
@@ -151,7 +148,7 @@ def read_data(file, img_shape):
 
 #### c) 데이터 쓰기 loop
 
-아래 코드는 데이터를 받아 이를 변환하여 출력 파일을 쓰는 과정을 보여준다. 레이블을 숫자와 문자 두 가지 다 저장하기 위해 숫자 레이블 `ys`를 이에 해당하는 문자열 배열로 변환한 `labels`를 만든다. ()`labels = labels[ys]`)  
+아래 코드는 데이터를 받아 이를 변환하여 출력 파일을 쓰는 과정을 보여준다. 레이블을 숫자와 문자 두 가지 다 저장하기 위해 숫자 레이블 `ys`를 이에 해당하는 문자열 배열로 변환한 `labels`를 만든다. (`labels = labels[ys]`)  
 
 저장할 데이터에 대해 for loop을 돌면서 저장할 example을 만들고 example을 serialize 한 결과를 tfrecord 파일에 저장하면 된다. 여기서 serialize 하는 과정이 중요한데 그건 다음에 `TfrSerializer` 클래스에서 설명한다.    
 
@@ -405,6 +402,8 @@ if __name__ == "__main__":
     read_cifar10_tfrecord()
 ```
 
+여기서는 예제로 보여주기 위해  하나의 파일로 만들었지만 Config과 AdvancedClassifier 독립적인 파일로 만드는게 좋다.
+
 
 
 #### b) 데이터셋 불러오기
@@ -571,34 +570,5 @@ sample: 6 (32, 32, 32, 3) [3 5 1 1 9 1 2 9] [b'cat' b'dog' b'car' b'car' b'truck
   true indices [3 8 8 0 6 6 1 6 3 1 0 9 5 7 9 8 5 7 8 6]
   loss=0.8841, accuracy=0.6993
 ```
-
-
-
-여기까지 완성
-
----
-
-
-
-
-
-## KITTI Example
-
-
-
-### TfrecordWiter
-
-
-
-tfr_config
-
-
-
-### TfrecordReader
-
-
-
-
-
 
 
