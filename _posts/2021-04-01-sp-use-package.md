@@ -1,19 +1,19 @@
 ---
 layout: post
 title:  "[Python] Use Basic Packages"
-date:   2020-04-02 09:00:13
-categories: 2020-1-systprog
+date:   2021-04-01 09:00:13
+categories: 2021-1-systprog
 ---
 
 
 
 # 강력한 파이썬의 패키지들
 
-지금까지 배운 편리한 파이썬 문법을 기반으로 수많은 사용자들이 자신이 개발한 패키지를 pypi에 공유하여 파이썬 생태계는 지속적으로 확장되고 있다. 파이썬 패키지는 간단한 유틸리티들부터 웹 개발, 데이터분석, 인공지능 등 거의 없는 것이 없다. 무엇인가를 개발하기 전에 항상 활용할 수 있는 기존 패키지를 찾아보는 것이 좋다. 이번 장에서는 파이썬 기본 패키지인 `sys, os, glob` 등과 따로 설치해야 하는 외부 패키지인 `numpy`의 사용법에 대해 알아볼 것이다. 각각의 패키지들이 가지고 있는 기능을 모두 설명하려면 몇 일이 걸릴지 모르니 가장 많이 쓰이는 기능만 골라서 공부해보자.
+지금까지 배운 편리한 파이썬 문법을 기반으로 수많은 사용자들이 자신이 개발한 패키지를 pypi에 공유하여 파이썬 생태계는 지속적으로 확장되고 있다. 파이썬 패키지는 간단한 유틸리티들부터 웹 개발, 데이터분석, 인공지능 등 거의 없는 것이 없다. 무엇인가를 개발하기 전에 항상 활용할 수 있는 기존 패키지를 찾아보는 것이 좋다. 이번 장에서는 파이썬 기본 패키지인 `sys, os, glob` 등과 따로 설치해야 하는 외부 패키지인 `numpy`의 사용법에 대해 알아볼 것이다. 각각의 패키지들이 가지고 있는 기능을 모두 설명하려면 몇 달이 걸릴지 모르니 가장 많이 쓰이는 기능만 골라서 공부해보자.
 
 # 1. Utilities
 
-## 1.1 sys.path
+## 1.1. sys.path
 
 `sys.path`는 파이썬이 패키지를 검색하는 경로들이다. 파이썬에서 `import package_name`을 할 때 `package_name`을 찾는 디렉토리 위치가 지정되어 있다. 일단 한번 프린트해보자.
 
@@ -40,9 +40,11 @@ import list_ops as lo
 print(lo.spam)
 ```
 
-경로를 추가하지 않고 `import package.list_ops` 가 아니라 바로 `import list_ops`를 실행하면 에러가 난다는 것을 확인할 수 있다. 추가할 경로를 `new_path`에 만들었는데 주의할 점은 윈도우에서 부모폴더와 자식폴더는 `//` 또는 `\`로 구분해야한다. 경로를 탐색기에서 복사해서 붙이면 그냥 `/` 하나만 있는데 둘 중 하나로 수정해줘야 한다. 그리고 무턱대고 `sys.path`에 경로를 추가하면 같은 경로를 여러번 추가할 수도 있으므로 기존 경로 중에 `new_path`가 없다는 것을 확인하고 입력하는 것이 좋다. 경로를 추가한 후에 다시 `import list_ops`를 하니 import가 되고 `lo.spam` 값도 잘 나오는 것을 확인할 수 있다.
+경로를 추가하지 않고 `import package.list_ops` 가 아니라 바로 `import list_ops`를 실행하면 에러가 난다는 것을 확인할 수 있다. 추가할 경로를 `new_path`에 만들었는데 주의할 점은 윈도우에서 부모폴더와 자식폴더는 `//` 또는 `\`로 구분해야한다. 경로를 탐색기에서 복사해서 붙이면 그냥 `/` 하나만 있는데 둘 중 하나로 수정해줘야 한다. 그리고 무턱대고 `sys.path`에 경로를 추가하면 같은 경로를 여러번 추가할 수도 있으므로 기존 경로 중에 `new_path`가 없다는 것을 확인하고 입력하는 것이 좋다. 경로를 추가한 후에 다시 `import list_ops`를 하니 import가 되고 `lo.spam` 값도 잘 나오는 것을 확인할 수 있다.  
 
-## 1.2 파일이나 폴더 생성/삭제
+
+
+## 1.2. 파일이나 폴더 생성/삭제
 
 파이썬에서는 내장 패키지를 통해 파일이나 폴더를 생성/삭제 할 수 있는 함수를 제공한다.
 
@@ -50,15 +52,15 @@ print(lo.spam)
 - shutil.rmtree(dirpath, ignore_errors): `dirpath` 경로의 폴더를 지운다. 없는 폴더를 지우라고하면 에러를 발생시킨다. `ignore_errors=True`이면 폴더가 없어도 에러를 무시한다.
 - os.remove(filepath): `filepath` 경로의 파일을 지운다. 없는 파일을 지우라고하면 에러를 발생시킨다.
 
-다음 예제에서 `create`이 1 (또는 True)일 때는 파일과 폴더를 생성하고 0 (또는 False)일 때는 삭제한다. 먼저 1로 실행하여 생성된 파일과 폴더를 확인하고 0으로 실행하여 삭제된 결과를 확인해보자. 이미 똑같은 생성/삭제 명령을 반복하면 에러가 나는 것을 볼 수 있다.
+다음 예제에서 `create`이 1 (또는 True)일 때는 파일과 폴더를 생성하고 0 (또는 False)일 때는 삭제한다. 먼저 1로 실행하여 생성된 파일과 폴더를 확인하고 0으로 실행하여 삭제된 결과를 확인해보자. 이미 똑같은 생성/삭제 명령을 반복하면 에러가 나는 것을 볼 수 있다.  
 
 ```python
-create = 1
 import os
 import shutil
 tempdir = "D:/tempdir"
 tempfile1 = "D:/tempdir/tempfile1.txt"
 tempfile2 = "D:/tempdir/tempfile2.txt"
+create = 1
 
 if create == 1:
     os.mkdir(tempdir)
@@ -89,7 +91,9 @@ elif create == 0:
     print("rmtree non-existing dir but no error")
 ```
 
-## 1.3 파일  폴더 존재 확인
+
+
+## 1.3. 파일  폴더 존재 확인
 
 위 예제에서처럼 파일이나 폴더가 있는지를 모르고 파일 생성/삭제를 하게되면 에러가 나기 쉽다. 파일이나 폴더가 이미 있는지 확인하는 함수가 필요한데 `os.path.isdir()`과 `os.path.isfile()`을 이용하면 된다.
 
@@ -113,7 +117,9 @@ else:
     print(f"{tempdir} does NOT exists")
 ```
 
-## 1.4 경로명 만들기
+
+
+## 1.4. 경로명 만들기
 
 폴더경로와 파일명을 합칠 때는 둘 사이에 `//`나 `\`를 넣어주면 된다. 문자열 연산으로 해도 되지만 합치는 방식이 운영체제 별로 조금씩 다르기 때문에 `os.path.join()` 함수를 쓰면 좋다. 반대로 전체 경로에서 마지막 파일이나 폴더명을 분리할 때는 `os.path.basename()`을 쓰고 그것이 속한 경로명만 추출하고 싶을 때는 `os.path.dirname()`을 사용한다.
 
@@ -127,7 +133,7 @@ filename = os.path.basename(curfile_path)
 print("current file name:", filename)
 pathname = os.path.dirname(curfile_path)
 print("current dir path:", pathname)
-print("grand parent dir path:", os.path.dirname(pathname))
+print("parent dir path:", os.path.dirname(pathname))
 newfile = os.path.join(pathname, "newfile.txt")
 print("new file name:", newfile)
 with open(newfile, "w") as f:
@@ -136,7 +142,9 @@ newpath = os.path.join(pathname, "new", "path", "name")
 print([newpath])
 ```
 
-## 1.5 파일목록 출력
+
+
+## 1.5. 파일목록 출력
 
 다수의 파일이나 폴더들을 자동으로 관리해야 한다고 했을 때 일단 어떤 파일들이 있는지 목록을 만들수 있어야 한다. 파이썬에는 파일 목록을 보는 여러 방법이 있지만 그 중 `os.listdir()`과 `glob.glob()`이 쓰기 쉬운 편이다. 간단한 예제를 실행해보자.
 
@@ -175,11 +183,15 @@ print("subdir list in current dir:", dirlist)
 
 `numpy`는 배열 객체를 만들고 배열 연산을 할 수 있는 패키지다. `numpy`를 쓰면 `MATLAB`의 행렬 연산과 비슷한 기능을 한다. `numpy`의 다양한 기능과 세부적인 용법은 책 한권 분량이기 때문에 여기서는 기초적인 내용만 다룬다. 이후 배울 영상처리에서도 영상을 `numpy`의 배열로 처리하게 되므로 잘 알아두어야 한다. `numpy`에 관한 내용은 점프투파이썬이 아닌 [이곳](http://taewan.kim/post/numpy_cheat_sheet/)을 참고해서 만들었다. 이곳에 더 자세한 내용이 있으니 들어가서 공부해보길 바란다.
 
-## 2.1 Array vs Matrix
+
+
+## 2.1. Array vs Matrix
 
 MATLAB과 numpy의 가장 큰 차이는 기본 데이터 형식이 MATLAB은 **행렬(matrix)**이고 numpy는 **배열(array)**이라는 것이다. 그럼 행렬과 배열은 무엇이 다른가? 똑같이 `A=[1 2; 3 4]`라는 배열과 행렬이 있을 때 `A*A`를 하면 MATLAB에서는 `[7 10; 15 22]`가 나오고 numpy에서는 `[1 4; 9 16]`이 나온다. MATLAB은 행렬의 곱셈을 한 것이고 numpy는 배열의 같은 위치의 원소끼리 곱셈을 한 것이다. 행렬은 수학적인 matrix를 의미하는 것이고 배열은 프로그래밍에서 데이터 여러 개를 모아놓은 것이다. 물론 MATLAB에서도 배열 연산이 가능하고 numpy에서도 행렬 연산이 가능하지만 기본 데이터 형식이 다르다는 것을 알아두어야 한다.
 
-## 2.2 Array Creation
+
+
+## 2.2. Array Creation
 
 배열을 생성하는 가장 기본적인 방법은 리스트를 이용하는 것이다. 다중 리스트를 이용하면 다차원 배열도 만들 수 있다. `np.array()` 함수에 list를 넣으면 되는데 `dtype`이란 입력인자로 데이터 타입도 정할 수 있다.
 
@@ -209,9 +221,9 @@ print("permutation:\n", np.random.permutation(10))
 
 난수로 배열을 생성하는 것도 가능하다. `np.random` 아래의 함수들을 사용한다.
 
-- np.random.rand(d0, d1, ..., dn): 입력한 크기의 난수배열 생성. 값은 [0, 1) 사이의 값을 uniform sampling 한다.
-- np.random.randn(d0, d1, ..., dn): 입력한 크기의 난수배열 생성. 값은 평균 0, 표준편차 1의 정규분포로부터 표본추출한다.
-- np.random.randint(low, high, size): 입력한 크기의 정수 난수배열 생성. `[low, high)` 사이의 정수를 랜덤생성하여 `size`의 크기의 배열을 만든다.
+- np.random.rand(d0, d1, ..., dn): 입력한 크기의 난수배열 생성. 값은 [0, 1) 사이의 값을 uniform sampling 한다.  
+- np.random.randn(d0, d1, ..., dn): 입력한 크기의 난수배열 생성. 값은 평균 0, 표준편차 1의 정규분포로부터 표본추출한다.  
+- np.random.randint(low, high, size): 입력한 크기의 정수 난수배열 생성. `[low, high)` 사이의 정수를 랜덤생성하여 `size`의 크기의 배열을 만든다.  
 
 ```python
 print("uniform over [0, 1)\n", np.random.rand(3, 4))
@@ -219,7 +231,9 @@ print("normal by N(0, 1)\n", np.random.randn(3, 4))
 print("random int over [0, 5)\n", np.random.randint(0, 5, size=(2, 3)))
 ```
 
-## 2.3 Array Shape
+
+
+## 2.3. Array Shape
 
 배열에서 `np.ndarray.shape` 변수는 각 차원의 크기 정보를 튜플로 가지고 있다. 전체 차원수는  `np.ndarray.ndim` 으로 확인할 수 있다.
 
@@ -241,7 +255,7 @@ print("foo (3,2)\n", foo3d.reshape(3, 2))
 print("foo (3,2)\n", foo3d.reshape(2, 3))
 ```
 
-## 2.4 Array Indexing, Slicing
+## 2.4. Array Indexing, Slicing
 
 다차원 `numpy` 배열에서 특정 데이터 값이나 일부 배열을 가져오는 방법은 리스트와 비슷하다. 다차원 배열을 인덱싱, 슬라이싱 할 때는 하나의 `[d0, d1, ...]`안에 모든 인덱스를 넣는다. 기존에 MATLAB을 써본 사람은 배열에서 인덱스를 정할 때 n번째 인덱스가 가로축인지 세로축인지 깊이축인지 헷갈릴 수 있다. 그럴때는 다차원 리스트 안에 들어있는 값에 접근할 때를 생각해보면 된다. 가장 바깥쪽 리스트가 `d0`에 해당하고 점점 안으로 들어갈 수록 `d1, d2, ...`가 되는 것이다. 가로축, 세로축을 기준으로 생각하면 헷갈리니 개념을 잘 잡아야 한다. 다음 예제를 보면서 익혀보자.
 
@@ -269,14 +283,16 @@ print("5) data[0, 1:, :]: shape={}\n{}".format(data[0, 1:, :].shape, data[0, 1:,
 print("6) data[:1, 1:, :]: shape={}\n{}".format(data[:1, 1:, :].shape, data[:1, 1:, :]))
 ```
 
-- 1)은 첫번째 차원은 인덱싱을 하고 나머지에선 전체 슬라이싱을 하여 결과가 2차원 배열로 나와야 하고 `data_np`에서 위쪽 배열이 출력된다. 
-- 2)에서는 반대로 세번째 차원을 인덱싱하고 나머지에서 전체 슬라이싱을 했는데  `data_np`의 가장 안쪽 리스트의 가운데 숫자들이 나옴을 볼 수 있다. 
+- 1)은 첫번째 차원은 인덱싱을 하고 나머지에선 전체 슬라이싱을 하여 결과가 2차원 배열로 나와야 하고 `data`에서 위쪽 배열이 출력된다. 
+- 2)에서는 반대로 세번째 차원을 인덱싱하고 나머지에서 전체 슬라이싱을 했는데  `data`의 가장 안쪽 리스트의 가운데 숫자들이 나옴을 볼 수 있다. 
 - 3)에서는 마지막 차원을 슬라이싱하여 결과가 2x2로 나온다.
 - 4)에서는 두 차원을 인덱싱하여 1차원 배열이 나왔고 `data_list[0][1]`과 같은거라서 `[3, 4, 9]`가 나온다. 인덱싱을 한 첫번째 두 개의 차원은 사라지고 슬라이싱한 마지막 차원만 배열로 나타난다.
 - 5)에서 나오는 숫자들은 4)와 같지만 `d1`에서 인덱싱이 아닌 슬라이싱을 했기 때문에 길이 1인 차원이 하나 더 생겼다. 리스트에서 인덱싱하면 값이 나오고 슬라이싱하면 리스트가 나온다는 것을 상기하자. 슬라이싱을 하면 크기와 관계없이 그 차원은 배열로 남고 인덱싱을 하면 그 차원은 값만 남기고 사라진다.
 - 6)은 모든 차원을 슬라이싱 했기 때문에 3차원 배열이 된다.
 
-## 2.5 Array Operations
+
+
+## 2.5. Array Operations
 
 배열 사이의 연산은 단순히 원소 사이의 연산으로 치환된다. 아래 예시에서 operator와 그에 해당하는 함수도 봐두자.
 
@@ -310,9 +326,9 @@ print("foo[bar < 3]:", foo[bar < 3])
 print("foo[foo % 2 == 0]:", foo[foo % 2 == 0])
 ```
 
-`foo > bar`를 프린트해보면 각각의 원소에 대해서 비교 연산을 한 TF 배열이 나온다. 이 TF 배열을 인덱스처럼 넣으면 `True`에 해당하는 원소들만 1차원 배열로 나오게 된다. 
+`foo > bar`를 프린트해보면 각각의 원소에 대해서 비교 연산을 한 bool 배열이 나온다. 이 bool 배열을 인덱스처럼 넣으면 `True`에 해당하는 원소들만 1차원 배열로 나오게 된다. 
 
-## 2.6 Math Functions
+## 2.6. Math Functions
 
 `numpy`는 `sin, cos, tan, exp, log, sqrt` 등의 기본적인 수학함수들도 제공한다. 배열에 적용하면 배열의 모든 원소에 대해 각각 계산한 결과가 나온다.
 
@@ -351,7 +367,7 @@ print("max", np.max(foo, axis=0))
 print("std", np.std(foo, axis=1))
 ```
 
-## 2.7 Merging Arrays
+## 2.7. Merging Arrays
 
 여러개의 배열이 있는데 이들을 하나의 배열로 합치고 싶을 땐 어떻게 해야할까? `np.stack`이나 `np.concatenate` 함수를 쓰면 된다. 둘 다 배열을 합치는 함수인데 차이는 `np.stack`는 새로운 차원을 추가하며 합친다는 것이고 `np.concatenate`는 기존 배열이 갖고 있는 차원수를 유지하며 합친다는 것이다. 무슨 말인지 예시를 보며 이해해보자.
 
@@ -371,7 +387,7 @@ print("concat axis=1\n", np.concatenate([foo, bar], axis=1))
 
 결과를 보면 `np.stack`의 결과는 모두 차원이 늘어나서 3차원이고 `np.concatenate`의 결과를 차원이 유지가되서 2차원인 것을 볼 수 있다. `np.stack`의 원리는 지정한 차원에서의 원소끼리 `[]`로 한번더 묶어주는 것이다. `stack1`을 만드는 과정을 보면 하위 배열들을 배열로 한번 더 묶는 것이다. 반면에 `np.concatenate`은 두 배열을 배열의 원소로서 묶는게 아니라 하나의 배열로 합친다. 
 
-## 2.8 Iterate by for
+## 2.8. Iterate by for
 
 `numpy` 배열에 대해서도 for문을 돌 수 있는데 단순히 첫 번째 차원(d0)에 대해 순서대로 인덱싱한 결과가 나온다고 보면 된다. 다음 예시에서 인덱싱한 결과와 배열을 for문에 바로 넣은 결과가 같은 것을 볼 수 있다.
 
