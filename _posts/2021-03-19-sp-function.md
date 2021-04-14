@@ -54,12 +54,12 @@ def average_list(data, start, end, skip, verbose):
 
     sum = 0
     for ind, num in enumerate(avg_data):
-        if ind not in skip:
+        if ind + start not in skip:
             sum += num
     dlen = len(avg_data) - len(skip)
     average = sum / dlen
     if verbose:
-        print(f"average {start}~{end} with skipping {skip} = {average}")
+        print(f"average over indices [{start}~{end}) with skipping index {skip} = {average}")
     return average
 ```
 
