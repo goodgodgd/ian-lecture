@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "[Det] Create Detection Dataset in tfrecords"
+title:  "[Det] Detection Dataset in tfrecord"
 date:   2021-04-03 09:00:13
 categories: 2021-1-detector
 ---
@@ -66,9 +66,9 @@ KITTI 검출 데이터셋은 7,481장의 학습 이미지와 7,518장의 테스�
 
 깃헙의 다른 많은 프로젝트들을 보면 이러한 파라미터들을 flag로 관리한다. [링크](https://github.com/yzcjtr/GeoNet/blob/master/geonet_main.py)를 보면 수많은 파라미터들을 터미널에서 입력받을 수 있게 만들었다. 그러다보니 학습 시키는 명령어가 너무 길다. 사실 이것도 최소한의 파라미터만 쓴 것이고 나머지 파라미터는 기본값을 사용한 것이다.
 
-> ```
-> python geonet_main.py --mode=train_rigid --dataset_dir=/path/to/formatted/data/ --checkpoint_dir=/path/to/save/ckpts/ --learning_rate=0.0002 --seq_length=3 --batch_size=4 --max_steps=350000 
-> ```
+```
+python geonet_main.py --mode=train_rigid --dataset_dir=/path/to/formatted/data/ --checkpoint_dir=/path/to/save/ckpts/ --learning_rate=0.0002 --seq_length=3 --batch_size=4 --max_steps=350000 
+```
 
 
 

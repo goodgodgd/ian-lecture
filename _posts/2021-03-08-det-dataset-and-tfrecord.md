@@ -17,8 +17,8 @@ Tfrecord는 텐서플로에서 제공하는 데이터 포맷이다. 데이터를
 
 #### 참고자료
 
-https://www.tensorflow.org/tutorials/load_data/tfrecord
-https://www.tensorflow.org/guide/data
+<https://www.tensorflow.org/tutorials/load_data/tfrecord>
+<https://www.tensorflow.org/guide/data>
 
 
 
@@ -320,7 +320,7 @@ b'\nA\n\x0f\n\x04name\x12\x07\n\x05\n\x03car\n\x0c\n\x03int\x12\x05\x1a\x03\n\x0
 
 ### 1.2. TfrecordReader
 
-**cifar10_tfr_writer.py**으로 tfrecord 파일을 저장했다면 이제 이를 읽어서 분류 모델 학습에 적용해보자. 먼저 tfrecord 파일을 읽어들이는 `tf.data.Dataset` 객체를 만든다. Tfrecord 파일은 raw bytes로 저장되어 있기 때문에 저장된 데이터의 타입을 미리 알고있어야 이를 원래대로 복구할 수 있다. 데이터의 타입과 형태(shape)을 복구하고 batch, epoch, shuffle 등의 설정을 추가하여 학습 또는 테스트에 사용한 Dataset 객체를 만든다.  
+**cifar10_tfr_writer.py**으로 tfrecord 파일을 저장했다면 이제 이를 읽어서 분류 모델 학습에 적용해보자. 먼저 tfrecord 파일을 읽어들이는 `tf.data.Dataset` 객체를 만든다. Tfrecord 파일은 raw bytes로 저장되어 있기 때문에 저장된 데이터의 타입을 미리 알고있어야 이를 원래대로 복구할 수 있다. 데이터의 타입과 형태(shape)을 복구하고 batch, epoch, shuffle 등의 설정을 추가하여 학습 또는 테스트에 사용할 Dataset 객체를 만든다.  
 
 Dataset 객체를 만들고 나면 나머지 과정은 지난번 했던 *Advanced Model*과 거의 유사하다.  
 
@@ -410,7 +410,7 @@ if __name__ == "__main__":
 
 데이터셋 객체를 만드는 과정은 다음과 같고 `get_dataset()` 함수로 이를 구현하였다.
 
-1. Tfrecod 파일 목록으로부터 기본 Dataset 객체 만들기
+1. Tfrecord 파일 목록으로부터 기본 Dataset 객체 만들기
 2. `map()` 함수 이용하여 Dataset 객체에서 데이터를 읽어올 때 전처리 과정 적용
 3. batch, epoch, shuffle 등의 데이터셋 속성 추가
 
