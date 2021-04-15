@@ -1,8 +1,8 @@
 ---
 layout: post
 title:  "[Python] Introduction to PyQt5"
-date:   2020-04-20 09:00:01
-categories: 2020-1-systprog
+date:   2021-04-13 09:00:01
+categories: 2021-1-systprog
 ---
 
 
@@ -114,6 +114,7 @@ if __name__ == "__main__":
 기본 윈도우를 만들기 위해 `QMainWindow`를 상속받은 `MyWindow` 클래스 객체를 생성하였다. (`mywindow = MyWindow()`) 그리고 생성자 내부의 `setupUI()` 에서 윈도우를 디자인하였다. `setWindowTitle()`은 윈도우 제목을 지정하는 함수다.  `setGeometry(x, y, width, height)` 함수를 이용해 윈도우의 위치와 크기를 지정할 수 있다. `geometry` 함수는 현재 GUI 객체의 위치와 크기를 나타내는 `QRect(x, y, width, height)` 형식의 구조체를 반환한다. 
 
 ```python
+    def setupUI(self):
         self.setWindowTitle("PyQt: Basic button event")
         self.setGeometry(500, 200, 300, 150)
         print("window geometry:", self.geometry())
@@ -143,11 +144,14 @@ MainWindow 내부에 버튼을 추가할 때는 반드시 생성자의 두 번�
         btn_close.clicked.connect(QCoreApplication.instance().quit)
 ```
 
-`QLabel`은 화면상에 간단한 텍스트를 보여줄 수 있는 GUI 요소다. `setText()` 함수를 통해 텍스트 내용을 바꿀수 있다.
+`QLabel`은 화면상에 간단한 텍스트를 보여줄 수 있는 GUI 요소다. `setText()` 함수를 통해 텍스트 내용을 바꿀수 있다. `setupUI()`에서 "Hello PyQt"로 문구를 초기화 한다음 "Hello" 버튼을 누를때마다 실행되는 `hello_slot()` 함수에서 숫자를 카운트하여 보여준다.
 
 ```python
+    def setupUI(self):
+        ...
         self.label_print = QLabel("Hello PyQt", self)
         self.label_print.move(150, 30)
+
     def hello_slot(self):
         self.count = self.count + 1
         self.label_print.setText(f"Hello PyQt {self.count}")
@@ -164,7 +168,7 @@ MainWindow 내부에 버튼을 추가할 때는 반드시 생성자의 두 번�
 
 ## 참고문서 찾기
 
-위 예제를 보면 Signal & Slot 개념은 어느정도 이해할 수 있지만 `setWindowTitle(), setGeometry(), resize()` 같은 함수들은 어디서 나오는지 도통 감을 잡을 수 없다. PyQt가 파이썬 스크립트로 작성된 것이 아니라 속도를 위해 바이너리 라이브러리 형태로 제공되기 때문에 PyCharm에서도 내부 변수나 함수를 자동으로 보여줄 수 없다. [PyQt 공식 홈페이지](https://www.riverbankcomputing.com/software/pyqt/intro)가 있긴 한데 별 도움이 되진 않는다. [Qt Documentation](https://doc.qt.io/) 을 가야 모든 클래스와 함수에 관한 정보를 얻을 수 있다. 이곳은 **C++** 라이브러리를 위한 문서이지만 파이썬과 사용법이 같기 때문에 참고할만 하다. 예를 들어 `QMainWindow` 클래스에 대한 멤버 함수를 찾고 싶다면 구글에서 `qt5 qmainwindow`를 검색하여 [QMainWindow Class](https://doc.qt.io/qt-5/qmainwindow.html) 문서를 보자. 이곳에는 `setGeometry()` 함수가 없다. 이유는 대다수의 함수를 부모클래스인 `QWidget`에서 물려받았기 때문에 `QWidget` 클래스 문서로 들어가야 `setGeometry()` 함수에 대한 설명을 볼 수 있다. 하지만 굳이 부모클래스를 찾아갈 필요없이 첫 화면에 보이는 `List of all members, including inherited members` 라는 링크로 들어가면 상속받은 모든 함수를 볼 수 있으므로 여기서 해당 함수를 검색하면 찾을 수 있다.
+위 예제를 보면 Signal & Slot 개념은 어느정도 이해할 수 있지만 `setWindowTitle(), setGeometry(), resize()` 같은 함수들은 어디서 나오는지 도통 감을 잡을 수 없다. PyQt가 파이썬 스크립트로 작성된 것이 아니라 속도를 위해 바이너리 라이브러리 형태로 제공되기 때문에 PyCharm에서도 내부 변수나 함수를 자동으로 보여줄 수 없다. [PyQt 공식 홈페이지](https://www.riverbankcomputing.com/software/pyqt/intro)가 있긴 한데 별 도움이 되진 않는다. [Qt Documentation](https://doc.qt.io/qt-5.15/) 을 가야 모든 클래스와 함수에 관한 정보를 얻을 수 있다. 이곳은 **C++** 라이브러리를 위한 문서이지만 파이썬과 사용법이 같기 때문에 참고할만 하다. 예를 들어 `QMainWindow` 클래스에 대한 멤버 함수를 찾고 싶다면 구글에서 `qt5 qmainwindow`를 검색하여 [QMainWindow Class](https://doc.qt.io/qt-5/qmainwindow.html) 문서를 보자. 이곳에는 `setGeometry()` 함수가 없다. 이유는 대다수의 함수를 부모클래스인 `QWidget`에서 물려받았기 때문에 `QWidget` 클래스 문서로 들어가야 `setGeometry()` 함수에 대한 설명을 볼 수 있다. 하지만 굳이 부모클래스를 찾아갈 필요없이 첫 화면에 보이는 `List of all members, including inherited members` 라는 링크로 들어가면 상속받은 모든 함수를 볼 수 있으므로 여기서 해당 함수를 검색하면 찾을 수 있다.
 
 ![qt doc](../assets/pyqt_basic/qt-doc.png)
 
@@ -179,11 +183,11 @@ MainWindow 내부에 버튼을 추가할 때는 반드시 생성자의 두 번�
 
 ## 3.1 QtDesigner를 이용한 GUI 설계
 
-먼저 QtDesigner를 이용해 GUI를 그려(?)보자.
+먼저 QtDesigner를 이용해 GUI를 그려보자.
 
 1. 현재 사용중인 Python 찾기: File - Settings - Project - Project Interpreter 들어가서 `Project Interpreter: `  옆의 파이썬 경로 찾기
 
-2. QtDesigner 시작화면에 등록: [path-to-python-root]/Lib/site-packages/pyqt5_tools/Qt/bin/designer.exe 우클릭하여 "시작화면에 고정"
+2. QtDesigner 시작화면에 등록: [path-to-python-root]/Lib/site-packages/qt5_applications/Qt/bin/designer.exe 우클릭하여 "시작화면에 고정"
 
 3. QtDesigner 실행
 
@@ -280,8 +284,8 @@ class MyWindow(QMainWindow):
         # UI 불러오기
         self.ui = uic.loadUi("hellopyqt.ui", self)
         # signal - slot 연결
-        self.btn_print.clicked.connect(self.hello_slot)
-        self.btn_close.clicked.connect( QCoreApplication.instance().quit)
+        self.btn_print.clicked.connect( self.hello_slot )
+        self.btn_close.clicked.connect( QCoreApplication.instance().quit )
         self.count = 0
         print("window geometry:", self.geometry())
         print("btn_print position:", self.btn_print.pos())
