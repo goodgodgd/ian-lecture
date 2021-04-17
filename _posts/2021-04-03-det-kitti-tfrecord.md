@@ -168,17 +168,239 @@ YOLO v3 모델에서 COCO 데이터셋을 위해 사용한 anchor box 크기는 
 
 
 
-학습을 할 때 "bboxes" 안의 객체 하나마다 위 과정을 거치는 것은 for문을 돌아야 해서 텐서 연산으로 적합하지 않다. tfrecord로 저장하기 전에 numpy 데이터 일 때 모델의 출력과 똑같은 shape을 가지는 세 가지 feature map을 만들고 데이터셋에서 나오는 객체를 해당 feature map의 grid cell에 저장해두면 모델의 loss 계산시 편리하게 사용할 수 있다. 이를 "GT feature map"이라고 하자. GT feature map의 shape은 모델의 세 가지 출력 feature map과 같지만 값은 기본적으로 모두 0으로 채워져 있고 데이터셋에서 객체가 있는 위치에서만 6차원의 객체 정보를 갖는다. (yxhw + objectness(1) + category index) 객체가 실제 존재 하는곳에만 객체 정보가 있고 나머지 공간은 0으로 채워진 이상적인 출력 feature map을 만드는 것이다.
+학습을 할 때 "bboxes" 안의 객체 하나마다 위 과정을 거치는 것은 for문을 돌아야 해서 텐서 연산으로 적합하지 않다. tfrecord로 저장하기 전에 numpy 데이터 일 때 모델의 출력과 똑같은 shape을 가지는 세 가지 feature map을 만들고 데이터셋에서 나오는 객체를 해당 feature map의 grid cell에 저장해두면 모델의 loss 계산시 편리하게 사용할 수 있다. 이를 "GT feature map"이라고 하자. GT feature map의 shape은 모델의 세 가지 출력 feature map과 같지만 값은 기본적으로 모두 0으로 채워져 있고 데이터셋에서 객체가 있는 위치에서만 6차원의 객체 정보를 갖는다. (yxhw + objectness + category index) 객체가 실제 존재 하는곳에만 객체 정보가 있고 나머지 공간은 0으로 채워진 이상적인 출력 feature map을 만드는 것이다.
 
 코드에서는 `ExampleMaker`에서 전처리를 한 후 `assign_bbox_over_feature_map()`라는 함수를 실행하는데 이를 실행하고 나면 "feature_l", "feature_m", "feature_s" 세 가지 데이터가 example에 추가된다.
 
 
 
+## 6. Path Manager
+
+tfrecord를 만들다보면 여러가지 이유로 중간에 만드는 과정을 강제로 종료하게 된다. 여러가지 테스트를 해보거나, 만드는 데이터가 잘못됐거나, 프린트나 그림을 보여주는 등의 과정이 마음에 들지 않을때, 완성되기 전에 다른 일이 생겨서 등 이유는 다양하다. 대량의 데이터를 처리하는 작업에서 흔히 일어난다.  
+
+여기서 문제는 완성이 되지 않은 데이터가 하드디스크에 남게 되고 작업을 다시 재개하기 위해서는 미완성된 데이터를 수동으로 삭제해야 한다는 것이다. 강제 종료는 코드를 작성하는 과정에서 수백번은 일어나는데 그때마다 만든다 만 데이터를 수동으로 삭제하는게 매우 번거로운 일이다. 그래서 미완성 상태에서 강제 종료하면 자동으로 미완성된 폴더를 삭제해주는 기능을 만들었다. 바로 PathManager 다. 
+
+그 전에 상기해야 할 내용은 예제 코드에서 만드는 폴더의 구조다. `cfg.Paths.TFRECORD` 폴더 아래 "{dataset}\_{split}" 폴더가 생기고 "{drive}" 폴더가 생긴다. create\_tfrecord\_main.py 에서는 여러 데이터셋과 split에 대해 반복하는데 만약  "{dataset}\_{split}" 폴더가 존재하면 해당 split에 대한 작업을 건너뛴다. 그래서  split 폴더는 시작할 때 바로 만들지 않고 "{dataset}\_{split}\_\_" 폴더를 먼저 만들어 그곳에서 작업을 한 뒤 완성이 되면 폴더 이름을 "{dataset}\_{split}"으로 바꾼다. "{dataset}\_{split}\_\_" 폴더 경로는 `TfrecordMaker.tfrpath__`에 있다.
+
+PathManager는 drive 단위의 폴더를 관리한다. `tfrpath__` 아래에 drive 폴더를 생성할 때 다음과 같이 PathManager를 context manager로 생성한다. 이후 `init_drive_tfrecord()` 함수에서 `self.path_manager.reopen()`을 실행한다.  
+
+```python
+    def make(self):
+        drive_paths = self.drive_manger.get_drive_paths()
+        with uc.PathManager(self.tfrpath__, closer_func=self.on_exit) as path_manager:
+            self.path_manager = path_manager
+            for self.drive_index, drive_path in enumerate(drive_paths):
+                # skip if drive_path has been completed
+                if self.init_drive_tfrecord():
+                    continue
+                ...
+            path_manager.set_ok()
+        self.wrap_up()
+
+    def init_drive_tfrecord(self):
+        drive_name = self.drive_manger.get_drive_name(self.drive_index)
+        tfr_drive_path = op.join(self.tfrpath__, drive_name)
+        if op.isdir(tfr_drive_path):
+            return True
+
+        self.path_manager.reopen(tfr_drive_path, closer_func=self.on_exit)
+        ...
+        return False
+
+    def on_exit(self):
+        if self.writer:
+            self.writer.close()
+            self.writer = None
+```
 
 
----
 
-comming soon...
+`reopen()`의 입력 인자로는 이제 작업을 시작할 drive 경로와 강제 종료시 실행되어야 할 함수를 입력한다. 새로운 drive를 시작할 때 drive 경로를 입력했는데 만약 drive에 대한 작업이 끝나기 전에 강제 종료된다면 `make()` 함수 아래쪽의 `path_manager.set_ok()` 함수는 실행되지 못한다. 이 경우 `on_exit()` 함수가 호출되고 drive 경로는 자동 삭제된다.  
 
-gt feature map, path manager, tfr_config, tfrecord reader
+PathManager는 다음과 같이 구현되었다. `make()` 함수에서 context manager로 생성시 `__init__()`과 `__enter__()`가 실행되는데 이때 `path` 경로가 없으면 경로를 생성한다. `reopen()` 실행시에도 같은 내용의 처리가 진행된다. 입력 인자로는 관리해야 할 경로(`path`)와 종료시 실행해야 할 함수(`on_exit`)를 받는다.  
+
+`safe_exit` 변수는 기본적으로 False 인데 `set_ok()` 함수가 실행되어야만 True가 될 수 있다. `__exit__()` 실행시 `safe_exit`가 False면 `path` 경로를 삭제하고 에러를 발생시켜 프로그램을 종료한다. `__exit__()` 함수는 강제 종료 및 정상 종료에서 모두 실행된다. 한가지 예외가 있다면 `opencv.imshow()` 실행하여 정지상태일때는 강제 종료를 해도 drive 경로가 삭제되지 않는다.
+
+```python
+class PathManager:
+    def __init__(self, path, closer_func=None):
+        self.path = path
+        self.safe_exit = False
+        self.closer = closer_func
+
+    def __enter__(self):
+        os.makedirs(self.path, exist_ok=True)
+        return self
+
+    def reopen(self, path, closer_func=None):
+        self.path = path
+        self.safe_exit = False
+        self.closer = closer_func
+        os.makedirs(path, exist_ok=True)
+        return self
+
+    def set_ok(self):
+        self.safe_exit = True
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if self.closer:
+            self.closer()
+
+        if self.safe_exit is False:
+            if self.path is not None and os.path.isdir(self.path):
+                shutil.rmtree(self.path)
+            # to ensure the process stop here
+            assert False
+```
+
+
+
+## 7. tfr_config
+
+tfrecord 파일은 기본적으로 읽기가 어렵다. 내부에 어떤 종류의 데이터가 있는지는 코드를 통해서만 확인할 수 있고 각각의 데이터 타입과 모양에 대한 정보는 아예 들어있지 않다. 또한 tfrecord 파일에 들어있는 전체 example의 개수도 확인이 어렵다. 데이터의 종류, 타입, 모양 등은 writer와 reader가 공유하는 config에 저장해도 되지만 문제는 config도 변한다는 것이다. 개발을 하다보면 변하지 않는건 없다. tfrecord 파일을 만들때와 읽을 때의 시차로 인해 서로 다른 config을 가질 수 있고 그런 경우 대부분 에러가 발생한다.  
+
+그러므로 tfrecord 데이터셋을 만들때 데이터 파일 옆에 데이터에 대한 데이터인 메타 데이터를 또 다른 파일을 저장해두면 설정 변화에 유연하게 대처할 수 있을것이다. 여기서는 tfrecord 파일 옆에 **tfr_config.txt**라는 파일을 생성하고 그곳에 데이터의 종류, 타입, 모양, 길이 등을 저장한다. tfrecord 파일을 읽어올 때는 tfr_config.txt에 지정된 형식으로 example 데이터를 복원한다.
+
+프로그래밍을 할 때 중요하게 생각하는 것이 변경점을 최소화 하는것이다. 예를들어 내가 이미지 너비를 1000을 쓸거라고 해서 코드에 1000이라는 숫자를 그냥 쓰게 되면 나중에 이미지 크기가 변했을 때 수십곳의 코드를 고치고도 에러가 발생하게 된다. 1000이라는 숫자를 쓰는 것보다는 이를 저장한 변수를 사용하는 것이 낫지만 전역 변수를 사용하게 되므로 이미지 자체의 모양을 읽어서 사용하는 것이 더 좋은 방법이다.  
+
+지난 시간에 만든 `tfrecord_reader`에서는 다음과 같은 코드가 있었다.  
+
+```python
+def parse_example(example):
+    features = {
+        "image": tf.io.FixedLenFeature(shape=(), dtype=tf.string, default_value=""),
+        "label_index": tf.io.FixedLenFeature(shape=(), dtype=tf.int64, default_value=0),
+        "label_name": tf.io.FixedLenFeature(shape=(), dtype=tf.string, default_value=""),
+    }
+    parsed = tf.io.parse_single_example(example, features)
+```
+
+
+
+여기서도 [나쁜 냄새](https://wikidocs.net/597)가 난다. `features`에 들어있는 세 가지 key 값과 세 가지 데이터 타입이 하드코딩되어있다. `tfrecord_writer`에서야 데이터를 만드는 쪽이니까 key와 타입을 하드코딩 할수도 있지만 데이터를 읽어오는 쪽에서 저렇게 하드코딩하는 것은 늘 에러의 위험을 가지고 있다.  
+
+코드는 언제나 변한다. `tfrecord_writer`에서 만드는 key와 타입도 변할 수 있다. 지난 시간에 만든 코드는 데이터의 key나 타입을 변경하고 싶을 때 `tfrecord_writer` 뿐만 아니라 `tfrecord_reader`도 짝을 맞춰서 수정을 해야 데이터를 읽을 수 있다. 이렇게 짝을 맞춰줘야 하는 코드는 언제나 위험하다.  
+
+writer와 reader의 일관성을 그때마다 수동으로 맞춰주는 것보다 reader에서 자동으로 writer에서 만든 데이터의 속성을 복원하게 만드는게 훨씬 낫다. 코딩을 할때는 우리가 어떤 데이터가 어떻게 만들어졌는지 기억할 수 있을거라 생각하지만 기억력은 그리 오래가지 않는다.  
+
+그래서 이 프로젝트에서는 tfrecord 파일을 만들때의 메타 데이터를 tfr_config.txt에 저장하고 reader에서 이를 읽어 `features`를 자동으로 만들어 사용한다. 여기서 KITTI 데이터셋으로 만든 tfr_config.txt은 다음과 같다.  
+
+```python
+{"image": {"parse_type": "tf.string", "decode_type": "tf.uint8", "shape": [256, 832, 3]}, 
+"bboxes": {"parse_type": "tf.string", "decode_type": "tf.float32", "shape": [20, 5]}, 
+"feature_l": {"parse_type": "tf.string", "decode_type": "tf.float32", "shape": [8, 26, 3, 6]}, 
+"feature_m": {"parse_type": "tf.string", "decode_type": "tf.float32", "shape": [16, 52, 3, 6]}, 
+"feature_s": {"parse_type": "tf.string", "decode_type": "tf.float32", "shape": [32, 104, 3, 6]}, 
+"length": 6977}
+```
+
+저장된 데이터의 속성은 다음과 같다.
+
+- parse_type: tfrecord의 raw byte 데이터를 읽어들일 타입, numpy 데이터는 실제 타입과 상관없이 bytes로 변환되어 저장되므로 우선 `tf.string`으로 읽어들인 후 실제 타입으로 변환한다. `tf.io.parse_single_example` 함수에 들어간다.
+- decode_type: `tf.io.parse_single_example`의 결과로 나온 데이터를 추가적으로 캐스팅(casting)하는 타입, numpy 데이터는 decode_type을 통해 원래 타입을 복원한다.
+- shape: 타입 캐스팅까지 하고나서 일렬로 늘어진 데이터를 원래의 모양으로 복원하기 위한 shape 정보
+- length: 현재 폴더에 들어있는 전체 tfrecord 파일에 저장된 example의 개수
+
+이 정보는 비단 tfrecord_reader 뿐만 아니라 사람에게도 유용한 정보다. tfr_config은 tfrecord_writer.py에서 `write_tfrecord_config()` 함수에서 만든다. 샘플 example에 들어있는 데이터의 dtype과 shape 등을 자동으로 분석하여 위와 같은 dict를 만들고 이를 json 형식으로 파일 출력한다.
+
+
+
+## 8. Tfrecord Reader
+
+이번에 만들 tfrecord_reader는 지난 강의에서 본 것과 비슷하지만 다르다. 함수들이 클래스로 묶였고 앞서 말했다시피 tfr_config.txt를 읽어서 데이터의 속성을 자동으로 파악하여 읽는 기능이 추가되었다. `TfrecordReader`라는 클래스를 만들었고 다음과 같이 사용할 수 있다.  
+
+```python
+dataset = TfrecordReader(op.join(cfg.Paths.TFRECORD, "kitti_train")).get_dataset()
+for i, x in enumerate(dataset):
+    print(f"=== index: {i}, image={x['image'].shape}, bbox={x['bboxes'].shape}"
+          f", feature_l={x['feature_l'].shape}, feature_s={x['feature_s'].shape}")
+```
+
+여기서 헷갈리는 것은 `TfrecordReader`에 들어갈 입력인자 중에서 어떤걸 생성자에 넣고 어떤걸 멤버 함수의 입력해야 하는가다. 클래스에서 호출하는 공개 함수가 하나밖에 없으므로 사실 어디로 입력하든 구현은 가능하다. 하지만 가급적 객체의 생성자로 들어가는 인자는 객체가 파괴될 때까지 변하지 않는 객체의 고유값에 해당하는 파라미터를 넣는다. 멤버 함수에 들어가는 인자는 만들어진 객체에서 처리할 수 있는 데이터를 입력한다.  
+
+
+
+### 8.1. Constructor
+
+다음은 `TfrecordMaker`의 생성자 함수다. 생성자에서는 각종 파라미터를 멤버 변수에 저장하고 tfr_config을 읽어 해석한다.  
+
+```python
+class TfrecordReader:
+    def __init__(self, tfrpath, shuffle=False, batch_size=cfg.Train.BATCH_SIZE, epochs=1):
+        self.tfrpath = tfrpath
+        self.shuffle = shuffle
+        self.batch_size = batch_size
+        self.epochs = epochs
+        self.config = self.read_tfrecord_config(tfrpath)
+        self.features_dict = self.get_features(self.config)
+
+    def read_tfrecord_config(self, tfrpath):
+        with open(op.join(tfrpath, "tfr_config.txt"), "r") as fr:
+            config = json.load(fr)
+            for key, properties in config.items():
+                if not isinstance(properties, dict):
+                    continue
+                # convert parse types in string to real type
+                properties["parse_type"] = eval(properties["parse_type"])
+                properties["decode_type"] = eval(properties["decode_type"])
+        return config
+
+    def get_features(self, config):
+        features_dict = {}
+        for key, properties in config.items():
+            if isinstance(properties, dict):
+                default = "" if properties["parse_type"] is tf.string else 0
+                features_dict[key] = tf.io.FixedLenFeature((), properties["parse_type"], default_value=default)
+        return features_dict
+```
+
+`read_tfrecord_config()` 함수에서는 tfr_config을 불러오는데 텍스트로 저장된 "parse_type"과 "decode_type"을 `eval()` 함수를 통해 실제 타입으로 변환한다.  
+
+`get_features()` 함수에서는 불러온 tfr_config에서 `tf.io.parse_single_example()`에 들어갈 `self.features_dict`를 생성한다. tfr_config에 저장된 "parse_type"을 활용한다.  
+
+
+
+### 8.2. Build Dataset Object
+
+생성자에서 준비한 정보를 이용하여 `get_dataset()`에서는 tfrecord 파일을 읽어들이는 `TFRecordDataset` 객체를 생성한다.  
+
+`parse_example()`에서는 tfr_config의 "decode_type"과 "shape"을 이용해 원래 데이터의 타입과 모양을 복원한다.  
+
+`dataset_process()`에서는 Dataset 객체에 batch, shuffle, epoch 등의 설정을 한다.
+
+```python
+    def get_dataset(self):
+        """
+        :return features: {"image": ..., "bboxes": ...}
+            image: (batch, height, width, 3)
+            bbox: [y1, x1, y2, x2, category] (batch, grid_height, grid_width, 5)
+        """
+        file_pattern = f"{self.tfrpath}/*.tfrecord"
+        filenames = tf.io.gfile.glob(file_pattern)
+        filenames.sort()
+        print("[tfrecord reader] pattern:", file_pattern, "\nfiles:", filenames)
+        dataset = tf.data.TFRecordDataset(filenames)
+        dataset = dataset.map(self.parse_example)
+        return self.dataset_process(dataset)
+
+    def parse_example(self, example):
+        parsed = tf.io.parse_single_example(example, self.features_dict)
+        decoded = {}
+        for key, properties in self.config.items():
+            if isinstance(properties, dict):
+                decoded[key] = tf.io.decode_raw(parsed[key], properties["decode_type"])
+                decoded[key] = tf.reshape(decoded[key], shape=properties["shape"])
+        # uint8 image -> image float (-1 ~ 1)
+        decoded["image"] = uf.to_float_image(decoded["image"])
+        return decoded
+
+    def dataset_process(self, dataset):
+        if self.shuffle:
+            dataset = dataset.shuffle(buffer_size=200)
+            print("[dataset] dataset shuffled")
+        print(f"[dataset] num epochs={self.epochs}, batch size={self.batch_size}")
+        dataset = dataset.repeat(self.epochs)
+        dataset = dataset.batch(batch_size=self.batch_size, drop_remainder=True)
+        return dataset
+```
 
