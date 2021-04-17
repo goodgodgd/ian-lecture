@@ -1,8 +1,8 @@
 ---
 layout: post
 title:  "[Python] Implement GUI Text Editor"
-date:   2020-04-30 09:00:01
-categories: 2020-1-systprog
+date:   2021-04-14 09:00:01
+categories: 2021-1-systprog
 ---
 
 
@@ -79,7 +79,7 @@ if __name__ == "__main__":
 >
 >**triggered**: 상단 메뉴의 action을 클릭했을 때 발생하는 Signal이다.
 
-`actionOpen.triggered`는 `open_file` 함수와 연결했고 `actionSave.triggered`는 `save_file` 함수와 연결하였다. 
+`setup_ui()`라는 함수를 만들고 그 안에서 `actionOpen.triggered`는 `open_file` 함수와 연결했고 `actionSave.triggered`는 `save_file` 함수와 연결하였다. 
 
 ```python
 class MyWindow(QMainWindow):
@@ -124,24 +124,21 @@ class MyWindow(QMainWindow):
             f.write(self.textEdit.toPlainText())
 ```
 
-다음과 같은 텍스트를 `fancy.txt`로 저장한 후 텍스트를 프로그램에서 불러온 결과는 아래 그림과 같다.
+다음과 같은 텍스트를 `dont forget.txt`로 저장한 후 텍스트를 프로그램에서 불러온 결과는 아래 그림과 같다.
 
 ```
-지금 하늘 구름 색은 Tropical yeah
-저 태양 빨간빛 네 두 볼 같아
-Oh tell me I’m the only one baby
-I fancy you I fancy you fancy you
-It’s dangerous 따끔해 넌 장미 같아
-괜찮아 조금도 난 겁나지 않아
-더 세게 꼭 잡아 Take my hand
-좀 위험할거야 더 위험할거야 baby
-달콤한 초콜릿 아이스크림처럼
-녹아버리는 지금 내 기분 So lovely
-깜깜한 우주 속 가장 반짝이는
-저 별 저 별 그 옆에 큰 네 별
+언제부터인지 그대를 보면
+운명이라고 느꼈던 걸까
+밤하늘의 별이 빛난 것처럼
+오랫동안 내 곁에 있어요
+그대라는 시가 난 떠오를 때마다
+외워두고 싶어 그댈 기억할 수 있게
+슬픈 밤이 오면 내가 그대를 지켜줄게
+내 마음 들려오나요
+잊지 말아요
 ```
 
-![textedit_result](../assets/pyqt_editor/textedit_result.png)
+![open_file](../assets/pyqt_editor/open_file.png)
 
 
 
@@ -151,9 +148,8 @@ It’s dangerous 따끔해 넌 장미 같아
 
 ```python
     def setup_ui(self):
-        self.actionOpen.triggered.connect(self.open_file)
-        self.actionSave.triggered.connect(self.save_file)
-        self.textEdit.cursorPositionChanged.connect( self.update_status)
+        ...
+        self.textEdit.cursorPositionChanged.connect(self.update_status)
 ```
 
 `update_status()` 함수에서는 현재 커서 정보를 받기 위해 `textEdit.textCursor()` 함수를 통해 `QTextCursor` 객체를 받아와 커서 정보를 얻었다. `position()`은 현재 커서 위치고 `anchor()`는 drag를 시작했을 때의 커서 위치라서 평소엔 두 함수가 같은 값을 리턴하고 drag를 하면 다른 값을 리턴하게 된다.
@@ -186,12 +182,10 @@ QtDesigner에서 왼쪽 Input Widgets 중에서 `Combo Box`를 선택하여 `tex
 
 ```python
     def setup_ui(self):
-        self.actionOpen.triggered.connect(self.open_file)
-        self.actionSave.triggered.connect(self.save_file)
-        self.textEdit.cursorPositionChanged.connect( self.update_status)
+        ...
         self.comboBox.addItems(["굴림", "돋움", "바탕"])
         self.textEdit.setFontFamily(self.comboBox.currentText())
-        self.comboBox.currentIndexChanged.connect( self.change_font)
+        self.comboBox.currentIndexChanged.connect(self.change_font)
 
     def change_font(self, cur_index):
         print("comboBox index:", cur_index)
@@ -232,8 +226,8 @@ UI 파일을 저장하고 코드로 돌아가보자. 일단 `Black` 버튼을 �
 
 ```python
     def setup_ui(self):
-        # ... 중략 ...
-        self.radioButton_black.pressed.connect( self.set_color_black)
+        ...
+        self.radioButton_black.pressed.connect(self.set_color_black)
 
     def set_color_black(self):
         print("black color selected")
@@ -251,7 +245,7 @@ UI 파일을 저장하고 코드로 돌아가보자. 일단 `Black` 버튼을 �
 >
 > **toggled**: 버튼을 눌러서 체크 상태가 변하면 발생, Slot 함수에서 체크 상태를 나타내는 `bool` 타입의 입력인자를 받을 수 있다.
 
-위 코드에서는 `radioButton_black`을 체크하면 `set_color_black()`가 실행되도록 했다. 위 방식대로 세 가지 색을 선택하려면 세 개의 radio button을 각각의 Slot 함수에 연결해야 할 것이다. 하지만 이렇게하면 버튼이 늘어남에 따라 코드가 상당히 길어진다. 이때 세 개의 버튼을 하나의 `QButtonGroup` 객체에 담으면 한 번의 connect로 세 개의 버튼을 모두 처리할 수 있다.  
+위 코드에서는 `radioButton_black`을 체크하면 `set_color_black()`이 실행되도록 했다. 위 방식대로 세 가지 색을 선택하려면 세 개의 radio button을 각각의 Slot 함수에 연결해야 할 것이다. 하지만 이렇게하면 버튼이 늘어남에 따라 코드가 상당히 길어진다. 이때 세 개의 버튼을 하나의 `QButtonGroup` 객체에 담으면 한 번의 connect로 세 개의 버튼을 모두 처리할 수 있다.  
 
 아래 코드를 보면 `QButtonGroup` 클래스의 `rb_color_group`이라는 객체를 만들고  세 개의 버튼을 거기에 담았다. 그런뒤 `buttonPressed`라는 Signal을 `change_color()` 함수에 연결하였다.
 
@@ -273,7 +267,7 @@ UI 파일을 저장하고 코드로 돌아가보자. 일단 `Black` 버튼을 �
 from PyQt5.QtGui import QColor
 
     def setup_ui(self):
-        # ... 중략 ...
+        ...
         self.radioButton_black.pressed.connect( self.set_color_black)
         self.rb_color_group = QButtonGroup()
         self.rb_color_group.addButton(self.radioButton_black)
@@ -315,7 +309,7 @@ Check box도 `QButtonGroup`에 넣어서 하나의 Slot 함수로 처리할 수 
 from PyQt5.QtGui import QColor, QFont
 
     def setup_ui(self):
-        # ... 중략 ...
+        ...
         self.checkBox_bold.toggled.connect(self.set_bold)
         self.checkBox_italic.toggled.connect(self.set_italic)
 
@@ -397,7 +391,7 @@ QtDesigner에서 Input Widgets 아래 `Line Edit` 을 윈도우에 두 개를 �
 
 ```python
     def setup_ui(self):
-        # ... 중략 ...
+        ...
         self.pushButton_replace.clicked.connect(self.replace)
 
     def replace(self):
@@ -408,9 +402,9 @@ QtDesigner에서 Input Widgets 아래 `Line Edit` 을 윈도우에 두 개를 �
 
 `textEdit.toPlainText()`으로 현재의 텍스트를 문자열로 받았고 이 문자열에서 두 개의 line edit으로 입력받은 두 단어를 교체하였다. `lineEdit_replace_src.text()`가 기존 텍스트에서 검색할 기존 단어이고 `lineEdit_replace_dst.text()`는 새로운 텍스트에서 기존 단어 대신 들어갈 단어이다.
 
-`fancy.txt`를 열어서 `fancy`를 `desire`로 바꾼 결과이다.
+`dont forget.txt`를 열어서 `그대`를 다른 단어로 바꿔보자.
 
-![lineedit_result](../assets/pyqt_editor/lineedit_result.png)
+![lineedit_replace](../assets/pyqt_editor/lineedit_replace.png)
 
 
 
