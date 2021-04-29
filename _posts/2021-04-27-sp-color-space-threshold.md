@@ -310,15 +310,15 @@ slot 함수가 호출이 되면 파라미터를 멤버 변수로 저장 후 `sel
     def show_all_types(self):
         threshold = self.verticalSlider.value()
         imgs = {"ORIGINAL": self.src_img}
-        for rbutton, button_type in self.rb_thresh_methods.items():
-            ret, res_binary = cv2.threshold(self.src_img, threshold, 255, button_type)
+        for rbutton, thresh_method in self.rb_thresh_methods.items():
+            ret, res_binary = cv2.threshold(self.src_img, threshold, 255, thresh_method)
             imgs[rbutton.text()] = res_binary
         imgs['TRUNC'][0, 0] = 255
 
-        for i, (key, value) in enumerate(imgs.items()):
+        for i, (title, image) in enumerate(imgs.items()):
             plt.subplot(2, 3, i+1)
-            plt.title(key)
-            plt.imshow(value, cmap='gray')
+            plt.title(title)
+            plt.imshow(image, cmap='gray')
             plt.xticks([])
             plt.yticks([])
         plt.tight_layout()
@@ -341,7 +341,7 @@ ret, res_img = cv2.threshold(src_img, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTS
 
 ### Adaptive Threshold
 
-원본 영상에 조명이 일정하지 않거나 배경색이 여러 가지인 경우에는 아무리 경계 값을 바꿔봐도 좋은 결과를 얻기 어렵다. 영상의 다양한 배경에 대처하기 위해서는 영상을 여러 영역으로 나눈 다음 각 픽셀이 해당 영역에 비해서 상대적으로 얼마나 높은지를 확인해야 한다. 이렇게 영역 별로 다른 threshold 값을 주는 것을 adaptive threshold 라고 한다. OpenCV에서는 `adaptiveThreshold()` 라는 함수를 제공한다.
+원본 영상에 조명이 일정하지 않거나 배경색이 여러 가지인 경우에는 아무리 경계 값을 바꿔봐도 좋은 결과를 얻기 어렵다. 영상의 다양한 배경에 대처하기 위해서는 영상을 여러 영역으로 나눈 다음 각 픽셀이 주변 영역에 비해서 상대적으로 얼마나 높은지를 확인해야 한다. 이렇게 영역 별로 다른 threshold 값을 주는 것을 adaptive threshold 라고 한다. OpenCV에서는 `adaptiveThreshold()` 라는 함수를 제공한다.
 
 > ret, dst = adaptiveThreshold(src, maxValue, adaptiveMethod, thresholdType, blockSize, C)
 >
@@ -369,7 +369,11 @@ Threshold 자동화 기능을 방금 코드에 적용해보자. 적응형 알고
 - `ADAPTIVE_MEAN`: `adaptiveThreshold()` 함수에서 `cv2.ADAPTIVE_THRESH_MEAN_C` 사용
 - `ADAPTIVE_GAUSS`: `adaptiveThreshold()` 함수에서 `cv2.ADAPTIVE_THRESH_GAUSSIAN_C` 사용
 
-코드에서도 다음과 같이 적응형 알고리즘을 적용할 수 있도록 수정한다. 새로 추가된 radio button도 모두 `threshold_image()` 함수로 연결한다. `get_params()` 함수에서는 `adaptiveThreshold()` 함수를 위한 출력 인자 `adaptive`를 추가하였다.
+코드에서도 다음과 같이 적응형 알고리즘을 적용할 수 있도록 수정한다. 생성자에서는 adaptive method를 선택하는 라디오 버튼을 Dictionary에 저장한다.  
+
+`setup_ui()`에서는 새로운 라디오 버튼을 `self.rb_adap_group`라는 Button Group에 추가한다. Button Group을 `update_adap_method()`라는 slot 함수에 연결하여 현재 선택된 adaptive method가 `self.sel_adap_method`라는 멤버 변수에 저장되도록 한다.  
+
+`update_result()` 함수는 `self.sel_adap_method`의 상태에 따라 다른 함수를 실행하도록 수정되었다.  
 
 ```python
 # import ...
@@ -378,7 +382,7 @@ class MyWindow(QMainWindow):
         super().__init__()
         # .. 중략 ..
         self.rb_adap_methods = {self.radioButton_none: None,
-                                self.radioButton_otsu: None,
+                                self.radioButton_otsu: "otsu",
                                 self.radioButton_adap_mean: "adap_mean",
                                 self.radioButton_adap_gauss: "adap_gauss"
                                 }
@@ -397,6 +401,10 @@ class MyWindow(QMainWindow):
         if self.sel_adap_method is None:
             ret, self.res_img = cv2.threshold(self.src_img,
                                 self.sel_thresh_value, 255, self.sel_thresh_method)
+        elif self.sel_adap_method == "otsu":
+            ret, self.res_img = cv2.threshold(self.src_img,
+                                self.sel_thresh_value, 255, self.sel_thresh_method | cv2.THRESH_OTSU)
+            print("otsu selected threshold:", ret)
         elif self.sel_adap_method == "adap_mean":
             self.res_img = cv2.adaptiveThreshold(self.src_img, 255,
                                 cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 9, 5)
