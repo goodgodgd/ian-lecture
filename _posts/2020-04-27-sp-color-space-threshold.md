@@ -130,7 +130,7 @@ YUV는 사람이 색상을 인식 할 때 색상보다는 밝기에 더 민감�
 - **U** (Chroma Blue, Cb): 밝기와 파란색과의 색상 차
 - **V** (Chroma Red, Cr): 밝기와 빨간색과의 색상 차
 
-YUV는 TV 방송용 아날로그 컬러 인코딩에서 유래됐고 YCbCr은 MPEG이나 JPEG 같은 디지털 컬러를 인코딩하는데 사용되었으나 방식이 비슷해서 오늘날에는 혼용되고 있다. OpenCV 컬러 변환 코드도 `cv2.COLOR_BGR2YUV`와 `cv2.COLOR_BGR2YCbCr` 두 가지가 있고 결과도 미세하게 다르다. YUV는 대표적으로 명암 대비(contrast)를 개선하는데 활용되는데 여기서는 변환 결과만 보도록 한다. ~~지금 새벽 3시니까~~
+YUV는 TV 방송용 아날로그 컬러 인코딩에서 유래됐고 YCbCr은 MPEG이나 JPEG 같은 디지털 컬러를 인코딩하는데 사용되었으나 방식이 비슷해서 오늘날에는 혼용되고 있다. OpenCV 컬러 변환 코드도 `cv2.COLOR_BGR2YUV`와 `cv2.COLOR_BGR2YCbCr` 두 가지가 있고 결과도 미세하게 다르다. YUV는 대표적으로 명암 대비(contrast)를 개선하는데 활용되는데 여기서는 변환 결과만 보도록 한다.
 
 ```python
 # YUV color space 변환
@@ -202,6 +202,7 @@ from PyQt5.QtWidgets import *
 from PyQt5 import uic
 import matplotlib.pylab as plt
 
+
 class MyWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -246,68 +247,70 @@ if __name__ == "__main__":
 
 ## 2.2 Threshold 구현
 
-이제 조건에 따른 threshold를 구현해보자. Text editor와는 다르게 이번에는 모든 radio button과 slider의 Signal을 하나의 함수로 연결한 후 그 함수에서 파라미터를 읽게 해보자. 다수의 radio button을 다룰 때 매번 if-else로 처리하기는 번거롭다. 이를 for문에서 처리할 수 있도록 radio button들을 해당 threshold type과 함께 짝을 지어 `self.rb_dict`로 저장한다. 모든 radio button의 Slot 함수를 연결할 때도, `get_param()` 함수에서 선택된 radio button을 찾을 때도 다수의 if-else 대신 간단한 for문으로 해결할 수 있다.
+이제 조건에 따른 threshold를 구현해보자. 생성자 함수에서 각 라디오 버튼에 해당하는 threshold 파라미터를 짝을 지어 저장한다. 
+
+`setup_ui()` 함수에서는 슬라이더의 범위와 초기값을 지정한다. Text editor에서처럼 라디오 버튼들을 `QButtonGroup`에 저장하고 `self.update_thresh_method()`라는 slot 함수와 연결한다. `self.verticalSlider` 또한 값이 바뀔때마다 `self.update_thresh_value()`를 호출하도록 연결한다.  
+
+slot 함수가 호출이 되면 파라미터를 멤버 변수로 저장 후 `self.update_result()` 함수를 공통적으로 호출한다. 멤버 변수에 저장된 파라미터로 threshold를 수행 후 결과를 화면에 보여준다.
 
 ```python
     def __init__(self):
         # .. 중략 ..
-        self.rb_dict = {self.radioButton_binary: cv2.THRESH_BINARY,
-                        self.radioButton_binary_inv: cv2.THRESH_BINARY_INV,
-                        self.radioButton_trunc: cv2.THRESH_TRUNC,
-                        self.radioButton_tozero: cv2.THRESH_TOZERO,
-                        self.radioButton_tozero_inv: cv2.THRESH_TOZERO_INV,
-                        }
+        self.rb_thresh_methods = {self.radioButton_binary: cv2.THRESH_BINARY,
+                                  self.radioButton_binary_inv: cv2.THRESH_BINARY_INV,
+                                  self.radioButton_trunc: cv2.THRESH_TRUNC,
+                                  self.radioButton_tozero: cv2.THRESH_TOZERO,
+                                  self.radioButton_tozero_inv: cv2.THRESH_TOZERO_INV,
+                                  }
+        self.rb_method_group = QButtonGroup()
+        self.sel_thresh_method = cv2.THRESH_BINARY
+        self.sel_thresh_value = 100
         self.setup_ui()
 
     def setup_ui(self):
         self.actionOpen.triggered.connect(self.open_file)
         self.actionSave.triggered.connect(self.save_file)
-        # set default values
+        # slider settings
         self.radioButton_binary.setChecked(True)
         self.verticalSlider.setMaximum(255)
         self.verticalSlider.setMinimum(0)
         self.verticalSlider.setValue(100)
-        for rbutton in self.rb_dict.keys():
-            rbutton.clicked.connect(self.threshold_image)
-        self.verticalSlider.valueChanged.connect(self.threshold_image)
+        # threshold method
+        for rbutton in self.rb_thresh_methods:
+            self.rb_method_group.addButton(rbutton)
+        self.rb_method_group.buttonPressed.connect(self.update_thresh_method)
+        # threshold value
+        self.verticalSlider.valueChanged.connect(self.update_thresh_value)
 
-    def threshold_image(self):
-        if self.src_img is None:
-            return
-        thr_type, threshold = self.get_params()
-        ret, self.res_img = cv2.threshold(self.src_img, threshold, 255, thr_type)
+    def update_thresh_method(self, rbutton):
+        self.sel_thresh_method = self.rb_thresh_methods[rbutton]
+        self.update_result()
+
+    def update_thresh_value(self, value):
+        self.sel_thresh_value = value
+        self.update_result()
+
+    def update_result(self):
+        ret, self.res_img = cv2.threshold(self.src_img, self.sel_thresh_value, 255, self.sel_thresh_method)
         cv2.imshow("result image", self.res_img)
         cv2.waitKey(1)
-
-    def get_params(self):
-        thr_type = cv2.THRESH_BINARY
-        for rbutton, button_type in self.rb_dict.items():
-            if rbutton.isChecked():
-                thr_type = button_type
-        threshold = self.verticalSlider.value()
-        self.label_threshold.setText(f"Threshold: {threshold}")
-        return thr_type, threshold
 ```
 
 각각의 radio button을 눌러보고 slider를 움직이면서 효과를 느껴보자. 다음은 각 thresholding 방식을 비교한 그림이다.  
 
 ![thresh-all-types](../assets/opencv-color/thresh-all-types.png)
 
-
-
-이 그림은 MATLAB의 plot 기능을 모방한 `matplotlib`이라는 패키지를 통해 만든 것이다. 앞서 사용하지 않았던 `checkBox_all`을 클릭하면 모든 방식의 threshold를 시도하여 한 장에 보여주도록 하였다. `matplotlib`은 아직 배우지 않았으니 다음 코드는 참고로만 봐두자.
+이 그림은 MATLAB의 plot 기능을 모방한 `matplotlib`이라는 패키지를 통해 만든 것이다. 앞서 사용하지 않았던 `All Thresh Types` 버튼을 클릭하면 모든 방식의 threshold를 시도하여 한 장에 보여주도록 하였다. `matplotlib`은 아직 배우지 않았으니 다음 코드는 참고로만 봐두자.
 
 ```python
     def setup_ui(self):
         # .. 중략 ..
-         self.pushButton_thresh_types.clicked.connect(self.show_all_types)
+        self.pushButton_thresh_types.clicked.connect(self.show_all_types)
 
-    def show_all_types(self, checked):
-        if not checked:
-            return
+    def show_all_types(self):
         threshold = self.verticalSlider.value()
         imgs = {"ORIGINAL": self.src_img}
-        for rbutton, button_type in self.rb_dict.items():
+        for rbutton, button_type in self.rb_thresh_methods.items():
             ret, res_binary = cv2.threshold(self.src_img, threshold, 255, button_type)
             imgs[rbutton.text()] = res_binary
         imgs['TRUNC'][0, 0] = 255
@@ -374,44 +377,38 @@ class MyWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         # .. 중략 ..
-        self.rb_adap_list = [self.radioButton_none, self.radioButton_otsu,
-                             self.radioButton_adap_mean, self.radioButton_adap_gauss]
+        self.rb_adap_methods = {self.radioButton_none: None,
+                                self.radioButton_otsu: None,
+                                self.radioButton_adap_mean: "adap_mean",
+                                self.radioButton_adap_gauss: "adap_gauss"
+                                }
+        self.rb_adap_group = QButtonGroup()
+        self.sel_adap_method = None
         self.setup_ui()
 
     def setup_ui(self):
         # .. 중략 ..
-        for rbutton in self.rb_adap_list:
-            rbutton.clicked.connect(self.threshold_image)
+        # adaptive method
+        for rbutton in self.rb_adap_methods:
+            self.rb_adap_group.addButton(rbutton)
+        self.rb_adap_group.buttonPressed.connect(self.update_adap_method)
 
-    def threshold_image(self):
-        if self.src_img is None:
-            return
-        thr_type, threshold, adaptive = self.get_params()
-        if adaptive is None:
-            ret, self.res_img = cv2.threshold(self.src_img, threshold, 255, thr_type)
-            print("threshold", ret)
-        else:
-            self.res_img = cv2.adaptiveThreshold(self.src_img, 255, adaptive, thr_type, 9, 5)
+    def update_result(self):
+        if self.sel_adap_method is None:
+            ret, self.res_img = cv2.threshold(self.src_img,
+                                self.sel_thresh_value, 255, self.sel_thresh_method)
+        elif self.sel_adap_method == "adap_mean":
+            self.res_img = cv2.adaptiveThreshold(self.src_img, 255,
+                                cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 9, 5)
+        elif self.sel_adap_method == "adap_gauss":
+            self.res_img = cv2.adaptiveThreshold(self.src_img, 255,
+                                cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 9, 5)
         cv2.imshow("result image", self.res_img)
         cv2.waitKey(1)
 
-    def get_params(self):
-        thr_type = cv2.THRESH_BINARY
-        for rbutton, button_type in self.rb_dict.items():
-            if rbutton.isChecked():
-                thr_type = button_type
-
-        if self.radioButton_otsu.isChecked():
-            thr_type |= cv2.THRESH_OTSU
-
-        adaptive = None
-        if self.radioButton_adap_mean.isChecked():
-            adaptive = cv2.ADAPTIVE_THRESH_MEAN_C
-        elif self.radioButton_adap_gauss.isChecked():
-            adaptive = cv2.ADAPTIVE_THRESH_GAUSSIAN_C
-        threshold = self.verticalSlider.value()
-        self.label_threshold.setText(f"Threshold: {threshold}")
-        return thr_type, threshold, adaptive
+    def update_adap_method(self, rbutton):
+        self.sel_adap_method = self.rb_adap_methods[rbutton]
+        self.update_result()
 ```
 
 
@@ -425,7 +422,7 @@ class MyWindow(QMainWindow):
         # .. 중략 ..
         self.pushButton_adap_methods.clicked.connect(self.show_adap_methods)
 
-    def show_adap_methods(self):
+     def show_adap_methods(self):
         threshold = self.verticalSlider.value()
         imgs = {"None": self.src_img}
         ret, imgs["Otsu"] = cv2.threshold(self.src_img, threshold, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)

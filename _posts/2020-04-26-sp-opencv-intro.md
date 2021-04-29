@@ -9,15 +9,15 @@ categories: 2020-1-systprog
 
 # 1. About OpenCV
 
-OpenCV (Open Source Computer Vision Library) is an open source computer vision and machine learning software library. OpenCV was built to provide a common infrastructure for computer vision applications and to accelerate the use of machine perception in the commercial products.  
+> OpenCV (Open Source Computer Vision Library) is an open source computer vision and machine learning software library. OpenCV was built to provide a common infrastructure for computer vision applications and to accelerate the use of machine perception in the commercial products.  
 
-OpenCV는 영상(Image)를 다루는 라이브러리로서 현재 세계적으로 독보적이고 거의 독점직인 위치를 가지고 있다. Open source이고 상업적으로도 자유롭게 쓸 수 있는 BSD-License인데다 최적화된 방대한 알고리즘을 제공하니 다른 라이브러리를 쓸 이유가 없다. 이제는 OpenCV 없이 이미지를 다루는 방법을 찾기가 어려울 정도로 보편화 되어있다. Python에서는 원래 `scikit-image`라는 패키지가 영상처리에 많이 쓰였지만 OpenCV가 Python Binding을 제공하면서부터 OpenCV 이용자가 많아졌다.
+OpenCV는 C++기반 영상(Image)를 다루는 라이브러리로서 현재 세계적으로 독보적이고 거의 독점직인 위치를 가지고 있다. Open source이고 상업적으로도 자유롭게 쓸 수 있는 BSD-License인데다 최적화된 방대한 알고리즘을 제공하니 다른 라이브러리를 쓸 이유가 없다. 이제는 OpenCV 없이 이미지를 다루는 방법을 찾기가 어려울 정도로 보편화 되어있다. Python에서는 원래 `scikit-image`라는 패키지가 영상처리에 많이 쓰였지만 OpenCV가 Python Binding을 제공하면서부터 OpenCV 이용자가 많아졌다. OpenCV는 사람들이 많이 쓰는 대부분의 언어에 대한 Binding을 제공하고 있다.
 
 OpenCV는 2500개 이상의 최적화된 알고리즘을 제공하여 많은 사람들이 사용하는 정형화된 알고리즘은 다 있다고 보면 된다. 단순히 영상처리 뿐만 아니라 얼굴인식, 동작인식, 객체추적, 3차원 형상 복원 등 다양한 머신러닝 알고리즘도 지속적으로 추가되고 있다. 영상을 이용하는 논문 중에 유명하고 많이 쓰이는 알고리즘은 거의다 Open source로 개발되어 올라온다. 그래서 OpenCV는 버전 주기가 짧은 편이며 거의 한 달에 한번씩 새로운 버전이 올라온다.  
 
-OpenCV는 원래 1999년 인텔의 러시아 팀에서 개발이 되었다. (OpenCV 아버지 Gary Bradski) 첫 번째 alpha 버전은 2000년에 나오고 중간에 beta 버전들이 나온 후, 2006년에 OpenCV 1.0 나오게 됐다. (내가 처음 OpenCV를 접한 것도 학부 4학년 2008년 이었는데 그때 이미 한글책도 나오고 보편적으로 쓰이고 있었다.)  
+OpenCV는 원래 1999년 인텔의 러시아 팀에서 개발이 되었다. (OpenCV 아버지 Gary Bradski) 첫 번째 alpha 버전은 2000년에 나오고 중간에 beta 버전들이 나온 후, 2006년에 OpenCV 1.0 나오게 됐다. (내가 처음 OpenCV를 접한 것도 2008년 이었는데 그때 이미 한글책도 나오고 보편적으로 쓰이고 있었다.)  
 
-중간에 다른 회사에서 관리하다가 이제는 [opencv.org](<https://opencv.org/>)라는 단체에서 "관리"한다. 여기서 관리라 함은 여러 개발자들이 올려준 소스들을 검증하고 다음 Release에 넣을지 등을 결정한다는 것이고 개발은 수많은 자원자들과 이를 지원하는 회사들에 의해 진행된다. 2020년 5월 현재는 OpenCV 4.3이 최신 버전이며 pypi에 올라온 `opencv-python` 패키지는 4.2 버전을 제공하고 있다. 
+중간에 다른 회사에서 관리하다가 이제는 [opencv.org](<https://opencv.org/>)라는 단체에서 "관리"한다. 여기서 관리라 함은 여러 개발자들이 올려준 소스들을 검증하고 다음 Release에 넣을지 등을 결정한다는 것이고 개발은 수많은 자원자들과 이를 지원하는 회사들에 의해 진행된다. 2021년 5월 현재는 OpenCV 4.5가 최신 버전이며 pypi에 올라온 `opencv-python` 패키지도 4.5 버전을 제공하고 있다. 
 
 
 
@@ -29,9 +29,11 @@ pip install opencv-python
 
 설치할 때는 `opencv-python`이란 패키지로 설치하지만 코드에서 import 할 때는 `cv2`라는 이름으로 가져온다. 설치하는 패키지 이름과 import 하는 패키지 이름이 항상 같진 않다. 
 
+
+
 # 2. Image I/O
 
-## 2.1 Read Image
+## 2.1. Read Image
 
 OpenCV를 설치하고 첫 번째로 해봐야 할 일은 영상을 화면에 띄워보는 것이다.  
 
@@ -69,13 +71,13 @@ cv2.destroyAllWindows()
 >
 > **imwrite(filename, image)**: `image`를 `filename`이란 이름으로 저장한다.
 >
-> **waitKey(milisecond)**: 키보드 입력을 milisecond 동안 기다린다. 입력하지 않거나 0을 입력하면 무한대기하고 입력하면 그 시간만큼 기다린다. 입력이 들어오면 눌린 문자의 유니코드 값을 반환한다.
+> **waitKey(milisecond)**: 키보드 입력을 `milisecond` 동안 기다린다. 입력하지 않거나 0을 입력하면 무한대기하고 입력하면 그 시간만큼 기다린다. 입력이 들어오면 눌린 문자의 유니코드 값을 반환한다.
 >
 > **destroyAllWindows()**: 화면에 나타난 윈도우를 닫는다. 프로그램이 종료되면 자동으로 닫히지만 중간에 의도적으로 미리 닫고 싶을 때 쓴다.
 
 
 
-## 2.2 Write Image
+## 2.2. Write Image
 
 `imread()`에서 사용할 수 있는 세 가지 flag를 테스트하고 's'를 누르면 영상을 다른 이름으로 저장해보자.
 
@@ -88,7 +90,7 @@ import cv2
 IMG_PATH = "../sample_imgs"
 filename = os.path.join(IMG_PATH, "superson.jpg")
 print("filename:", filename)
-# 네 가지 형식으로 영상 불러오기
+# 세 가지 형식으로 영상 불러오기
 img_color = cv2.imread(filename, cv2.IMREAD_COLOR)
 img_gray = cv2.imread(filename, cv2.IMREAD_GRAYSCALE)
 img_unchange = cv2.imread(filename, cv2.IMREAD_UNCHANGED)
@@ -113,7 +115,7 @@ cv2.destroyAllWindows()
 
 # 3. Video I/O
 
-## 3.1 Read Video
+## 3.1. Read Video
 
 하나의 이미지 파일에서는 하나의 영상을 불러올 수 있지만 비디오 파일에서는 프레임 단위로 여러 이미지를 순서대로 받을 수 있다. 동영상을 읽을 때는 `cv2.VideoCapture` 객체를 생성해서 사용한다. 다음은 비디오 파일을 단순 재생하는 스크립트다.
 
@@ -152,7 +154,9 @@ cap.release()
 >
 > **set(propId, value)**: 비디오 파일의 다양한 속성을 수정한다. `propId`로 입력한 속성 값을 `value`로 바꾼다.
 
-## 3.2 Write Video
+
+
+## 3.2. Write Video
 
 동영상을 저장할 때는 `cv2.VideoWriter` 객체를 생성하여 사용한다. 주요 함수를 살펴보자.
 
@@ -169,7 +173,7 @@ cap.release()
 
 
 
-`cv2.VideoWriter`를 활용하여 원본 동영상을 반으로 줄인 영상을 만들어보자.
+`cv2.VideoWriter`를 활용하여 해상도를 원본 동영상의 반으로 줄인 영상을 만들어보자.
 
 ```python
 import os
@@ -183,11 +187,12 @@ if not cap.isOpened():
     raise FileNotFoundError()
 print(f'get video property: width={cap.get(cv2.CAP_PROP_FRAME_WIDTH)}, '
       f'height={cap.get(cv2.CAP_PROP_FRAME_HEIGHT)}')
+# 20초부터 영상 시작
 cap.set(cv2.CAP_PROP_POS_MSEC, 20000)
 # 저장할 동영상 파일 열기
 filename = os.path.join(IMG_PATH, "endgame_rsz.mp4")
 fourcc = cv2.VideoWriter_fourcc(*'mp4v')    # *'DIVX'
-new_size = (640, 360)
+new_size = (640, 360)						# 동영상을 저장할 해상도
 vout = cv2.VideoWriter(filename, fourcc, 30, new_size)
 if not vout.isOpened():
     raise FileNotFoundError()
@@ -210,11 +215,13 @@ vout.release()
 
 ![endgame.png](../assets/opencv/endgame-cap.jpg)
 
+
+
 # 4. Pixel Operation
 
 지금까지는 파일을 읽고 쓰는 경험을 해 보았지만 실제로 영상처리에서 중요한 부분은 화소(pixel) 값을 내가 원하는 방식으로 바꾸거나, 단순하거 읽거나, 여러 화소 값을 해석해서 의미를 알아내는 일 등이다. `opencv-python`은 `numpy.ndarray` 타입으로 이미지를 다룬다. 지난 시간에 배웠던 numpy를 복습하며 영상의 화소 값을 다루는 연습을 해보자.  
 
-## 4.1 속성 확인
+## 4.1. 속성 확인
 
 간단하게 영상을 읽고 속성 확인 후 화면에 영상을 보여주는 스크립트이다. 
 
@@ -241,7 +248,7 @@ cv2.waitKey()
 
 
 
-## 4.2 픽셀 값 읽고 쓰기
+## 4.2. 픽셀 값 읽고 쓰기
 
 영상을 numpy로 표현하기 때문에 numpy의 indexing과 slicing을 이용할 수 있다. Indexing을 연습하기 위해 영상의 채널 별 평균을 구해보자.
 
@@ -265,8 +272,7 @@ image[:10, :, :] = 255      # 위에 흰 줄
 image[-10:, :, :] = 0       # 아래에 검은 줄
 image[:, :10, 0] = 255      # 왼쪽에 파란 줄
 image[:, :10, 1:] = 0
-image[:, -10:, 2] = 255     # 오른쪽에 빨간 줄
-image[:, -10:, :2] = 0
+image[:, -10:, :] = (0, 0, 255)     # 오른쪽에 빨간 줄
 cv2.imshow("jjangzeolmi", image)
 cv2.waitKey()
 ```
