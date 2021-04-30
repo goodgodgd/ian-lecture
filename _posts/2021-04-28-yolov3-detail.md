@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "[Det] Training Framework"
+title:  "[Det] YOLO v3 Architecture in Detail"
 date:   2021-04-28 09:00:13
 categories: 2021-1-detector
 ---
@@ -13,7 +13,7 @@ categories: 2021-1-detector
 
 
 
-## 1. YOLO v3 Architecture in Detail
+# YOLO v3 Architecture in Detail
 
 학습 구조를 설명하기에 앞서 YOLO v3 모델의 자세한 구조와 출력 형식을 짚고 넘어간다. One-stage detector는 세 가지 단계와 Decoder가 있다.
 
@@ -30,7 +30,7 @@ categories: 2021-1-detector
 
 
 
-### 1.1. Backbone
+## 1. Backbone
 
 구조 그림에서 왼쪽에 쌓인 레이어들이 backbone에 해당한다. YOLO v3에서는 이 구조를 **Darknet 53**이라 부른다. Residual block들이 반복적으로 쌓여있고 residual block에 들어가기 전에 stride=2의 convolution으로 해상도를 반으로 줄인다. 출력은 1/8, 1/16, 1/32 세 가지 해상도로 나오고 각각을 small, medium, large scale feature map 이라 한다. 그림을 코드로 구현한 내용은 다음과 같다.  
 
@@ -62,11 +62,11 @@ categories: 2021-1-detector
 
 
 
-### 1.2. Neck
+## 2. Neck
 
 구조 그림에서 *up_cat* 블록으로 표시한 부분이 neck에 해당한다. up_cat은 상위 스케일의 저해상도 feature map을 upsampling을 통해 해상도를 2배로 늘리고 이를 하위 스케일의 고해상도 feature map과 concatenate 한다. 이를 통해 상위 feature map에 담겨있는 넓은 시야의 정보와 하위 feature map의 지역적인 정보를 결합하여 객체를 검출하는 head에 더욱 풍부한 정보를 제공한다.  
 
-### 1.3. Head
+## 3. Head
 
 구조 그림에서 오른쪽에 `feature_l, m, s`가 나오는 부분이 head에 해당한다. 최종 출력을 만들기 전에 6번의 convolution을 하는데 1x1 conv.와 3x3 conv.를 반복한다. 1x1 conv.에서 feature를 1/2로 압축하고 (채널 줄임) 3x3 conv에서 새로운 feature를 추출한다(채널 확장). 이렇게 하면 같은 채널 수로 3x3 conv.를 반복하는 것보다 연산량을 줄이면서 풍부한 feature map을 만들수 있다.  
 
@@ -80,7 +80,7 @@ categories: 2021-1-detector
 
 객체 정보 출력은 해당 위치에 객체가 있든 없든 동일한 conv. 연산을 통해 모든 grid cell의 모든 anchor에서 항상 출력된다. 각 anchor에 대한 출력은 (bounding box, objectness, category probabilities)로  구성된다. Head에서 나온 feature가 바로 이러한 정보가 되는것은 아니고 decoder에서 head feature를 가공하여 최종적인 모델의 출력을 만든다.  
 
-참고로 학습 데이터 들어가는 GT feature map도 비슷한 구조를 가지고 있는데 차이가 있다면 카테고리 별 확률 대신 카테고리 번호(index)를 담고 있다는 것이다. 이 카테고리 번호를 one-hot encoding을 하면 실제 카테고리 별 확률을 만들수 있다. 학습을 할 때는 모델의 예측과 GT 값 사이의 차이가 loss가 되고 이 loss를 줄이는 방향으로 학습을 하면 객체 검출 결과가 점점 정확해진다.  
+
 
 ![yolov3_head_output](../assets/detector/yolov3_head_output.png)
 
@@ -105,9 +105,30 @@ categories: 2021-1-detector
 
 
 
-### 1.4. Decoder
+## 4. Decoder
 
-모델의 최종 출력은 anchor별로 (bounding box, objectness, category probabilities)가 나와야 하는데 head feature는 이러한 정보를 직접 출력하기에 적합하지 않다.
+모델의 최종 출력은 anchor별로 (bounding box, objectness, category probabilities)가 나와야 하는데 head feature는 이러한 정보를 직접 출력하기에 적합하지 않다. Convolution의 출력은 특정한 범위 안으로 제한하기가 힘들기도 하고 그렇게 한다고 하더라도 출력의 범위를 좁히면 세밀하게 출력을 조절하기가 어려울 수 있다. 그래서 대부분의 DNN에서 convolution 출력은 $$-\infty \sim \infty$$ 범위에서 나오게 하고 이를 최종 출력의 특성에 맞게 변형해주는 activation 함수를 적용한다. Activation 함수를 정하기 위해서는 먼저 모델에서 객체 검출 결과로 나오는 출력과 학습 데이터의 GT 객체 정보의 특성을 알아야 한다.
+
+**Predicted Object**: $$\left[ b_y,b_x,b_h,b_w,o,p_1,...,p_K \right]$$
+
+**GT Object**: $$\left[ b_y,b_x,b_h,b_w,o,c \right]$$
+
+- $$b_y,b_x \in \left[0, 1\right]$$ : bounding box의 중심 좌표, 이미지 왼쪽 위가 (0, 0), 오른쪽 아래가 (1,1)
+- $$b_h,b_w \in \left[0, 1\right]$$ : 이미지에 대한 bounding box의 너비 높이 비율
+- $$o$$ : objectness, 해당 grid cell 위치에 anchor와 비슷한 크기의 객체가 존재할 확률
+- $$p_1,...,p_K$$ : bounding box 영역이 나타내는 객체의 종류에 대한 확률, 각 클래스별 독립적인 확률이기 떄문에 합이 1이 되어야 하는것은 아님 (multi-label)
+- $$c$$ : category index, 실제 객체가 속한 카테고리의 번호
+
+YOLO에서는 다음과 같은 activation을 통해 최종 출력을 만든다.
+
+![yolov3_decode](../assets/detector/yolov3_decode.png)
+
+Activation에서 발견할 수 있는 공통적인 특징은 다음과 같다.
+
+- 확률처럼 [0, 1] 범위로 나와야하는 출력은 sigmoid 함수를 쓴다. sigmoid 함수는 일반적인 $$-\infty \sim \infty$$ 범위의 입력을 0~1 사이의 값으로 변환해준다.
+- 항상 양수가 나와야하는 출력은 exponential 함수를 쓴다. exponential 함수는 모든 입력에 대해 양수를 출력한다. $$b_h,b_w$$는 0~1 사이의 값이 나와야 하지만 기본 anchor 크기에 배율로 곱해지는 값은 1 근처의 임의의 양수가 될 수 있어야 한다.
+
+GT object에서 category index에 one-hot encoding을 적용하면 Predicted object와 같은 형식이 된다. 예측과 실제 데이터의 형식과 스케일을 동일하게 맞췄다면 둘 사이의 차이가 줄어들도록 손실(loss) 함수를 설계해서 학습을 시키면된다. 이때 예측이 feature map 형태로 나오기 때문에 GT 데이터도 그에 맞춰서 feature map 형태로 만들어주면 손실 함수 계산을 편리하게 할 수 있다.
 
 
 
