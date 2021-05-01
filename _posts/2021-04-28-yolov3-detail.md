@@ -7,12 +7,6 @@ categories: 2021-1-detector
 
 
 
-
-
-이번 자료에서는 모델을 학습시키는 프레임워크에 대해 설명한다. 이 구조의 설계 의도는 코드들을 조립가능한 부품(component)처럼 만들어서 입출력 규격만 같으면 언제든 부품을 다른 부품으로 교체 가능한 구조로 만드는 것이다. 모든 구조 설계는 config.py 에 들어있고 프레임워크는 이에 따라 클래스들을 조립하여 학습 알고리즘을 완성한다.  
-
-
-
 # YOLO v3 Architecture in Detail
 
 학습 구조를 설명하기에 앞서 YOLO v3 모델의 자세한 구조와 출력 형식을 짚고 넘어간다. One-stage detector는 세 가지 단계와 Decoder가 있다.
@@ -131,16 +125,6 @@ Activation에서 발견할 수 있는 공통적인 특징은 다음과 같다.
 GT object에서 category index에 one-hot encoding을 적용하면 Predicted object와 같은 형식이 된다. 예측과 실제 데이터의 형식과 스케일을 동일하게 맞췄다면 둘 사이의 차이가 줄어들도록 손실(loss) 함수를 설계해서 학습을 시키면된다. 이때 예측이 feature map 형태로 나오기 때문에 GT 데이터도 그에 맞춰서 feature map 형태로 만들어주면 손실 함수 계산을 편리하게 할 수 있다.
 
 
-
-## 2. Training Plan
-
-
-
-## 3. TrainVal
-
-
-
-## 4. Model Factory
 
 
 
