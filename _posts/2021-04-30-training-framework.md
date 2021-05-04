@@ -173,8 +173,6 @@ class ModelFactory:
 
 모델을 만드는 과정은 `get_model()`에 나타나 있다. 모델을 이루는 backbone과 head 또한 팩토리로 생성한다. 입력 이미지에 해당하는 `input_tensor`를 만들고 이것이 backbone, head, decoder를 순차적으로 통과하여 모델의 출력인 `output_features`를 만든다. 이렇게 입력으로부터 최종 출력까지 가는 그래프를 만들고 입력부터 출력까지의 그래프를 `tf.keras.Model`로 묶으면 된다.  
 
-입력에서부터 convolution 등의 텐서 연산 과정이 코드에서 명시적인 그래프 객체에 쌓이는 것은 아니지만 텐서플로 패키지에의 전역변수로 그래프 모델을 관리하고 있다. 텐서플로 1.x에서는 그래프 변수를 직접 관리할 수도 있었으나 사용법이 너무 헷갈려서 2.x에서는 텐서플로에서 알아서 관리하게 됐다.
-
 ```python
     def get_model(self):
         backbone_model = back.backbone_factory(self.backbone_name, self.backbone_conv_args)
@@ -190,9 +188,5 @@ class ModelFactory:
         return yolo_model
 ```
 
-
-
-
-
-
+입력에서부터 convolution 등의 텐서 연산 과정이 코드에서 명시적인 그래프 객체에 쌓이는 것은 아니지만 텐서플로 패키지 내부적으로 그래프 모델을 관리하고 있다. 텐서플로 1.x에서는 그래프 객체를 직접 관리할 수도 있었으나 사용법이 너무 헷갈려서 2.x에서는 텐서플로에서 알아서 관리하게 됐다.
 
