@@ -1,8 +1,8 @@
 ---
 layout: post
 title:  "[Python] Segmentation"
-date:   2020-05-26 09:00:01
-categories: 2020-1-systprog
+date:   2021-05-08 09:00:01
+categories: 2021-1-systprog
 ---
 
 

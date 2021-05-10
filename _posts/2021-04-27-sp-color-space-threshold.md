@@ -17,7 +17,7 @@ Color space란 화소의 색상을 표현하는 공간이다. (영상 픽셀 좌
 
 ## 1.1 Binary, Gray
 
-이렇게 색상을 나타낼 수 있는 공간을 color space라고 하는데 그 중 가장 간단한 것은 흑과 백, 즉 0과 255로만 이루어진 **binary** 영상이다. 흰 바탕에 검은 글씨만 쓸 수 있는 메모장 같은 앱이 binary color space를 쓴다고 볼 수 있다. 그리고 밝기의 명암을 나타낼 수 있는 **gray** 영상이있다. Binary와 gray 모두 픽셀 하나의 색상이 하나의 값으로 결정이 되는 1차원 color space다. binary는 값을 0과 255만 가질수 있고 gray는 0~255 사이의 값을 가질 수 있다. 아래 그림은 binary, gray, rgb 영상을 비교한 것이다.
+이렇게 색상을 나타낼 수 있는 공간을 color space라고 하는데 그 중 가장 간단한 것은 흑과 백, 즉 0과 255로만 이루어진 **binary** 영상이다. 흰 바탕에 검은 글씨만 쓸 수 있는 메모장 같은 앱이 binary color space를 쓴다고 볼 수 있다. 그리고 밝기의 명암을 나타낼 수 있는 **gray** 영상이있다. Binary와 gray 모두 픽셀 하나의 색상이 하나의 값으로 결정이 되는 1차원 color space다. binary는 값을 0 또는 255만 가질수 있고 gray는 0~255 사이의 값을 가질 수 있다. 아래 그림은 binary, gray, rgb 영상을 비교한 것이다.
 
 ![spiderman-gray](../assets/opencv-color/spiderman-gray.jpg)
 
@@ -64,7 +64,7 @@ cv2.waitKey()
 
 
 
-그런데 색상을 표현할 수 있는 color space가 RGB만 있는 것은 아니다. 3차원 공간을 나타내는 좌표계가 cartesian coordinate만 있는게 아니라 poloar coordinate, spherical coordinate 등도 있듯이 color space의 종류도 여러가지가 있다. 이제부터 하나씩 알아보자. 여기서 다양한 color space를 배우는 이유는 **color space의 종류마다 특성과 쓰임이 다르므로 상황에 따라 적절한 color space를 변환한 후 영상처리를 하는 것이 유리**하기 때문이다.
+그런데 색상을 표현할 수 있는 color space가 RGB만 있는 것은 아니다. 3차원 공간을 나타내는 좌표계가 cartesian coordinate만 있는게 아니라 polar coordinate, spherical coordinate 등도 있듯이 color space의 종류도 여러가지가 있다. 이제부터 하나씩 알아보자. 여기서 다양한 color space를 배우는 이유는 **color space의 종류마다 특성과 쓰임이 다르므로 상황에 따라 적절한 color space를 변환한 후 영상처리를 하는 것이 유리**하기 때문이다.
 
 
 

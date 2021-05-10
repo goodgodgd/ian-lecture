@@ -1,8 +1,8 @@
 ---
 layout: post
 title:  "[Python] Image Filters"
-date:   2020-05-24 09:00:01
-categories: 2020-1-systprog
+date:   2021-05-04 09:00:01
+categories: 2021-1-systprog
 ---
 
 
@@ -15,22 +15,18 @@ categories: 2020-1-systprog
 
 ![convolution](../assets/opencv-filter/convolution.gif)
 
-가운데 움직이는 배열을 **커널(kernel)**이라 하며, 윈도우(window), 필터(filter), 마스크(mask)라고도 부른다. 커널은 슬라이딩 윈도우(sliding window) 방식으로 모든 픽셀을 돌아가며 주변 픽셀과 곱한 후 합산한다. 다음은 OpenCV C++ 스타일로 구현한 컨볼루션 예시다.
+가운데 움직이는 배열을 **커널(kernel)**이라 하며, 윈도우(window), 필터(filter), 마스크(mask)라고도 부른다. 커널은 슬라이딩 윈도우(sliding window) 방식으로 모든 픽셀을 돌아가며 주변 픽셀과 곱한 후 합산한다. 다음은 단순 반복문으로 컨볼루션 연산을 하는 함수다.
 
-```cpp
-void filter(srcimg, kernel, anchor, dstimg) {
-    for(int v=0; v<srcimg.rows; v++) {
-        for(int u=0; u<srcimg.cols; u++) {
-            int value=0;
-            for(int i=0; i<kernel.rows; i++) {
-                for(int k=0; k<kernel.cols; k++) {
-                    value += srcimg.at<uchar>(v+i+anchor.y, u+k+anchor.x) * kernel.at<uchar>(i, k);
-                }
-            }
-            dstimg.at<uchar>(v, u) = value;
-        }
-    }
-}
+```python
+def filter(srcimg, kernel, anchor, dstimg) {
+    offset_y, offset_y = -kernel.shape[0] // 2, -kernel.shape[1] // 2
+    for v in range(srcimg.shape[0])
+        for u in range(srcimg.shape[1])
+            value=0;
+            for i in range(kernel.shape[0])
+                for k in range(kernel.shape[1])
+                    value += srcimg[v+i+offset_y, u+k+offset_x] * kernel[i, k];
+            dstimg[v, u] = value;
 ```
 
 컨볼루션은 주변 픽셀들과 연산을 하므로 커널의 크기와 값을 어떻게 주느냐에 따라 결과가 크게 달라진다. 주변 픽셀과의 평균을 구하게 하면 영상이 부드러워지는 효과가 있고 주변 픽셀과의 차이를 구하면 엣지 영상을 얻을 수 있다. OpenCV에서는 사용자가 지정한 임의의 커널과 컨볼루션을 할 수 있는 `cv2.filter2D()`라는 함수도 제공하고 자주 쓰이는 커널을 이용한 컨볼루션 연산도 다양한 전용 함수로 제공한다.
@@ -135,7 +131,7 @@ def gaussian():
 
 ## 2.3 Median Filter
 
-`cv2.blur()` 함수나 `cv2.GaussianBlur()` 함수나 커널은 약간 다르지만 컨볼루션을 이용해 (가중) 평균을 계산한다는 것은 같다.  이런 필터도 자잘한 노이즈를 개선하는데 도움이 되지만 노이즈로 인해 주변과 값이 너무 다른 픽셀 값이 점처럼 여러 곳에 찍히게 되면 오히려 노이즈가 주변 픽셀로 퍼지는 현상이 발생한다. 이런 노이즈를 salt-and-pepper 노이즈라고 한다. 이런 노이즈를 제거하기 위해서는 주변 모든 픽셀 값을 사용하기 보다는 주변 픽셀 값 중에서 중간(median) 값 하나만 사용하는 것이 좋다. 예를 들어 3x3 커널이면 주변 9개의 픽셀 값을 정렬해서 중간 값인 5번째 값을 해당 픽셀에 대입하는 것이다. 이런 필터를 **미디언(median) 필터**라고 한다.   
+`cv2.blur()` 함수나 `cv2.GaussianBlur()` 함수나 커널은 약간 다르지만 컨볼루션을 이용해 (가중) 평균을 계산한다는 것은 같다.  이런 필터는 자잘한 노이즈를 개선하는데 도움이 되지만 노이즈로 인해 주변과 값이 너무 다른 픽셀 값이 점처럼 찍히게 되면 오히려 노이즈가 주변 픽셀로 퍼지는 현상이 발생한다. 이런 노이즈를 salt-and-pepper 노이즈라고 한다. 이런 노이즈를 제거하기 위해서는 주변 모든 픽셀 값을 사용하기 보다는 주변 픽셀 값 중에서 중간(median) 값 하나만 사용하는 것이 좋다. 예를 들어 3x3 커널이면 주변 9개의 픽셀 값을 정렬해서 중간 값인 5번째 값을 해당 픽셀에 대입하는 것이다. 이런 필터를 **미디언(median) 필터**라고 한다.   
 
 먼저 결과를 보면서 이해해 보자. 왼쪽 원본 영상에는 검고 흰 점들이 무수히 찍혀 있는게 거기에 가우시안 필터를 적용해도 노이즈가 뭉개질 뿐 사라지진 않는다. 하지만 오른쪽의 미디언 필터를 적용한 결과는 아직 남아있는 점도 있지만 상당수의 점들이 사라진 것을 볼 수 있다. 미디언 필터도 영상이 부드러워지긴 하는데 가우시안 블러링과는 느낌이 다르다. 미디언 필터는 경계가 흐릿해지진 않지만 경계선이 단순해지는 효과가 있어서 마치 물감으로 그린듯한 효과가 난다.
 
@@ -537,7 +533,6 @@ def pad_img(srcimg, dst_width):
     dstimg[:, start_col:end_col, :] = srcimg
     return dstimg
 ```
-
 
 
 
