@@ -10,7 +10,7 @@ categories: 2021-1-systprog
 
 # 1. Hough Transform
 
-**허프 변환(Hough Transform)**은 영상에서 직선이나 원과 같은 모양을 찾는 방법이다. 먼저 영상에서 캐니 엣지로 외곽선을 추출하고 엣지로 검출된 픽셀 좌표들을 **허프 공간(Hough Space)**으로 변환한다. 허프 공간은 찾고자 하는 도형의 파라미터 공간(Parameter Space)이며 이곳에서 밀도가 높은 곳의 파라미터를 찾으면 해당 도형을 픽셀 좌표계에서 찾을 수 있다. 가장 대표적인 직선 검출을 예로 들면 아래 왼쪽 그림처럼 영상에서 직선은 $$(\rho, \theta)$$ 두 개의 파라미터로 결정할 수 있다. 엣지로 검출된 선분 위의 한 픽셀을 지날수 있는 모든 직선의 파라미터를 허프 공간에 표시하면 오른쪽 그림과 같이 곡선이 그려진다. 모든 엣지의 픽셀에 대해서 허프 공간의 곡선을 그려본다. 허프 공간을 일정 간격의 그리드(grid)로 나눈 후 각 그리드를 지나는 선분의 개수가 가장 높은 그리드의 파라미터가 우리가 찾는 선분의 파라미터가 된다. 이때 각 그리드를 지나는 선분의 개수를 **vote**라고 한다. 원을 찾을때도 마찬가지로 원을 $$(x,y,r)$$ 세 개의 파라미터로 특정할 수 있으므로 3차원 허프 공간을 만들고 엣지 위의 픽셀들을 허프 공간으로 변환하면 된다.
+**허프 변환(Hough Transform)**은 영상에서 직선이나 원과 같은 모양을 찾는 방법이다. 먼저 영상에서 캐니 엣지로 외곽선을 추출하고 엣지로 검출된 픽셀 좌표들을 **허프 공간(Hough Space)**으로 변환한다. 허프 공간은 찾고자 하는 도형의 파라미터 공간(Parameter Space)이며 이곳에서 밀도가 높은 곳의 파라미터를 찾으면 해당 도형을 픽셀 좌표계에서 찾을 수 있다. 가장 대표적인 직선 검출을 예로 들면 아래 왼쪽 그림처럼 영상에서 직선은 $$(\rho, \theta)$$ 두 개의 파라미터로 결정할 수 있다. 엣지로 검출된 선분 위의 한 픽셀을 지날수 있는 모든 직선의 파라미터를 허프 공간에 표시하면 오른쪽 그림과 같이 곡선이 그려진다. 모든 엣지의 픽셀에 대해서 허프 공간의 곡선을 그려본다. 허프 공간을 일정 간격의 그리드(grid)로 나눈 후 가장 많은 곡선이 교차하는 그리드의 파라미터가 우리가 찾는 선분의 파라미터가 된다. 이때 각 그리드를 지나는 선분의 개수를 **vote**라고 한다. 원을 찾을때도 마찬가지로 원을 $$(x,y,r)$$ 세 개의 파라미터로 특정할 수 있으므로 3차원 허프 공간을 만들고 엣지 위의 픽셀들을 허프 공간으로 변환하면 된다.
 
 ![hough-transform1](../assets/opencv-segment/hough-transform1.jpg)
 
@@ -289,11 +289,13 @@ LABEL_BEGIN = 100
 
 def count_balls():
     srcimg = cv2.imread(IMG_PATH + "/ballpool.jpg", cv2.IMREAD_COLOR)
-    images, mask = prepare_mask(srcimg)
-    result_img = si.show_imgs(images, "floodfill", 3)
+    images = {"original": srcimg}
+    pproc_images, mask = prepare_mask(srcimg)
+    images.update(pproc_images)
+    si.show_imgs(images, "floodfill", 3)
 
 def prepare_mask(srcimg):
-    images = {"original": srcimg}
+    images = dict()
     hsvimg = cv2.cvtColor(srcimg, cv2.COLOR_BGR2HSV)
     images["hue"] = hsvimg[:, :, 0]
     images["value"] = hsvimg[:, :, 2]
@@ -327,16 +329,14 @@ mask가 준비되었다면 이제 flood fill을 적용할 차례다. Hue 영상�
 
 ```python
 def count_balls():
-    srcimg = cv2.imread(IMG_PATH + "/ballpool.jpg", cv2.IMREAD_COLOR)
-    images, mask = prepare_mask(srcimg)
-    result_img = si.show_imgs(images, "floodfill", 3)
-    mask, label = find_balls(images, mask)
+    ...
+    mask, label = find_balls(images["hue"], mask)
     print("number of balls:", label - LABEL_BEGIN)
 
-def find_balls(images, mask):
+def find_balls(hue_image, mask):
     label = LABEL_BEGIN
-    ih, iw, ch = images["original"].shape
-    hueimg = images["hue"].copy()
+    ih, iw = hue_image.shape
+    hueimg = hue_image.copy()
     for v in range(0, ih, 5):
         for u in range(0, iw, 5):
             if mask[v+1, u+1] > 0:
@@ -363,13 +363,9 @@ def find_balls(images, mask):
 
 ```python
 def count_balls():
-    srcimg = cv2.imread(IMG_PATH + "/ballpool.jpg", cv2.IMREAD_COLOR)
-    images, mask = prepare_mask(srcimg)
-    result_img = si.show_imgs(images, "floodfill", 3)
-    mask, label = find_balls(images, mask)
-    print("number of balls:", label - LABEL_BEGIN)
+    ...
     images["labeled balls"] = colorize_regions(mask, label)
-    result_img = si.show_imgs(images, "floodfill", 3)
+    si.show_imgs(images, "floodfill", 3)
 
 def colorize_regions(mask, label_max):
     image = np.zeros((mask.shape[0], mask.shape[1], 3), np.uint8)
@@ -394,7 +390,7 @@ def colorize_regions(mask, label_max):
 
 
 
-다음 그림에서 기러기의 영역만 추출하려면 어떻게 해야할까? 앞서 배운 flood fill을 이용한다면 밝고 큰 영역은 쉽게 배경으로 처리할 수 있을 것이다. 하지만 flood fill의 문제는 오직 바로 주변 픽셀만 보기 때문에 한 픽셀만 연결되어도 두 개의 영역을 하나의 색으로 채운다는 것이다. flood fill을 하다가 기러기 꼬리의 흰 털을 배경으로 인식할 수도 있다. 또한 floodfill로 모든 픽셀을 채우려면 연산량이 굉장히 많아서 속도면에서 느릴 수 밖에 없다.  
+다음 그림에서 기러기의 영역만 추출하려면 어떻게 해야할까? 앞서 배운 flood fill을 이용한다면 밝고 큰 영역은 쉽게 배경으로 처리할 수 있을 것이다. 하지만 flood fill의 문제는 오직 바로 주변 픽셀만 보기 때문에 한 픽셀만 연결되어도 두 개의 영역을 하나의 색으로 채운다는 것이다. flood fill을 하다가 기러기 꼬리의 흰 털을 배경으로 인식할 수도 있다. 또한 floodfill로 모든 픽셀을 채우려면 연산량이 많아서 속도면에서 느릴 수 밖에 없다.  
 
 아니면 단순히 밝기나 색상을 이용해 간단히 threshold를 하는 방법도 있다. 하지만 그렇게 하면 기러기 내부의 흰색을 구분할 수 없고 이를 없애기 위해 열림(opening)과 같은 모폴로지 연산을 하게 되면 외곽선이 뭉개져서 날개의 깃털을 세밀하게 구분할 수 없다.
 
