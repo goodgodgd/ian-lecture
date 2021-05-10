@@ -54,6 +54,74 @@ categories: 2021-1-detector
         features["backbone_l"] = conv5
 ```
 
+### CustomConv2D
+
+Darknet 53에서 사용되는 convolution 함수들은 사실 객체다. Backbone 클래스의 부모 클래인 `BackboneBase`에는 backbone에서 사용되는 convolution 종류를 생성자에서 미리 객체로 만들어서 사용한다. 생성자 함수는 다음과 같다.
+
+```python
+class BackboneBase:
+    def __init__(self, conv_kwargs):
+        self.conv2d = mu.CustomConv2D(kernel_size=3, strides=1, **conv_kwargs)
+        self.conv2d_k1 = mu.CustomConv2D(kernel_size=1, strides=1, **conv_kwargs)
+        self.conv2d_s2 = mu.CustomConv2D(kernel_size=3, strides=2, **conv_kwargs)
+```
+
+model_utils.py의 `CustomConv2D`를 통해 kernel_size 및 stride 설정에 따라 여러 convolution 객체를 만든다. `CustomConv2D` 클래스는 다음과 같이 정의되어있다.
+
+```python
+import tensorflow as tf
+from tensorflow.keras import layers
+import tensorflow_addons as tfa
+
+class CustomConv2D:
+    CALL_COUNT = -1
+
+    def __init__(self, kernel_size=3, strides=1, padding="same", activation="leaky_relu", scope=None, bn=True):
+        # save arguments for Conv2D layer
+        self.kernel_size = kernel_size
+        self.strides = strides
+        self.padding = padding
+        self.activation = activation
+        self.scope = scope
+        self.bn = bn
+
+    def __call__(self, x, filters, name=None):
+        CustomConv2D.CALL_COUNT += 1
+        index = CustomConv2D.CALL_COUNT
+        name = f"conv{index:03d}" if name is None else f"{name}/{index:03d}"
+        name = f"{self.scope}/{name}" if self.scope else name
+
+        x = layers.Conv2D(filters, self.kernel_size, self.strides, self.padding,
+                          use_bias=not self.bn, kernel_regularizer=tf.keras.regularizers.l2(0.0005),
+                          kernel_initializer=tf.random_normal_initializer(stddev=0.01),
+                          bias_initializer=tf.constant_initializer(0.), name=name,
+                          )(x)
+
+        if self.activation == "leaky_relu":
+            x = layers.LeakyReLU(alpha=0.1)(x)
+        elif self.activation == "mish":
+            x = tfa.activations.mish(x)
+
+        if self.bn:
+            x = layers.BatchNormalization()(x)
+        return x
+```
+
+Convolution 연산에서 매번 바뀌는 입력 텐서와 자주 바뀌는 채널 수는 호출(`__call__()`)시에 입력하게 하고 상대적으로 변화가 적은나머지 인자들은 생성자에서 멤버 변수로 저장한다. 원래 `tf.keras.layers.Conv2D` 클래스를 직접 backbone에서 사용해도 되지만 그렇게하면 입력인자가 많아서 코드가 전체적으로 지저분해진다. `CustomConv2D`에서는 생성자에서 입력받은 설정을 호출시마다 반복해서 사용한다. 아래는 `CustomConv2D`를 썼을 때와 `tf.keras.layers.Conv2D`를 쓸 때의 코드를 비교한 것이다.
+
+```python
+conv2 = self.conv2d_s2(conv1, 128)
+conv2 = layers.Conv2D(conv1, kernel_size=128, strides=2, padding="same", 
+                      kernel_regularizer=tf.keras.regularizers.l2(0.0005), 
+                      kernel_initializer=tf.random_normal_initializer(stddev=0.01), 
+                      bias_initializer=tf.constant_initializer(0.), 
+                      name=f"conv{index:03d}")(conv1)
+```
+
+kernel_size는 1 아니면 3이고, strides는 1 또는 2이므로 kernel_size와 strides에 따라 전용 `CustomConv2D` 객체를 만들고 나머지 설정들은 `CustomConv2D` 내부의 기본 값을 그대로 사용한다. 또한 `CustomConv2D` 내부에서 activation 함수와 batch normalization까지 포함한다. 이를 사용하는 backbone은 최소의 입력인자(입력 텐서와 출력 채널 수)만 입력하고 batch normalization을 convolution 뒤에 매번 추가하지 않아도 돼서 코드가 간결해졌다.
+
+Backbone의 생성자가 마치 파이토치처럼 convolution 객체를 미리 생성하는 것처럼 보일 수도 있지만 `CustomConv2D`는 생성할 때가 아니라 호출할 때마다 새로운 `layers.Conv2D` 객체를 생성한다. Backbone의 생성자에서 만드는 `CustomConv2D` 객체는 `layers.Conv2D` 객체에 들어갈 기본 값을 저장할 뿐이다. 만약 파이토치 스타일로 모든 convolution 객체를 미리 만들어야 한다면 생성자 함수가 매우 길어질 것이다. 그래서 [YOLO v3의 파이토치 구현](https://github.com/eriklindernoren/PyTorch-YOLOv3/blob/1675d1898c2ec6e0bca6057b482667a2d884ceb8/pytorchyolo/models.py#L156)을 보면 모델 정의는 Darknet에서 모델 정의하는 cfg 파일을 읽어와서 자동으로 객체를 생성하고 forward graph를 정의한다.
+
 
 
 ## 2. Neck
