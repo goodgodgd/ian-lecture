@@ -7,17 +7,31 @@ categories: 2020-1-MICRO
 
 
 
-# UART
+# CH09. UART
 
-### UCSRnX
+### UCSRnA
+
+![ucsrnb](../assets/registers/UART_pins.png)
+
+![ucsrnb](../assets/registers/UART_UCSRnA_bits.png)
+
+
 
 ![ucsrna](../assets/registers/UART_UCSRnA.png)
 
 
 
+### UCSRnB
+
+![ucsrnb](../assets/registers/UART_UCSRnB_bits.png)
+
 ![ucsrnb](../assets/registers/UART_UCSRnB.png)
 
 
+
+### UCSRnC
+
+![ucsrnc](../assets/registers/UART_UCSRnC_bits.png)
 
 ![ucsrnc](../assets/registers/UART_UCSRnC.png)
 
@@ -29,53 +43,7 @@ categories: 2020-1-MICRO
 
 
 
-# External Interrupt
-
-![ext_int](../assets/registers/EXT_INT.png)
-
-
-
-# Timer/Counter
-
-### 8 bit Timer/Counter
-
-![tccr0](../assets/registers/TC8b_TCCR.png)
-
-
-
-![tccr0_mode](../assets/registers/TC8b_TCCR_mode.png)
-
-
-
-### 16 bit Timer/Counter
-
-![tccr1](../assets/registers/TC16b_TCCR_ps.png)
-
-
-
-![tccr1_mode](../assets/registers/TC16b_TCCR_mode.png)
-
-
-
-### Timer/Counter Interrupt
-
-![tc_int1](../assets/registers/TC_TIMSK_intr.png)
-
-
-
-![tc_intvect](../assets/registers/TC_TIMSK_intvect.png)
-
-
-
-![tc_pwm](../assets/registers/TC_PWM_pins.png)
-
-
-
-![tc_pwm_modes](../assets/registers/TC_PWM_modes.png)
-
-
-
-# ADC
+# CH10. ADC
 
 ### ADMUX
 
@@ -84,3 +52,70 @@ categories: 2020-1-MICRO
 ### ADCSRA
 
 ![adc_sra](../assets/registers/ADC_ADCSRA.png)
+
+
+
+# CH12. External Interrupt
+
+![ext_int](../assets/registers/EXT_INT.png)
+
+
+
+# CH13~15 Timer/Counter
+
+## 8 bit Timer/Counter
+
+### TCCR0
+
+![tccr0](../assets/registers/TC8b_TCCR0_bits.png)
+
+![tccr0_mode](../assets/registers/TC8b_TCCR_mode.png)
+
+![tccr0_mode](../assets/registers/TC8b_TCCR0_CS.png)
+
+<img src="../assets/registers/TC8b_TCCR2_CS.png" alt="tccr0_prescaler" style="zoom:80%;" />
+
+![tccr0_pulse_out](../assets/registers/TC8b_TCCR_com.png)
+
+
+
+## 16 bit Timer/Counter
+
+### TCCR1X
+
+![tccr1](../assets/registers/TC16b_TCCR_bits.png)
+
+
+
+![tccr1_mode](../assets/registers/TC16b_TCCR_mode.png)
+
+![tccr1_prescaler](../assets/registers/TC16b_TCCRnB_CS.png)
+
+
+
+
+
+## Timer/Counter Interrupt
+
+### TIMSK/ETIMSK
+
+![tc_timsk](../assets/registers/TC_TIMSK_bits.png)
+
+![tc_etimsk](../assets/registers/TC_ETIMSK_bits.png)
+
+
+
+![tc8b_intvect](../assets/registers/TC8b_interrupt_vector.png)
+
+![tc16b_intvect](../assets/registers/TC16b_interrupt_vector.png)
+
+
+
+## PWM
+
+![tc_pwm](../assets/registers/TC_PWM_pins.png)
+
+
+
+![tc_pwm_modes](../assets/registers/TC_PWM_modes.png)
+
