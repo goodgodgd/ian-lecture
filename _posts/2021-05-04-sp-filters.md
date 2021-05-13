@@ -15,6 +15,9 @@ categories: 2021-1-systprog
 
 ![convolution](../assets/opencv-filter/convolution.gif)
 
+![convolution](../assets/opencv-filter/convolution1.png)
+
+
 가운데 움직이는 배열을 **커널(kernel)**이라 하며, 윈도우(window), 필터(filter), 마스크(mask)라고도 부른다. 커널은 슬라이딩 윈도우(sliding window) 방식으로 모든 픽셀을 돌아가며 주변 픽셀과 곱한 후 합산한다. 다음은 단순 반복문으로 컨볼루션 연산을 하는 함수다.
 
 ```python
@@ -34,7 +37,7 @@ def filter(srcimg, kernel, anchor, dstimg) {
 > dst = **cv2.filter2D**(src, ddepth, kernel[, dst, anchor, delta, borderType])
 >
 > - src: 입력 영상
-> - ddepth: 출력 영상의 dtype, 커널에 따라 컨볼루션 결과가 음수가 나오거나 255가 넘을 수 있으므로 값 범위를 생각해서 출력 데이터 타입을 정해줘야 한다. -1이면 입력 영상과 동일한 타입이고, 선택할 수 있는 cv2.CV_8U, cv2.CV_16U, CV_32F 등의 값을 [이곳](<https://docs.opencv.org/4.1.0/d4/d86/group__imgproc__filter.html#filter_depths>)에서 확인할 수 있다.
+> - ddepth: 출력 영상의 dtype, 커널에 따라 컨볼루션 결과가 음수가 나오거나 255가 넘을 수 있으므로 값 범위를 생각해서 출력 데이터 타입을 정해줘야 한다. -1이면 입력 영상과 동일한 타입이고, 선택할 수 있는 cv2.CV_8U, cv2.CV_16U, cv2.CV_32F 등의 값을 [이곳](<https://docs.opencv.org/4.1.0/d4/d86/group__imgproc__filter.html#filter_depths>)에서 확인할 수 있다.
 > - kernel: 컨볼루션 커널, 보통 커널은 3 x 3, 5 x 5 등의 홀수 정사각형 모양을 쓴다.
 > - dst: 결과 영상
 > - anchor: 커널의 기준점
