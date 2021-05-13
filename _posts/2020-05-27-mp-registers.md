@@ -53,6 +53,8 @@ categories: 2020-1-MICRO
 
 ![adc_sra](../assets/registers/ADC_ADCSRA.png)
 
+![adc_sra](../assets/registers/ADC_ADCSRA_ADPS.png)
+
 
 
 # CH12. External Interrupt
