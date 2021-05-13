@@ -2,7 +2,7 @@
 layout: post
 title:  "[Git] Manage Project"
 date:   2019-05-23 09:00:01
-categories: 2019-1-micro
+categories: 2019-1-git
 ---
 
 
@@ -17,13 +17,13 @@ Git을 이용해서 실제 마이크로프로세서 프로젝트를 관리해보
 
 GitHub에 접속하여 로그인 후 **New**를 눌러 새 저장소를 만든다. 여기서는 이름을 **micro-project**라고 정했다. `README.md`와 `.gitignore` 파일은 어차피 필요하므로 저장소를 만들때 자동 생성하게 한다. "Initialize this repository with a README"를 체크하고 "Add .gitignore" 에서 "C"를 선택하자.
 
-![github-new](/ian-lecture/assets/git-project/github-new.png)
+![github-new](../assets/git-project/github-new.png)
 
 
 
 아래와 같이 기본 파일과 함께 새로운 저장소가 생긴것을 확인한다. 오른쪽에 녹색 "clone or download" 버튼을 누르면 보이는 저장소 주소를 복사한다.
 
-![github-initial](/ian-lecture/assets/git-project/github-initial.png)
+![github-initial](../assets/git-project/github-initial.png)
 
 
 

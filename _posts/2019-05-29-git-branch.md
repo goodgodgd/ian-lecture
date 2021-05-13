@@ -2,7 +2,7 @@
 layout: post
 title:  "[Git] Branch and Merge"
 date:   2019-05-29 09:00:01
-categories: 2019-1-micro
+categories: 2019-1-git
 ---
 
 
@@ -13,7 +13,7 @@ categories: 2019-1-micro
 
 그래서 대부분의 버전 관리 시스템에는 **브랜치(branch)** 기능이 있다. 메인 브랜치의 특정 시점의 버전에서 분기(branching)하여 새로운 기능을 넣거나 이슈를 해결하는 등의 하나의 **작업 단위**를 진행하며 자유롭게 commit할 수 있는 **독립적인 작업공간**이다. 작업 단위가 어느정도 완성되었을 때 다른 사람들의 동의를 얻어 그동한 구현한 변경사항을 메인 브랜치와 합치고 다시 거기서부터 새로운 브랜치를 분기하여 새로운 작업을 시작하는 것이 일반적인 Git을 활용한 작업 흐름(workflow)이다. 여러 작업자들은 브랜치를 활용해서 동시에 여러 작업을 독립적으로 수행한 후 완성된 작업 단위의 결과를 보고 이를 메인 브랜치에 반영할지를 결정할 수 있다. 다음 그림은 브랜치를 활용한 작업 흐름이다. ([출처](<https://backlog.com/git-tutorial/kr/stepup/stepup1_1.html>)) 여러 사람의 작업 흐름을 브랜치를 통해 한눈에 알 수 있다.
 
-![branch-concept](/ian-lecture/assets/git-project/branch-concept.png)
+![branch-concept](../assets/git-project/branch-concept.png)
 
 
 
@@ -65,7 +65,9 @@ $ git branch
 
 명령어를 실행해도 워킹 트리(working tree)에는 아무것도 변한 것이 없다. 아래 그림을 보면 브랜치를 만들면 같은 commit을 가리키는 브랜치가 추가되었을 뿐이다. 그리고 HEAD의 위치가 새로운 브랜치를 가리키게 된다. HEAD는 현재 사용중인 브랜치의 최신 커밋을 가리키는 포인터다.
 
-![checkout-before](/ian-lecture/assets/git-project/checkout-before.png)  ![checkout-after](/ian-lecture/assets/git-project/checkout-after.png)
+![checkout-before](../assets/git-project/checkout-before.png)  
+
+![checkout-after](../assets/git-project/checkout-after.png)
 
 
 
@@ -174,9 +176,9 @@ Fast-forward
 
 메시지에 나온대로 `hotfix-change-port` 브랜치를 만든 후 `master`에 추가적인 commit이 없었기 때문에 다음 그림과 같은 fast-forward merge가 실행되었다. Fast-forwad란 병합을 시도하는 브랜치(master)의 포인터를 병합 당하는 브랜치(hotfix-)로 옮기는 것이다.
 
-![fast-forward-before](/ian-lecture/assets/git-project/fast-forward-before.png)
+![fast-forward-before](../assets/git-project/fast-forward-before.png)
 
-![fast-forward-after](/ian-lecture/assets/git-project/fast-forward-after.png)
+![fast-forward-after](../assets/git-project/fast-forward-after.png)
 
 브랜치 병합 후에는 병합된 브랜치를 삭제해도 된다. 삭제는 `branch -d` 옵션을 주면 된다.
 
@@ -195,9 +197,9 @@ $ git branch
 
 이제 다시 A가 되어 토픽 브랜치로 돌아가보자. A도 아까 작업하던 것이 완료되어 `master`로 브랜치 내용을 합치고자 한다. `master`는 `flicker-led` 가 분기한 이후 `hotfix-`의 commit을 병합하였다. 이 상태에서는 Fast-forward 방식으로는 합칠 수 없고 3-way merge 방식으로 두 개의 브랜치를 합쳐야 한다. 3-way merge는 공통 부모로부터 두 브랜치의 변경 사항을 모두 반영한 새로운 commit을 만드는 것이다. 그림으로 표현하면 다음과 같다.
 
-![3way-merge-before](/ian-lecture/assets/git-project/3way-merge-before.png)
+![3way-merge-before](../assets/git-project/3way-merge-before.png)
 
-![3way-merge-after](/ian-lecture/assets/git-project/3way-merge-after.png)
+![3way-merge-after](../assets/git-project/3way-merge-after.png)
 
 
 
@@ -256,7 +258,7 @@ HYUKDOO.CHOI@LAPTOP-MHDHK8AC MINGW64 /d/Work/micro-project (master)
 
 이제 `master` 옆에 `MERGING` 이라는 표시가 사라졌다. 이제 `git log --graph` 명령어를 통해 그 동안의 로그를 확인해보자. `master` 브랜치와 `flicker-led` 브랜치가 합쳐진 것이 보인다. 현재 `HEAD, master, flicker-led`의 위치도 표시가 된다. `hotfix-change-port` 브랜치는 아까 삭제했기 때문에 보이지 않는다.
 
-![merge-log](/ian-lecture/assets/git-project/merge-log.png)
+![merge-log](../assets/git-project/merge-log.png)
 
 
 

@@ -2,7 +2,7 @@
 layout: post
 title:  "[Git] Git into the Git"
 date:   2019-05-21 09:00:01
-categories: 2019-1-micro
+categories: 2019-1-git
 ---
 
 
@@ -17,7 +17,7 @@ categories: 2019-1-micro
 
 아래 그림을 보자. 위쪽의 사각형은 파일의 상태를 나타내고 화살표에 쓰인 단어는 "edit"을 제외하고 모두 Git의 동작(verb)이다. 모든 Git 명령어는 `git <verb> <options>` 형태이므로 마치 `주어-동사(verb)-목적어`의 영어 문장처럼 쓰인다. 그래서 중간의 큰 단위의 동작을 나타내는 인자를 *verb*라 부른다.
 
-![status-cycle](/ian-lecture/assets/git-intro/status-cycle.png)
+![status-cycle](../assets/git-intro/status-cycle.png)
 
 
 
@@ -43,7 +43,7 @@ Git 저장소 안에서 파일은 그림처럼 네 가지 상태를 가질 수 �
 
 지금까지는 파일의 관점에서 파일의 상태 변화를 알아보았다. 아래 그림은 Git 저장소 내부의 세 가지 **공간**을 나타낸 것이다.
 
-![git_spaces](/ian-lecture/assets/git-intro/git_spaces.png)
+![git_spaces](../assets/git-intro/git_spaces.png)
 
 - **작업 트리, Work Tree**: 현재 사용자에게 보이는 파일들이 있는 공간이다. 이곳에는 다양한 상태의 파일들이 섞여있다.
 - **인덱스, Index**: 가장 최근 commit에 Stage 한 내용까지 반영된 공간이다. 파일을 add 하면 그 당시의 상태가 이곳으로 복사된다. commit 하기 전까지 add 한 변경 사항이 이곳에 쌓인다.
