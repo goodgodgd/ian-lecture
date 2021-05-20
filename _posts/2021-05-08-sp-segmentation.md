@@ -22,7 +22,7 @@ categories: 2021-1-systprog
 
 OpenCV에서는 허프 직선 변환을 구현한 `cv2.HoughLines()`와 확률적인 방법으로 직선 검출의 속도를 높인 `cv2.HoughLinesP()`라는 두 개의 함수를 제공한다.
 
-> lines = **cv2.HoughLines**(image, rho, theta, threshold[, lines, srm, stm, min_theta, max_theta])
+> lines = **cv2.HoughLines**(image, rho, theta, threshold[, lines, srn, stn, min_theta, max_theta])
 >
 > - image: 8-bit, single channel binary source image. 주로 원본 영상에 가우시안 블러와 캐니 엣지를 적용한 영상을 입력 영상으로 쓴다.
 > - rho: 직선과 원점과의 거리 측정 해상도, 허프 공간에서 rho 축을 나누는 단위, 작을수록 정확히 측정할 수 있지만 입력 영상의 노이즈에 취약해진다.
@@ -89,6 +89,7 @@ OpenCV는 Hough Circle Transform을 구현한 `cv2.HoughCircles()` 함수를 제
 > - method: 현재는 cv2.HOUGH_GRADIENT 만 구현이 되어있다.
 > - dp: 허프 공간에서의 그리드 크기, dp=1이면 입력 영상의 픽셀 해상도와 같아진다.
 > - minDist: 검출 원들 사이의 최소 거리
+> - circles: 검출 결과, 1 x N x 4 크기의 배열로 N개의 원의 파라미터 표현 $$(x, y, \theta)$$
 > - param1: 캐니 엣지에서 higher threshold 값, 그 절반을 lower threshold로 사용
 > - param2: 원으로 판단하는 최소 vote 수
 > - minRadius, maxRadius: 최소, 최대 반지름, 적당한 반지름 범위를 입력하면 잘못된 원 검출을 크게 줄일 수 있다.
@@ -149,16 +150,16 @@ OpenCV에서는 이를 구현한 `cv2.floodFill()` 함수를 제공한다. `cv2.
 >
 > seedPoint에서 시작하여 주변에 image 픽셀 값이 비슷한 영역을 반복적으로 확장해 나간다. mask가 0인 픽셀로만 확장할수 있다. 지정된 영역에서 image에는 newVal 값이 채워지고 mask에는 1 또는 (flags>>8) 값이 채워진다.
 >
-> - image: 1- or 3-channel, 8-bit or floating-point image,`flags`에  `cv2.FLOODFILL_MASK_ONLY`를 지정하지 않은 경우 입력으로만 넣어도 해당 영역에 `newVal`이 채워진다.
+> - image: 입력 영상, 1- or 3-channel, 8-bit or floating-point image, `flags`에  `cv2.FLOODFILL_MASK_ONLY`를 지정하지 않은 경우 영상의 해당 영역에 `newVal`이 채워진다.
 > - mask: 입력 영상의 크기가 (H, W)라면 mask에는 (H+2, W+2) 사이즈의 single-channel 8-bit image를 입력해야 한다.
 > - seedPoint: 시작점
 > - newVal: 채우기에 들어갈 색상 값
 > - loDiff, upDiff: 주변 픽셀을 채울지 결정하는 최대 픽셀 값 차이, 기준 픽셀이`(x, y)`이고 주변의 새로운 픽셀이 `(x', y')` 일 때, `img(x, y) - loDiff <= img(x', y') <= img(x, y) + upDiff` 를 만족해야 새로운 픽셀을 영역에 추가할 수 있다.
-> - flags: 채우기 방식 지정, 여러 값을 비트별로 조합해서 사용한다. 0~7bit는 채우기 방식을 지정하고 8~15bit는 mask에 채우는 값을 지정한다.
+> - flags: 채우기 방식 지정, 여러 값을 비트별로 조합해서 사용한다.
 >   - 4 or 8: 주변 4방향을 채울지 8방향을 채울지 결정
->   - cv2.FLOODFILL_MASK_ONLY: img가 아닌 mask에만 채우기 적용, 이때 mask에 채우는 값은 1을 쓰지 않고 (flags>>8)을 사용
->   - cv2. FLOODFILL_FIXED_RANGE: 주변 픽셀이 아닌 seed 픽셀과 픽셀 값 비교
->   - flags의 8~15bit(=flags>>8)에 0이 아닌 값이 있으면 mask가 1이 아닌 (flags>>8) 값으로 채워짐, 예를 들어 `flags=(4 | 128<<8)` 이면 mask를 1이 아닌 128로 채우게 됨
+>   - cv2.FLOODFILL_MASK_ONLY (1 << 16): img가 아닌 mask에만 채우기 적용, 이때 mask에 채우는 값은 1을 쓰지 않고 (flags>>8)을 사용
+>   - cv2. FLOODFILL_FIXED_RANGE (1 << 17): 주변 픽셀이 아닌 seed 픽셀과 픽셀 값 비교
+>   - flags의 8~15bit에 0이 아닌 값이 있으면 mask가 1이 아닌 (flags>>8 & 255) 값으로 채워짐, 예를 들어 `flags=(4 | 128<<8)` 이면 mask를 1이 아닌 128로 채우게 됨
 > - retval: 채우기 한 픽셀의 개수 (영역의 넓이)
 > - rect: 채워진 영역을 감싸는 사각영역 (x, y, width, height)
 
