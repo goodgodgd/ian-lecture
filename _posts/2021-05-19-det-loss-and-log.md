@@ -114,17 +114,17 @@ YOLO v3에서는 세 가지 스케일의 feature map이 나오기 때문에 앞�
    
 2. GIoU loss: 두 box가 떨어진 상태에서도 겹치는 부분이 생기도록 유도하는 penalty 함수를 추가한다. C는 두 box를 포함하는 최소의 box다.  
    $$
-   \mathcal{L}_{IoU} = 1 - IoU + {|C - B^gt \cup B| \over |C|}
+   \mathcal{L}_{GIoU} = 1 - IoU + {|C - B^gt \cup B| \over |C|}
    $$
    
 3. DIoU loss: 두 box의 중심점 좌표가 먼저 가까워지도록 유도한다. $\rho(\cdot)$은 Euclidean distance, $\mathbf{b}^{gt}, \mathbf{b}$는 각각 GT box와 Predicted box의 중심점이고 $c$는 위에서 말한 C box의 대각선 길이다.  
    $$
-   \mathcal{L}_{IoU} = 1 - IoU + {\rho^2(\mathbf{b}^{gt}, \mathbf{b}) \over c^2}
+   \mathcal{L}_{DIoU} = 1 - IoU + {\rho^2(\mathbf{b}^{gt}, \mathbf{b}) \over c^2}
    $$
    
 4. CIoU loss: DIoU loss에서 두 box 사이의 aspect ratio (가로/세로 비율)까지 비슷하게 맞추는 penalty를 추가하였다. (여기까지 하고 보니 box regression loss에 IoU loss를 더해준 것처럼 보인다.)  $v$는 arctan으로 계산되므로 범위가 $[0,\pi/2]$ 사이에 있으므로 앞에는 최대 값의 역수를 곱해서 $v$가 $[0,1]$ 범위에 들어오게 한다. $\alpha$는 IoU가 높을 수록 $v$에 의한 손실이 커지게 만든다. 즉, 초기에는 두 박스의 중심점을 맞추는데 집중하고 IoU가 어느정도 높아지면 aspect ratio에 높은 가중치를 두고 학습한다.  
    $$
-   \mathcal{L}_{IoU} = 1 - IoU + {\rho^2(\mathbf{b}^{gt}, \mathbf{b}) \over c^2} + \alpha v \\
+   \mathcal{L}_{CIoU} = 1 - IoU + {\rho^2(\mathbf{b}^{gt}, \mathbf{b}) \over c^2} + \alpha v \\
    v = {4 \over \pi^2} \left(\arctan {w^* \over h^*} - \arctan {w \over h} \right)^2, \quad
    \alpha = {v \over 1-IoU+v}
    $$
@@ -146,9 +146,9 @@ $$
 
 Faster R-CNN에서는 RPN 학습시 objectness를 두 채널로 출력 후 softmax를 이용해 두 개의 확률($$o_{i,0},\ o_{i,1}$$)로 변환한다. 이후 GT Objectness와의 cross entropy를 적용하여 손실 함수를 구한다.  
 
-Positive와 negative anchor의 불균형을 해결하기 위해 mini-batch 단위로 256개의 anchor를 랜덤하게 샘플링하여 학습시킨다. 가급적 postiive vs negative 비율이 1:1이 되도록 샘플링하는데 $N_{pos} < 128$ 이면 negative anchor들을 추가하여 256개를 맞춘다.  
+Positive와 negative anchor의 불균형을 해결하기 위해 mini-batch 단위로 256개의 anchor를 랜덤하게 샘플링하여 학습시킨다. 가급적 positive vs negative 비율이 1:1이 되도록 샘플링하는데 $N_{pos} < 128$ 이면 negative anchor들을 추가하여 256개를 맞춘다.  
 
-Positive anchor는 두 가지 기준으로 선정한다. 1) GT anchor 마다 IoU가 가장 높은 Prediction anchor, 2) 그외 GT와 IoU가 0.7 이상인 Prediction anchor. Negative anchor는 positive anchor가 아닌 것 중에서 어떤 GT anchor와도 IoU가 0.3 이하인 anchor 중에 선택한다.
+Positive anchor는 두 가지 기준으로 선정한다. 1) GT anchor 마다 IoU가 가장 높은 Prediction anchor, 2) 그외 GT와 IoU가 0.7 이상인 Prediction anchor. Negative anchor는 positive anchor가 아닌 것 중에서 어떤 GT anchor와도 IoU가 0.3 이하인 Prediction anchor 중에 선택한다.
 
 #### 1.2.2. YOLO v1
 
@@ -163,9 +163,10 @@ YOLO v1에서는 Objectness 학습을 단순히 regression 문제로 보고 예�
 
 #### 1.2.3. YOLO v3
 
-YOLO v3에서는 objectness를 binary classification 문제로 보고 binary cross entropy (BCE)를 사용하여 학습을 시킨다. 논문에서는 딱히 positive vs negative 불균형에 대한 언급이 없어서 그냥 다 더하는 것으로 보인다. YOLO v3를 구현한 여러 github을 보면 Faster R-CNN 처럼 IoU가 0.3 이하인 anchor들만 negative anchor로 학습하고 GT anchor와 같은 위치의 Prediction anchor들을 모두 positive anchor로 학습한다. 근데 논문에서는 IoU를 이용한 구분의 별 효과가 없다고 써있다.  
+YOLO v3에서는 objectness를 binary classification 문제로 보고 binary cross entropy (BCE)를 사용하여 학습을 시킨다. 논문에서는 딱히 positive vs negative 불균형에 대한 언급이 없어서 그냥 다 더하는 것으로 보인다. YOLO v3를 구현한 여러 github을 보면 Faster R-CNN 처럼 IoU가 0.3 이하인 anchor들만 negative anchor로 학습하고 GT box와 같은 위치의 Prediction anchor들을 모두 positive anchor로 학습한다. 근데 논문에서는 IoU를 이용한 구분이 별 효과가 없다고 써있다.  
 
 본 구현에서는 Objectness loss를 다음과 같이 구현하였다.
+
 $$
 \mathcal{L}_{box} = \sum_{s \in \left\{l, m, s\right\}} \left\{
 {1 \over N_{s,pos}} \sum_{i | o_i^*==1} BCE(o_i^*, o_i) 
@@ -175,6 +176,7 @@ $$
 + {1 \over N_{s,neg}} \sum_{i | o_i^*==0} \log(1 - o_i) \right\} \\
 BCE(o_i^*, o_i) = o_i^* \log o_i + (1 - o_i^*) \log(1 - o_i)
 $$
+
 Positive와 negative 사이의 불균형을 잡기 위해 positive anchor와 negative anchor에서 나온 BCE의 평균을 따로 내서 더하였다. 전체 anchor는 수만개인데 (256 x 832 입력 해상도에서 13,104개) 한 이미지에 포함된 실제 객체는 몇 개 혹은 몇 십개 정도이기 때문에 GT feature map에서 극소수만 objectness가 1이고 대부분이 0이 된다. Label 불균형이 심각하기 때문에 두 가지 anchor에서 나온 손실 함수를 그냥 더하면 전반적으로 모두 0으로 학습될 가능성이 있다. 하지만 위와 같이 두 가지 label에 대해 따로 평균을 내면 label 별 anchor 개수와는 무관한 값이 나오므로 positive와 negative를 균형있게 학습할 수 있다.
 
 
@@ -239,7 +241,7 @@ Case 1에서는 셋 중 두 개가 맞았지만 손실 함수가 높고 Case 2�
 6. neg_obj: GT objectness가 0인 anchor중에서 objectness가 가장 높은 50개의 평균
 7. time_m: 1 epoch을 처리하는게 걸린 시간 (분 단위)
 
-`ciou, object, category` 모두 가중치가 반영되지 않은 개별 손실 함수이며 `pos_obj, neg_obj`는 objnectness 예측의 정확도를 알아보기 위한 성능 지표다.
+`ciou, object, category` 모두 가중치가 반영되지 않은 개별 손실 함수이며 `pos_obj, neg_obj`는 objectness 예측의 정확도를 알아보기 위한 성능 지표다.
 
 본 구현에서는 위 항목들을 mini batch 단위로 계산하여 기록하고 epoch 마다 평균을 구해서 (7번 제외) `history.csv`라는 파일에 저장한다. 여러 epoch을 학습하면서 각 항목의 증감 경향을 보면 학습이 의도한대로 진행되고 있는지 확인할 수 있다.
 
