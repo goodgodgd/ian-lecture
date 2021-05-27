@@ -89,7 +89,7 @@ OpenCV는 Hough Circle Transform을 구현한 `cv2.HoughCircles()` 함수를 제
 > - method: 현재는 cv2.HOUGH_GRADIENT 만 구현이 되어있다.
 > - dp: 허프 공간에서의 그리드 크기, dp=1이면 입력 영상의 픽셀 해상도와 같아진다.
 > - minDist: 검출 원들 사이의 최소 거리
-> - circles: 검출 결과, 1 x N x 4 크기의 배열로 N개의 원의 파라미터 표현 $$(x, y, \theta)$$
+> - circles: 검출 결과, 1 x N x 3 크기의 배열로 N개의 원의 파라미터 표현 $$(x, y, \theta)$$
 > - param1: 캐니 엣지에서 higher threshold 값, 그 절반을 lower threshold로 사용
 > - param2: 원으로 판단하는 최소 vote 수
 > - minRadius, maxRadius: 최소, 최대 반지름, 적당한 반지름 범위를 입력하면 잘못된 원 검출을 크게 줄일 수 있다.
@@ -157,7 +157,7 @@ OpenCV에서는 이를 구현한 `cv2.floodFill()` 함수를 제공한다. `cv2.
 > - loDiff, upDiff: 주변 픽셀을 채울지 결정하는 최대 픽셀 값 차이, 기준 픽셀이`(x, y)`이고 주변의 새로운 픽셀이 `(x', y')` 일 때, `img(x, y) - loDiff <= img(x', y') <= img(x, y) + upDiff` 를 만족해야 새로운 픽셀을 영역에 추가할 수 있다.
 > - flags: 채우기 방식 지정, 여러 값을 비트별로 조합해서 사용한다.
 >   - 4 or 8: 주변 4방향을 채울지 8방향을 채울지 결정
->   - cv2.FLOODFILL_MASK_ONLY (1 << 16): img가 아닌 mask에만 채우기 적용, 이때 mask에 채우는 값은 1을 쓰지 않고 (flags>>8)을 사용
+>   - cv2.FLOODFILL_MASK_ONLY (1 << 16): image가 아닌 mask에만 채우기 적용, 이때 mask에 채우는 값은 1을 쓰지 않고 (flags>>8)을 사용
 >   - cv2. FLOODFILL_FIXED_RANGE (1 << 17): 주변 픽셀이 아닌 seed 픽셀과 픽셀 값 비교
 >   - flags의 8~15bit에 0이 아닌 값이 있으면 mask가 1이 아닌 (flags>>8 & 255) 값으로 채워짐, 예를 들어 `flags=(4 | 128<<8)` 이면 mask를 1이 아닌 128로 채우게 됨
 > - retval: 채우기 한 픽셀의 개수 (영역의 넓이)
