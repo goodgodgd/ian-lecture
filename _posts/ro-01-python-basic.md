@@ -1,8 +1,8 @@
 ---
 layout: post
 title:  "Python Basics"
-date:   2020-08-30 09:00:13
-categories: 2020-2-robotics
+date:   2021-08-29 09:00:13
+categories: Robotics
 ---
 
 
@@ -20,7 +20,7 @@ categories: 2020-2-robotics
 
 ## Python 2 vs 3
 
-현재 쓰이는 파이썬은 2000년에 발표된 Python2와 2008년 발표된 Python3가 있다. 둘은 기본적으로 코드 호환이 되지 않는다. 가장 큰 차이는 Python3에서부터 유니코드(unicode)를 기본 문자로 지원하여 다국어(한국어 등)를 코드에서 자연스럽게 쓸 수 있다. (한글 변수명도 만들 수 있다.) 2010년대 중반까지만 해도 Python2의 영향력이 컸지만 어대3이라 이제 대부분의 프로젝트가 Python3로 넘어왔다. Python2는 올해까지만 관리가 된다. <https://pythonclock.org/> 그래서 현재는 Python2를 배울 필요가 없고 (사실 큰 차이도 없지만) 앞으로 파이썬은 Python3 라고 봐도 무방하다.
+현재 쓰이는 파이썬은 2000년에 발표된 Python2와 2008년 발표된 Python3가 있다. 둘은 기본적으로 코드 호환이 되지 않는다. 가장 큰 차이는 Python3에서부터 유니코드(unicode)를 기본 문자로 지원하여 다국어(한국어 등)를 코드에서 자연스럽게 쓸 수 있다. (한글 변수명도 만들 수 있다.) 2010년대 중반까지만 해도 Python2의 영향력이 컸지만 어대3이라 이제 대부분의 프로젝트가 Python3로 넘어왔다. Python2는 2020년까지만 관리가 됐고 더이상 업데이트 되지 않는다. <https://pythonclock.org/> 그래서 현재는 Python2를 배울 필요가 없고 앞으로 파이썬은 Python3 라고 봐도 무방하다.
 
 
 
@@ -28,9 +28,9 @@ categories: 2020-2-robotics
 
 로봇공학 수업에서는 리눅스(Linux)에서의 개발을 목표로 하지만 파이썬 문법을 배우는 단계에서는 일단 윈도우(Windows)에서 진행한다. 학생들에게 윈도우가 익숙하기도 하고 리눅스를 사용하기 위해서는 키트 배포와 설치에 시간이 걸리기 때문에 파이썬을 윈도우에서 먼저 배운다. 파이썬은 윈도우에서도 리눅스와 동일하게 동작하고 윈도우에서도 파이썬은 유용하기 때문에 학생들에게 도움이 될 것이다.  
 
-파이썬 인터프리터와 개발환경인 PyCharm(파이참)을 다운로드 받아 설치하자.  
+파이썬 인터프리터와 개발환경인 PyCharm(파이참)을 다운로드 받아 설치하자. 최신버전을 받아도 되지만 그보단 조금 전 버전이 호환성이 나을 수 있다.
 
-<https://www.python.org/downloads/release/python-379/>   
+<https://www.python.org/downloads/>   
 
 - "Windows x86-64 executable installer" 선택  
 
@@ -38,7 +38,7 @@ categories: 2020-2-robotics
 
 - "Community" 선택
 
-C++이나 C#으로 개발할 때 Visual Studio를 쓰듯이 파이썬을 개발할 때는 파이썬에 최적화된 PyCharm이라는 IDE(통합개발환경)를 많이 쓴다. 물론 Visual Studio에서도 파이썬 개발이 가능하지만 PyCharm이 훨씬 설치에 부담이 적고 반응도 빠르다. 또한 리눅스에서도 설치하여 동일한 개발환경을 유지할 수 있다. 
+C++이나 C#으로 개발할 때 Visual Studio를 쓰듯이 파이썬을 개발할 때는 파이썬에 최적화된 PyCharm이라는 IDE(통합개발환경)를 많이 쓴다. 물론 Visual Studio에서도 파이썬 개발이 가능하지만 PyCharm이 훨씬 설치에 부담이 적고 반응도 빠르다. 또한 리눅스에서도 파이참을 설치하여 동일한 개발환경을 유지할 수 있다. 
 
 
 

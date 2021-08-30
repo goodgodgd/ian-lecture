@@ -1,8 +1,8 @@
 ---
 layout: post
 title:  "Python Containers"
-date:   2020-09-02 09:00:13
-categories: 2020-2-robotics
+date:   2021-08-30 09:00:13
+categories: Robotics
 ---
 
 
@@ -119,28 +119,32 @@ print("animal:", animal)
 
 ### 1.3 리스트 내장 함수
 
-리스트를 쓰다보면 (크기순, 알파벳순) 정렬을 한다던지 (`sort`), 원소를 추가한다던지 (`append`), 중간에 삽입한다던지 (`insert`), 특정 원소의 인덱스(위치)를 반환한다던지(`index`) 등의 기능이 필요하다. **특히 `append`와 `sort`**가 많이 쓰인다. 함수명을 굳이 외울 필요없이 해당기능을 영어로 써보면 그 함수가 이미 있다. 다음 예시를 보며 함수명들을 익혀보자. 리스트 함수들을 쓸 때 주의할 점은 대부분의 함수들이 `in-place` 함수라는 것이다. 함수로 수정한 리스트 결과가 리턴으로 나오지 않고 함수를 실행한 변수 자체를 수정한다는 것이다. 하지만 대부분의 외부 패키지들은 데이터를 수정하는 함수들이 원본은 그대로 둔채 수정된 결과를 리턴하므로 잘 구분해서 써야한다.
+리스트를 쓰다보면 (크기순, 알파벳순) 정렬을 한다던지 (`sort`), 원소를 추가한다던지 (`append`), 중간에 삽입한다던지 (`insert`), 특정 원소의 인덱스(위치)를 반환한다던지(`index`) 등의 기능이 필요하다. **특히 `append`**가 많이 쓰인다. 함수명을 굳이 외울 필요없이 해당기능을 영어로 써보면 그 함수가 이미 있다. 다음 예시를 보며 함수명들을 익혀보자. 리스트 함수들을 쓸 때 주의할 점은 대부분의 함수들이 `in-place` 함수라는 것이다. 함수로 수정한 리스트 결과가 리턴으로 나오지 않고 함수를 실행한 변수 자체를 수정한다는 것이다. 하지만 대부분의 외부 패키지들은 데이터를 수정하는 함수들이 원본은 그대로 둔채 수정된 결과를 리턴하므로 잘 구분해서 써야한다.
 
 ```python
-print("\nlist functions")
-tottenham = ['Kane', 'Moura', 'Lloris', 'Sissoko', 'Alli', 'Rose']
-print("Tottenham vs Southampton 2019-03-10 starting line up: \n", tottenham)
+tottenham = ['Son', 'Alli', 'Bergwijn', 'Højbjerg', 'Tanganga', 'Skipp']
+print("Tottenham Hotspur vs Manchester City 2021-08-16 starting line up: \n", tottenham)
+print("At 55, Son scored a goal!")
+
 # sort(): 원소 알파벳순, 크기순 정렬, in-place 함수기 때문에 아무것도 리턴하지 않는다.
 print("sort() is a in-place function:", tottenham.sort())
 print("sort by name:", tottenham)
+
 # remove(): 입력한 원소를 삭제
-tottenham.remove('Moura')
+tottenham.remove('Bergwijn')
 # insert(): 원하는 위치에 원소 삽입
-tottenham.insert(1, 'Son')
-print("At 72, Moura out Son in:", tottenham)
+tottenham.insert(1, 'Lo Celso')
+print("At 72, Bergwijn out and Lo Celso in:", tottenham)
+
 # pop(): 입력이 없으면 마지막 원소를 삭제하고 pop(index)는 index의 원소를 삭제한다.
-print("At 82, pop Alli:", tottenham.pop(0))
-print("At 82, del Rose")
-del tottenham[-2]
+tottenham.pop(-1)
 # append(): 원소를 마지막에 추가한다. 두 리스트의 원소들을 합칠 때는 +나 extend()를 쓴다.
-tottenham.append('Davies')
-tottenham.append('Llorente')
-print("At 82, Davies and Llorente in:", tottenham)
+tottenham.append('Doherty')
+print("At 83, Tanganga out and Doherty:", tottenham)
+
+del tottenham[2]
+tottenham += ['Romero']
+print("At 90, Højbjerg out and Romero in:", tottenham)
 # reverse(): 순서를 거꾸로 뒤집는다.
 tottenham.reverse()
 print("reverse order", tottenham)
@@ -149,16 +153,15 @@ print("reverse order", tottenham)
 결과
 
 ```
-list functions
-Tottenham vs Southampton 2019-03-10 starting line up: 
- ['Kane', 'Moura', 'Lloris', 'Sissoko', 'Alli', 'Rose']
+Tottenham vs Manchester city 2021-08-16 starting line up: 
+ ['Son', 'Alli', 'Bergwijn', 'Højbjerg', 'Tanganga', 'Skipp']
+At 55, Son scored a goal!
 sort() is a in-place function: None
-sort by name: ['Alli', 'Kane', 'Lloris', 'Moura', 'Rose', 'Sissoko']
-At 72, Moura out Son in: ['Alli', 'Son', 'Kane', 'Lloris', 'Rose', 'Sissoko']
-At 82, pop Alli: Alli
-At 82, del Rose
-At 82, Davies and Llorente in: ['Son', 'Kane', 'Lloris', 'Sissoko', 'Davies', 'Llorente']
-reverse order ['Llorente', 'Davies', 'Sissoko', 'Lloris', 'Kane', 'Son']
+sort by name: ['Alli', 'Bergwijn', 'Højbjerg', 'Skipp', 'Son', 'Tanganga']
+At 72, Bergwijn out and Lo Celso in: ['Alli', 'Lo Celso', 'Højbjerg', 'Skipp', 'Son', 'Tanganga']
+At 83, Tanganga out and Doherty: ['Alli', 'Lo Celso', 'Højbjerg', 'Skipp', 'Son', 'Doherty']
+At 90, Højbjerg out and Romero in: ['Alli', 'Lo Celso', 'Skipp', 'Son', 'Doherty', 'Romero']
+reverse order ['Romero', 'Doherty', 'Son', 'Skipp', 'Lo Celso', 'Alli']
 ```
 
 #### 연습문제
