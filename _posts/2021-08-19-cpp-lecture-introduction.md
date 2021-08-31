@@ -2,7 +2,7 @@
 layout: post
 title: "[Cpp] Lecture Introduction"
 date: 2021-08-19 09:00:03
-categories: AlgorithmCpp
+categories: CppAlgorithm
 ---
 
 

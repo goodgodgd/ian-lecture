@@ -1,15 +1,15 @@
 ---
 layout: post
-title:  "[draft] Confusing Syntax"
-date:   2020-08-22 09:00:13
-categories: 2021-1-detector
+title:  "[Cpp] Confusing Syntax"
+date:   2021-08-22 09:00:13
+categories: CppAlgorithm
 ---
 
 
 
 ## 0. Intorduction
 
-이번 강의에서는 C++에서 자주 봤지만 헷갈리는 키워드나 자주 사용되지만 교육과정에서는 소외되기 쉬운 문법을 다룬다. 다시 말해 C++ 기초과정을 배우고 난 학생들이 여전히 잘 모르는 기초적인 내용을 다룬다.
+이번 강의에서는 C++에서 자주 봤지만 헷갈리는 키워드나 자주 사용되지만 교육과정에서는 소외되기 쉬운 문법을 다룬다. 다시 말해 C++ 기초과정을 배우고 난 학생들이 여전히 잘 모르는지만 많이 쓰이는 키워드들로 개발자가 작성한 코드를 봤을 때 '이게 뭐지?' 하게 만드는 헷갈리게 만드는 것만 모았다. 여기서는 C++03 뿐만 아니라 C++11/14의 키워드도 포함한다. C++11/14의 새로운 문법은 뒤에 더 자세히 다루겠지만 기본적인 키워드는 여기서 정리한다.  
 
 
 
@@ -221,11 +221,9 @@ int bar;
 const int baz = bar;
 ```
 
-const 보다 constexpr을 쓰는게 나은 이유는 뭘까? 컴파일러의 설계에 따라 다를 수 있지만 일단 상수가 지역변수라도 컴파일 시점에 미리 선언하며 고정된 주소를 가지게 하면 변수에 메모리를 할당하는 시간을 아낄 수 있다. 혹은 변수 자체를 건너뛰고 `foo`라는 변수 대신 1이라는 숫자를 바로 대입할 수 있을 것이다. (검색을 해도 정확한 효과는 찾을 수 없었으나 이러한 효과가 예상된다.)  **constexpr은 컴파일 시점에 값이 결정되는 상수에 대해 추가적인 최적화 기회를 제공한다.**
-
 유의할 점은 constexpr은 컴파일 시점에 알 수 있는 값으로만 초기화를 해야한다는 것이다. 일반 변수로 초기화 시 컴파일 에러가 난다.  
 
-프로그래밍에서 constexpr의 유용한 점은 리터럴 타입(Literal type)이 들어가야 하는 곳에 constexpr 변수를 넣을 수 있다는 것이다. 리터럴 타입이란 `int a = 1;  char foo[] = "hello"`에서 1이나 "hello"처럼 코드 안에 들어간 데이터를 말한다. 컴파일 시점에 값을 알 수 있고 값이 변하지 않는다. 더 정확히 말하면 **constexpr은 정수 상수 표현식(integral constant expression)이 요구되는 문맥에서 사용할 수 있다.** 배열의 크기, 템플릿 정수 인수, enum 값 등에 10, 20 같은 리터럴 타입 말고 constexpr을 쓸 수 있다는 것이다. 다음 예시를 살펴보자.
+const 보다 constexpr을 쓰는게 나은 이유는 뭘까? 프로그래밍에서 constexpr의 유용한 점은 리터럴 타입(Literal type)이 들어가야 하는 곳에 constexpr 변수를 넣을 수 있다는 것이다. 리터럴 타입이란 `int a = 1;  char foo[] = "hello"`에서 1이나 "hello"처럼 코드 안에 들어간 데이터를 말한다. 컴파일 시점에 값을 알 수 있고 값이 변하지 않는다. 더 정확히 말하면 **constexpr은 정수 상수 표현식(integral constant expression)이 요구되는 문맥에서 사용할 수 있다.** 배열의 크기, 템플릿 정수 인수, enum 값 등에 10, 20 같은 리터럴 타입 말고 constexpr을 쓸 수 있다는 것이다. 다음 예시를 살펴보자.
 
 ```cpp
 #include <array>
@@ -247,28 +245,113 @@ int main() {
 }
 ```
 
-정수 상수가 필요한 경우 네 가지 해결 방법이 있다.
+상수(정수, 실수)가 필요한 경우 네 가지 해결 방법이 있다.
 
 1. 하드 코딩 (하책) : 같은 의미를 갖는 숫자이 여럿 있을 경우 일괄적으로 수정하기 어렵다. **가급적 사용하지 말것**
 2. #define (중책) : 이름이 있고 수정도 한번에 할 수 있다. 하지만 컴파일시 같은 값이 여러곳에서 중복으로 복사되어 컴파일 된 코드 크기가 커질 수 있다. 에러가 났을 때 define 이름이 아니라 define 값으로  에러문이 나와서 디버깅이 어렵다.
 3. constexpr (상책) : 값에 대한 메모리가 한번만 할당되고 디버깅이 쉽다.
-4. enum (상책) : 3과 같음
+4. enum (상책) : 3과 같은데 정수만 쓸 수 있다.
 
 
 
 ### 2.2. 함수 반환 타입
 
-어떤 함수의 반환 타입을 constexpr로 설정하면 
+constexpr 함수는 반환 타입에 constexpr이 붙어있는 함수다. 이런 함수에 상수를 입력하면 컴파일 시점에 리턴값을 미리 계산해 둘 수 있다. (런타임에 계산 비용이 들지 않는다.) 상수가 아닌 일반 변수를 넣더라도 작동하지만 컴파일 시점에 미리 값을 계산할 순 없다. 상수 계산용으로도, 일반 함수로도 쓸 수 있기 때문에 항목 15의 제목이 *"가능하면 항상 constexpr을 사용하라"*인 것이다. 다음은 정수형 지수함수를 구현한 예시다.
+
+```c++
+#include <iostream>
+
+constexpr int pow(int base, int exp) {
+    auto result = 1;
+    for (int i=0; i<exp; ++i)
+        result *= base;
+    return result;
+}
+
+int main() {
+    constexpr int result1 = pow(3, 4);
+    std::cout << "compile-time result: " << result1 << std::endl;
+    const int foo = rand() % 5;
+    const int bar = rand() % 5;
+    const int result2 = pow(foo, bar);
+    std::cout << "runtime result: " << foo << ", " << bar << ", " << result2 << std::endl;
+}
+```
+
+constexpr 함수의 결과를 또 다른 constexpr 함수에 입력하면 두 번째 함수까지 컴파일 시점에 계산할 수 있다. 사용자 정의 클래스를 constexpr 객체로 사용하기 위해서는 생성자 함수에 constexpr을 붙이면 된다. 다음은 사용자 정의 클래스에서 constexpr을 이용한 최적화 예시다.
+
+```c++
+#include <iostream>
+
+class Point {
+public:
+    constexpr Point() noexcept : x{}, y{} {}
+    constexpr Point(double x_, double y_) noexcept : x(x_), y(y_) {}
+    constexpr double xValue() const noexcept { return x; }
+    constexpr double yValue() const noexcept { return y; }
+    constexpr void setX(double x_) noexcept { x = x_; }
+    constexpr void setY(double y_) noexcept { y = y_; }
+private:
+    double x, y;
+};
+
+constexpr Point midpoint(const Point& p1, const Point& p2) noexcept {
+    return { (p1.xValue() + p2.xValue()) / 2., (p1.yValue() + p2.yValue()) / 2. };
+}
+
+constexpr Point reflect(const Point& p) noexcept {
+    Point result;
+    result.setX(-p.xValue());
+    result.setY(-p.yValue());
+    return result;
+}
+
+int main()
+{
+    constexpr Point p1(9.4, 27.7);
+    constexpr Point p2(28.8, 5.3);
+    constexpr auto mid = midpoint(p1, p2);
+    constexpr auto reflected = reflect(mid);
+    std::cout << "mid: " << mid.xValue() << ", " << mid.yValue() << std::endl;
+    std::cout << "reflected: " << reflected.xValue() << ", " << reflected.yValue() << std::endl;
+}
+```
+
+> mid: 19.1, 16.5
+> reflected: -19.1, -16.5
+
+- `main()` 함수의 첫 두 줄은 constexpr 생성자를 호출하여 constexpr 객체를 생성할 수 있다. (생성자의 결과물이 객체기 때문에)
+- `midpoint` 함수 호출에서는 네 단계로 컴파일 시점의 값이 전달된다.
+  1. `constexpr Point` 객체를 입력 받아서 컴파일 시점에 입력 값을 알 수 있다. 
+  2. 내부 값을 불러올 때도 constexpr 함수인 `xValue(), yValue()` 함수를 사용하여 컴파일 시점에 값을 전달할 수 있다. 
+  3. 결과를 리턴할 때도 `midpoint`가 constexpr 함수이므로 컴파일 시점에 값을 정할 수 있다.
+  4. 결과를 받는 변수도 constexpr 이므로 최종적으로 변수의 값이 컴파일 시점에 정해진다.
+
+- `reflect` 함수 호출에서는 `midpoint` 함수에 비해 `setX(), setY()` 과정만 추가되었다. 그런데 이 함수들도 constexpr 이므로 컴파일 시점에 입력 값이 정해지면 컴파일 시점에 값을 변경해버릴 수 있다. 그리고 나서 constexpr 객체를 리턴하는 과정은 동일하다. 객체를 변경하지 못하게 하는 const와는 전혀 다른 의미니 유의하자.
+
+이처럼 constexpr을 적용가능한 모든 곳에 적용하면 컴파일 시점 상수가 연계되어 더 깊은 곳까지 컴파일 시점에 정해질 수 있고 이는 실행 속도가 빨라진다는 것이다. (대신 컴파일 시간이 길어질 수 있다.)  
+
+대신 constexpr을 어중간하게 쓰면 여기저기서 에러가 난다. `Point` 클래스에서 constexpr 키워드를 하나씩 빼보면서 어떤 에러가 나는지 각자 확인해보자. 어떤 클래스를 constexpr 객체로 쓸거라면 모든 멤버 함수에 constexpr을 붙여야 한다.
 
 
 
+## 3. noexcept
+
+constexpr 예시에서 모든 함수에 `noexcept`라는 키워드가 붙은걸 볼 수 있다. '예외 없음'이라는 뜻 같은데 정확히 어떤 뜻인지 알아고보고 왜 저렇게 모든 함수에 덕지덕지 붙는지도 알아보자.
+
+> 참고자료: (Modern Effective C++) 항목 14: 예외를 방출하지 않을 함수는 noexcept로 선언하라
+
+함수에 붙은 `noexcept`라는 키워드는 해당 함수에서 예외를 방출하지 않는다는 것을 프로그래머가 보장하는 것이다. 그런데 만약 noexcept가 있어도 함수에서 예외가 발생하면 프로그램이 종료되고 없어도 프로그램이 종료된다. 그럼 무슨 차이일까?  
+
+일반적으로, 예외 명세가 위반되면 (예외가 발생하면) 호출 스택이 그 함수를 호출한 곳까지 풀리며(unwind) 객체들을 생성 반대순서로 파괴한 후 프로그램이 종료된다. 하지만 noexcept 키워드가 있으면 예외가 없을거라고 가정하고 컴파일러에서 최적화를 하기 때문에 이러한 종료과정을 지킬수도 있고 안 지킬수도 있다. 프로그램에서 지켜야 하는 제약이 줄어들기 때문에 컴파일러에서는 더 높은 수준의 최적화를 할 수 있게 된다. vector의 push_back이나 swap 같은 함수에서도 noexcept가 있으면 복사 생성자보다 효율이 좋은 이동 생성자를 선택하여 성능 향상을 꾀할수 있다. 즉 **noexcept 함수는 일반 함수보다 최적화의 여지가 크다.** 
+
+C++11 이후에서는 메모리 해제 연산자(operator delete or operator delete[])나 소멸자에서 예외가 발생하면 안되기 때문에 두 가지 함수는 암묵적으로 noexcept 함수가 된다.
+
+noexcept는 constexpr처럼 대부분의 함수에 적용하는 건 아니고 예외가 발생하지 않도록 유지가 가능한 함수에만 적용해야 하며 함수 내부에서 호출하는 함수들도 그러한 함수여야 한다.
 
 
-Effective C++와  Modern Effective C++참조
 
-
-
-## 3. namespace and using
+## 4. namespace and using
 
 **namespace**는 C언어에는 없는 C++만의 독자적인 기능이다. '이름 공간'이라는 뜻 그대로 다른 영역에서 만들어진 변수, 함수, 클래스 등의 이름들이 중복되지 않도록 구분해주는 기능을 한다. 예를 들어 아이돌 가수 '진영'이라고만 하면 이게 B1A4인지 갓세븐인지 알 수 없고 '종현'이라고 하면 샤이니인지 씨엔블루인지, '지민'라고 하면 AOA인지 BTS인지 알 수 없다. ~~( 현재의 인지도에 따라 더 유명한 사람이 전역변수가 되기도 하지만...)~~ 이러한 동명이인을 확실히 구분하려면 앞에 그룹명을 붙여줘야 하듯이 프로그래밍에서도 이렇게 이름 앞에서 이름의 공간을 구분하는 것이 namespace다.  
 
@@ -276,23 +359,151 @@ Effective C++와  Modern Effective C++참조
 
 ### 3.1. namespace 선언
 
-내부 namesapce 까지
+다음은 namespace 내부에서 변수, 함수, 클래스를 선언(foo.h) 및 정의(foo.cpp)하고 이를 사용하는(main.cpp) 예시다.
 
-### 3.2. namespace 활용
+```cpp
+// ---------- foo.h ----------
+#ifndef FOO_H
+#define FOO_H
+namespace foo
+{
+extern int var;		// 헤더에 바로 선언하는 변수는 전역 변수가 되므로 extern을 붙여야함
+const int cnst = 1;	// 상수는 extern 없이 사용가능
+int func(int a);	// 함수 선언
+class Bar {			// 클래스 선언
+    int a;
+public:
+    Bar(int a_);
+    void increase();
+};
+}
+#endif
+
+// ---------- foo.cpp ----------
+#include <iostream>
+#include "foo.h"
+namespace foo {		// 변수 정의 및 초기화
+    int var = 1;
+}
+int foo::func(int a) {	// 함수 정의
+    return a+1;
+}
+foo::Bar::Bar(int a_) : a(a_) {}	// 클래스 생성자 정의
+void foo::Bar::increase() {			// 클래스 메소드 정의
+    a++;
+    std::cout << "increase:" << a << std::endl;
+}
+
+// ---------- main.cpp ----------
+#include <iostream>
+#include "foo.h"
+int main() {	// namespace 내부 요소에 접근 방법: ns_name::var_func_class
+    std::cout << "var in foo:" << foo::var << std::endl;
+    std::cout << "constant in foo:" << foo::cnst << std::endl;
+    std::cout << "func out:" << foo::func(1) << std::endl;
+    foo::Bar bar(1);
+    bar.increase();
+}
+
+// ---------- CMakeLists.txt ----------
+cmake_minimum_required(VERSION 3.0)
+project(hello)
+set(CMAKE_CXX_COMPILER g++)
+set(SOURCES main.cpp foo.cpp)
+add_executable(${PROJECT_NAME} ${SOURCES})
+```
+
+
+
+### 3.2. nested namespace
+
+namespace 내부에 또 다른 namespace를 선언할 수 있다. 일반적으로 namespace 자체에는 들여쓰기를 하지 않는다. nested namespace도 마찬가지다.
+
+```cpp
+#include <iostream>
+namespace foo
+{
+namespace bar
+{
+int baz = 1;
+}
+}
+
+int main() {
+    std::cout << "nested ns:" << foo::bar::baz << std::endl;
+}
+```
 
 
 
 ### 3.3. using 선언문 (using declaration)
 
+`using`이란 키워드를 사용하면 사용하고자 하는 데이터 타입을 사전에 선언할 수 있다. using 선언문을 이용하면 특정 식별자(identifier)에 대해 namespace를 생략하고 쓸 수 있다.
+
+> identifier: 사용자가 정의한 모든 변수, 함수, 클래스 등의 이름
+
+```cpp
+#include <iostream>
+using std::cout;	// cout 변수의 사용을 선언한다
+using std::endl;	// endl 변수의 사용을 선언한다.
+
+int main() {	// std:: 생략
+    cout << "hello world" << endl;
+}
+```
+
+파이썬에서 `from A import B`와 비슷하다고 생각할 수 있다.
+
+C++11 부터는 `using`을 `typedef` 대신 쓸 수 있고 그렇게 하는것이 더 직관적으로 이해가 된다. using으로 특정 타입에 대한 다른 식별자를 선언하는 것을 별칭(alias type) 선언이라 한다.
+
+> 참고자료: (Modern Effective C++) 항목 9: typedef보다 별칭 선언을 선호하라
+
+```cpp
+typedef long mylong;	// C++03
+using mylong = long;	// C++11
+using UPtrMapSS = std::unique_ptr<std::unordered_map<std::string, std::string>>;
+```
+
+옛날부터 typedef를 볼때마다 어느쪽이 원래 타입이고 어느쪽이 별칭인지 헷갈렸는데 using을 이용하면 더 직관적으로 이해할 수 있다.
 
 
-### 3.3. using 지시문 (using directive)
+
+### 3.4. using 지시문 (using directive)
+
+using이라는 키워드가 가장 많이 쓰이는 문맥으로 namespace 내부의 모든 식별자들 앞에 namespace 이름을 생략하고 쓰고자 할 때 사용된다.
+
+```cpp
+#include <iostream>
+using namespace std;
+// 이제부터 std:: 없이 std:: 내부의 식별자들을 사용할 수 있다.
+int main() {
+    cout << "hello" << endl;
+}
+```
+
+using 선언문은 특정 식별자를 마치 소스 코드 내부에서 선언한 것처럼 만드는데 반해, using 지시문은 어떤 식별자를 프로그램 내부 선언문에서 찾을 수 없다면 지시문이 제공하는 namespace를 붙여서 찾으라는 뜻이다.  
+
+using 지시문을 잘못쓰면 여러 namespace의 식별자들이 중복되어 에러를 발생시킬 수 있으므로 어느정도 규모있는 프로그램을 개발한다면 using 지시문을 사용하지 않는 것이 좋다.  
 
 
 
+### 3.5. 별칭 namespace
 
+namespace의 이름이 길거나 여러 namespace가 연결된 경우에 짧은 별칭을 사용할 수 있다.
 
-## 4. enum class
-
-Effective C++ #define 쓰지마라
+```cpp
+#include <iostream>
+namespace foo {
+    namespace bar {
+        namespace baz {
+            int qux = 42;
+        }
+    }
+}
+namespace fbz = foo::bar::baz;
+int main() {
+    std::cout << foo::bar::baz::qux << std::endl;
+    std::cout << fbz::qux << std::endl;
+}
+```
 

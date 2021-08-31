@@ -2,7 +2,7 @@
 layout: post
 title:  "[Cpp] How to use code"
 date:   2021-08-20 09:00:13
-categories: 2021-1-detector
+categories: CppAlgorithm
 ---
 
 
