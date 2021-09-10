@@ -241,6 +241,9 @@ print("bar is goo", bar is goo)
 결과
 
 ```
+SyntaxWarning: "is" with a literal. Did you mean "=="?
+  print("intvar is 12:", intvar is 12)
+
 What is difference between `is` and `==`?
 little difference for built-in types(int, float, str)
 intvar == 12: True
@@ -254,6 +257,8 @@ bar, goo: [0, 2] [0, 2]
 foo == goo False
 bar is goo True
 ```
+
+결과를 보면 변수와 값을 `is` 연산자로 비교했기 때문에 `SyntaxWarning`이 뜨는 것을 볼 수 있다.  
 
 `and, or`는 각각 C언어의 `&&, ||`에 해당한다. 파이썬에는 비트 연산자인 `&, |`는 있으나 논리 연산자로는 `&&, ||`이 아닌 `and, or`를 사용한다.
 

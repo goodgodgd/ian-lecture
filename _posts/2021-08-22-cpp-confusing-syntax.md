@@ -470,7 +470,7 @@ using UPtrMapSS = std::unique_ptr<std::unordered_map<std::string, std::string>>;
 
 ### 3.4. using 지시문 (using directive)
 
-using이라는 키워드가 가장 많이 쓰이는 문맥으로 namespace 내부의 모든 식별자들 앞에 namespace 이름을 생략하고 쓰고자 할 때 사용된다.
+using이라는 키워드가 가장 많이 쓰이는 문맥으로 namespace 이름을 생략하고 쓰고자 할 때 사용된다.
 
 ```cpp
 #include <iostream>

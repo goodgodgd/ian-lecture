@@ -44,12 +44,12 @@ categories: 2021-1-detector
 ```python
 import tensorflow as tf
 # create Tensor from List with specific type
-tensor_a = tf.constant([[[1, 2, 3], [4, 5, 6]], [[7, 8, 9], [10, 11, 12]]], dtype=tf.int32)
+x = tf.constant([[[1, 2, 3], [4, 5, 6]], [[7, 8, 9], [10, 11, 12]]], dtype=tf.int32)
 
-print("Type of every element:", tensor_a.dtype)
-print("Number of axes (=Rank):", tensor_a.ndim)
-print("Shape of tensor:", tensor_a.shape)
-print("Total number of elements: ", tf.size(tensor_a).numpy())
+print("Type of every element:", x.dtype)
+print("Number of axes (=Rank):", x.ndim)
+print("Shape of tensor:", x.shape)
+print("Total number of elements: ", tf.size(x).numpy())
 ```
 
 결과
@@ -103,6 +103,7 @@ import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
 import numpy as np
+import matplotlib.pyplot as plt
 import pprint
 from timeit import default_timer as timer
 
