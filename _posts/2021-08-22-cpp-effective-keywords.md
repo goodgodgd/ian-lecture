@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "[Cpp] Effective C++1x (1): basic keywords"
+title:  "[Cpp] Effective C++1x (1): Basic keywords"
 date:   2021-08-22 09:00:13
 categories: CppAlgorithm
 ---
