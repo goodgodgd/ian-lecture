@@ -31,5 +31,7 @@ categories: CppAlgorithm
 
 https://modoocode.com/286
 
+ranged for
+
 
 
