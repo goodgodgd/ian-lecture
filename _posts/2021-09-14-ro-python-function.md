@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Python Control Statements and Function"
-date:   2020-09-08 09:10:13
+date:   2021-09-14 09:10:13
 categories: 2020-2-robotics
 ---
 
@@ -15,7 +15,7 @@ categories: 2020-2-robotics
 
 이전 장에서도 배웠듯이 파이썬에도 `if, for, while`이 있다. 특히 파이썬은 자료구조형과 밀접하게 연계되어 자료구조에 들어있는 자료들에 대해 쉽게 반복문을 실행할 수 있다. 제어문의 기본 용법과 편리하게 쓸 수 있는 다양한 문법들을 배워보자. `if, for, while`의 기본 용법은 다음과 같다.
 
-```
+```python
 if condition1:
 	statements_when_condition1_is_true
 elif condition2:
@@ -45,16 +45,16 @@ elif myhero in dc_heroes:
 else:
     print(f"{myhero}: We are villains!!")
 
-print("list of marvel heroes")
-for hero in marvel_heroes:
-    print(f"    {hero}")
-
-print("list of dc heroes")
+print("anti-pythonic for loop")
 for i in range(len(dc_heroes)):
     print(f"{i})  {dc_heroes[i]}")
 
+print("pythonic for loop")
+for hero in marvel_heroes:
+    print(f"    {hero}")
+
 i = 0
-print("DC's male heroes ends with 'man'")
+print("DC heroes whose name ends with 'man'")
 while i < len(dc_heroes) and dc_heroes[i].endswith('man'):
     print(f"    {dc_heroes[i]}")
     i += 1
@@ -91,6 +91,8 @@ while name != 'q':
     print(f"{name}'s index =", index)
 ```
 
+[With great power comes great responsibility](https://www.youtube.com/watch?v=9ZITJouEeY8)
+
 
 
 ## 3. for 응용: `enumerate, zip`
@@ -98,7 +100,7 @@ while name != 'q':
 파이썬에서는 `while`보다 `for`문의 활용법이 다양하다. 대표적으로 `enumerate, zip`이 있다. `enumerate`는 `for`문에서 리스트를 반복할 시 원소 뿐만 아니라 인덱스도 받을 수 있는 반복 객체를 만들어 준다. `zip`은 두 개의 리스트를 묶어서 각 리스트의 원소가 하나씩 합쳐진 튜플의 반복 객체를 만들어준다. 이들을 리스트로 변환해보면 무엇을 주는지 명확히 볼 수 있다.
 
 ```python
-print("\nwhat does enumerate return?", enumerate(marvel_heroes))
+print("what does enumerate return?", enumerate(marvel_heroes))
 print(list(enumerate(marvel_heroes)))
 print("what does zip return?", zip(marvel_heroes, dc_heroes))
 print(list(zip(marvel_heroes, dc_heroes)))
@@ -144,13 +146,13 @@ for character, name in hero_names.items():
 리스트를 다루다 보면 다른 리스트에 기반해서 새로운 리스트를 만들거나 기존 리스트에서 필요한 것만 걸러서 새로운 리스트를 만들고 싶을 때가 있다. 일단 위에서 배운 내용을 토대로 이를 구현해보자.
 
 ```python
-print("\ncreate a new list from the existing list")
+print("create a modified list from the existing list")
 super_heroes = []
 for hero in marvel_heroes:
     super_heroes.append(hero + "_super")
 print("super heroes", super_heroes)
 
-print("\nextract a subset of the existing list")
+print("extract a subset of the existing list")
 man_heroes = []
 for hero in marvel_heroes:
     if hero.endswith("man"):
@@ -161,15 +163,15 @@ print("man heroes:", man_heroes)
 파이썬에는 리스트를 선언하는 `[]` 안에 `for`문을 넣어 저 두 개의 `for`문을 한 줄로 처리하는 방법이 있는데 이를 `list comprehesion`이라고 한다.
 
 ```python
-print("\nsquare of integers")
+print("square of integers")
 int_square = [i ** 2 for i in range(10)]
 print(int_square)
 
-print("\ncreate a new list by list comprehension")
+print("create a modified list by list comprehension")
 super_heroes = [hero + "_super" for hero in marvel_heroes]
 print("super heroes", super_heroes)
 
-print("\nextract a subset by conditioned list comprehension")
+print("extract a subset by list comprehension")
 man_heroes = [hero for hero in marvel_heroes if hero.endswith("man")]
 print("man heroes:", man_heroes)
 ```
@@ -177,10 +179,10 @@ print("man heroes:", man_heroes)
 `list comprehension`은 앞에 간단한 처리과정을 넣어서 다양하게 쓰일 수 있고 다중 `for`문이 들어갈 수도 있다. 이러한 기능을 `list`만 쓸 수 있는 건 아니고 `dictionary`와 `set`에도 적용될 수 있다.
 
 ```python
-print("\ndictionary comprehension")
+print("dictionary comprehension")
 abilities = ["suit", "Mjölnir", "physical power", "spider web"]
 heroes = {name: power for name, power in zip(marvel_heroes, abilities)}
-print("hero's ability", heroes)
+print("hero's ability:", heroes)
 ```
 
 
@@ -190,7 +192,7 @@ print("hero's ability", heroes)
 함수란 주어진 입력에 대해서 정해진 동작을 하고 필요시 결과값을 반환하는 코드 묶음이다. 함수를 사용하는 이유는 크게 두 가지다. 
 
 1. 반복적으로 사용되는 기능(코드)을 재사용하기 위해서다. 함수가 없다면 어떤 기능이 필요할 때마다 같은 코드를 다시 써야하고 그러면 전체 코드가 불필요하게 길어진다. 또한 함수로 만들어 놓으면 다른 프로젝트에서도 해당 기능만 가져다 쓸 수 있다.
-2. 그러나 보통은 한번만 쓰이는 코드라도 함수로 묶는 경우가 많다. 그 이유는 코드를 기능별로 묶기 위해서다. 함수를 기능단위로 묶으면 코드를 계층적으로 구조화할 수 있어 코드를 읽기도 편하고 특정 기능을 하는 코드를 찾고 수정하는 일도 편해진다. 코드를 기능별로 잘 나누고 함수 이름을 기능에 맞게 지으면 코드에 주석을 쓸필요가 거의 없어진다.
+2. 그러나 보통은 한번만 쓰이는 코드라도 함수로 묶는 경우가 많다. 그 이유는 코드를 기능별로 묶기 위해서다. 함수를 기능단위로 묶으면 코드를 계층적으로 구조화할 수 있어 코드를 읽기도 편하고 특정 기능을 하는 코드를 찾고 수정하는 일도 편해진다. 코드를 기능별로 잘 나누고 함수 이름을 기능에 맞게 지으면 주석을 쓸 필요가 거의 없어진다.
 
 
 
@@ -226,18 +228,14 @@ print(add(1, 2))
 
 ```python
 def average_list(data, start, end, skip):
-    if end is None:
-        avg_data = data[start:]
-    else:
-        avg_data = data[start:end]
-
+    avg_data = data[start:end]
     sum = 0
     for ind, num in enumerate(avg_data):
         if ind not in skip:
             sum += num
     dlen = len(avg_data) - len(skip)
     average = sum / dlen
-    print(f"average {start}~{end} with skipping {skip} = {average}")
+    print(f"average over indices {start}~{end} with skipping {skip} = {average}")
     return average
 ```
 
@@ -282,12 +280,12 @@ avg = average_list(data, skip=[4], start=2, end=7)
 
 ## 3. 인자 기본값 지정
 
-`average_list`는 네 개의 입력 인자로 리스트의 평균 계산 과정을 자세히 조절할 수 있지만 보통 많이 쓰는 기능은 단순히 리스트 전체에 대해서 평균을 구하는 것일 것이다. 이때도 `average_list(data, 0, None, [])`과 같이 나머지 입력인자를 다 써주는 것이 번거로울 수 있다.  `data`로 들어오는 필수 인자를 제외하고 나머지 인자에 기본값을 지정해주면 입력 인자를 적게 넣어도 작동한다. 기본값을 주는 방법은 C언어와 동일하게 함수 선언에서 입력인자에 기본 값을 할당하면 된다. (`argument=default_value` )  `average_list`를 기본 값을 이용해 사용하게 해주는 `average_list_with_default`를 다음과 같이 정의하였다.
+`average_list`는 네 개의 입력 인자로 리스트의 평균 계산 과정을 자세히 조절할 수 있지만 보통 많이 쓰는 기능은 단순히 리스트 전체에 대해서 평균을 구하는 것일 것이다. 이때도 `average_list(data, 0, len(data), [])`과 같이 나머지 입력인자를 다 써주는 것이 번거로울 수 있다.  `data`로 들어오는 필수 인자를 제외하고 나머지 인자에 기본값을 지정해주면 입력 인자를 적게 넣어도 작동한다. 기본값을 주는 방법은 C언어와 동일하게 함수 선언에서 입력인자에 기본 값을 할당하면 된다. (`argument=default_value` )  `average_list`를 기본 값을 이용해 사용하게 해주는 `average_list_with_default`를 다음과 같이 정의하였다.
 
 ```python
 def average_list_with_default(data, start=0, end=None, skip=None):
-    if skip is None:
-        skip = []
+    end = len(data) if end is None else end
+    skip = [] if skip is None else skip
     return average_list(data, start, end, skip)
 
 print("function default arguments")
@@ -383,26 +381,19 @@ def main():
     avg = average_list_with_default(data, 3)
 
 def average_list_with_default(data, start=0, end=None, skip=None):
-    if skip is None:
-        skip = []
+    end = len(data) if end is None else end
+    skip = [] if skip is None else skip
     return average_list(data, start, end, skip)
 
 def average_list(data, start, end, skip):
-    if end is None:
-        avg_data = data[start:]
-    else:
-        avg_data = data[start:end]
-
+    avg_data = data[start:end]
     sum = 0
-    skip_count = 0
     for ind, num in enumerate(avg_data):
-        if ind in skip:
-            skip_count += 1
-        else:
+        if ind not in skip:
             sum += num
-    dlen = len(avg_data) - skip_count
+    dlen = len(avg_data) - len(skip)
     average = sum / dlen
-    print(f"average {start}~{end}, skip={skip} over {len(data)} numbers = {average}")
+    print(f"average over indices {start}~{end} with skipping {skip} = {average}")
     return average
 
 if __name__ == '__main__':
