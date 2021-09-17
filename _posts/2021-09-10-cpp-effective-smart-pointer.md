@@ -282,6 +282,45 @@ unique_ptr이 전형적으로 사용되는 예시는 팩터리(factory) 함수�
 
 
 
+```cpp
+#include <iostream>
+#include <memory>
+#include <cassert>
+
+struct Investment
+{
+    Investment(int bal, int inv) : balance(bal), invest(inv) {}
+    int balance, invest;
+};
+struct Stock : public Investment
+{
+    Stock(int bal, int inv) : Investment(bal / 2, inv) {}
+};
+struct Bond : public Investment
+{
+    Bond(int bal, int inv) : Investment(bal, inv * 2) {}
+};
+struct RealEstate : public Investment
+{
+    RealEstate(int bal, int inv) : Investment(bal / 2, inv * 2) {}
+};
+
+template <typename... Ts>
+auto makeInvestment(Ts &...params)
+{
+    auto del_inv = [](Investment *inv)
+    {
+        // make_log_entry(inv);
+        delete inv;
+    };
+    std::unique_ptr<Investment, decltype(del_inv)> investment(nullptr, del_inv);
+}
+
+int main()
+{
+}
+
+```
 
 
 
