@@ -47,9 +47,13 @@ unique_ptr은 항상 자신이 가리키는 객체를 독점적으로 소유한�
 
 
 
-### 1.1. 생성 방식
+### 1.1. 생성
 
 > 참고자료: (Modern Effective C++) 항목 21. new를 직접 사용하는 것보다 std::make_unique와 std::make_shared를 선호하라
+
+
+
+#### 생성 방식
 
 unique_ptr을 생성하는 방식은 unique_ptr의 생성자를 사용하는 방법과 `make_unique` 함수를 쓰는 방법이 있다.  
 
@@ -80,7 +84,11 @@ unique_ptr의 생성자를 사용할 때는 `new` 연산자를 이용해 객체�
 
 
 
-unique_ptr에서는 객체 파괴시 기본적으로 내부의 원시 포인터에 `delete` 연산자를 적용하고 `nullptr`을 대입하지만 추가적인 처리가 필요한 경우 이를 처리할 수 있는 커스텀 삭제자(custom deleter)를 지정할 수 있다. 다음은 커스텀 삭제자를 지정한 예시다.
+#### Custom Deleter 사용
+
+unique_ptr에서는 객체 파괴시 기본적으로 내부의 원시 포인터에 `delete` 연산자를 적용하고 `nullptr`을 대입하지만 추가적인 처리가 필요한 경우 이를 처리할 수 있는 커스텀 삭제자(custom deleter)를 지정할 수 있다. 커스텀 삭제자로는 functor, lambda function 처럼 호출 가능한(callable) 객체를 사용할 수 있다.  
+
+다음은 커스텀 삭제자를 지정한 예시다. 예시에서 커스텀 삭제자로 `Deleter`라는 클래스를 구현하였고 이 클래스에는 `operator()`가 정의되어 있으므로 객체를 함수처럼 호출 가능하다(functor). 입력 인자로는 삭제하고자 하는 객체의 원시 포인터를 받아야 한다. 삭제자 클래스는 unique_ptr의 템플릿 인수로 넣으면 내부에서 자동으로 삭제자 객체를 생성해준다. 혹은 명시적으로 삭제자를 생성하여 입력할 수도 있다.
 
 ```cpp
 #include <iostream>
@@ -94,70 +102,186 @@ struct Object {
 
 struct Deleter {
     Deleter() { std::cout << "create Deleter\n"; }
-    void operator()(Object* o) { std::cout << "Deleter operator()\n"; delete o; }
+    void operator()(Object *o)
+    {
+        std::cout << "Deleter operator()\n";
+        delete o;
+    }
 };
 
 int main() {
-    std::unique_ptr<Object, Deleter> up1(new Object(1));
+    {
+        std::cout << "===== implicit creation of deleter\n";
+        std::unique_ptr<Object, Deleter> up1(new Object(1));
+    }
+    {
+        std::cout << "===== explicit creation of deleter\n";
+        Deleter deleter;
+        std::unique_ptr<Object, Deleter> up2(new Object(1), deleter);
+    }
 }
 ```
 
+> ===== implicit creation of deleter
 > Object constructor
 > create Deleter
+> Deleter operator()
+> Object destroyer
+> ===== explicit creation of deleter
+> create Deleter
+> Object constructor
 > Deleter operator()
 > Object destroyer
 
 
 
-
-
 ### 1.2. 사용법
 
+unique_ptr의 사용법을 다음 예제를 통해 알아보자.
+
+```cpp
+#include <iostream>
+#include <memory>
+#include <cassert>
+
+class MyString {
+    std::string str;
+
+public:
+    MyString(std::string str_) : str(str_) { std::cout << "[create] " << str << std::endl; }
+    ~MyString() { std::cout << "[delete] " << str << std::endl; }
+    void print() const { std::cout << "[print] " << str << std::endl; }
+    void set(std::string newstr) {
+        str = newstr;
+        std::cout << "[set] " << str << std::endl;
+    }
+};
+
+void print_mystring(const std::unique_ptr<MyString> mystr) {
+    std::cout << "[print_mystring]";
+    /* 내부 함수 호출: 일반 포인터와 사용법 동일: ->, * operator */
+    mystr->print();
+    (*mystr).print();
+}
+
+int main() {
+    /* 생성 */
+    auto foo = std::make_unique<MyString>("foo");
+    auto bar = std::make_unique<MyString>("bar");
+
+    /* (중요!) std::move를 이용한 객체 이동 */
+    print_mystring(std::move(foo));
+    /* unique_ptr은 복사 불가! */
+    // print_mystring(foo);
+
+    /* nullptr 확인 */
+    // foo은 함수 내부로 이동했으므로 객체 소유권을 잃고 nullptr만 가지고 있음
+    // nullptr과의 비교 연산 지원: ==, !=
+    if (foo != nullptr)
+        foo->print(); // 실행되면 Segmentation fault 에러 발생
+    if (foo == nullptr)
+        std::cout << "foo is nullptr\n";
+
+    /* get(): 내부 원시 포인터 접근 */
+    MyString *rpstr = bar.get();
+    rpstr->set("bar2");
+    bar->print();
+    // WARNING!! 원시 포인터를 삭제하면 bar 소멸시 Segmentation fault 에러 발생
+    // delete rpstr;
+
+    /* 참조를 이용한 자원 공유는 허용된다. */
+    MyString &refshare = *bar;
+    refshare.print();
+
+    /* release(): 자원 해제(delete) */
+    bar.release();
+    assert(bar == nullptr);
+    /* reset(T *ptr = nullptr): 자원 해제 및 새로운 자원 할당 */
+    bar.reset(new MyString("bar3"));
+    bar->print();
+    bar.reset();
+    assert(bar == nullptr);
+}
+```
 
 
 
+#### 생성·이동·복사
+
+객체 생성에 대해서는 앞서 설명했듯이 `make_unique` 함수를 쓰는게 낫다. unique_ptr 객체를 다른 함수에 전달할 때는 (혹은 다른 unique_ptr 객체에 할당할 때는) 반드시 `move` 함수를 통해 소유권을 넘겨줘야 한다. 소유권을 넘겨준다는 것은 내부 포인터를 다른 객체에 넘겨주고 자신은 nullptr이 되는 것이다.  
+
+아래 코드 마지막 줄처럼 객체 자체를 넘겨주면 입력 인자 전달 과정에서 객체 복사를 시도하는데 unique_ptr은 복사 생성자를 [삭제 선언](http://progtrend.blogspot.com/2017/03/deleted-functions.html) 했으므로 복사는 컴파일되지 않는다. `print_mystring`의 입력인자를 참조 타입으로 하면 마지막 줄도 가능하긴 하다.
+
+```cpp
+    auto foo = std::make_unique<MyString>("foo");
+    auto bar = std::make_unique<MyString>("bar");
+    print_mystring(std::move(foo));
+    // print_mystring(foo);
+```
 
 
 
-생성방식: 생성자, make_unique, deleter
+#### nullptr 확인
 
-사용법: operator*, operator->, get, reset, release
-
-유효성 확인: nullptr 연산자
-
-예시: factory 함수
+unique_ptr은 소유권을 넘겨주고 나면 nullptr만 남게 되므로 이후에는 사용해서는 안된다. unique_ptr이 객체를 소유하고 있는지 확신할 수 없다면 사용하기 전에 확인할 필요가 있다. unique_ptr은 nullptr과 비교연산자(==, !=)를 지원하여 `get()`함수로 원시 포인터를 꺼내지 않고 바로 nullptr과 비교할 수 있다.
 
 
+```cpp
+    if (foo != nullptr)
+        foo->print();
+    if (foo == nullptr)
+        std::cout << "foo is nullptr\n";
+```
 
-
-
-
-
-
+>  nullptr은 C++11에서 도입된 널 포인터 리터럴(null pointer literal)이다. 오로지 빈 포인터를 확인하기 위한 값이며 C++11 이전에 포인터에 0이나 NULL을 넣어서 빈 포인터를 확인하는 것보다 가독성이 좋고 0이라는 int 타입과 헷갈리지 않게 된다. [참고](https://blockdmask.tistory.com/501)
 
 
 
-## 3. Lambda Function
+#### 자원 공유
+
+unique_ptr은 원래 자원을 독점 소유하도록 만들어졌지만 약간의 구멍(?)은 남겨뒀다. 내부 포인터를 외부에서 접근한다거나 내부 객체에 대한 참조 변수를 만들 수 있다. 다만 내부 객체의 수명이 다했을 때 발생하는 오류는 프로그래머의 책임이니 주의해서 써야한다.
+
+```cpp
+    MyString *rpstr = bar.get();
+    rpstr->set("bar2");
+    bar->print();
+    // WARNING!! 원시 포인터를 삭제하면 bar 소멸시 Segmentation fault 에러 발생
+    // delete rpstr;
+    MyString &refshare = *bar;
+    refshare.print();
+```
 
 
 
-## 4. enum class
+#### 자원 해제
+
+스마트 포인터기 때문에 자원 해제를 명시적으로 해줄 필요는 자주 없지만 그런 기능을 지원하고 있다. 또한 내부 자원을 해제하고 새로운 자원을 받기도 한다.
+
+```cpp
+    bar.release();
+    assert(bar == nullptr);
+    /* reset(T *ptr = nullptr): 자원 해제 및 새로운 자원 할당 */
+    bar.reset(new MyString("bar3"));
+    bar->print();
+    bar.reset();
+    assert(bar == nullptr);
+```
 
 
 
-## 5. Value Semantics
+### 1.3. Factory 함수 예시
+
+unique_ptr이 전형적으로 사용되는 예시는 팩터리(factory) 함수의 반환 형식으로 쓰이는 것이다. 다음과 같은 함수 계통 구조가 있다고 하자.
+
+- Investment (base)
+  1. Stock
+  2. Bond
+  3. RealEstate
+
+이런 계통 구조에 대한 팩터리 함수는 흔히 힙에 객체를 생성하고 그 포인터를 돌려준다. 그 객체를 사용하지 않게 됐을때 삭제하는 것은 호출자의 책임이므로 unique_ptr은 이런 용법에 적합하다.
 
 
 
-## 6. Rule of Five
-
-
-
-### 6.1. New Constructor Style {}
-
-https://modoocode.com/286
-
-ranged for
 
 
 
