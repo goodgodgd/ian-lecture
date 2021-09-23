@@ -2,7 +2,7 @@
 layout: post
 title:  "Python Control Statements and Function"
 date:   2021-09-14 09:10:13
-categories: 2020-2-robotics
+categories: Robotics
 ---
 
 
