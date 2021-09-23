@@ -21,15 +21,19 @@ code는 2015년에 처음 발표되고 2016년에 1.0 버전이 배포되었다.
 
 ### 2.1. 우분투에서 code 설치
 
-우분투에서 snap 명령어를 통해 간단히 설치할 수 있다.
+우분투에서 snap 명령어를 통해 간단히 설치할 수 있지만... snap으로 설치시 한글 입력이 안된다:disappointed:  
+
+아래 링크에서 .deb 설치 파일을 받은 후 설치해야 한글 입력이 잘 된다.
+
+<https://code.visualstudio.com/download>
 
 ```
 # dependency 설치
 $ sudo apt-get install build-essential gdb
-# code 설치
+# deb 파일을 다운로드 후 설치
+$ sudo dpkg -i code_xxx.deb
+# snap을 이용한 설치: 비추
 $ sudo snap install code --classic
-# code 설치
-$ sudo snap remove code
 # 실행
 $ code
 ```

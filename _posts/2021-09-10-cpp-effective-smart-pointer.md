@@ -278,49 +278,117 @@ unique_ptr이 전형적으로 사용되는 예시는 팩터리(factory) 함수�
   2. Bond
   3. RealEstate
 
-이런 계통 구조에 대한 팩터리 함수는 흔히 힙에 객체를 생성하고 그 포인터를 돌려준다. 그 객체를 사용하지 않게 됐을때 삭제하는 것은 호출자의 책임이므로 unique_ptr은 이런 용법에 적합하다.
-
-
+이런 계통 구조에 대한 팩터리 함수는 흔히 힙에 객체를 생성하고 그 포인터를 돌려준다. 그 객체를 사용하지 않게 됐을때 삭제하는 것은 호출자의 책임이므로 unique_ptr은 이런 용법에 적합하다. 다음은 `Investment`라는 기반 클래스와 `Bond, Stock, RealEstate`라는 하위 클래스가 있을 때 입력 조건에 따라 클래스 객체를 unique_ptr에 담아 반환해주는 `makeInvestment` 함수를 구현한 것이다.
 
 ```cpp
 #include <iostream>
 #include <memory>
 #include <cassert>
 
-struct Investment
-{
-    Investment(int bal, int inv) : balance(bal), invest(inv) {}
-    int balance, invest;
+struct Investment {
+    Investment(int price_, std::string what_) : price(price_), what(what_) {}
+    // 기반 클래스의 소멸자는 반드시 가상 함수로 선언한다. (virtual)
+    virtual ~Investment() {}
+    int price;
+    std::string what;
+    void print(std::string title) {
+        std::cout << title << " " << price << " " << what << std::endl;
+    }
 };
-struct Stock : public Investment
-{
-    Stock(int bal, int inv) : Investment(bal / 2, inv) {}
+
+struct Bond : public Investment {
+    Bond(int price_, std::string what) : Investment(price_ + 1, what) 
+    { print("create Bond"); }
+    virtual ~Bond() { print("destroy Bond"); }
 };
-struct Bond : public Investment
-{
-    Bond(int bal, int inv) : Investment(bal, inv * 2) {}
+
+struct Stock : public Investment {
+    Stock(int price_, std::string what) : Investment(price_ + 2, what) 
+    { print("create Stock"); }
+    virtual ~Stock() { print("destroy Stock"); }
 };
-struct RealEstate : public Investment
-{
-    RealEstate(int bal, int inv) : Investment(bal / 2, inv * 2) {}
+
+struct RealEstate : public Investment {
+    RealEstate(int price_, std::string what) : Investment(price_ + 3, what) 
+    { print("create RealEstate"); }
+    virtual ~RealEstate() { print("destroy RealEstate"); }
 };
+
+void make_log(const Investment *pinv) {
+    std::cout << "make_log\n";
+}
 
 template <typename... Ts>
-auto makeInvestment(Ts &...params)
-{
-    auto del_inv = [](Investment *inv)
+auto makeInvestment(std::string name, Ts&&... params) {
+    auto del_inv = [](Investment *pinv)
     {
-        // make_log_entry(inv);
-        delete inv;
+        make_log(pinv);
+        delete pinv;
     };
-    std::unique_ptr<Investment, decltype(del_inv)> investment(nullptr, del_inv);
+    // 아직 객체를 생성하지 않고 nullptr로 초기화
+    std::unique_ptr<Investment, decltype(del_inv)> upinv(nullptr, del_inv);
+    // 입력 인자에 따라 다른 객체 생성
+    if (name == "Bond")
+        upinv.reset(new Bond(std::forward<Ts>(params)...));
+    else if (name == "Stock")
+        upinv.reset(new Stock(std::forward<Ts>(params)...));
+    else if (name == "RealEstate")
+        upinv.reset(new RealEstate(std::forward<Ts>(params)...));
+
+    return upinv;
 }
 
-int main()
-{
+int main() {
+    auto upstock = makeInvestment("Stock", 10, "Nvidia");
+    auto uprestate = makeInvestment("RealEstate", 10, "Kangnam");
 }
-
 ```
+
+> create Stock 12 Nvidia
+> create RealEstate 13 Kangnam
+> make_log
+> destroy RealEstate 13 Kangnam
+> make_log
+> destroy Stock 12 Nvidia
+
+팩터리 함수의 구현 요소들을 하나씩 살펴보자.
+
+- `del_inv`는 unique_ptr에 들어가는 커스텀 삭제자다. 커스텀 삭제자를 쓰려면 `make_unique()` 함수 대신 unique_ptr 생성자를 써야한다. 삭제자에서는 객체를 파괴하기 전 로그를 기록한다. 
+- 삭제자는 람다 표현식으로 구현했는데 functor를 사용하는 것보다 간단하게 callable 객체를 만들 수 있다.
+- 커스텀 삭제자는 기반 타입으로 원시 포인터를 받아 삭제하는데 이때 `Investment`의 소멸자가 가상 소멸자여야만 delete 실행 시 하위 클래스의 소멸자가 호출된다.
+- 커스텀 삭제자의 타입은 unique_ptr의 템플릿 인자로 들어가야 하는데 이를 `decltype(del_inv)`로 간단히 해결했다. 굳이 이 람다 표현식의 타입을 알아야할 필요가 없다.
+- `new`로 생성한 객체의 소유권을 `upinv`에 부여하기 위해 `reset()`을 사용한다.
+- `makeInvestment` 함수에 전달된 인수들을 생성자에 손실 없이 완벽하게 전달하기 위해 `std::forward`를 사용했다. 
+- 생성자의 입력 인자 타입과 개수에 상관없이 작동하는 함수를 만들기 위해 *variadic template* 을 사용했다.
+
+#### Variadic Template
+
+팩터리 함수를 봤을 때 여기저기 보이는 `...`(ellipsis)가 처음본 사람에게는 이상하게 보일 수 있다. 코드를 쓰다가 만건가? 그건 아니다 `...`은 여러개의 입력인자들을 묶어놓은 *parameter pack*을 사용할 때 쓰이는 문법이다.  
+
+템플릿을 정의할 때 `typename... Ts`는 여러개의 여러가지 타입을 동시에 받을 수 있는 템플릿 타입이며 parameter pack이라 한다. parameter pack을 이용하는 템플릿을 *variadic template*이라 한다. 쉽게 말해 Ts는 함수의 입력인자에 따라 자동으로 `int, int`가 될 수도 있고 `int, double, string`이 될 수도 있다. 이를 이용하면 파이썬의 `print(10, 3.14, "hello")` 같은 함수를 구현할 수도 있다. [링크](https://modoocode.com/290)의 내용을 공부해보자.
+
+위 팩터리 함수 예시에서 모든 생성자의 입력인자가 동일하기 때문에 굳이 어렵게 variadic template을 써야하는지 의문이 들 수 있다. 아래와 같이 쉽고 간단하게 구현 할 수도 있는데 말이다. 
+
+```cpp
+auto makeInvestment(std::string name, int&& asset, std::string&& what)
+{
+    // ... 생략 ...
+    if (name == "Bond")
+        upinv.reset(new Bond(asset, what));
+}
+
+auto upstock = makeInvestment("Stock", 10, "Nvidia");
+```
+
+팩터리 함수에서 variadic template을 쓰는 장점은 다음과 같다.
+
+- makeInvestment 함수에서 생성자의 입력인자를 몰라도 된다.  
+- 명시적 타입을 쓰는 경우 입력인자가 여러개인 경우 팩터리 함수의 정의나 객체 생성 코드가 길어질 수 있지만 variadic template은 일정하다.  
+- 객체 생성자의 입력인자가 변경될 경우 variadic template을 쓰면 함수 호출 부분만 바꾸면 된다. 반면 쓰지 않으면 팩터리 함수 내부에서 고쳐야 할 부분이 많다.
+
+
+
+## 2. shared_ptr
 
 
 
