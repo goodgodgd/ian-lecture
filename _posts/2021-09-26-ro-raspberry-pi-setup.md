@@ -1,8 +1,8 @@
 ---
 layout: post
 title:  "Linux Installation on Raspberry Pi 4"
-date:   2020-09-15 09:00:13
-categories: 2020-2-robotics
+date:   2021-09-26 09:00:13
+categories: Robotics
 ---
 
 
