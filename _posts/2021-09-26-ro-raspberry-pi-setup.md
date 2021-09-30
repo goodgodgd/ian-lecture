@@ -29,9 +29,11 @@ Raspberry Pi OS는 Raspberry Pi(이하 줄여서 Pi)를 위한 전용 운영체�
 
 먼저 키트에서 주어진 SD 카드를 USB 리더기에 끼우고 (키트에는 이미 끼워져있다.) PC에 리더기를 연결한다. 
 
-아래 링크에서 "Raspberry Pi Imager for Windows"를 클릭해 설치프로그램을 다운로드하고 실행해보자.  
+아래 링크에서 "Download for Windows"를 클릭해 imager 설치프로그램을 다운로드하고 실행해보자.  
 
 <https://www.raspberrypi.org/downloads/>
+
+<img src="../assets/robotics-raspberry/rpi-imager-down.png" alt="rpi4" style="zoom: 67%;" />
 
 
 

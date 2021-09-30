@@ -1,8 +1,8 @@
 ---
 layout: post
 title:  "Linux Commands"
-date:   2020-09-22 09:00:13
-categories: 2020-2-robotics
+date:   2021-09-29 09:00:13
+categories: Robotics
 ---
 
 
@@ -542,5 +542,4 @@ $ sudo apt purge python3-numpy
 # 패키지 삭제 후에는 쓰이지 않게된 의존 패키지들을 삭제한다.
 $ sudo apt autoremove
 ```
-
 
