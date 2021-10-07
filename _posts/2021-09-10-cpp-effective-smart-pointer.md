@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "[Cpp] Effective C++1x (3): Smart Pointers"
-date:   2020-09-11 09:00:13
+date:   2021-09-11 09:00:13
 categories: CppAlgorithm
 ---
 
@@ -385,6 +385,8 @@ auto upstock = makeInvestment("Stock", 10, "Nvidia");
 - makeInvestment 함수에서 생성자의 입력인자를 몰라도 된다.  
 - 명시적 타입을 쓰는 경우 입력인자가 여러개인 경우 팩터리 함수의 정의나 객체 생성 코드가 길어질 수 있지만 variadic template은 일정하다.  
 - 객체 생성자의 입력인자가 변경될 경우 variadic template을 쓰면 함수 호출 부분만 바꾸면 된다. 반면 쓰지 않으면 팩터리 함수 내부에서 고쳐야 할 부분이 많다.
+
+마치 파이썬에서 `def func(*args, **kwargs)`를 쓰는 것과 같다.
 
 
 
