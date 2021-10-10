@@ -235,6 +235,21 @@ unique_ptr은 소유권을 넘겨주고 나면 nullptr만 남게 되므로 이�
 
 >  nullptr은 C++11에서 도입된 널 포인터 리터럴(null pointer literal)이다. 오로지 빈 포인터를 확인하기 위한 값이며 C++11 이전에 포인터에 0이나 NULL을 넣어서 빈 포인터를 확인하는 것보다 가독성이 좋고 0이라는 int 타입과 헷갈리지 않게 된다. [참고](https://blockdmask.tistory.com/501)
 
+또한 여기서는 unique_ptr인 `foo`에서 `->` 연산자를 통해 내부 객체의 멤버함수를 직접 접근하는 것을 볼 수 있다. `foo->ptr->print()` 가 아니다. 이것은 unique_ptr에서 연산자 오버로딩을 통해 가능하다.
+
+```cpp
+template <typename T>
+class unique_ptr {
+    T* ptr;
+    MyString operator->() { return ptr; }
+    ...
+}
+int main() {
+    auto foo = std::make_unique<MyString>("foo");
+    foo->print();	// it is interpreted as (foo.operator->())->print() by complier
+}
+```
+
 
 
 #### 자원 공유
@@ -391,6 +406,48 @@ auto upstock = makeInvestment("Stock", 10, "Nvidia");
 
 
 ## 2. shared_ptr
+
+shared_ptr은 자원의 소유권을 공유할 수 있는 스마트 포인터다. 자원을 공유할 때 중요한 점은 "생성된 객체를 언제 누가 파괴할 것인가?" 다. unique_ptr은 소유권을 공유하지 않으니 unique_ptr (껍데기) 객체가 파괴될 때 내부 피지칭 객체를 파괴하면 된다. 반면 shared_ptr 파괴 시점은 세 가지로 표현할 수 있다.
+
+- 어떤 객체가 더 이상 사용되지 않을 때
+- 피지칭 객체에 대한 소유권을 공유하는 shared_ptr 객체가 모두 파괴될 때
+- 소유권을 가지는 shared_ptr 객체들 중 마지막 shared_ptr 객체가 파괴될 때
+
+자바, 파이썬 같은 경우는 메모리를 전역적으로 관리하는 garbage collector가 있다. 그런데 garbage collector가 언제 사용하지 않는 메모리를 해제할 지 프로그래머는 알 수 없다. 그것은 인터프리터 내부에서 전체적인 최적화를 고려하여 결정할 것이므로 꼭 위에서 말한 파괴 시점과 일치하지 않을 수 있다.
+
+C++ 자체가 control freak을 위한 언어인데 아무리 메모리 관리를 효과적으로 하고 싶다고 해도 garbage collector 같은 것을 쓸리 없다. 대신 파괴시점을 확정적으로 예측할 수 있는 shared_ptr을 만들었다.  
+
+같은 객체에 대한 소유권을 공유하는 shared_ptr의 개수는 **참조 횟수(reference count)**에 의해 관리된다.  처음 객체가 생성될 때 참조 횟수는 1이며 그 객체를 가리키는 shared_ptr이 늘어나면 참조 횟수도 늘어난다. 피지칭 객체를 가리키는 마지막 shared_ptr이 파괴되면 **참조 횟수는 0이 되고 이때 피지칭 객체가 파괴**된다. 참조 횟수가 증감하는 경우는 다음과 같다.
+
+```cpp
+struct Foo {
+    std::string str;
+    Foo(const std::string str_) : str(str_) {}
+};
+int main() {
+    auto print_count = [](std::shared_ptr<Foo> ptr){ std::cout << foo->str 
+        << " ref count:" << foo.use_count(); }
+    // +1 생성
+	auto foo = std::shared_ptr<Foo>(new Foo("foo"));
+    print_count()
+    // +1 복사 생성
+}
+```
+
+
+
+
+
+
+
+1. (+1) 생성: ``
+2. (0) move
+
+
+
+
+
+
 
 
 
