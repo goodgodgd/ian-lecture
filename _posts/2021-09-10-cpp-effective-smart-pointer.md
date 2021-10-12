@@ -417,31 +417,250 @@ shared_ptr은 자원의 소유권을 공유할 수 있는 스마트 포인터다
 
 C++ 자체가 control freak을 위한 언어인데 아무리 메모리 관리를 효과적으로 하고 싶다고 해도 garbage collector 같은 것을 쓸리 없다. 대신 파괴시점을 확정적으로 예측할 수 있는 shared_ptr을 만들었다.  
 
+### 2.1. 참조 횟수 관리
+
 같은 객체에 대한 소유권을 공유하는 shared_ptr의 개수는 **참조 횟수(reference count)**에 의해 관리된다.  처음 객체가 생성될 때 참조 횟수는 1이며 그 객체를 가리키는 shared_ptr이 늘어나면 참조 횟수도 늘어난다. 피지칭 객체를 가리키는 마지막 shared_ptr이 파괴되면 **참조 횟수는 0이 되고 이때 피지칭 객체가 파괴**된다. 참조 횟수가 증감하는 경우는 다음과 같다.
 
+1. (+1) 최초 객체 생성 (construction)
+2. (+1) 복사 생성 (copy construction)
+3. (+1) 복사 대입 (copy assigment, lhs 입장)
+4. (-1) 복사 대입 (copy assigment, rhs 입장)
+5. (-1) shared_ptr 파괴
+6. (-1) shared_ptr 리셋
+
+
+
+shared_ptr의 현재 참조 횟수는 `use_count()`라는 함수로 확인할 수 있다. 다음은 다양한 상황에서 참조 횟수의 증감을 확인하는 예시다.
+
 ```cpp
-struct Foo {
+#include <iostream>
+#include <memory>
+#include <cassert>
+
+struct Foo
+{
     std::string str;
     Foo(const std::string str_) : str(str_) {}
 };
+
+void print(std::shared_ptr<Foo> sptr) {
+    std::cout << "4. In-function: " << sptr->str << " ref count= " << sptr.use_count() << std::endl;
+}
+
 int main() {
-    auto print_count = [](std::shared_ptr<Foo> ptr){ std::cout << foo->str 
-        << " ref count:" << foo.use_count(); }
     // +1 생성
-	auto foo = std::shared_ptr<Foo>(new Foo("foo"));
-    print_count()
+    auto sp1 = std::shared_ptr<Foo>(new Foo("foo"));
+    std::cout << "1. Construct: " << sp1->str << " ref count= " << sp1.use_count() << std::endl;
     // +1 복사 생성
+    auto sp2 = sp1;
+    std::cout << "2. Copy construct: " << sp1->str << " ref count= " << sp1.use_count() << std::endl;
+    std::cout << "2. Copy construct: " << sp2->str << " ref count= " << sp2.use_count() << std::endl;
+    // +1 복사 대입
+    auto sp3 = std::shared_ptr<Foo>(nullptr);
+    sp3 = sp1;
+    std::cout << "3. Copy assignment: " << sp1->str << " ref count= " << sp1.use_count() << std::endl;
+    std::cout << "3. Copy assignment: " << sp3->str << " ref count= " << sp3.use_count() << std::endl;
+    // +-1 함수 입력
+    print(sp1);
+    std::cout << "4. Out-function: " << sp1->str << " ref count= " << sp1.use_count() << std::endl;
+    // 0 이동 생성 -> sp3 파괴
+    auto sp4 = std::move(sp3);
+    assert(sp3 == nullptr);
+    std::cout << "5. Move: " << sp1->str << " ref count= " << sp1.use_count() << std::endl;
+    std::cout << "5. Move: " << sp4->str << " ref count= " << sp4.use_count() << std::endl;
+    // -1 다른 객체 대입 -> sp4 파괴
+    sp4 = std::shared_ptr<Foo>(new Foo("bar"));
+    assert(sp4 == nullptr);
+    std::cout << "6. Assign other: " << sp1->str << " ref count= " << sp1.use_count() << std::endl;
+    std::cout << "6. Assign other: " << sp4->str << " ref count= " << sp4.use_count() << std::endl;
+    // -1 reset -> sp2 파괴
+    sp2.reset();
+    assert(sp2 == nullptr);
+    std::cout << "7. Reset: " << sp1->str << " ref count= " << sp1.use_count() << std::endl;
+    {
+        // +1 복사 생성
+        auto sp5 = sp1;
+        std::cout << "8. Copy assignment: " << sp1->str << " ref count= " << sp1.use_count() << std::endl;
+    }
+    // -1 shared_ptr 파괴 -> sp5 파괴
+    std::cout << "8. Destroy copy: " << sp1->str << " ref count= " << sp1.use_count() << std::endl;
 }
 ```
 
 
 
+### 2.2. shared_ptr의 비용
+
+shared_ptr은 원시 포인터에 비해 참조 횟수 관리를 위한 추가적인 비용이 필요하다. 어느정도의 비용이 드는지 설명하기 위해 shared_ptr의 내부 구조를 보자.
+
+<img src="../assets/cppalg/shared_ptr.png" alt="shared_ptr" style="zoom: 50%;" />
+
+shared_ptr은 두 개의 포인터로 이루어져있다. 하나는 원래 관리하고자 하는 피지칭 객체(T Object)가 있고 다른 하나는 이를 관리하기 위한 제어 블록(Control Block)이 있다. 관리하는 객체 하나당 제어 블록도 하나만 있어야 하므로 제어 블록도 동적으로 할당되고 shared_ptr에서는 그에 대한 포인터만 가지고 있다.  
+
+제어 블록에는 참조 횟수 뿐만 아니라 약한 횟수(weak count)와 커스텀 삭제자, 할당자 등이 있다. 약한 횟수는 shared_ptr을 보조하는 weak_ptr을 위한 것이고, 커스텀 할당자와 삭제자는 객체를 생성하고 삭제하는 과정을 정의한 함수 객체다. 커스텀 할당자, 삭제자는 데이터를 포함할 수 있기 때문에 제어 블록의 크기는 얼마든지 늘어날 수도 있다.  
+
+성능에 영향을 미치는 다른 요인으로 원자적 연산과 가상 함수 사용이 있다. 여러 스레드에서 동시에 shared_ptr의 참조 횟수를 증감시키려 하면 미정의 결과가 나올수 있으므로 참조 횟수를 수정하는 일은 **원자적(atomic) 연산**으로 해야한다. 대체로 원자적 연산은 비원자적 연산보다 느리다. 제어 블록의 구현에서 상속이 사용되고 가상 함수도 있으므로 이에 대한 비용도 추가된다. 가상함수를 쓰면 미미하게 메모리 사용과 연산이 증가하긴 하지만 더 중요한 것은 인라인(inline) 최적화를 막는다는 것이다.  
+
+- [가상함수 비용 자세히](https://anesiner.wordpress.com/2013/01/30/efficiency-unit-24-%EA%B0%80%EC%83%81-%ED%95%A8%EC%88%98-%EB%8B%A4%EC%A4%91-%EC%83%81%EC%86%8D-%EA%B0%80%EC%83%81-%EA%B8%B0%EB%B3%B8-%ED%81%B4%EB%9E%98%EC%8A%A4-rtti%EC%97%90-%EB%93%A4%EC%96%B4/)
+- [가상함수 비용 간단히](https://m.blog.naver.com/PostView.naver?isHttpsRedirect=true&blogId=sssang97&logNo=221580143335)
+- [함수 오버헤드](https://kingpiggylab.tistory.com/136)
+- [인라인 함수](https://boycoding.tistory.com/220)
+
+이렇게 보면 shared_ptr을 사용하는 부담이 큰 것 같지만 사실 그렇진 않다. 전형적인 경우 (기본 할당자와 삭제자를 쓸 때) `std::make_shared` 함수를 쓰면 제어 블록은 워드 세 개 정도의 크기다. 참조 횟수 조작이 필요한 연산에는 원자적 연산 한 두 개가 더 소비되나 임베디드 환경이 아닌 이상 별 의미는 없다. 가상함수는 제어블록을 파괴할 때만 사용되므로 자주 쓰이는 것은 아니다.  
+
+이러한 적은 비용을 치르는 대신, 소유권을 공유하는 동적 할당 자원의 수명이 자동으로 관리된다는 이득이 생긴다. 우선 소유권 공유가 필요한지 생각해보고 독점 소유권으로도 충분하다면 unique_ptr이 나은 선택이다. unique_ptr은 언제든 shared_ptr로 업그레이드 가능하지만 그 역은 불가능하다.  
+
+unique_ptr은 배열 객체 관리가 가능하지만 shared_ptr은 단일 객체 관리만을 염두해두고 설계됐다. shared_ptr<T[]>와 같은 배열 객체는 지원하지 않는다. 배열 관리는 std::array, vector 등 더 나은 대안이 있다.  
+
+
+
+### 2.3. 생성 방식
+
+unique_ptr과 마찬가지로 shared_ptr도 두 가지 방식이 있다.
+
+- 기본 생성자: new를 사용하며, 커스텀 삭제자와 할당자를 지정할 수 있다.
+- `std::make_shared<T>`: 기본적으로 권장되는 방법, 객체와 제어 블록 메모리를 한번에 연결하여 할당하여 더 효율적이고 메모리 누수 위험이 없다.
+
+다음은 shared_ptr의 생성과 관련된 예시다.
+
+```cpp
+#include <iostream>
+#include <memory>
+#include <vector>
+#include <exception>
+
+struct MyString
+{
+    std::string str;
+    MyString(std::string s) : str(s) {}
+};
+
+void process(std::shared_ptr<MyString> ptr, int a) {}
+
+int main()
+{
+    auto my_deleter = [](MyString *mstr) {
+        std::cout << "delete " << mstr->str << std::endl;
+        delete mstr;
+    };
+    auto exception_thrower = []() {
+        throw std::exception();
+        return 0;
+    };
+    // 1. 기본 생성자
+    std::shared_ptr<MyString> sp1(new MyString("hello"));
+    // 2. custom deleter 지정 (타입 똑같음)
+    std::shared_ptr<MyString> sp2(new MyString("shared"), my_deleter);
+    // 2-1. custom deleter 지정한 unique_ptr (타입이 다름)
+    std::unique_ptr<MyString, decltype(my_deleter)> ups(new MyString("unique"), my_deleter);
+    // 3. make_shared 사용
+    auto sp3 = std::make_shared<MyString>("pointer");
+    // 4. 메모리 누수 가능
+    try {
+        process(std::shared_ptr<MyString>(new MyString("exception")), exception_thrower());
+    }
+    catch (std::exception e) {
+        std::cout << "exception happened\n";
+    }
+    // 5. 타입이 같으므로 vector에 넣어서 사용
+    std::vector<std::shared_ptr<MyString>> vsp = {sp1, sp2, sp3};
+    std::string sentence;
+    for (const auto &sp : vsp)
+        sentence += sp->str + " ";
+    std::cout << "sentence: " << sentence << std::endl;
+}
+```
+
+1, 2, 3은 shared_ptr 생성의 세 가지 경우를 보여준다. 2-1은 unique_ptr과의 차이점인데 unique_ptr에서 커스텀 삭제자를 지정하는 경우 삭제자의 타입이 unique_ptr의 타입에 포함된다. 반면 shared_ptr은 커스텀 삭제자가 입력인자로 들어갈 뿐 포인터 타입은 `shared_ptr<MyString>` 그대로다. 이것은 좀 더 유연한 코딩을 가능하게 한다. 같은 타입의 객체를 가지지만 삭제자의 유무나 삭제자의 타입이 다른 shared_ptr들의 타입이 같으므로 하나의 container에 담을 수 있다. 5에서 보여주듯 삭제자가 있는 sp2와 삭제자가 없는 sp1, sp3이 하나의 vector 안에 담기는 것을 볼 수 있다.  
+
+4는 메모리 누수 가능성을 가진 코드다. 일반적으로 예상하기로는 try 내부의 코드 실행 순서는 다음과 같을 것이다.
+
+1. new MyString()
+2. shared_ptr 생성
+3. exception_thrower()
+
+하지만 컴파일러 최적화에 의해 코드의 실제 실행 순서는 바뀔 수 있다. 만약 2번과 3번이 바뀐 상태에서 위와 같이 3번에서 예외가 발생한다면 어떻게 될까? 1번에서 이미 메모리 할당은 됐는데 그 메모리가 shared_ptr에 들어가기 전에 예외가 발생한다면 그 메모리는 해제될 수 없다. 이때 make_shared를 쓰면 이런 문제가 발생하지 않는다. `process(std::make_shared<MyString>("exception"), exception_thrower());`
+
+
+
+### 2.4. 사용예시
+
+소유권을 공유해야 하는 객체는 어떤 경우에 필요할까? 생각보다 한정적이다. 대부분의 순차적인 처리과정을 거치는 데이터는 unique_ptr로 가능하다. 그러나 가끔은 하나의 자원을 여러 곳에 공유시킨 뒤 처리하는 것이 편할 때가 있다. 멀티 스레드(프로세스) 프로그램이 대표적이다. 멀티 스레드가 아니더라도 여러 곳에서 공통적으로 쓰이는 객체를 독점 소유권으로 관리하면 불필요한 인자 전달 과정만 길어진다. 예를 들어, foo->bar->baz 로 이어지는 객체 구조가 있고 또한 spam->ham 객체 구조가 있는데 baz라는 데이터를 ham에게 함수를 통해 전달하려면 여러 단계의 전달과정이 필요하다. 이런 경우에는 bar와 ham에서 baz라는 데이터를 포인터를 통해 공유하는 것이 편리하다.  
+
+다음은 그러한 예시를 간단하게 구현한 것이다. 
+
+```cpp
+#include <iostream>
+#include <memory>
+
+struct WeatherInfo {
+    std::string weather;
+    WeatherInfo(std::string w) : weather(w) {}
+};
+
+struct WeatherForecaster {
+    std::shared_ptr<WeatherInfo> wtsp;
+    WeatherForecaster(std::shared_ptr<WeatherInfo> w) : wtsp(w) {}
+    void update(int seed) {
+        if (wtsp == nullptr)
+            std::cout << "weather pointer is null\n";
+        else {
+            wtsp->weather = (seed % 2) ? "rainy" : "sunny";
+            std::cout << "weather is updated to " << wtsp->weather
+                      << ", count=" << wtsp.use_count() << std::endl;
+        }
+    }
+};
+
+struct Scheduler {
+    std::shared_ptr<WeatherInfo> wtsp;
+    std::string action;
+    Scheduler(std::shared_ptr<WeatherInfo> w) : wtsp(w) {}
+    void check_action() {
+        if (wtsp->weather == "sunny")
+            action = "take a hat";
+        else if (wtsp->weather == "rainy")
+            action = "take an umbrella";
+        else
+            action = "no idea";
+        std::cout << "check action: " << action << ", count=" << wtsp.use_count() << std::endl;
+    }
+};
+
+int main() {
+    auto wtsp = std::make_shared<WeatherInfo>("sunny");
+    WeatherForecaster forecaster(wtsp);
+    Scheduler scheduler(wtsp);
+    int i = 0;
+    while (++i <= 2) {
+        forecaster.update(i);
+        scheduler.check_action();
+    }
+    wtsp.reset(new WeatherInfo("cloudy"));
+    forecaster.update(0);
+    scheduler.check_action();
+    return 0;
+}
+```
+
+> weather is updated to rainy, count=3
+> check action: take an umbrella, count=3
+> weather is updated to sunny, count=3
+> check action: take a hat, count=3
+> weather is updated to sunny, count=2
+> check action: take a hat, count=2
+
+`WeatherInfo`는 `WeatherForecaster`와 `Scheduler` 사이에서 공유되는 객체다. `forecaster`에서 update를 하면 굳이 그 결과를 함수를 통해 전달하지 않아도 `scheduler`에서 바로 쓸 수 있다.  
+
+그런데 만약에 최초에 생성한 shared_ptr을 파괴한다면 어떻게 될까? `forecaster`와 `scheduler`에서 가지고 있는 객체도 파괴될까? 그건 아니다. `main`에서 생성한 shared_ptr을 파괴해도 이미 복사본이 다른 객체에 들어가 있으므로 처음에 만든 객체는 남아있게 된다.
 
 
 
 
-1. (+1) 생성: ``
-2. (0) move
+
+
+
+
 
 
 
