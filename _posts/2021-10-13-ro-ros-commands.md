@@ -1,8 +1,8 @@
 ---
 layout: post
 title:  "ROS Commands"
-date:   2020-10-05 09:00:13
-categories: 2020-2-robotics
+date:   2021-10-13 09:00:13
+categories: Robotics
 ---
 
 
