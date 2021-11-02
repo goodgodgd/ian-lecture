@@ -54,7 +54,7 @@ make는 gcc를 좀 더 쉽게 쓰기 위해서 만들어진 툴이다. 여러 �
 # Makefile
 hello: hello.o
 	gcc -o hello hello.o
-hello.o: hello.cpp
+hello.o: hello.c
 ```
 
 작성 후 `make` 명령어로 빌드한다.

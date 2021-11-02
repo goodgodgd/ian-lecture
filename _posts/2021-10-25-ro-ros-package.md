@@ -1,8 +1,8 @@
 ---
 layout: post
 title:  "Create ROS Package"
-date:   2020-10-07 09:00:13
-categories: 2020-2-robotics
+date:   2021-10-25 09:00:13
+categories: Robotics
 ---
 
 
