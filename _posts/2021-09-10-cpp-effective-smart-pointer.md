@@ -241,7 +241,7 @@ unique_ptr은 소유권을 넘겨주고 나면 nullptr만 남게 되므로 이�
 template <typename T>
 class unique_ptr {
     T* ptr;
-    MyString operator->() { return ptr; }
+    T* operator->() { return ptr; }
     ...
 }
 int main() {
