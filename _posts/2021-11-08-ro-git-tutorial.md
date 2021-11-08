@@ -1,8 +1,8 @@
 ---
 layout: post
 title:  "Git Tutorial"
-date:   2020-10-20 09:00:13
-categories: 2020-2-robotics
+date:   2021-11-08 09:00:13
+categories: Robotics
 ---
 
 
