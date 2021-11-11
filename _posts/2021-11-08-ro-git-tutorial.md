@@ -100,7 +100,7 @@ $ cd ~/workspace
 
 
 
-### git configure
+### git config
 
 > Git에 대한 설정을 변경할 수 있는 명령어. 설정할 수 있는 변수가 수백가지지만 대부분은 사용자 등록 정도만 사용한다.
 >
