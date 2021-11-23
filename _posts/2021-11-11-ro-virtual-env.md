@@ -545,7 +545,7 @@ eval "$(pyenv virtualenv-init -)"
 ```bash
 $ gedit ~/.bashrc
 # 아래 세 줄 추가
-export PATH="/home/ian/.pyenv/bin:$PATH"
+export PATH="/home/pi/.pyenv/plugins/pyenv-virtualenv/shims:/home/pi/.pyenv/shims:/home/pi/.pyenv/bin:$PATH"
 eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
 # 저장 후 닫기
