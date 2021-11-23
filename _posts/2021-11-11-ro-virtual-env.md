@@ -571,7 +571,7 @@ easy_install-3.7  pip3     pydoc3.7  python3.6m        python3.7m-config
 
 ### 4.2 pyenv 사용법
 
-pyenv는 다양한 sub-command를 통해 다양한 기능을 제공한다. 그 중 파이썬 버전 선택과 관련된 동작들을 알아보자.
+pyenv는 다양한 verb를 통해 다양한 기능을 제공한다. 그 중 파이썬 버전 선택과 관련된 동작들을 알아보자.
 
 - install [version]: 특정 버전의 파이썬을 `~/.pyenv/versions` 경로에 설치한다. 버전은 `.`으로 구분된 세 개의 숫자로 써야한다. 
 - uninstall [version]: `install`로 설치한 특정 버전의 파이썬을 삭제한다.
@@ -598,19 +598,9 @@ $ pyenv versions
 * system (set by /home/ian/.pyenv/version)
   3.7.9
 
-# 전역 파이썬 버전 변경
-$ pyenv global 3.7.9
-# 현재 사용중인 버전 확인
-$ pyenv version
-3.7.9 (set by /home/ian/.pyenv/version)
-$ which python
-/home/ian/.pyenv/shims/python
-$ python --version
-Python 3.7.9
-
 # 특정 디렉토리로 이동
 $ cd ~/workspace/vework
-# 현재 디렉토리에서만 다른 버전 지정
+# 현재 디렉토리에서만 사용할 버전 지정
 ~/workspace/vework$ pyenv local 3.7.9
 ~/workspace/vework$ python --version
 Python 3.7.9
@@ -623,7 +613,7 @@ Python 3.7.9
 
 ### 4.3 pyenv 가상 환경 사용
 
-pyenv를 설치할 때 이미 가상 환경 플러그인도 설치되었으므로 따로 설치하지 않아도 된다. 다음은 가상환경과 관련된 sub-command들이다.
+pyenv를 설치할 때 이미 가상 환경 플러그인도 설치되었으므로 따로 설치하지 않아도 된다. 다음은 가상환경과 관련된 verb들이다.
 
 - virtualenv [version] [env_name] : 특정 [version]의 환경을 [env_name]이란 이름으로 생성한다. `pyenv install`을 통해 설치된 버전이어야 한다. 가상환경을 현재 디렉토리에 만드는 것이 아니라 `~/.pyenv/versions/[version]/env/[env_name]` 아래에 새로운 환경이 만들어진다.
 - virtualenv-delete [env_name] : [env_name] 환경을 삭제한다.
