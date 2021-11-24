@@ -534,26 +534,26 @@ int main() {
 }
 ```
 
-> f1
-> [Vector] general constructor: n = 2
-> [Vector] general constructor: n = 3
-> [Vector] copy constructor: n = 2
-> [Vector] move assignment: n = 2
-> result: 2 2
-> f2
-> [Vector] general constructor: n = 4
-> [Vector] general constructor: n = 5
-> [Vector] move constructor: n = 4
-> [Vector] move assignment: n = 4
-> result: 0 4
-> inline code like f1
-> [Vector] copy constructor: n = 2
-> [Vector] move constructor: n = 2
-> result: 2 0 2
-> inline code like f2
-> [Vector] move constructor: n = 2
-> [Vector] move constructor: n = 2
-> result: 0 0 2
+> f1  
+> [Vector] general constructor: n = 2  
+> [Vector] general constructor: n = 3  
+> [Vector] copy constructor: n = 2  
+> [Vector] move assignment: n = 2  
+> result: 2 2  
+> f2  
+> [Vector] general constructor: n = 4  
+> [Vector] general constructor: n = 5  
+> [Vector] move constructor: n = 4  
+> [Vector] move assignment: n = 4  
+> result: 0 4  
+> inline code like f1  
+> [Vector] copy constructor: n = 2  
+> [Vector] move constructor: n = 2  
+> result: 2 0 2  
+> inline code like f2  
+> [Vector] move constructor: n = 2  
+> [Vector] move constructor: n = 2  
+> result: 0 0 2  
 
 결과를 보면 리턴 값을 주는 과정에서 (이동/복사) 생성자 한 번과 할당 연산자 한 번이 실행된다. 리턴하는 변수가 참조 객체이기 때문에 RVO가 일어날 수 없다. std::move로 리턴하는 경우에는 두 번 다 이동이고 다른 경우에는 생성자가 복사 생성자로 실행된다. 그럼 std::move를 써서 이동연산을 하는게 좋을까? 꼭 그렇지는 않다. `f2` 함수에 들어간 객체가 파괴되기 때문이다. 약간의 효율성을 올리려다 심각한 버그를 만들 수 있으므로 신중하게 써야하고 특히 다른 사람이 쓰지 못하게 해야한다.
 
@@ -562,6 +562,108 @@ int main() {
 **생각해볼 것**
 
 - 리턴 타입이 같은데 move()를 하고 안하고 왜 차이 날까? :arrow_right: 예시에서 보여준 함수와 등가의 인라인 코드를 생각해보자.
-- 리턴 타입을 오른값 참조(T&&)로 하고 지역 객체를 리턴하면 함수가 끝나면서 지역 객체가 파괴돼서 dangling reference를 받게됨 --> 컴파일러 에러 발생
-- 리턴 타입을 오른값 참조(T&&)로 하려면 입력 받은 왼값 참조나 오른값 참조에 move 적용하여 리턴 가능
+- 리턴 타입을 오른값 참조(Type&&)로 하고 지역 객체를 리턴하면 함수가 끝나면서 지역 객체가 파괴돼서 dangling reference를 받게됨 :arrow_right: 컴파일러 에러 발생
+- 리턴 타입을 오른값 참조(Type&&)로 하려면 입력 받은 왼값 참조나 오른값 참조에 move 적용하여 리턴 가능
+
+
+
+## 4. forwarding reference and std::forward()
+
+앞서 오른값 참조와 std::move 함수의 조합을 이용해 이동 연산을 활용하는 법에 대해 알아봤다. 하지만 오른값 참조는 오직 오른값에만 묶일수 있기 때문에 (왼값을 받을 수 없어서) 같은 함수를 입력 인자의 오른값, 왼값 성질에 따라 두 가지로 선언해야 하는 문제가 있다. 다음 함수 예시를 보자. Vector를 받아 이를 정수열로 채운 Vector 객체를 만들어 리턴하는 함수다.
+
+```cpp
+Vector set_sequential(const Vector &v) {
+    std::cout << "[set_sequential] L-value\n";
+    Vector out = v;
+    for (int i = 0; i < v.n; ++i)
+        out.data[i] = i;
+    return out;
+}
+
+Vector set_sequential(Vector &&v) {
+    std::cout << "[set_sequential] R-value\n";
+    Vector out = std::move(v);
+    for (int i = 0; i < v.n; ++i)
+        out.data[i] = i;
+    return out;
+}
+
+int main() {
+    Vector v1(3);
+    set_sequential(v1);
+    set_sequential(Vector(3));
+}
+```
+
+> [Vector] general constructor: n = 3  
+> [set_sequential] L-value  
+> [Vector] copy constructor: n = 3  
+> [Vector] general constructor: n = 3  
+> [set_sequential] R-value  
+> [Vector] move constructor: n = 3  
+
+사실 첫 번째 함수의 상수 참조만 있어도 lvalue와 rvalue를 모두 받을 수 있긴하다. 하지만 상수 참조로 받으면 이동이 일어날 수 없다. 이동을 사용하려면 두 번째 함수가 있어야 한다. 그럼 이동이 필요한 함수들은 매번 이렇게 두 가지 버전으로 구현을 해야할까? 불편하기도 하고 코드 중복에 의한 위험도 있다. 이걸 하나로 합칠 수 있는 게 바로 전달 참조다. 전달 참조를 이용한 예시를 보자.  
+
+```cpp
+template <typename T>
+Vector set_sequential(T &&v)
+{
+    std::cout << "[set_sequential] forwarding reference\n";
+    Vector out = std::forward<T>(v);
+    for (int i = 0; i < v.n; ++i)
+        out.data[i] = i;
+    return out;
+}
+
+int main()
+{
+    Vector v1(3);
+    set_sequential(v1);
+    set_sequential(Vector(3));
+}
+```
+
+> [Vector] general constructor: n = 3  
+> [set_sequential] forwarding reference  
+> [Vector] copy constructor: n = 3  
+> [Vector] general constructor: n = 3  
+> [set_sequential] forwarding reference  
+> [Vector] move constructor: n = 3  
+
+전달 참조(forwarding reference)란 템플릿에서 `T&&`와 같은 참조를 말한다. 오른값 참조 같지만 특성이 다르다. *전달*이라는 이름에 걸맞게 입력된 타입을 **그대로** 전달한다는 것이다. cv-qualifier(const, volitile) 뿐만 아니라 왼값, 오른값 속성도 그대로 전달한다. **입력되는 값이 왼값이면 왼값 참조가 되고 오른값이면 오른값 참조가 된다.** 
+
+템플릿 함수에서 전달 참조의 특성을 가지기 위해서는 입력 인자의 타입이 딱 `T&&` 이어야 하고 입력 인자에 대한 형식 연역이 일어나야 한다. 보편 참조인 경우와 아닌 경우를 예시를 통해 비교해보자.
+
+```cpp
+template<typename T>
+void f(T&& param);		// 1. 전달 참조
+
+template<typename T>
+void f(const T&& param);	// 2. 오른값 참조
+
+template<typename T>
+void f(std::vector<T>&& param);	// 3. 오른값 참조
+
+template<class T, class Allocater = allocater<T>>
+class vector {
+    public:
+    	void push_back(T&& x);	// 4. 오른값 참조
+}
+```
+
+1. 전형적인 전달 참조의 모습이다.
+2. const가 붙어서 전달 참조가 아니다.
+3. 타입이 `T&&`이 아니라 `vector<T>` 타입이라 전달 참조가 아니다.
+4. 클래스를 선언할 때 이미 `T`가 결정이 돼서, `push_back` 할 때 형식 연역이 일어나지 않는다.
+
+`set_sequential(Vector &&v)`처럼 오른값 참조로 입력을 받았을 때는 오른값 참조 자체는 왼값이기 때문에 std::move를 이용하여 무조건 오른값으로 변환한다. 전달 참조로 입력을 받았을 때는 입력이 원래 왼값이면 복사를 하고 오른값이면 이동을 하게 하는 것이 이상적이다. 정확히 이 기능을 하는 함수가 **std::forward**다. std::forward의 기능은 원래 입력된 값의 속성을 그대로 전달해주는 것이다. `set_sequential(T &&v)` 함수를 다시 보자.
+
+- 원래 입력 값이 **왼값**이면 v는 왼값 참조가 되고 `std::forward<T>()`를 통과해도 그대로다.
+- 원래 입력 값이 **오른값**이면 v는 오른값 참조가 되고 `std::forward<T>()`를 통과하면 마치 std::move 함수를 쓴 것처럼 오른값으로 변환해준다.
+
+왼값에 std:forward가 아닌 std::move 함수를 적용한다면 왼값까지 이동을 시켜버려서 기존 왼값 객체가 파괴될 수 있다. 
+
+**추가할 것**
+
+전달 참조를 받는 함수와 명시적 타입을 받는 함수의 오버로딩
 
