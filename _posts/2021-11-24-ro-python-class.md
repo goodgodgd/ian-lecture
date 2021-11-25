@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Final Project and Python Class"
-date:   2020-10-29 09:00:13
+date:   2021-11-24 09:00:13
 categories: 2020-2-robotics
 ---
 
