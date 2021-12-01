@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "[Cpp] Effective C++1x (4): Move Semantics"
+title:  "[Cpp] Move Semantics"
 date:   2021-11-02 09:00:13
 categories: CppAlgorithm
 ---
@@ -184,6 +184,12 @@ C++에서는 모든 값을 lvalue 또는 rvalue로 분류할 수 있다.
 
 
 ## 3. rvalue reference and std::move()
+
+> 참고자료
+>
+> - (Modern Effective C++) 항목 23. std::move와 std::forward를 숙지하라
+> - (Modern Effective C++) 항목 24. 보편 참조와 오른값 참조를 구분하라
+> - (Modern Effective C++) 항목 25. 오른값 참조에는 std::move를, 보편 참조에는 std::forward를 사용하라
 
 오른값 참조(rvalue reference)는 `Type&&` 형식으로 사용하며 말 그대로 오른값에 대한 참조 형식이다. 오른값이란 어떤 표현식이 끝나면 사라질 임시 객체라고 했는데 오른값 참조를 이 임시 객체에 묶으면(bind) 오른값 참조변수의 수명만큼 임시 객체의 수명도 늘어난다. 오른값을 위한 참조이기 때문에 오른값에만 묶일수 있고 왼값에는 사용하지 못한다. 다음은 할당 가능한 관계를 정리한 표다. gcc로 직접 테스트 해보았다. 오류가 나는 줄은 주석처리를 하였다.
 
@@ -632,7 +638,7 @@ int main()
 
 전달 참조(forwarding reference)란 템플릿에서 `T&&`와 같은 참조를 말한다. 오른값 참조 같지만 특성이 다르다. *전달*이라는 이름에 걸맞게 입력된 타입을 **그대로** 전달한다는 것이다. cv-qualifier(const, volitile) 뿐만 아니라 왼값, 오른값 속성도 그대로 전달한다. **입력되는 값이 왼값이면 왼값 참조가 되고 오른값이면 오른값 참조가 된다.** 
 
-템플릿 함수에서 전달 참조의 특성을 가지기 위해서는 입력 인자의 타입이 딱 `T&&` 이어야 하고 입력 인자에 대한 형식 연역이 일어나야 한다. 보편 참조인 경우와 아닌 경우를 예시를 통해 비교해보자.
+템플릿 함수에서 전달 참조의 특성을 가지기 위해서는 입력 인자의 타입이 딱 `T&&` 이어야 하고 입력 인자에 대한 형식 연역이 일어나야 한다. 전달 참조인 경우와 아닌 경우를 예시를 통해 비교해보자.
 
 ```cpp
 template<typename T>

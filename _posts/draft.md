@@ -95,3 +95,72 @@ int main() {
 
 `rval_input`은 오른값을 받는 함수이므로 왼값을 입력하면 에러가 난다. 그래서 왼값을 받아 오른값 임시 객체로 반환하는 `lval_to_rval`라는 함수를 만들어 리턴 값을 바로 입력했더니 에러 없이 실행됐다. 그런데 모든 데이터 타입마다 `lval_to_rval` 이런걸 만들어 줄 순 없다. 템플릿 함수로 구현하는 것이 효율적일 것이다. 다행스럽게도 STL에서 이런 함수를 구현해서 제공하는데 그게 바로 **std::move()**다.  
 
+
+
+
+
+
+
+
+
+
+
+<https://boycoding.tistory.com/233>
+
+<https://en.cppreference.com/w/cpp/language/lambda>
+
+<https://blog.koriel.kr/modern-cpp-lambdayi-teugjinggwa-sayongbeob/>
+
+<https://docs.microsoft.com/en-us/cpp/cpp/lambda-expressions-in-cpp?view=msvc-170>
+
+<https://hsho.tistory.com/26>
+
+<https://www.go4expert.com/articles/cpp-closures-functors-lamdas-stdfunction-t34654/>
+
+
+
+
+
+> 참고자료: (Modern Effective C++) 항목 31. 기본 갈무리 모드를 피하라
+
+기본 갈무리는 참조 갈무리 [&]와 값 갈무리 [=]가 있는데 둘 다 쓰지마라
+
+참조 갈무리는 참조 대상을 잃을 위험이 있고
+
+값 갈무리는 암시적으로 this 포인터나 static 변수에 대한 참조를 사용할 수 있는데
+
+[=]는 자기 완결적 함수라는 오해를 살 수 있다.
+
+그나마 갈무리를 할 대상을 [] 안에 명시적으로 쓰는게 그러한 위험을 감지할 수 있어서 낫다
+
+
+
+> 참고자료: (Modern Effective C++) 항목 32. 객체를 클로저 안으로 이동하려면 초기화 갈무리를 사용하라
+
+초기화 갈무리는 [pw = std::move(widget)] 처럼 할당받는 변수를 지정하는 것인데
+
+이것은 클로저 클래스의 멤버 변수를 만드는 것이다. 
+
+멤버 변수를 생성하는 것이므로 기본적으로 복사가 되지만 
+
+이동이 가능하고 그래도 된다면 move를 사용할 수 있다. (특히 STL container 사용시)
+
+
+
+> 참고자료: (Modern Effective C++) 항목 33. std::forward를 통해서 전달할 auto&& 매개변수에는 decltype을 사용하라
+
+```cpp
+auto f = [](auto&& x)
+{
+    return normalize(std::forward<decltype(x)>(x));
+}
+```
+
+auto&& 도 보편 참조처럼 연역되어 왼값은 왼값 참조, 오른값은 오른값 참조가 된다. 왼값, 오른값 속성을 그대로 전달하기 위해 forward를 쓰고 <>에 들어갈 타입은 decltype()으로 해결한다.
+
+
+
+>  참고자료: (Modern Effective C++) 항목 34. std::bind 보다 람다를 선호하라
+
+
+

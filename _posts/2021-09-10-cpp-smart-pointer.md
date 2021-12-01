@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "[Cpp] Effective C++1x (3): Smart Pointers"
+title:  "[Cpp] Smart Pointers"
 date:   2021-09-11 09:00:13
 categories: CppAlgorithm
 ---
