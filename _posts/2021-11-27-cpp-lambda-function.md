@@ -235,11 +235,8 @@ struct S
         [this] { cout << this->bar; }; 	// OK
         [*this] { cout << this->bar; }; // OK
         
-        [] { cout << bar; }; 			// ERROR
-        [] { cout << this->bar; }; 		// ERROR
-        [=] { bar = 1; }; 				// ERROR
-        [&] { bar = 1; }; 				// ERROR
-        
+        [] { cout << bar; }; 		// ERROR
+        [] { cout << this->bar; }; 	// ERROR
         [=] { foo = 10; }();		// ERROR, 캡쳐된 변수는 기본적으로 상수
 		[=] { bar = 1; }();			// OK, this는 const S*가 아닌, S* const로 캡쳐
         [&] { foo = 10; }();		// OK, 참조 변수는 수정 가능
@@ -283,7 +280,7 @@ int main()
 
 > hello lambda
 
-f1의 캡쳐 절에서 move 함수를 실행하고 그 결과를 tpw라는 변수로 받아서 캡쳐를 했다. f2처럼 tpw을 바로 캡쳐하게 되면 값에 의한 복사가 일어나는데 unique_ptr은 복사할 수 없으므로 에러가 난다. 따라서 unique_ptr처럼 이동 전용 타입이거나 성능을 위해 이동을 통해 캡쳐하고 싶다면 초기화 캡쳐를 활용해야 한다. 물론 f3처럼 참조로 캡쳐하면 굳이 move가 필요 없을 수 있다.  
+f1의 캡쳐 절에서 move 함수를 실행하고 그 결과를 pw라는 변수로 받아서 캡쳐를 했다. f2처럼 tpw을 바로 캡쳐하게 되면 값에 의한 복사가 일어나는데 unique_ptr은 복사할 수 없으므로 에러가 난다. 따라서 unique_ptr처럼 이동 전용 타입이거나 성능을 위해 이동을 통해 캡쳐하고 싶다면 초기화 캡쳐를 활용해야 한다. 물론 f3처럼 참조로 캡쳐하면 굳이 move가 필요 없을 수 있다.  
 
 초기화 캡쳐는 마치 클래스의 생성자에서 멤버 변수를 초기화하는 것과 비슷하다. 실제로 초기화 캡쳐 변수(pw)는 클로저 클래스의 멤버 변수가 된다.
 
@@ -297,7 +294,7 @@ Lambda specifier는 입력 인자(parameter list)와 본문(body) 사이에서 �
 
 - mutable: 값 캡쳐된 변수들은 기본적으로 상수(const)인데 mutable을 붙이면 값을 수정하거나 객체의 비상수 멤버 함수를 사용할 수 있다. 하지만 값 캡쳐이기 때문에 람다 표현식 내부에서의 수정이 외부에 영향을 미치진 않는다.
 - constexpr: 일반 함수의 리턴 타입에 constexpr을 붙이는 것과 같다. 캡쳐 변수나 입력인자가 상수표현식일 때, 출력도 상수표현식이 된다.
-- noexcept: 일반 함수에 noexcep 붙이는 것과 같다. 예외 없음을 명시적으로 지정하여 컴파일러 최적화를 돕는다.
+- noexcept: 일반 함수에 noexcept 붙이는 것과 같다. 예외 없음을 명시적으로 지정하여 컴파일러 최적화를 돕는다.
 
 
 
@@ -334,7 +331,7 @@ int main() {
 
 위 예시에서 함수 내부에서 생성된 `bar`라는 변수는 지역 변수이기 때문에 create_lambda() 함수가 끝나면 사라진다. 그래서 람다 표현식 내부에서 참조로 들어갈 수는 있지만 이렇게 만들어진 람다 표현식은 create_lambda() 함수 밖에서는 못 쓰게 된다.
 
-... 라고 했는데 gcc에서 잘 돌아가는 것을 확인함 :disappointed_relieved:
+... 라고 했는데 gcc로 release 모드에서 잘 돌아가는 것을 확인함 :disappointed_relieved: debug 모드에서는 segmentation fault 발생
 
 [&] 대신 [&bar]라고 써도 같은 내용이긴 한데 프로그래머가 코드를 쓰면서 좀 더 bar라는 변수에 신경을 쓰게 되어 이러한 버그를 알아챌 가능성이 높아진다. 그러므로 기본 참조 캡쳐는 가급적 피하는 것이 좋다.
 
@@ -367,5 +364,5 @@ int main() {
 
 이것 또한 foo라는 객체가 파괴되면 그 내부 변수도 사라지기 때문에 이후 람다 표현식을 사용할 때 문제가 될 수 있다.
 
-... 라고 했는데 이것도 gcc에서 잘 돌아가는 것을 확인함 :disappointed_relieved:
+... 라고 했는데 이것도 gcc로 release 모드에서 잘 돌아가는 것을 확인함 :disappointed_relieved: debug 모드에서는 segmentation fault 발생
 
