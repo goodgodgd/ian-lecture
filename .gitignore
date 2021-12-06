@@ -8,3 +8,4 @@ Gemfile.lock
 __pycache__
 sample_imgs
 ~*
+desktop.files.json
