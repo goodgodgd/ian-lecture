@@ -573,6 +573,77 @@ int main() {
 
 
 
+### 3.3. Reference Qualifier
+
+클래스의 멤버 함수 선언 뒤에, 그러니까 `const`(상수 한정사, const qualifier)가 올 수 있는 자리에, `&`나 `&&`가 올 수 있는데 이를 참조 한정사라 한다.  
+
+```cpp
+void foo() &;
+void bar() &&;
+```
+
+C++ 함수에서 만약 입력 인자의 오른값 왼값 성질에 따라 다르게 처리하고 싶다면 다음과 같이 두 가지 함수를 오버로딩해서 쓸 수 있다.
+
+```cpp
+void foo(Widget& w);
+void foo(Widget&& w);
+```
+
+클래스 멤버 함수를 호출하는 객체의 오른값 왼값 성질에 따라 다르게 처리하고 싶다면 참조 한정사를 쓰면 된다. 멤버 함수에 참조 한정사를 붙이는 경우가 흔치는 않지만 필요한 경우도 있다.  
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <iostream>
+#include <cstring>
+
+struct VectorWrap {
+    using DataType = std::vector<double>;
+    DataType data;
+    VectorWrap() = default;                                 // 기본 생성자
+    VectorWrap(const DataType &data_) : data(data_) {}      // 일반 생성자
+    ~VectorWrap() { data.clear(); }                         // 소멸자
+    VectorWrap(const VectorWrap &other) : data(other.data)  // 복사 생성자
+    { std::cout << "[VectorWrap] copy constructor\n"; }
+    VectorWrap(VectorWrap &&other) noexcept : data(std::move(other.data)) // 이동 생성자
+    { std::cout << "[VectorWrap] move constructor\n"; }
+};
+struct Widget {
+    VectorWrap vec;
+    VectorWrap &data() &
+    {
+        std::cout << "L-value reference qualifier\n";
+        return vec;
+    };
+    VectorWrap &&data() &&
+    {
+        std::cout << "R-value reference qualifier\n";
+        return std::move(vec);
+    };
+};
+Widget make_widget() {
+    return Widget{};
+}
+VectorWrap make_vector() {
+    VectorWrap v({1., 2., 3.});
+    return v;
+}
+int main() {
+    Widget w1;
+    auto d1 = w1.data();            // call data from L-value object
+    auto d2 = make_widget().data(); // call data from R-value object
+    auto v1 = make_vector();
+}
+```
+
+VectorWrap 클래스는 단순히 복사 생성을 하는지 이동 생성을 하는지 확인하기 위해 `std::vector<double>` 타입을 감싸 만든 wrapper 클래스다. 중요한 것은 Widget 클래스다. 오버로딩 된 멤버 함수 `data()`에 두 가지 참조 한정사가 붙어있다. 첫 번째(&)는 this가 왼값인 경우 호출되고 두 번째(&&)은 this가 오른값일 때 호출된다.  
+
+리턴 타입에도 같은 참조 한정사가 붙었는데 this가 왼값이면 객체의 지속성이 있으므로 data를 왼값 참조로 받아서 써도 된다. this가 오른값이면 this 자체가 곧 사라질 임시 객체기 때문에 왼값 참조를 주면 dangling reference가 될 위험이있다. 임시 객체의 데이터는 복사를 통해서도 전달할 수 있지만 가능하면 이동 연산을 활용하는게 효율적이므로 std::move() 함수도 쓰고 리턴 타입도 오른값 참조로 지정했다.  
+
+하지만 앞에서 함수의 리턴 값을 굳이 move로 하지 않아도 된다고 했는데 여기서는 move를 해줘야 실제 이동 연산이 일어난다. 만약 `VectorWrap data() && { return vec; }` 이렇게 선언한다면 그냥 복사가 일어난다. 리턴되는 vec이라는 변수가 클래스 멤버 변수이기 때문이다. 만약 vec이 지역 변수였다면 저렇게 선언해도 RVO가 일어나거나 자동으로 이동 연산이 실행됐을 것이다. 하지만 멤버 변수는 클래스 내부에서는 지속성 있는 객체로 간주되기 때문에 명시적으로 std::move()를 해줘야 이동이 일어난다.
+
+
+
 ## 4. forwarding reference and std::forward()
 
 앞서 오른값 참조와 std::move 함수의 조합을 이용해 이동 연산을 활용하는 법에 대해 알아봤다. 하지만 오른값 참조는 오직 오른값에만 묶일수 있기 때문에 (왼값을 받을 수 없어서) 같은 함수를 입력 인자의 오른값, 왼값 성질에 따라 두 가지로 선언해야 하는 문제가 있다. 다음 함수 예시를 보자. Vector를 받아 이를 정수열로 채운 Vector 객체를 만들어 리턴하는 함수다.

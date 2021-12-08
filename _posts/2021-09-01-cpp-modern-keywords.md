@@ -7,30 +7,205 @@ categories: CppAlgorithm
 
 
 
-
-
 # Modern Keywords
 
 이번 강의에서는 C++11/14에서 추가된 키워드와 간단한 문법들을 모아서 정리한다. auto, 스마트 포인터, 람다 등의 굵직한 기능을 다루기 전에 중괄호 생성자, nullptr, constexpr, using, delete, override, noexcept 등의 자잘한(?) 키워드들을 정리하고 넘어가자.
 
 
 
-## 1. 중괄호 생성자
+## 1. Brace Initialization
 
-C++11부터 중괄호({}, brace)를 이용한 새로운 객체 초기화 문법이 생겼다. 기존의 소괄호()를 이용한 초기화와 비슷하면서도 약간 다르다. 객체를 초기화 하는 방법은 다음 네 가지 방법이 있다.
+> 참고자료: (Modern Effective C++) 항목 7: 객체 생성 시 괄호()와 중괄호{}를 구분하라
+
+C++11부터 중괄호({}, brace)를 이용한 새로운 객체 초기화 문법이 생겼는데 이를 균일 초기화(uniform initialization) 혹은 중괄호 초기화(brace initialization)라 한다. 기존의 소괄호()를 이용한 초기화와 비슷하면서도 약간 다르다. 다양한 객체 초기화 방법을 테스트해 보았다.
 
 ```cpp
-int x1(0);
-int x2 = 0;
-int y1{0};
-int y2 = {0};
+#include <iostream>
+struct Foo {
+    int n;
+    Foo() { std::cout << "default constructor\n"; }
+    Foo(int n_) : n(n_) { std::cout << "general constructor " << n << "\n"; }
+};
+int main() {
+    Foo x1(1);
+    Foo x2 = 2;
+    Foo x3 = Foo(3);
+    Foo *x4 = new Foo(4);
+    Foo y1{1};
+    Foo y2 = {2};
+    Foo y3 = Foo{3};
+    Foo *y4 = new Foo{4};
+}
+```
+
+> general constructor 1  
+> general constructor 2  
+> general constructor 3  
+> general constructor 4  
+> general constructor 1  
+> general constructor 2  
+> general constructor 3  
+> general constructor 4  
+
+xn은 기존 초기화 방식이고 yn은 중괄호 초기화 방식이다. 이런 일반적인 객체 생성의 경우 결과적으로 모두 다 같은 결과를 낳는다. 하지만 새로운 문법이 생긴데는 이유가 있다.  
+
+### 1.1. 중괄호 초기화 장점
+
+
+
+#### A. 모든 문맥에서 활용
+
+중괄호 초기화는 초기화가 필요한 모든 문맥에서 사용가능하다. 
+
+```cpp
+std::vector<int> v{1, 2, 3};	// 배열 초기값 지정
+// 멤버 변수 초기화
+class Widget {
+    int x{0};	// OK
+    int y=0;	// OK
+    int z(0);	// ERROR
+}
 ```
 
 
 
-<https://modoocode.com/286>
+#### B. 좁히기 변환 금지
+
+C++에서는 double 타입 데이터도 int 타입의 변수로 할당이 가능하다. 데이터의 손실이 일어날 수 있는 변환이지만 컴파일러는 개의치 않고 변환을 실행해준다. 이렇게 데이터 손실이 일어날 수 있는 변환을 좁히기 변환(narrowing conversion)이라 한다. float이나 unsigned int에서 int로의 변환도 똑같은 4 byte지만 표현 범위가 다르므로 좁히기 변환에 해당한다.  
+
+좁히기 변환은 잠재적인 버그의 원인이 될 수 있기 때문에 중괄호 초기화에서는 이를 원칙적으로 금지한다... 고 되어있지만 gcc로 테스트한 결과 아래 모든 좁히기 변환에서 **Warning만 나옴**을 확인했다.
+
+```cpp
+double d = 3.14;
+float f = 3.14f;
+unsigned int ui = 314;
+unsigned char uc = 3;
+// narrowing conversions
+int i1{d};
+int i2{f};
+int i3{ui};
+char c1{ui};
+char c2{uc};
+```
+
+> ...:19:12: warning: narrowing conversion of ‘d’ from ‘double’ to ‘int’ [-Wnarrowing]  
+> [build]    19 |     int i1{d};  
+> ...:20:12: warning: narrowing conversion of ‘f’ from ‘float’ to ‘int’ [-Wnarrowing]  
+> [build]    20 |     int i2{f};  
+> ...:21:12: warning: narrowing conversion of ‘ui’ from ‘unsigned int’ to ‘int’ [-Wnarrowing]  
+> [build]    21 |     int i3{ui};  
+> ...:23:13: warning: narrowing conversion of ‘ui’ from ‘unsigned int’ to ‘char’ [-Wnarrowing]  
+> [build]    23 |     char c1{ui};  
+> ...:24:13: warning: narrowing conversion of ‘uc’ from ‘unsigned char’ to ‘char’ [-Wnarrowing]  
+> [build]    24 |     char c2{uc};  
 
 
+
+#### C. Most vexing parse
+
+**가장 성가신 구문 해석(most vexing parse)**이란 "선언으로 해석할 수 있는 것은 항상 선언으로 해석해야 한다"라는 C++의 규칙으로부터 비롯된 부작용이다.
+
+```cpp
+#include <iostream>
+struct Foo {
+    Foo() { std::cout << "default constructor\n"; }
+    void do_something() {}
+};
+int main()
+{
+    std::cout << "parenthesis constructor\n";
+    Foo f1();
+    // f1.do_something();	// ERROR
+    Foo f2 = Foo();
+    Foo *f3 = new Foo();
+    std::cout << "brace constructor\n";
+    Foo b1{};
+    Foo b2 = Foo{};
+    Foo *b3 = new Foo{};
+}
+```
+
+> parenthesis constructor  
+> default constructor  
+> default constructor  
+> brace constructor  
+> default constructor  
+> default constructor  
+> default constructor  
+
+여기서 문제가 되는 줄은 f1을 생성하는 구문이다. 얼핏 보기엔 Foo 타입의 객체 f1을 기본 생성자로 생성하는 것처럼 보이지만 그게 아니다. C++ 컴파일러는 이것을 Foo 타입을 리턴하는 f1이라는 함수 선언으로 본다. 그렇게 보면 또 그렇게도 보인다. 앞서 말했다시피 C++은 선언으로 해석할 수 있는 것은 선언으로 해석하므로 f1 라인은 객체 생성이 아니라 함수 **선언**으로 해석한다. 그래서 그 아래서 멤버 함수 실행도 되지 않는다.  
+
+결과를 보면 객체 생성을 소괄호()로 3개, 중괄호()로 3개씩 한 것 같지만 소괄호에서는 생성 메시지가 2개 밖에 나오지 않는다. 다른 언어에서는 이런 문제가 없는데 C/C++에만 있는 문제로 헷갈리기 쉬우니 주의해야 한다. 하지만 중괄호를 쓰면 이러한 문제도 해결이 된다. `Foo b1{};`은 아무 문제없이 기본 생성자로 객체를 생성한다.
+
+
+
+### 1.2. 중괄호 초기화 주의사항
+
+중괄호 초기치를 auto나 템플릿을 통해 형식을 자동 연역한다면 이것은 `std::initializer_list<T>`라는 템플릿 타입이 된다.
+
+```cpp
+auto x = {1, 2, 3};
+std::initializer_list<int> y = {1, 2, 3};	// 윗줄과 동일
+```
+
+initializer_list를 클래스 생성자의 입력 인자로도 쓸 수 있는데 이럴 경우에 중괄호 생성자를 각별히 주의해서 써야한다. 일반 생성자와 initializer_list를 받는 생성자가 중복 적재(overloading)된 경우 컴파일러는 initializer_list 생성자를 **강하게** 선호한다. initializer_list 생성자가 가능한 상황에서는 우선적으로 선택되기 때문에 의도하지 않은 생성이 일어날 수 있다.  
+
+```cpp
+#include <iostream>
+struct Widget
+{
+    Widget() { std::cout << "default constructor\n"; }
+    Widget(bool b_, double f_) : b(b_), f(f_)
+    { std::cout << "general constructor: " << b << ", " << f << "\n"; }
+    Widget(bool b_, std::string s_) : b(b_), f(0.)
+    { std::cout << "general string constructor: " << b << ", " << s_ << "\n"; }
+    Widget(std::initializer_list<double> list) : b(*list.begin()), f(*(list.begin() + 1))
+    { std::cout << "initializer_list constructor: " << b << ", " << f << "\n"; }
+    bool b;
+    double f;
+};
+int main()
+{
+    Widget p1(true, 1.5);
+    Widget p2(1.0, 1.5);
+    Widget p3(true, "hello");
+    Widget b1{true, 1.5};
+    Widget b2{1.0, 1.5};
+    Widget b3{true, "hello"};
+}
+
+```
+
+> general constructor: 1, 1.5  
+> general constructor: 1, 1.5  
+> general string constructor: 1, hello  
+> initializer_list constructor: 1, 1.5  
+> initializer_list constructor: 1, 1.5  
+> general string constructor: 1, hello  
+
+위 예시에서 배울 수 있는 것은 다음과 같다.
+
+- b1의 경우 첫 번째 생성자가 적합해 보이지만 중괄호 생성 구문에서 initializer_list를 인자로 받는 생성자를 우선 선택하므로 세 번째 생성자가 실행되었다.
+- b1에서 `true`는 `double 1.0` 으로 변환되었다가 다시 `bool true`로 변환되었을 것이다.
+- 소괄호()로 객체를 생성하는 경우 절대 initializer_list 생성자를 호출할 수 없다. 따라서 initializer_list 생성자 호출이 우려되는 경우 소괄호()로 객체를 생성하면 된다.
+- b3에서 `"hello"`는 double로 변환할 수 없으므로 어쩔수 없이(?) 두 번째 생성자가 호출된다.
+- initializer_list를 입력 받는 생성자가 있을 경우 소괄호()와 중괄호{} 생성 방식에 따라 다른 생성자가 호출될 수 있다.
+
+마지막 교훈의 대표적인 예시는 vector다. vector에는 initializer_list 생성자가 있어서 비슷한 생성 구문도 다르게 해석될 수 있다.
+
+```cpp
+std::vector foo(10, 20);	// 원소 10이 20개 들어있는 배열 초기화
+std::vector foo{10, 20};	// 10, 20 두 개의 원소를 가진 배열 초기화
+```
+
+
+
+위 내용을 종합하면 객체를 생성할 때 소괄호 초기화나 중괄호 초기화 하나만 쓸 수는 없고 필요에 따라 두 가지를 적절히 섞어써야 한다는 것이다. 이때 두 가지 사항을 유의해야 한다.
+
+1. **initializer_list를 받는 생성자는 다른 일반 생성자와 중복 적재 되지 않게 작성한다.** vector의 예시는 신기한 코드가 아니고 인터페이스의 오류로 간주된다. initializer_list를 받는 생성자를 작성할 때는 가급적 기존의 일반 생성자와 중복 적재되지 않도록 작성한다. 특히 기존에 일반 생성자를 사용하던 코드에 initializer_list를 받는 생성자를 추가하면 새로운 생성자가 객체 생성을 독차지 할 수 있다. 이러한 강력한 중복 적재 후보는 꼭 필요한 경우에만 추가해야 한다.
+2. **객체를 생성할 때 소괄호와 중괄호를 세심하게 선택한다.** 두 가지를 다 쓴다고 해서 아무 원칙없이 혼용하면 코드의 일관성이 떨어진다. 두 가지 생성자를 선택하는 원칙이 있어야 한다. 대부분의 개발자는 둘 중 하나를 선택한다.
+   1. 중괄호를 우선하고 일부 경우에만 소괄호 사용: 중괄호 초기화의 세 가지 장점으로 인해 중괄호 선호. 하지만 initializer_list를 받는 생성자가 있을 경우 소괄호를 적절히 활용한다.
+   2. 소괄호를 우선하고 일부 경우에만 중괄호 사용: C++ 전통과의 일관성, 의도하지 않은 initializer_list 생성자 호출 때문에 소괄호 선호. 하지만 중괄호로만 가능한 경우(구체적인 값으로 컨테이너를 초기화 하는 등)에는 중괄호를 적절히 사용한다.
 
 
 
@@ -180,4 +355,92 @@ C++11 이후에서는 메모리 해제 연산자(operator delete or operator del
 noexcept는 constexpr처럼 대부분의 함수에 적용하는 건 아니고 예외가 발생하지 않도록 유지가 가능한 함수에만 적용해야 하며 함수 내부에서 호출하는 함수들도 그러한 함수여야 한다.
 
 
+
+## 4. override
+
+> 참고자료: (Modern Effective C++) 항목 12: 재정의 함수들을 override로 선언하라
+
+> "C++에서 객체 지향 프로그래밍의 세계는 클래스, 상속, 가상 함수(virutal function)를 중심으로 돌아간다. 이 세계의 아주 근본적인 개념 중 하나는, 파생 클래스(derived class)의 가상 함수 구현이 기반 클래스(base class)의 해당 가상 함수 구현을 재정의(override) 한다는 것이다. 그런데 가상 함수의 재정의 가 얼마나 쉽게 잘못될 수 있는지를 안다면 실망할 것이다. ..."
+
+기반 클래스의 가상 함수는 파생 클래스에서 재정의(overrride) 될 수 있다. 이것으로부터 객체 지향의 온갖 패턴들이 가능해진다. 하지만 조금만 실수해도 파생 클래스의 함수가 의도하지 않게 재정의가 아닌 새로운 함수 정의가 될 수 있다. 아래는 재정의에 실패한 사례들이다.
+
+```cpp
+class Base
+{
+public:
+    virtual void mf1() const {}
+    virtual void mf2(int x) {}
+    virtual void mf3() & {}
+    void mf4() const {}
+};
+class Derived : public Base
+{
+public:
+    virtual void mf1() {}
+    virtual void mf2(unsigned int x) {}
+    virtual void mf3() && {}
+    void mf4() const {}
+};
+int main() {
+    Base *p = new Derived;
+}
+```
+
+- mf1: Base에서는 const지만 Derived에서는 아니다.
+- mf2: 입력 인자의 타입이 다르다.
+- mf3: 참조 한정사의 종류가 다르다.
+- mf4: Base에서 virutal로 선언되지 않았다.
+
+모두 다 재정의에는 실패했지만 컴파일러에서는 경고 하나 나오지 않는다. 컴파일러로서는 사용자가 의도적으로 재정의를 피했는지 알 수 없기 때문이다. 기반 클래스의 가상 함수를 재정의하기 위해서는 파생 클래스에서 함수의 서명을 완전히 똑같이 만들어줘야 한다.  
+
+그래서 재정의 선언은 실수하기 쉬우므로 주의깊게 해야 한다. 파생 클래스가 하나가 아닌 여러개라면 처음엔 잘 썼다고 할지라도 수정하는 과정에서 재정의 관계가 깨질 수 있다. C++11에서는 파생 클래스 함수가 기반 클래스 가상 함수를 재정의 한다는 것을 명시적으로 표현할 수 있다. 바로 파생 클래스 함수를 **override** 식별자를 넣어 선언하는 것이다.
+
+```cpp
+class Derived : public Base
+{
+public:
+    virtual void mf1() override {}
+    virtual void mf2(unsigned int x) override {}
+    virtual void mf3() && override {}
+    void mf4() const override {}
+};
+```
+
+override로 선언한 함수는 반드시 기반 클래스의 함수를 재정의 해야하며 그렇지 못 할 경우 에러가 난다. 예시에서는 네 개의 함수 모두 에러가 난다. 제대로 정의하기 위해서는 다음과 같이 작성해야 한다.
+
+```cpp
+class Base
+{
+public:
+    virtual void mf1() const {}
+    virtual void mf2(int x) {}
+    virtual void mf3() & {}
+    virtual void mf4() const {}
+};
+class Derived : public Base
+{
+public:
+    virtual void mf1() const override {}
+    virtual void mf2(int x) override {}
+    virtual void mf3() & override {}
+    void mf4() const override {} // 파생 클래스에서는 virtual이 필수는 아니다.
+};
+int main() {
+    Base *p = new Derived;
+}
+```
+
+두 클래스의 함수 서명을 똑같이 맞추는 것 뿐만 아니라 기반 클래스의 mf4를 가상 함수로 선언하는 것도 코드가 제대로 컴파일되는데 필요한 일이다.
+
+파생 클래스이 모든 재정의 함수를 override로 선언한다면 사용자에게 재정의 함수를 명시적으로 표시할 수 있고 컴파일러에게도 함수 서명이 같은지 확인하게 해준다. 또한 기반 클래스이 함수 서명을 바꿀때도 컴파일을 통해 그로 인한 피해가 어느 정도인지 파악할 수 있어서 수정할만한 가치가 있는지 판단하는데 도움이 된다.
+
+
+
+**TODO**
+
+- enum
+- enum class
+- nullptr
+- using
+- delete
 
