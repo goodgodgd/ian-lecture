@@ -2,7 +2,7 @@
 layout: post
 title:  "[Git] Branch and Merge"
 date:   2019-05-29 09:00:01
-categories: 2019-1-git
+categories: Git
 ---
 
 

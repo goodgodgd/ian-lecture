@@ -2,7 +2,7 @@
 layout: post
 title:  "[Git] Git into the Git"
 date:   2019-05-21 09:00:01
-categories: 2019-1-git
+categories: Git
 ---
 
 

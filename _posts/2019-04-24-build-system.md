@@ -1,8 +1,8 @@
 ---
 layout: post
-title:  "[Seminar] CMake Build System"
+title:  "CMake Build System"
 date:   2019-04-24 09:00:01
-categories: 2019-1-seminar
+categories: Seminar
 ---
 
 

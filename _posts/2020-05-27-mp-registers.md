@@ -2,7 +2,7 @@
 layout: post
 title:  "ATmega128 레지스터 설정"
 date:   2020-05-27 09:00:03
-categories: 2020-1-MICRO
+categories: Microprocessor
 ---
 
 
