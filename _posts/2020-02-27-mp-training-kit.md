@@ -29,9 +29,9 @@ ATmega128a의 핀배치도 입니다. 일반적인 디지털 입출력 외에 �
 
 
 
-# Software Download
+# Environment Setup
 
-- atmel studio 7: <https://www.microchip.com/mplab/avr-support/atmel-studio-7>
+- Microchip Studio: <https://www.microchip.com/en-us/tools-resources/develop/microchip-studio>
 - Zadig (USB driver): <https://zadig.akeo.ie/>
 - 드라이버 설치 가이드: <http://www.lkembedded.co.kr/goods/goods_view.php?goodsNo=1447>
 
