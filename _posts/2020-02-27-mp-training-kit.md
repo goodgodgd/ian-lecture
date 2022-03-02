@@ -37,6 +37,12 @@ ATmega128a의 핀배치도 입니다. 일반적인 디지털 입출력 외에 �
 
 
 
+Microchip Studio에서 Device Programming 할 때 "firmware update"하라고 뜰 경우  
+
+:arrow_right: Tools - Options - Tools - Tool settings - Check firmware: False로 설정
+
+
+
 # Test Program
 
 ```c
@@ -46,13 +52,13 @@ ATmega128a의 핀배치도 입니다. 일반적인 디지털 입출력 외에 �
 
 int main(void)
 {
-	DDRA |= 0x01;
+	DDRE |= 0x01;
 	while(1)
 	{
 		
-		PORTA |= 0x01;
+		PORTE |= 0x01;
 		_delay_ms(500);
-		PORTA &= ~0x01;
+		PORTE &= ~0x01;
 		_delay_ms(500);
 	}
 	return 0;
