@@ -2,7 +2,7 @@
 layout: post
 title:  "[Python] Module and Package"
 date:   2021-03-30 09:00:13
-categories: 2021-1-systprog
+categories: SystemProgram
 ---
 
 
@@ -179,5 +179,4 @@ print("BMI:", bmi)
 
 1. 위에서 만든 `list_ops.py`와 `dict_ops.py` 함수들을 list comprehension, dict comprehension을 이용해 한줄로 구현한 `iter_ops`라는 패키지를 만들어 보시오.
 2. `numeric`이란 패키지를 만들고 → 패키지에 `prime_number`라는 모듈을 만들고 → 모듈에 소수를 확인하는 `check_prime_number(numbers)` 함수를 구현하시오. 이 함수는 임의의 숫자 리스트를 입력으로 받아서 각 숫자가 소수인지 확인하여 bool의 리스트로 출력한다. (예시: [341, 12, 523, 59] => [False, False, True, True])
-
 

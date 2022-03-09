@@ -2,7 +2,7 @@
 layout: post
 title:  "[Python] Color Space and Threshold"
 date:   2021-04-27 09:00:01
-categories: 2021-1-systprog
+categories: SystemProgram
 ---
 
 

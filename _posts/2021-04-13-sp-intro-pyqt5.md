@@ -2,7 +2,7 @@
 layout: post
 title:  "[Python] Introduction to PyQt5"
 date:   2021-04-13 09:00:01
-categories: 2021-1-systprog
+categories: SystemProgram
 ---
 
 

@@ -2,7 +2,7 @@
 layout: post
 title:  "[Python] Class and File IO"
 date:   2021-03-23 09:00:13
-categories: 2021-1-systprog
+categories: SystemProgram
 ---
 
 # Python Class

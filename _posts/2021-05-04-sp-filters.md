@@ -2,7 +2,7 @@
 layout: post
 title:  "[Python] Image Filters"
 date:   2021-05-04 09:00:01
-categories: 2021-1-systprog
+categories: SystemProgram
 ---
 
 

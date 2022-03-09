@@ -2,7 +2,7 @@
 layout: post
 title:  "[Python] Segmentation"
 date:   2021-05-08 09:00:01
-categories: 2021-1-systprog
+categories: SystemProgram
 ---
 
 

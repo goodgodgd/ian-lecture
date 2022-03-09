@@ -2,7 +2,7 @@
 layout: post
 title:  "[Python] Control statements: if, for and while"
 date:   2021-03-17 09:00:13
-categories: 2021-1-systprog
+categories: SystemProgram
 ---
 
 
@@ -164,5 +164,4 @@ abilities = ["suit", "Mjölnir", "physical power", "spider web"]
 heroes = {name: power for name, power in zip(marvel_heroes, abilities)}
 print("hero's ability", heroes)
 ```
-
 

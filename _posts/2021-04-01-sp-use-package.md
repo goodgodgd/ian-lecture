@@ -2,7 +2,7 @@
 layout: post
 title:  "[Python] Use Basic Packages"
 date:   2021-04-01 09:00:13
-categories: 2021-1-systprog
+categories: SystemProgram
 ---
 
 

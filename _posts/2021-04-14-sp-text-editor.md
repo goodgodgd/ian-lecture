@@ -2,7 +2,7 @@
 layout: post
 title:  "[Python] Implement GUI Text Editor"
 date:   2021-04-14 09:00:01
-categories: 2021-1-systprog
+categories: SystemProgram
 ---
 
 
@@ -409,5 +409,4 @@ QtDesigner에서 Input Widgets 아래 `Line Edit` 을 윈도우에 두 개를 �
 
 
 지금까지 우리는 QtDesigner를 통해 GUI 객체들을 MainWindow에 추가하고 이들의 동작을 파이썬 코드에서 지정하여 텍스트 에디터를 만들었다. 다양한 GUI 클래스들이 필요하고 각 클래스 마다 사용하는 함수나 Signal 등이 다르지만 Documentation을 잘 보고 구글링을 하면 각 클래스의 사용법을 알 수 있다. 다른 유용한 GUI 클래스들도 많지만 이 정도 프로그램을 만들 수 있다면 GUI 프로그래밍의 패턴을 익힌 것이므로 다른 GUI 클래스들도 어렵지 않게 쓸 수 있을 것이다.
-
 

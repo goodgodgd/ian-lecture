@@ -2,7 +2,7 @@
 layout: post
 title:  "[Python] Data Structure 2: Dictionary, Tuple, Set"
 date:   2021-03-14 09:00:13
-categories: 2021-1-systprog
+categories: SystemProgram
 ---
 
 
