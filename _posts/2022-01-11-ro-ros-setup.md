@@ -279,7 +279,7 @@ ROS와 관련된 설정은 3가지 정도로 `"ros.distro": "foxy"`와 같이 RO
   "editor.mouseWheelZoom": true,
   "editor.renderControlCharacters": true,
   // white vertical lines in editor
-  "editor.rulers": [90, 110],
+  "editor.rulers": [100],
   "editor.tabSize": 2,
   // 2부 1장 파이썬 스타일 참조
   "[python]": {
