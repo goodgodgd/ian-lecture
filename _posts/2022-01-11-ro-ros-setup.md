@@ -222,16 +222,16 @@ $ code
 
 ### 2. 작업공간 열기
 
-ROS의 작업공간과 VSCode의 작업공간은 좀 다른 개념이지만 여기서는 같은 디렉토리를 사용한다. `~/robot_ws`를 VSCode의 작업공간으로 열어보자.
+ROS의 작업공간과 VSCode의 작업공간은 좀 다른 개념이지만 여기서는 같은 디렉토리를 사용한다. `~/robot_ws/src`를 VSCode의 작업공간으로 열어보자.
 
 - File - Add Folder to Workspace
-- ~/robot_ws 선택
+- ~/robot_ws/src 선택
 
 
 
 ### 2. 확장(Extention) 설치
 
-왼쪽의 Extensions 탭에서 아래 확장들을 설치하여 VSCode에 다양한 기능을 추가해보자.
+왼쪽의 Extensions 탭에서 아래 확장들을 설치하여 VSCode에 다양한 기능을 추가해보자. 다음 내용과의 호환을 위해 일단 모두 설치하자.
 
 | 이름                                       | 필수 | 설명                                                         |
 | ------------------------------------------ | ---- | ------------------------------------------------------------ |
@@ -246,22 +246,31 @@ ROS의 작업공간과 VSCode의 작업공간은 좀 다른 개념이지만 여�
 | YAML                                       |      | YAML 지원                                                    |
 | Makedown All in One                        |      | Markdown 지원                                                |
 | Highlight Trailing White <br>Spaces (Yves) |      | 의미 없이 사용된 공백의 스페이스 문자 강조                   |
-| Bracket Pair Colorizer                     |      | 괄호 열기/닫기를 짝을 맞추어 색상화시킴                      |
 | Better Comments                            |      | 코멘트 하이라이팅 강화                                       |
 
 
 
 ### 4. VSCode 개발환경 설정
 
+VSCode는 GUI를 이용한 설정과 json 파일을 이용한 설정 두 가지를 모두 지원한다. GUI 방식은 어떤 설정들이 있는지 보면서 설정할 수 있지만 내가 쓰던 설정, 혹은 다른 사람이 쓰던 설정을 새로운 작업공간에서 그대로 복원하기는 불편하다. 그래서 VSCode에서는 GUI를 이용한 설정보다는 json 파일을 이용한 설정이 더 많이 쓰인다. 모든 설정에는 기본값이 있으므로 기본값에서 변하는 값만 json 파일에서 지정하면 된다. 텍스트로 되어있으니 다른 사람들과 설정 방법을 공유하기도 쉽다.
+
+설정을 사용자(컴퓨터) 별로 지정할수도 있고 작업공간 별로 따로 지정할수도 있다. 여기서는 작업공간 별로 지정하기 위해 ~/robot_ws/src/.vscode 디렉토리를 생성하여 그 아래 설정파일들을 작성한다.
+
+- ~/robot_ws/src/.vscode/
+  - settings.json
+  - c_cpp_proproperties.json
+  - tasks.json
+  - launch.json
+
+
+
 #### 4.1. Settings
 
-'settings.json'은 VSCode의 사용자별 글로벌 환경 설정을 지정하는 파일이다. 이 파일에 기술된 설정들은 모든 작업 공간(workspace)에서 적용된다. 예를 들어, 미니맵 사용, 세로 제한 줄 표시, 탭 사이즈 등 이다. 
+> .vscode/settings.json
+
+'settings.json'은 VSCode와 설치된 확장들의 전반적인 설정을 다룰수 있는 파일이다. 보통은 사용자 폴더에 이 파일이 자동으로 만들어지는데 그러면 현재 컴퓨터에서 현재 사용자가 어디서 작업을 하든 동일한 설정을 쓸 수 있다. 하지만 여기서는 ROS만을 위한 설정들이 들어있기 때문에 작업공간에서 작성한다.
 
 ROS와 관련된 설정은 3가지 정도로 `"ros.distro": "foxy"`와 같이 ROS 버전을 지정하고, `"colcon.provideTasks": true`와 같이 colcon이 지원되는 Task를 사용한다는 의미로 지정한다. 그리고 `"files.associations"`을 통해 확장자로 알 수 없는 *.repos, *.world, *.xacro 와 같이 ROS에서만 사용되는 확장자를 가진 파일들을 어떤 형식으로 표시해야 하는지 설정을 하게된다.
-
-> Command Palette (Ctrl + Shift + P)
->
-> Preferences: Open Settings (JSON)
 
 ```json
 {
@@ -270,8 +279,12 @@ ROS와 관련된 설정은 3가지 정도로 `"ros.distro": "foxy"`와 같이 RO
   "editor.mouseWheelZoom": true,
   "editor.renderControlCharacters": true,
   // white vertical lines in editor
-  "editor.rulers": [90, 110],
+  "editor.rulers": [100],
   "editor.tabSize": 2,
+  // 2부 1장 파이썬 스타일 참조
+  "[python]": {
+    "editor.tabSize": 4,
+  },
   "files.associations": {
     "*.repos": "yaml",
     "*.world": "xml",
@@ -280,7 +293,6 @@ ROS와 관련된 설정은 3가지 정도로 `"ros.distro": "foxy"`와 같이 RO
   "files.insertFinalNewline": true,
   "files.trimTrailingWhitespace": true,
   "terminal.integrated.scrollback": 1000000,
-  "workbench.iconTheme": "vscode-icons",
   "workbench.editor.pinnedTabSizing": "compact",
   "ros.distro": "foxy",
   "colcon.provideTasks": true,
@@ -293,11 +305,11 @@ ROS와 관련된 설정은 3가지 정도로 `"ros.distro": "foxy"`와 같이 RO
 
 #### 4.2. C/C++ Properties
 
-C/C++ 관련 설정이다. 현재 지정한 작업 공간 (여기서는 ~/robot_ws)의 운영체제는 무엇인지, include 폴더의 경로는 어떻게 되는지, C/C++ 규칙은 어떤 표준을 기준을 사용할지의 여부, 컴파일의 경로, intelliSense 모드 등을 설정하게 된다. 여기서 설정하는 것이 실제 빌드에 적용된다기 보다는 코드 자동완성을 위한 설정에 가깝다.  
-
-> Command Palette (Ctrl + Shift + P)
+> Command Palette (Ctrl + Shift + P) :arrow_right: C/C++: Edit Configurations (JSON)  
 >
-> C/C++: Edit Configurations (JSON)
+> 혹은 .vscode/c_cpp_properties.json
+
+C/C++ 관련 설정이다. 현재 지정한 작업 공간 (여기서는 ~/robot_ws)의 운영체제는 무엇인지, include 폴더의 경로는 어떻게 되는지, C/C++ 규칙은 어떤 표준을 기준을 사용할지의 여부, 컴파일의 경로, intelliSense 모드 등을 설정하게 된다. 여기서 설정하는 것이 실제 빌드에 적용된다기 보다는 코드 자동완성을 위한 설정에 가깝다.  
 
 ```json
 {
@@ -325,13 +337,11 @@ C/C++ 관련 설정이다. 현재 지정한 작업 공간 (여기서는 ~/robot_
 
 #### 4.3. Tasks (optional)
 
+> .vscode/tasks.json
+
 VSCode에서는 외부 프로그램을 Command Line Interface (CLI) 을 통해 연동하게 하는 기능이 있는데 이를 Task라고 한다. 단순한 텍스트 에디터 기능이 기본인 VSCode가 다양한 기능을 수행하고 쉽게 기능 확장을 사용할 수 있게 된 것도 이 Task 기능이 있었기 때문이다. 
 
-아래의 내용은 ROS 2에서 빌드할 때 사용되는 colcon과 관려한 build, test, clean 작업을 Task로 만들었다. 이를 통해 VScode에서 `Ctrl + Shift + b`로 빌드할 수 있고 아래와 같이 기본 설정 이외의 Task도 실행할 수 있다.
-
-
-
-> VSCode의 탐색기(explorer) 탭에서 `.vscode` 디렉토리 아래에 `tasks.json` 생성
+아래의 내용은 ROS 2에서 빌드할 때 사용되는 colcon과 관려한 build, test, clean 작업을 Task로 만들었다. 이를 통해 VScode에서 `Ctrl + Shift + b`로 빌드할 수 있고 아래와 같이 기본 설정 이외의 Task도 실행할 수 있다.  
 
 ```json
 {
@@ -369,6 +379,8 @@ VSCode에서는 외부 프로그램을 Command Line Interface (CLI) 을 통해 �
 
 
 #### 4.4. Launch (optional)
+
+> .vscode/launch.json
 
 VSCode에서의 Launch는 'Run and Debug' (`Ctrl + Shift + d`)에서 사용되는 실행 명령어로 언어별, 디버거별로 설정이 가능하고 세부 옵션으로  Launch가 실행되기 전 즉 디버깅하기 전에 사용할 Task를 지정하거나 콘솔 기능을 설정할 수도 있다.
 
