@@ -62,7 +62,7 @@ tempfile1 = "D:/tempdir/tempfile1.txt"
 tempfile2 = "D:/tempdir/tempfile2.txt"
 create = 1
 
-if create == 1:
+def create():
     os.mkdir(tempdir)
     try:
         os.mkdir(tempdir)
@@ -70,12 +70,12 @@ if create == 1:
         print(e)
 
     with open(tempfile1, "w") as f:
-        f.write("blurblurblur1")
+        f.write("blurblurblur1
     with open(tempfile2, "w") as f:
         f.write("blurblurblur2")
     print("two files created")
 
-elif create == 0:
+def delete():
     os.remove(tempfile1)
     try:
         os.remove(tempfile1)
@@ -89,6 +89,10 @@ elif create == 0:
         print(e)
     shutil.rmtree(tempdir, ignore_errors=True)
     print("rmtree non-existing dir but no error")
+
+if __name__ == "__main__":
+    create()
+    # delete()
 ```
 
 

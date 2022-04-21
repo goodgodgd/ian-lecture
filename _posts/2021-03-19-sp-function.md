@@ -47,19 +47,21 @@ print(add(1, 2))
 
 ```python
 def average_list(data, start, end, skip, verbose):
-    if end is None:
-        avg_data = data[start:]
-    else:
-        avg_data = data[start:end]
+    if end:
+        data = data[:end]
+    if start:
+        data = data[start:]
+    if skip:
+        for val in skip:
+            if val in data:
+                data.remove(val)
+    sumval = 0
+    for d in data:
+        sumval += d
+    average = sumval / len(data)
 
-    sum = 0
-    for ind, num in enumerate(avg_data):
-        if ind + start not in skip:
-            sum += num
-    dlen = len(avg_data) - len(skip)
-    average = sum / dlen
     if verbose:
-        print(f"average over indices [{start}~{end}) with skipping index {skip} = {average}")
+        print(f"average over indices [{start}~{end}) with skipping values {skip} = {average}")
     return average
 ```
 
@@ -107,9 +109,7 @@ avg = average_list(data, skip=[4], start=2, end=7, verbose=True)
 `average_list`는 네 개의 입력 인자로 리스트의 평균 계산 과정을 자세히 조절할 수 있지만 보통 많이 쓰는 기능은 단순히 리스트 전체에 대해서 평균을 구하는 것일 것이다. 이때도 `average_list(data, 0, None, [])`과 같이 나머지 입력인자를 다 써주는 것이 번거로울 수 있다.  `data`로 들어오는 필수 인자를 제외하고 나머지 인자에 기본값을 지정해주면 입력 인자를 적게 넣어도 작동한다. 기본값을 주는 방법은 C언어와 동일하게 함수 선언에서 입력인자에 기본 값을 할당하면 된다. (`argument=default_value` )  `average_list`를 기본 값을 이용해 사용하게 해주는 `average_list_with_default`를 다음과 같이 정의하였다.
 
 ```python
-def average_list_with_default(data, start=0, end=None, skip=None, verbose=False):
-    if skip is None:
-        skip = []
+def average_list_with_default(data, start=None, end=None, skip=None, verbose=False):
     return average_list(data, start, end, skip, verbose)
 
 print("function default arguments")
@@ -352,24 +352,24 @@ def average_keyworded_args(data, multiple, **kwargs):
     return avg
 
 def average_list_with_default(data, start=0, end=None, skip=None, verbose=False):
-    if skip is None:
-        skip = []
     return average_list(data, start, end, skip, verbose)
 
 def average_list(data, start, end, skip, verbose):
-    if end is None:
-        avg_data = data[start:]
-    else:
-        avg_data = data[start:end]
+    if end:
+        data = data[:end]
+    if start:
+        data = data[start:]
+    if skip:
+        for val in skip:
+            if val in data:
+                data.remove(val)
+    sumval = 0
+    for d in data:
+        sumval += d
+    average = sumval / len(data)
 
-    sum = 0
-    for ind, num in enumerate(avg_data):
-        if ind not in skip:
-            sum += num
-    dlen = len(avg_data) - len(skip)
-    average = sum / dlen
     if verbose:
-        print(f"average {start}~{end} with skipping {skip} = {average}")
+        print(f"average over indices [{start}~{end}) with skipping values {skip} = {average}")
     return average
 
 if __name__ == '__main__':
