@@ -43,7 +43,7 @@ def add(n1, n2):
 print(add(1, 2))
 ```
 
-좀 더 복잡한 리스트 평균을 내는 함수를 다음과 같이 정의할 수 있다. `average_list`는 이름 그대로 리스트의 평균을 구하는 함수인데 시작 인덱스(`start`)와 끝 인덱스(`end`)를 지정할 수 있고 중간에 빠져야할 인덱스(`skip`)를 지정할 수 있다. 
+좀 더 복잡한 리스트 평균을 내는 함수를 다음과 같이 정의할 수 있다. `average_list`는 이름 그대로 리스트의 평균을 구하는 함수인데 시작 인덱스(`start`)와 끝 인덱스(`end`)를 지정할 수 있고 중간에 빠져야할 값(`skip`)을 지정할 수 있다. 
 
 ```python
 def average_list(data, start, end, skip, verbose):
@@ -106,7 +106,7 @@ avg = average_list(data, skip=[4], start=2, end=7, verbose=True)
 
 ## 3. 인자 기본값 지정
 
-`average_list`는 네 개의 입력 인자로 리스트의 평균 계산 과정을 자세히 조절할 수 있지만 보통 많이 쓰는 기능은 단순히 리스트 전체에 대해서 평균을 구하는 것일 것이다. 이때도 `average_list(data, 0, None, [])`과 같이 나머지 입력인자를 다 써주는 것이 번거로울 수 있다.  `data`로 들어오는 필수 인자를 제외하고 나머지 인자에 기본값을 지정해주면 입력 인자를 적게 넣어도 작동한다. 기본값을 주는 방법은 C언어와 동일하게 함수 선언에서 입력인자에 기본 값을 할당하면 된다. (`argument=default_value` )  `average_list`를 기본 값을 이용해 사용하게 해주는 `average_list_with_default`를 다음과 같이 정의하였다.
+`average_list`는 다섯 개의 입력 인자로 리스트의 평균 계산 과정을 자세히 조절할 수 있지만 보통 많이 쓰는 기능은 단순히 리스트 전체에 대해서 평균을 구하는 것일 것이다. 이때도 `average_list(data, 0, None, [])`과 같이 나머지 입력인자를 다 써주는 것이 번거로울 수 있다.  `data`로 들어오는 필수 인자를 제외하고 나머지 인자에 기본값을 지정해주면 입력 인자를 적게 넣어도 작동한다. 기본값을 주는 방법은 C언어와 동일하게 함수 선언에서 입력인자에 기본 값을 할당하면 된다. (`argument=default_value` )  `average_list`를 기본 값을 이용해 사용하게 해주는 `average_list_with_default`를 다음과 같이 정의하였다.
 
 ```python
 def average_list_with_default(data, start=None, end=None, skip=None, verbose=False):
